@@ -1,9 +1,9 @@
 import Link from 'next/link'
-import Head from '../components/head'
+import Head from '../../../components/head'
 
 export default () => (
   <div>
-    <Head title="Home" />
+    <Head title="droplets – digitalocean" />
 
     <div className="home-header">
       <h1>resources</h1>
@@ -13,8 +13,8 @@ export default () => (
     <div className="list">
       <ul>
         <li>
-          <Link href="/digitalocean">
-            <a>digitalocean</a>
+          <Link href="/digitalocean/droplets/list">
+            <a>list</a>
           </Link>
         </li>
       </ul>
