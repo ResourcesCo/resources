@@ -1,16 +1,18 @@
 import Link from 'next/link'
 import Head from '../../../components/head'
+import Header from '../../../components/header'
+import List from '../../../components/list'
 
 export default () => (
   <div>
     <Head title="droplets – digitalocean" />
 
-    <div className="home-header">
+    <Header>
       <h1>resources</h1>
       <h2>docs &amp; tools for APIs</h2>
-    </div>
+    </Header>
 
-    <div className="list">
+    <List>
       <ul>
         <li>
           <Link href="/digitalocean/droplets/list">
@@ -18,7 +20,7 @@ export default () => (
           </Link>
         </li>
       </ul>
-    </div>
+    </List>
 
     <style jsx>{`
       .home-header {

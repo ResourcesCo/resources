@@ -1,14 +1,12 @@
 import Link from 'next/link'
 import Head from '../../../components/head'
+import Header from '../../../components/header'
 
 export default () => (
   <div>
     <Head title="list droplets – digitalocean" />
 
-    <div className="home-header">
-      <h1>resources</h1>
-      <h2>docs &amp; tools for APIs</h2>
-    </div>
+    <Header />
 
     <h3>Setup</h3>
 
@@ -43,7 +41,7 @@ export default () => (
       doctl compute droplet list -o json
     </pre>
 
-    <h3>More Info &amp; References</h3>
+    <h3>References</h3>
 
     <ul>
       <li><a href="https://github.com/digitalocean/doctl">README</a></li>
@@ -51,19 +49,28 @@ export default () => (
     </ul>
 
     <style jsx>{`
-      .home-header {
-        text-align: center;
-      }
-      .home-header h1 {
-        color: blue;
-        margin-bottom: 3px;
-      }
-      .home-header h2 {
-        margin-top: 3px;
-        font-size: 110%;
-      }
       pre, code {
         font-family: monospace;
+        color: #eee;
+        background-color: #111;
+        padding: 3px 5px;
+      }
+      pre {
+        padding: 6px 10px;
+        margin: 0;
+      }
+      h3 {
+        margin: 8px 5px 5px;
+        color: #459;
+        font-size: 15px;
+      }
+      p {
+        margin: 8px 10px;
+      }
+      ul {
+        list-style-type: disc;
+        margin-left: 5px;
+        padding-left: 15px;
       }
     `}</style>
   </div>

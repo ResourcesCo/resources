@@ -26,8 +26,15 @@ const Head = (props) => (
     <meta property="og:image:height" content="630" />
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
     <style type="text/css">{`
+      body {
+        background-color: #f7f7f7;
+      }
       * {
         font-family: 'Roboto', sans-serif;
+      }
+      body, div, ul, p, h1, h2, h3, h4, h5 {
+        margin: 0;
+        padding: 0;
       }
     `}</style>
   </NextHead>
