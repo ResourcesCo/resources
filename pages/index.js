@@ -7,7 +7,7 @@ export default () => (
   <div>
     <Head title="Home" />
 
-    <Header />
+    <Header home />
 
     <List>
       <ul>
