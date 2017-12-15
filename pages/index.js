@@ -12,8 +12,8 @@ export default () => (
     <List>
       <ul>
         <li>
-          <Link href="/digitalocean">
-            <a>digitalocean</a>
+          <Link href="/servers">
+            <a>servers</a>
           </Link>
         </li>
       </ul>

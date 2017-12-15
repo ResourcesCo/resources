@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import Head from '../../../components/head'
-import Header from '../../../components/header'
-import List from '../../../components/list'
+import Head from '../../../../components/head'
+import Header from '../../../../components/header'
+import List from '../../../../components/list'
 
 export default () => (
   <div>
@@ -15,7 +15,7 @@ export default () => (
     <List>
       <ul>
         <li>
-          <Link href="/digitalocean/droplets/list">
+          <Link href="/servers/digitalocean/droplets/list">
             <a>list</a>
           </Link>
         </li>

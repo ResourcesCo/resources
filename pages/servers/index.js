@@ -5,15 +5,15 @@ import List from '../../components/list'
 
 export default () => (
   <div>
-    <Head title="digitalocean" />
+    <Head title="servers" />
 
     <Header />
 
     <List>
       <ul>
         <li>
-          <Link href="/digitalocean/droplets">
-            <a>droplets</a>
+          <Link href="/servers/digitalocean">
+            <a>digitalocean</a>
           </Link>
         </li>
       </ul>
