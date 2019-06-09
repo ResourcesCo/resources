@@ -55,6 +55,9 @@ const Home = () => {
           font-family: -apple-system, BlinkMacSystemFont, Avenir Next, Avenir,
             Helvetica, sans-serif;
           background-color: ${theme.background};
+        }
+
+        html, body, textarea, svg {
           color: ${theme.foreground};
         }
 
