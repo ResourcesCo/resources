@@ -40,7 +40,9 @@ const Home = () => {
   const theme = {
     foreground: '#eee',
     background: '#222427',
-    inputBorder: 'rgb(51, 51, 51)'
+    inputBorder: 'rgb(51, 51, 51)',
+    selectionBackground: 'cyan',
+    selectionColor: '#eee',
   }
   return (
     <div>
@@ -63,6 +65,11 @@ const Home = () => {
 
         textarea, button {
           border: 1px solid ${theme.inputBorder};
+        }
+
+        ::selection {
+          color: ${theme.selectionColor};
+          background: ${theme.selectionBackground};
         }
       `}</style>
       <style jsx>{`

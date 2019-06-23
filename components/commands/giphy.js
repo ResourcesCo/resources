@@ -8,6 +8,6 @@ export default class Giphy {
     const url = `https://api.giphy.com/v1/gifs/random?api_key=${this.key}&tag=${encodeURIComponent(tag)}`
     const res = await fetch(url)
     const data = await res.json()
-    return <img src={data.data.image_url} />
+    return <img src={data.data.image_url} style={{maxWidth: '100%'}} />
   }
 }
