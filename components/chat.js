@@ -1,11 +1,9 @@
 import { useState, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
-import Help from './commands/help'
-import Giphy from './commands/giphy'
-import TextareaAutosize from 'react-autosize-textarea'
+import runCommand from './commands'
 
-const giphy = new Giphy()
+import TextareaAutosize from 'react-autosize-textarea'
 
 export default ({onFocusChange}) => {
   const [text, setText] = useState('')
@@ -14,43 +12,10 @@ export default ({onFocusChange}) => {
   const addMessages = newMessages => {
     setMessages([...messages, ...newMessages])
   }
-  const sendMessage = message => {
-    const messages = [
-      {
-        type: 'input',
-        content: <div className="input-message">{message}</div>,
-      }
-    ]
-    if (message === '/help') {
-      messages.push({
-        type: 'output',
-        content: <Help />,
-      })
-    } else if (message.startsWith('/auth ')) {
-      const args = message.split(/\s+/)
-      if (args[1] === 'giphy') {
-        console.log(args)
-        messages.push({
-          type: 'output',
-          content: giphy.auth(args[2])
-        })
-      }
-    } else if (message.startsWith('/giphy ')) {
-      const args = message.split(/\s+/)
-      giphy.run(args[1]).then(content => {
-        addMessages([
-          {
-            type: 'output',
-            content: content,
-          }
-        ])
-      })
-    }
-    addMessages(messages)
-  }
+
   const send = () => {
     setText('')
-    sendMessage(text)
+    runCommand(text, addMessages)
     if (ref.current) {
       ref.current.scrollIntoView()
     }
