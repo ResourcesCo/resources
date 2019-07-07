@@ -3,7 +3,9 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "export": "next export",
+    "firefox-build": "npm run export && mv out firefox && mv firefox/static/firefox/manifest.json firefox/manifest.json"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.18",
