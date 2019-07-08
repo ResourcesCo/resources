@@ -1,7 +1,9 @@
 import Help from './help'
 import Giphy from './giphy'
+import Docs from './docs'
 
 const giphy = new Giphy()
+const docs = new Docs()
 
 export default (message, addMessages) => {
   const messages = [
@@ -14,6 +16,17 @@ export default (message, addMessages) => {
     messages.push({
       type: 'output',
       content: <Help />,
+    })
+  } else if (message.startsWith('docs ')) {
+    const args = message.split(/\s+/)
+    const url = args[1]
+    docs.run(args[1]).then(content => {
+      addMessages([
+        {
+          type: 'output',
+          content: content,
+        }
+      ])
     })
   } else if (message.startsWith('auth ')) {
     const args = message.split(/\s+/)
