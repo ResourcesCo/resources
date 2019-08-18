@@ -1,19 +1,24 @@
 {
   "name": "create-next-example-app",
   "scripts": {
-    "dev": "next",
+    "dev": "next -p 3333",
     "build": "next build",
     "start": "next start",
     "export": "next export",
-    "firefox-build": "npm run export && mv out firefox && mv firefox/static/firefox/manifest.json firefox/manifest.json"
+    "firefox-copy": "cp -r out firefox && mv firefox/static/firefox/manifest.json firefox/manifest.json",
+    "firefox-build": "rm -rf firefox && npm run build && npm run export && npm run firefox-copy",
+    "chrome-copy": "cp -r out chrome && mv chrome/static/chrome/manifest.json chrome/manifest.json",
+    "chrome-replace": "mv chrome/_next chrome/next_ && find chrome -iname '*.html' -exec sd '/_next' '/next_' '{}' \\; && find chrome -iname '*.js' -exec sd '/_next' '/next_' '{}' \\;",
+    "chrome-build": "rm -rf chrome && npm run build && npm run export && npm run chrome-copy && npm run chrome-replace"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.18",
-    "@fortawesome/free-solid-svg-icons": "^5.8.2",
+    "@fortawesome/fontawesome-svg-core": "^1.2.19",
+    "@fortawesome/free-solid-svg-icons": "^5.9.0",
     "@fortawesome/react-fontawesome": "^0.1.4",
-    "next": "8.1.0",
-    "react": "16.8.6",
+    "next": "^9.0.1",
+    "react": "^16.8.6",
     "react-autosize-textarea": "^7.0.0",
-    "react-dom": "16.8.6"
+    "react-dom": "16.8.6",
+    "webextension-polyfill": "^0.4.0"
   }
 }

@@ -5,6 +5,8 @@ module.exports = {
       fs: 'empty'
     }
 
+    config.optimization.minimizer = []
+
     return config
   }
 }
