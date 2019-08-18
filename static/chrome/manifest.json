@@ -2,20 +2,10 @@
   "manifest_version": 2,
   "name": "Resources.co Console",
   "version": "0.1",
-  "description": "A console in the sidebar",
+  "description": "A console in the browser",
   "icons": {
     "48": "static/icons/Icon48.png",
     "96": "static/icons/Icon48@2x.png"
-  },
-  "sidebar_action": {
-    "default_icon": {
-      "16": "static/icons/Icon16.png",
-      "32": "static/icons/Icon32.png",
-      "64": "static/icons/Icon32@2x.png"
-    },
-    "default_title": "Console",
-    "default_panel": "sidebar.html",
-    "open_at_install": true
   },
   "browser_action": {
     "default_icon": {
