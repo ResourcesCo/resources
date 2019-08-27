@@ -1,5 +1,5 @@
 {
-  "name": "create-next-example-app",
+  "name": "resources-co",
   "scripts": {
     "dev": "next -p 3333",
     "build": "next build",
