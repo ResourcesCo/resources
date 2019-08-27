@@ -80,6 +80,10 @@ const App = ({popup}) => {
         a {
           color: cyan;
         }
+
+        #__next-prerender-indicator {
+          display: none;
+        }
       `}</style>
       <style jsx>{`
         div {

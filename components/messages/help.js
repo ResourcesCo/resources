@@ -25,7 +25,7 @@ export default () => {
       <Details>find api docs for a url</Details>
     </div>
     <div>
-      <Example>auth giphy <i>api-key</i></Example>
+      <Example>giphy auth <i>api-key</i></Example>
       <Details>store api key for giphy</Details>
     </div>
     <div>

@@ -4,7 +4,17 @@ export default class Giphy {
     return {type: 'text', text: 'Saved!'}
   }
 
-  async run(tag) {
+  async run(...args) {
+    if (args[0] === 'auth' && args.length === 2) {
+      const key = args[1]
+      return this.auth(key)
+    } else {
+      const tag = args[0]
+      return await this.search(tag)
+    }
+  }
+
+  async search(tag) {
     if (!this.key) {
       return {type: 'text', text: 'No API key given. Run "help" for info.'}
     }

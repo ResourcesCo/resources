@@ -16,9 +16,5 @@
     "default_title": "Console",
     "default_popup": "popup.html"
   },
-  "background": {
-    "persistent": true,
-    "page": "background.html"
-  },
   "permissions": ["http://*/*", "https://*/*", "tabs", "storage", "unlimitedStorage"]
 }
