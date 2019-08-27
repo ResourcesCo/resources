@@ -7,16 +7,6 @@
     "48": "static/icons/Icon48.png",
     "96": "static/icons/Icon48@2x.png"
   },
-  "sidebar_action": {
-    "default_icon": {
-      "16": "static/icons/Icon16.png",
-      "32": "static/icons/Icon32.png",
-      "64": "static/icons/Icon32@2x.png"
-    },
-    "default_title": "Console",
-    "default_panel": "sidebar.html",
-    "open_at_install": true
-  },
   "browser_action": {
     "default_icon": {
       "16": "static/icons/Icon16.png",
@@ -25,10 +15,6 @@
     },
     "default_title": "Console",
     "default_popup": "popup.html"
-  },
-  "background": {
-    "persistent": true,
-    "page": "background.html"
   },
   "permissions": ["http://*/*", "https://*/*", "tabs", "storage", "unlimitedStorage"]
 }

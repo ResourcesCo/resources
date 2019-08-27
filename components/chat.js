@@ -3,17 +3,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
 import runCommand from './commands'
 import Message from './messages/message'
-import { urlTracker } from './browser/url-tracker'
-import { messageStore } from './browser/message-store'
+import { messageStore } from './message-store'
 
 import TextareaAutosize from 'react-autosize-textarea'
 
 class Chat extends PureComponent {
   state = {
     messages: [],
-    currentPageDocs: [],
     text: '',
-    url: '',
   }
 
   constructor(props) {
@@ -21,19 +18,15 @@ class Chat extends PureComponent {
     this.scrollRef = React.createRef()
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const loadMessages = async () => {
       await messageStore.load()
       this.setState({messages: messageStore.messages})
     }
-    const loadUrl = async () => {
-      await urlTracker.load()
-      const url = urlTracker.urls[urlTracker.activeTab]
-      const currentPageDocs = await runCommand(`docs ${url}`)
-      this.setState({url, currentPageDocs})
+    await loadMessages()
+    if (this.scrollRef.current) {
+      this.scrollRef.current.scrollIntoView()
     }
-    loadMessages()
-    loadUrl()
   }
 
   componentWillUnmount() {
@@ -43,6 +36,10 @@ class Chat extends PureComponent {
   addMessages = newMessages => {
     const {messages} = this.state
     const updatedMessages = [...messages, ...newMessages]
+    this.setMessages(updatedMessages)
+  }
+
+  setMessages = updatedMessages => {
     this.setState({messages: updatedMessages})
     messageStore.messages = updatedMessages
     messageStore.save()
@@ -51,8 +48,17 @@ class Chat extends PureComponent {
   send = async () => {
     const {text} = this.state
     this.setState({text: ''})
-    const newMessages = await runCommand(text)
-    this.addMessages(newMessages)
+    if (text.trim() === 'clear') {
+      this.setMessages([])
+    } else {
+      const newMessages = await runCommand(text)
+      this.addMessages(newMessages)
+      this.scrollToBottom()
+    }
+  }
+
+  scrollToBottom = () => {
+    console.log('scrolling')
     if (this.scrollRef.current) {
       this.scrollRef.current.scrollIntoView()
     }
@@ -71,26 +77,13 @@ class Chat extends PureComponent {
 
   render() {
     const { onFocusChange } = this.props
-    const { text, messages, url, currentPageDocs } = this.state
+    const { text, messages } = this.state
     const scrollRef = this.scrollRef
 
     return (
       <div className="chat">
         <div className="messages-pane">
           <div className="messages-scroll">
-            <div className="current-page-docs">
-              {
-                currentPageDocs.map((message, i) => (
-                  <div
-                    className={`chat-message ${message.type === 'input' ? 'input-message' : 'output-message'}`}
-                    key={i}
-                  >
-                    <Message key={i} {...message} />
-                  </div>
-                ))
-              }
-              <div className="the-end" ref={scrollRef}></div>
-            </div>
             <div className="messages">
               {
                 messages.map((message, i) => (
@@ -98,7 +91,7 @@ class Chat extends PureComponent {
                     className={`chat-message ${message.type === 'input' ? 'input-message' : 'output-message'}`}
                     key={i}
                   >
-                    <Message key={i} {...message} />
+                    <Message key={i} onLoad={this.scrollToBottom} {...message} />
                   </div>
                 ))
               }
@@ -148,10 +141,12 @@ class Chat extends PureComponent {
 
           .messages-pane {
             flex-grow: 1;
+            display: flex;
             position: relative;
           }
 
           .messages-scroll {
+            flex: 1;
             position: absolute;
             left: 0;
             top: 0;
@@ -160,8 +155,13 @@ class Chat extends PureComponent {
             overflow: auto;
           }
 
+          .current-page-docs {
+            color: green;
+            min-height: 300px;
+          }
+
           .messages {
-            min-height: 100%;
+            flex: 0;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
