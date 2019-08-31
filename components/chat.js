@@ -1,7 +1,7 @@
 import { PureComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
-import runCommand from './commands'
+import runCommand from '../commands'
 import Message from './messages/message'
 import { messageStore } from './message-store'
 
@@ -48,13 +48,14 @@ class Chat extends PureComponent {
   send = async () => {
     const {text} = this.state
     this.setState({text: ''})
-    if (text.trim() === 'clear') {
+    const newMessages = await runCommand(text)
+    console.log(newMessages)
+    if (newMessages.length === 1 && newMessages[0].type === 'clear') {
       this.setMessages([])
     } else {
-      const newMessages = await runCommand(text)
       this.addMessages(newMessages)
-      this.scrollToBottom()
     }
+    this.scrollToBottom()
   }
 
   scrollToBottom = () => {
