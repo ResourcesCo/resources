@@ -45,7 +45,9 @@ export default async (message) => {
     const args = command.raw ? null : message.split(/\s+/).slice(1)
     const inputMessages = command.raw ? [] : [inputMessage(message)]
     const result = await command.run({command: commandName, args, message, store})
-    const outputMessages = Array.isArray(result) ? result : [result]
+    const outputMessages = Array.isArray(result) ? result : (
+      result ? [result] : []
+    )
     return [...inputMessages, ...outputMessages]
   } else {
     return [

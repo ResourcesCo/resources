@@ -85,7 +85,7 @@ class Chat extends PureComponent {
           <div className="messages-scroll">
             <div className="messages">
               {
-                messages.map((message, i) => (
+                messages.filter(m => typeof m === 'object' && !!m).map((message, i) => (
                   <div
                     className={`chat-message ${message.type === 'input' ? 'input-message' : 'output-message'}`}
                     key={i}

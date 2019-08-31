@@ -15,9 +15,13 @@ class GitHub {
     }
     const res = await fetch(url, {headers})
     const data = await res.json()
-    return data.map(issue => (
-      {type: 'link', url: issue.html_url, text: issue.title}
-    ))
+    if (Array.isArray(data)) {
+      return data.map(issue => (
+        {type: 'link', url: issue.html_url, text: `#${issue.number} ${issue.title}`}
+      ))
+    } else {
+      return {type: 'text', text: 'Error getting issues'}
+    }
   }
 
   run = async ({args, store}) => {
