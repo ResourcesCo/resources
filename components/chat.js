@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
 import runCommand from '../commands'
 import Message from './messages/message'
-import { messageStore } from './message-store'
+import { store } from '../store'
 
 import TextareaAutosize from 'react-autosize-textarea'
 
@@ -20,8 +20,8 @@ class Chat extends PureComponent {
 
   async componentDidMount() {
     const loadMessages = async () => {
-      await messageStore.load()
-      this.setState({messages: messageStore.messages})
+      await store.load()
+      this.setState({messages: store.messages})
     }
     await loadMessages()
     if (this.scrollRef.current) {
@@ -41,15 +41,14 @@ class Chat extends PureComponent {
 
   setMessages = updatedMessages => {
     this.setState({messages: updatedMessages})
-    messageStore.messages = updatedMessages
-    messageStore.save()
+    store.messages = updatedMessages
+    store.save()
   }
 
   send = async () => {
     const {text} = this.state
     this.setState({text: ''})
     const newMessages = await runCommand(text)
-    console.log(newMessages)
     if (newMessages.length === 1 && newMessages[0].type === 'clear') {
       this.setMessages([])
     } else {
@@ -59,7 +58,6 @@ class Chat extends PureComponent {
   }
 
   scrollToBottom = () => {
-    console.log('scrolling')
     if (this.scrollRef.current) {
       this.scrollRef.current.scrollIntoView()
     }
