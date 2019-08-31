@@ -29,6 +29,6 @@ export default ({type, code, text, url, content, onLoad}) => {
   } else if (type === 'image') {
     return <img src={url} style={imageStyle} onLoad={() => setTimeout(handleLoaded, 10)} />
   } else {
-    return content || null
+    return null
   }
 }
