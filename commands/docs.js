@@ -47,8 +47,10 @@ const endpoints = {
   ]
 }
 
-export default class Docs {
-  run(url) {
+export default {
+  run({message, args}) {
+    const url = args[0]
+
     let urlObj = {}
     try {
       urlObj = new URL(url)
@@ -68,5 +70,9 @@ export default class Docs {
     } else {
       return [{type: 'error', code: 'not_found'}]
     }
+  },
+  help: {
+    args: ['url'],
+    details: 'find api docs for a url'
   }
 }
