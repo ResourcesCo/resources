@@ -1,11 +1,8 @@
 import { PureComponent } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
 import runCommand from '../commands'
 import Message from './messages/message'
 import { store } from '../store'
-
-import TextareaAutosize from 'react-autosize-textarea'
+import ChatInput from './chat-input'
 
 class Chat extends PureComponent {
   state = {
@@ -51,6 +48,9 @@ class Chat extends PureComponent {
     const newMessages = await runCommand(text)
     if (newMessages.length === 1 && newMessages[0].type === 'clear') {
       this.setMessages([])
+    } else if (newMessages[1].type === 'set-theme') {
+      this.props.onThemeChange(newMessages[1].theme)
+      this.addMessages([newMessages[0]])
     } else {
       this.addMessages(newMessages)
     }
@@ -63,19 +63,12 @@ class Chat extends PureComponent {
     }
   }
 
-  handleKeyPress = e => {
-    if (e.which == 13 && e.shiftKey == false) {
-      e.preventDefault()
-      this.send()
-    }
-  }
-
   handleTextChange = ({target}) => {
     this.setState({text: target.value})
   }
 
   render() {
-    const { onFocusChange } = this.props
+    const { onFocusChange, theme } = this.props
     const { text, messages } = this.state
     const scrollRef = this.scrollRef
 
@@ -90,7 +83,7 @@ class Chat extends PureComponent {
                     className={`chat-message ${message.type === 'input' ? 'input-message' : 'output-message'}`}
                     key={i}
                   >
-                    <Message key={i} onLoad={this.scrollToBottom} {...message} />
+                    <Message key={i} onLoad={this.scrollToBottom} theme={theme} {...message} />
                   </div>
                 ))
               }
@@ -98,18 +91,12 @@ class Chat extends PureComponent {
             </div>
           </div>
         </div>
-        <div className="chat-input">
-          <TextareaAutosize
-            placeholder=">"
-            value={text}
-            onChange={this.handleTextChange}
-            onFocus={() => onFocusChange(true)}
-            onBlur={() => onFocusChange(false)}
-            onKeyPress={this.handleKeyPress}
-            autoFocus
-          />
-          <button onClick={this.send}><span className="rocket"><FontAwesomeIcon icon={faSpaceShuttle} /></span></button>
-        </div>
+        <ChatInput
+          text={text}
+          onTextChange={this.handleTextChange}
+          onFocusChange={onFocusChange}
+          onSend={this.send}
+        />
         <style jsx>{`
           .chat {
             display: flex;
@@ -118,25 +105,12 @@ class Chat extends PureComponent {
             flex-grow: 1;
           }
 
-          .chat-input {
-            display: flex;
-            flex-direction: row;
-          }
-
           .chat-message {
             padding: 3px 5px;
             font-size: 20px;
           }
 
-          div :global(textarea) {
-            outline: none;
-            width: 100%;
-            font-size: 20px;
-            line-height: 28px;
-            padding: 2px 5px;
-            height: 32px;
-            resize: none;
-          }
+
 
           .messages-pane {
             flex-grow: 1;
@@ -166,19 +140,8 @@ class Chat extends PureComponent {
             justify-content: flex-end;
           }
 
-          button {
-            outline: none;
-            border: none;
-            padding: 0 5px;
-            font-size: 32px;
-          }
-
-          button :global(svg) {
-            cursor: pointer;
-          }
-
           .input-message {
-            color: #bbb;
+            color: ${theme.inputColor};
           }
         `}</style>
       </div>

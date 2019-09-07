@@ -1,7 +1,7 @@
 import Help from "./help";
 import { useState } from 'react'
 
-export default ({type, code, text, url, content, onLoad}) => {
+export default ({type, code, text, url, content, onLoad, theme}) => {
   const [loaded, setLoaded] = useState(false)
   const handleLoaded = () => {
     setLoaded(true)
@@ -11,7 +11,7 @@ export default ({type, code, text, url, content, onLoad}) => {
     {maxHeight: '50vh'} :
     {height: '50vh'})
   if (type === 'help') {
-    return <Help />
+    return <Help theme={theme} />
   } else if (type === 'error') {
     if (code === 'not_found') {
       return <div>Results not found.</div>
