@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Head from '../components/head'
 import Nav from '../components/nav'
 import Chat from '../components/chat'
+import themes from '../themes'
 
 const infoForDevices = {
   default: {
@@ -17,6 +18,7 @@ const infoForDevices = {
 const App = ({popup}) => {
   const [device, setDevice] = useState('default')
   const [keyboardOpen, setKeyboardOpen] = useState(0)
+  const [selectedTheme, setSelectedTheme] = useState('dark')
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -37,18 +39,12 @@ const App = ({popup}) => {
   }
 
   const deviceInfo = infoForDevices[device];
-  const theme = {
-    foreground: '#eee',
-    background: '#222427',
-    inputBorder: 'rgb(51, 51, 51)',
-    selectionBackground: 'cyan',
-    selectionColor: '#eee',
-  }
+  const theme = themes[selectedTheme]
   return (
     <div>
       <Head title="Home" />
       <Nav theme={theme} />
-      <Chat onFocusChange={handleFocusChange} />
+      <Chat onFocusChange={handleFocusChange} theme={theme} onThemeChange={setSelectedTheme} />
 
       <style jsx global>{`
         * {
@@ -78,7 +74,7 @@ const App = ({popup}) => {
         }
 
         a {
-          color: cyan;
+          color: ${theme.linkColor};
         }
 
         #__next-prerender-indicator {

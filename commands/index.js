@@ -20,6 +20,22 @@ const commands = {
   note,
   clear,
   roll,
+  'dark-mode': {
+    run() {
+      return {type: 'set-theme', theme: 'dark'}
+    },
+    help: {
+      details: 'change to the dark theme'
+    }
+  },
+  'light-mode': {
+    run() {
+      return {type: 'set-theme', theme: 'light'}
+    },
+    help: {
+      details: 'change to the light theme'
+    }
+  },
 }
 
 const getCommandHelp = () => {
