@@ -1,5 +1,6 @@
 import giphy from './giphy'
 import github from './github'
+import asana from './asana'
 import docs from './docs'
 import note from './note'
 import clear from './clear'
@@ -17,6 +18,7 @@ const commands = {
   docs,
   giphy,
   github,
+  asana,
   note,
   clear,
   roll,
@@ -55,10 +57,10 @@ const getCommandHelp = () => {
 export let commandHelp = getCommandHelp()
 
 export default async (message) => {
-  const commandName = message.split(/\s+/, 2)[0]
+  const commandName = message.trim().split(/\s+/, 2)[0]
   const command = commands[commandName]
   if (command) {
-    const args = command.raw ? null : message.split(/\s+/).slice(1)
+    const args = command.raw ? null : message.trim().split(/\s+/).slice(1)
     const inputMessages = command.raw ? [] : [inputMessage(message)]
     const result = await command.run({command: commandName, args, message, store})
     const outputMessages = Array.isArray(result) ? result : (

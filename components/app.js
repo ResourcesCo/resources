@@ -55,7 +55,7 @@ const App = ({popup}) => {
           background-color: ${theme.background};
         }
 
-        html, body, textarea, svg {
+        html, body, textarea, svg, button {
           color: ${theme.foreground};
         }
 
