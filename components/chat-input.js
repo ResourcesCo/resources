@@ -2,7 +2,7 @@ import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
 import TextareaAutosize from 'react-autosize-textarea'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-export default ({onFocusChange, text, onTextChange, onSend}) => {
+export default ({onFocusChange, text, onTextChange, onSend, textareaRef}) => {
   const handleKeyPress = e => {
     if (e.which == 13 && e.shiftKey == false) {
       e.preventDefault()
@@ -20,6 +20,7 @@ export default ({onFocusChange, text, onTextChange, onSend}) => {
         onBlur={() => onFocusChange(false)}
         onKeyPress={handleKeyPress}
         autoFocus
+        ref={textareaRef}
       />
       <button onClick={onSend}><span className="rocket"><FontAwesomeIcon icon={faSpaceShuttle} /></span></button>
       <style jsx>{`

@@ -8,6 +8,7 @@ export default {
     selectionColor: '#eee',
     linkColor: 'cyan',
     inputColor: '#bbb',
+    bubble1: '#595959',
   },
   light: {
     foreground: '#111',
@@ -18,5 +19,6 @@ export default {
     selectionColor: 'green',
     linkColor: 'blue',
     inputColor: '#222',
+    bubble1: '#c9c9c9',
   },
 }

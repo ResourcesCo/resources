@@ -3,6 +3,7 @@ import runCommand from '../commands'
 import Message from './messages/message'
 import { store } from '../store'
 import ChatInput from './chat-input'
+import insertTextAtCursor from 'insert-text-at-cursor'
 
 class Chat extends PureComponent {
   state = {
@@ -13,6 +14,7 @@ class Chat extends PureComponent {
   constructor(props) {
     super(props)
     this.scrollRef = React.createRef()
+    this.textareaRef = React.createRef()
   }
 
   async componentDidMount() {
@@ -48,7 +50,7 @@ class Chat extends PureComponent {
     const newMessages = await runCommand(text)
     if (newMessages.length === 1 && newMessages[0].type === 'clear') {
       this.setMessages([])
-    } else if (newMessages[1].type === 'set-theme') {
+    } else if (newMessages.length === 2 && newMessages[1].type === 'set-theme') {
       this.props.onThemeChange(newMessages[1].theme)
       this.addMessages([newMessages[0]])
     } else {
@@ -67,6 +69,12 @@ class Chat extends PureComponent {
     this.setState({text: target.value})
   }
 
+  handlePickId = id => {
+    const el = this.textareaRef.current
+    insertTextAtCursor(el, ` ${id}`)
+    el.focus()
+  }
+
   render() {
     const { onFocusChange, theme } = this.props
     const { text, messages } = this.state
@@ -83,7 +91,7 @@ class Chat extends PureComponent {
                     className={`chat-message ${message.type === 'input' ? 'input-message' : 'output-message'}`}
                     key={i}
                   >
-                    <Message key={i} onLoad={this.scrollToBottom} theme={theme} {...message} />
+                    <Message key={i} onLoad={this.scrollToBottom} theme={theme} onPickId={this.handlePickId} {...message} />
                   </div>
                 ))
               }
@@ -92,6 +100,7 @@ class Chat extends PureComponent {
           </div>
         </div>
         <ChatInput
+          textareaRef={this.textareaRef}
           text={text}
           onTextChange={this.handleTextChange}
           onFocusChange={onFocusChange}
@@ -109,8 +118,6 @@ class Chat extends PureComponent {
             padding: 3px 5px;
             font-size: 20px;
           }
-
-
 
           .messages-pane {
             flex-grow: 1;
