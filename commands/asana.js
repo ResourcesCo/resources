@@ -14,7 +14,7 @@ class Asana {
     }
   }
 
-  async request({api_token, url, resourceType, keyField='gid'}) {
+  async request({api_token, url, resourceType, keyField='gid', itemUrl}) {
     if (!api_token) {
       return {type: 'text', text: 'No API token given. Run "help" for info.'}
     }
@@ -25,7 +25,9 @@ class Asana {
       if (data.data.length > 0) {
         return {
           type: 'data',
-          data: data.data,
+          data: (itemUrl
+            ? data.data.map(item => ({html_url: itemUrl(item), ...item}))
+            : data.data),
           keyField,
           title: 'name',
         }
@@ -53,19 +55,26 @@ class Asana {
     })
   }
 
+  getTaskUrl(task) {
+    console.log(task)
+    return `https://app.asana.com/0/${task.projects[0].gid}/${task.gid}`
+  }
+
   async projectTasks({api_token, project}) {
     return await this.request({
       api_token,
-      url: `https://app.asana.com/api/1.0/tasks?project=${project}`,
+      url: `https://app.asana.com/api/1.0/tasks?project=${project}&opt_expand=projects.gid`,
       resourceType: 'task',
+      itemUrl: this.getTaskUrl,
     })
   }
 
   async sectionTasks({api_token, section}) {
     return await this.request({
       api_token,
-      url: `https://app.asana.com/api/1.0/tasks?section=${section}`,
+      url: `https://app.asana.com/api/1.0/tasks?section=${section}&opt_expand=projects.gid`,
       resourceType: 'task',
+      itemUrl: this.getTaskUrl,
     })
   }
 

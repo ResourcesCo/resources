@@ -71,7 +71,7 @@ class Chat extends PureComponent {
 
   handlePickId = id => {
     const el = this.textareaRef.current
-    insertTextAtCursor(el, ` ${id}`)
+    insertTextAtCursor(el, `${id}`)
     el.focus()
   }
 

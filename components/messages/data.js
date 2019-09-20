@@ -1,4 +1,4 @@
-export default ({data, keyField, link, title, theme, pickPrefix=' ', onPickId}) => {
+export default ({data, keyField, link = 'html_url', title, theme, pickPrefix='', onPickId}) => {
   return <div>
     {
       data.map(record => {
