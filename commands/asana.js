@@ -14,7 +14,7 @@ class Asana {
     }
   }
 
-  async request({api_token, url, resourceType}) {
+  async request({api_token, url, resourceType, keyField='gid'}) {
     if (!api_token) {
       return {type: 'text', text: 'No API token given. Run "help" for info.'}
     }
@@ -26,14 +26,14 @@ class Asana {
         return {
           type: 'data',
           data: data.data,
-          keyField: 'gid',
+          keyField,
           title: 'name',
         }
       } else {
         return {type: 'text', text: `No ${plural(resourceType)} found`}
       }
     } else {
-      return {type: 'text', text: `Error getting ${resourceType}`}
+      return {type: 'text', text: `Error getting ${plural(resourceType)}`}
     }
   }
 
@@ -53,11 +53,27 @@ class Asana {
     })
   }
 
-  async tasks({api_token, project}) {
+  async projectTasks({api_token, project}) {
     return await this.request({
       api_token,
-      url: `https://app.asana.com/api/1.0/projects/${project}/tasks`,
-      resourceType: 'project',
+      url: `https://app.asana.com/api/1.0/tasks?project=${project}`,
+      resourceType: 'task',
+    })
+  }
+
+  async sectionTasks({api_token, section}) {
+    return await this.request({
+      api_token,
+      url: `https://app.asana.com/api/1.0/tasks?section=${section}`,
+      resourceType: 'task',
+    })
+  }
+
+  async sections({api_token, project}) {
+    return await this.request({
+      api_token,
+      url: `https://app.asana.com/api/1.0/projects/${project}/sections`,
+      resourceType: 'section',
     })
   }
 
@@ -87,9 +103,16 @@ class Asana {
       } else if (subCommand === 'projects' && args.length === 2) {
         const workspace = args[1]
         return await this.projects({api_token, workspace})
-      } else if (subCommand === 'tasks' && args.length === 2) {
+      } else if (subCommand === 'project-tasks') {
         const project = args[1]
-        return await this.tasks({api_token, project})
+        const section = args.length == 3 ? args[2] : null
+        return await this.projectTasks({api_token, project})
+      } else if (subCommand === 'section-tasks') {
+        const section = args[1]
+        return await this.sectionTasks({api_token, section})
+      } else if (subCommand === 'sections' && args.length === 2) {
+        const project = args[1]
+        return await this.sections({api_token, project})
       } else if (subCommand === 'complete' && args.length === 2) {
         const task = args[1]
         return await this.complete({api_token, task})
@@ -121,9 +144,19 @@ export default {
       details: 'show Asana projects',
     },
     {
-      subCommand: 'tasks',
-      args: ['workspace'],
-      details: 'show Asana projects',
+      subCommand: 'sections',
+      args: ['project'],
+      details: 'show sections in an Asana project',
+    },
+    {
+      subCommand: 'project-tasks',
+      args: ['project'],
+      details: 'show Asana tasks by project',
+    },
+    {
+      subCommand: 'section-tasks',
+      args: ['section'],
+      details: 'show Asana tasks by section',
     },
     {
       subCommand: 'complete',
