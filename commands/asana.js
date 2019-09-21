@@ -56,7 +56,6 @@ class Asana {
   }
 
   getTaskUrl(task) {
-    console.log(task)
     return `https://app.asana.com/0/${task.projects[0].gid}/${task.gid}`
   }
 
