@@ -1,3 +1,4 @@
+import shortid from 'shortid'
 import giphy from './giphy'
 import github from './github'
 import asana from './asana'
@@ -56,21 +57,23 @@ const getCommandHelp = () => {
 
 export let commandHelp = getCommandHelp()
 
-export default async (message) => {
+export default async (message, onMessagesCreated) => {
   const commandName = message.trim().split(/\s+/, 2)[0]
   const command = commands[commandName]
+  const commandId = shortid.generate()
   if (command) {
     const args = command.raw ? null : message.trim().split(/\s+/).slice(1)
-    const inputMessages = command.raw ? [] : [inputMessage(message)]
+    const inputMessages = command.raw ? [] : [{...inputMessage(message), commandId, loading: true}]
+    onMessagesCreated(inputMessages)
     const result = await command.run({command: commandName, args, message, store})
     const outputMessages = Array.isArray(result) ? result : (
       result ? [result] : []
-    )
-    return [...inputMessages, ...outputMessages]
+    ).map(message => ({...message, commandId}))
+    onMessagesCreated([...outputMessages, {type: 'loaded', commandId}])
   } else {
-    return [
+    onMessagesCreated([
       inputMessage(message),
       { type: 'text', text: 'Command not found.' }
-    ]
+    ].map(message => ({...message, commandId})))
   }
 }

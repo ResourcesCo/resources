@@ -1,6 +1,7 @@
 import Help from "./help"
 import Data from './data'
 import { useState } from 'react'
+import Loader from 'react-loader-spinner'
 
 export default ({type, code, text, url, content, theme, ...props}) => {
   const [loaded, setLoaded] = useState(false)
@@ -23,7 +24,13 @@ export default ({type, code, text, url, content, theme, ...props}) => {
         {text.split("\n").map((s, i) => <div key={i}>{s}</div>)}
     </div>
   } else if (type === 'input') {
-    return <div className="input-message">{text.split("\n").map((s, i) => <div key={i}>{s}</div>)}</div>
+    const { loading } = props
+    const lines = text.split("\n")
+    return <div className="input-message">
+      {lines.map((s, i) => <div key={i}>
+        {s}{i === (lines.length - 1) && loading && <div style={{display: 'inline-block', paddingLeft: 5}}><Loader type="ThreeDots" color={theme.inputColor} height={15} width={20} /></div>}
+      </div>)}
+    </div>
   } else if (type === 'image') {
     const { onLoad } = props
     const imageStyle = (loaded ?

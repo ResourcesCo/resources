@@ -3,6 +3,7 @@ import Head from '../components/head'
 import Nav from '../components/nav'
 import Chat from '../components/chat'
 import themes from '../themes'
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 
 const infoForDevices = {
   default: {

@@ -33,9 +33,32 @@ class Chat extends PureComponent {
   }
 
   addMessages = newMessages => {
-    const {messages} = this.state
-    const updatedMessages = [...messages, ...newMessages]
-    this.setMessages(updatedMessages)
+    let {messages} = this.state
+    const messagesToAdd = []
+    let clear = false
+    let loadedMessage = undefined
+    for (let message of newMessages) {
+      if (message.type === 'loaded') {
+        loadedMessage = message.commandId
+      } else if (message.type === 'clear') {
+        clear = true
+      } else if (message.type === 'set-theme') {
+        this.props.onThemeChange(message.theme)
+      } else {
+        messagesToAdd.push(message)
+      }
+    }
+    messages = [...messages, ...messagesToAdd]
+    if (clear) {
+      messages = []
+    }
+    if (loadedMessage) {
+      messages = messages.map(m => (
+        (m.type === 'input' && m.commandId === loadedMessage) ? {...m, loading: false} : m
+      ))
+    }
+    this.setMessages(messages)
+    this.scrollToBottom()
   }
 
   setMessages = updatedMessages => {
@@ -47,16 +70,7 @@ class Chat extends PureComponent {
   send = async () => {
     const {text} = this.state
     this.setState({text: ''})
-    const newMessages = await runCommand(text)
-    if (newMessages.length === 1 && newMessages[0].type === 'clear') {
-      this.setMessages([])
-    } else if (newMessages.length === 2 && newMessages[1].type === 'set-theme') {
-      this.props.onThemeChange(newMessages[1].theme)
-      this.addMessages([newMessages[0]])
-    } else {
-      this.addMessages(newMessages)
-    }
-    this.scrollToBottom()
+    const newMessages = await runCommand(text, this.addMessages)
   }
 
   scrollToBottom = () => {

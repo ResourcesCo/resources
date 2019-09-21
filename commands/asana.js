@@ -62,7 +62,7 @@ class Asana {
   async projectTasks({api_token, project}) {
     return await this.request({
       api_token,
-      url: `https://app.asana.com/api/1.0/tasks?project=${project}&opt_expand=projects.gid`,
+      url: `https://app.asana.com/api/1.0/tasks?project=${project}&opt_expand=projects.gid&completed_since=now`,
       resourceType: 'task',
       itemUrl: this.getTaskUrl,
     })
@@ -71,7 +71,7 @@ class Asana {
   async sectionTasks({api_token, section}) {
     return await this.request({
       api_token,
-      url: `https://app.asana.com/api/1.0/tasks?section=${section}&opt_expand=projects.gid`,
+      url: `https://app.asana.com/api/1.0/tasks?section=${section}&opt_expand=projects.gid&completed_since=now`,
       resourceType: 'task',
       itemUrl: this.getTaskUrl,
     })
