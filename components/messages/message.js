@@ -6,6 +6,7 @@ import Loader from 'react-loader-spinner'
 export default ({type, code, text, url, content, theme, ...props}) => {
   const [loaded, setLoaded] = useState(false)
   const handleLoaded = () => {
+    const { onLoad } = props
     setLoaded(true)
     onLoad()
   }
@@ -32,7 +33,6 @@ export default ({type, code, text, url, content, theme, ...props}) => {
       </div>)}
     </div>
   } else if (type === 'image') {
-    const { onLoad } = props
     const imageStyle = (loaded ?
       {maxHeight: '50vh'} :
       {height: '50vh'})

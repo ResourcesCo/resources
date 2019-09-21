@@ -3,7 +3,8 @@ let browser
 const storageKey = 'messages'
 
 const defaults = {
-  messages: [],
+  commandIds: [],
+  commands: {},
   env: {}
 }
 

@@ -7,7 +7,8 @@ import insertTextAtCursor from 'insert-text-at-cursor'
 
 class Chat extends PureComponent {
   state = {
-    messages: [],
+    commandIds: [],
+    commands: {},
     text: '',
   }
 
@@ -17,10 +18,21 @@ class Chat extends PureComponent {
     this.textareaRef = React.createRef()
   }
 
+  setLoaded(m) {
+    return m.type === 'input' ? {...m, loading: false} : m
+  }
+
   async componentDidMount() {
     const loadMessages = async () => {
       await store.load()
-      this.setState({messages: store.messages})
+      const commands = { ...store.commands }
+      for (let key of Object.keys(commands)) {
+        commands[key] = this.setLoaded(commands[key])
+      }
+      this.setState({
+        commands,
+        commandIds: store.commandIds || this.state.commandIds,
+      })
     }
     await loadMessages()
     if (this.scrollRef.current) {
@@ -29,41 +41,45 @@ class Chat extends PureComponent {
   }
 
   componentWillUnmount() {
-
   }
 
   addMessages = newMessages => {
-    let {messages} = this.state
-    const messagesToAdd = []
+    let {commandIds, commands} = this.state
     let clear = false
     let loadedMessage = undefined
     for (let message of newMessages) {
+      const command = commands[message.commandId]
       if (message.type === 'loaded') {
-        loadedMessage = message.commandId
+        if (commands[message.commandId]) {
+          commands[message.commandId] = {
+            ...command,
+            messages: command.messages.map(m => this.setLoaded(m)),
+          }
+        }
       } else if (message.type === 'clear') {
         clear = true
       } else if (message.type === 'set-theme') {
         this.props.onThemeChange(message.theme)
       } else {
-        messagesToAdd.push(message)
+        if (commands[message.commandId]) {
+          commands[message.commandId] = {...command, messages: [...command.messages, message]}
+        } else {
+          commands[message.commandId] = {id: message.commandId, messages: [message]}
+          commandIds.push(message.commandId)
+        }
       }
     }
-    messages = [...messages, ...messagesToAdd]
     if (clear) {
-      messages = []
+      commands = {}
+      commandIds = []
     }
-    if (loadedMessage) {
-      messages = messages.map(m => (
-        (m.type === 'input' && m.commandId === loadedMessage) ? {...m, loading: false} : m
-      ))
-    }
-    this.setMessages(messages)
+    this.setCommands([...commandIds], {...commands})
     this.scrollToBottom()
   }
 
-  setMessages = updatedMessages => {
-    this.setState({messages: updatedMessages})
-    store.messages = updatedMessages
+  setCommands = (commandIds, commands) => {
+    this.setState({commandIds, commands})
+    store.commandIds = commandIds
     store.save()
   }
 
@@ -91,8 +107,15 @@ class Chat extends PureComponent {
 
   render() {
     const { onFocusChange, theme } = this.props
-    const { text, messages } = this.state
+    const { text, commandIds, commands } = this.state
     const scrollRef = this.scrollRef
+    const messages = []
+    for (let commandId of commandIds) {
+      const command = commands[commandId]
+      for (let message of command ? command.messages : []) {
+        messages.push(message)
+      }
+    }
 
     return (
       <div className="chat">

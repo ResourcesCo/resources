@@ -39,6 +39,20 @@ const commands = {
       details: 'change to the light theme'
     }
   },
+  'sleep': {
+    async run({args}) {
+      const [timeout, message] = args
+      const promise = new Promise((resolve, reject) => {
+        setTimeout(resolve, timeout)
+      })
+      await promise
+      return { type: 'text', text: message }
+    },
+    help: {
+      args: ['milliseconds', 'message'],
+      details: 'Sleep for a specified number of milliseconds and then send a message'
+    }
+  }
 }
 
 const getCommandHelp = () => {
