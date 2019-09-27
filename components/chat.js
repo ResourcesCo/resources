@@ -80,6 +80,7 @@ class Chat extends PureComponent {
   setCommands = (commandIds, commands) => {
     this.setState({commandIds, commands})
     store.commandIds = commandIds
+    store.commands = commands
     store.save()
   }
 
