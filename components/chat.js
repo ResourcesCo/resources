@@ -33,6 +33,7 @@ class Chat extends PureComponent {
         commands,
         commandIds: store.commandIds || this.state.commandIds,
       })
+      this.props.onThemeChange(store.theme)
     }
     await loadMessages()
     if (this.scrollRef.current) {
@@ -59,6 +60,9 @@ class Chat extends PureComponent {
       } else if (message.type === 'clear') {
         clear = true
       } else if (message.type === 'set-theme') {
+        this.setState({theme: message.theme})
+        store.theme = message.theme
+        store.save()
         this.props.onThemeChange(message.theme)
       } else {
         if (commands[message.commandId]) {

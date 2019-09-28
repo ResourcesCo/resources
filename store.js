@@ -5,13 +5,15 @@ const storageKey = 'messages'
 const defaults = {
   commandIds: [],
   commands: {},
-  env: {}
+  env: {},
+  theme: 'dark',
 }
 
 const keys = Object.keys(defaults)
 
 class Store {
   constructor() {
+    this.storeLoaded = false
     for (let key of keys) {
       this[key] = defaults[key]
     }
@@ -26,6 +28,7 @@ class Store {
 
   async load() {
     await this._init()
+    if (this.storeLoaded) return true
     let data = {}
     if (browser.storage) {
       const result = await storage.get([storageKey])
@@ -43,6 +46,7 @@ class Store {
         this[key] = data[key]
       }
     }
+    this.storeLoaded = true
     return true
   }
 
