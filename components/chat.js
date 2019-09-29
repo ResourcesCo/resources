@@ -10,6 +10,7 @@ class Chat extends PureComponent {
     commandIds: [],
     commands: {},
     text: '',
+    lastCommandId: null,
   }
 
   constructor(props) {
@@ -72,6 +73,7 @@ class Chat extends PureComponent {
           commandIds.push(message.commandId)
         }
       }
+      this.setState({lastCommandId: message.commandId})
     }
     if (clear) {
       commands = {}
@@ -112,7 +114,7 @@ class Chat extends PureComponent {
 
   render() {
     const { onFocusChange, theme } = this.props
-    const { text, commandIds, commands } = this.state
+    const { text, commandIds, commands, lastCommandId } = this.state
     const scrollRef = this.scrollRef
     const messages = []
     for (let commandId of commandIds) {
@@ -133,7 +135,14 @@ class Chat extends PureComponent {
                     className={`chat-message ${message.type === 'input' ? 'input-message' : 'output-message'}`}
                     key={i}
                   >
-                    <Message key={i} onLoad={this.scrollToBottom} theme={theme} onPickId={this.handlePickId} {...message} />
+                    <Message
+                      key={i}
+                      onLoad={this.scrollToBottom}
+                      theme={theme}
+                      onPickId={this.handlePickId}
+                      isNew={message.commandId === lastCommandId}
+                      {...message}
+                    />
                   </div>
                 ))
               }

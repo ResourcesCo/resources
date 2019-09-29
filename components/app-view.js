@@ -68,6 +68,15 @@ const AppView = ({popup, selectedTheme, onThemeChange}) => {
           border: 1px solid ${theme.inputBorder};
         }
 
+        textarea {
+          outline: none;
+          font-size: 20px;
+          line-height: 28px;
+          padding: 2px 5px;
+          height: 32px;
+          resize: none;
+        }
+
         ::selection {
           color: ${theme.selectionColor};
           background: ${theme.selectionBackground};

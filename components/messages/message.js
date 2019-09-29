@@ -1,5 +1,6 @@
 import Help from "./help"
 import Data from './data'
+import Form from './form'
 import { useState } from 'react'
 import Loader from 'react-loader-spinner'
 
@@ -40,8 +41,21 @@ export default ({type, code, text, url, content, theme, ...props}) => {
   } else if (type === 'data') {
     const { data, keyField, title, link, pickPrefix, onPickId } = props
     return <Data
-      data={data} keyField={keyField} title={title} link={link} theme={theme}
-      onPickId={onPickId} pickPrefix={pickPrefix}
+      data={data}
+      keyField={keyField}
+      title={title}
+      link={link}
+      theme={theme}
+      onPickId={onPickId}
+      pickPrefix={pickPrefix}
+    />
+  } else if (type === 'form') {
+    const { fields, commandId, isNew } = props
+    return <Form
+      fields={fields}
+      commandId={commandId}
+      theme={theme}
+      isNew={isNew}
     />
   } else {
     return null

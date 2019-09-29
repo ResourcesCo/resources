@@ -99,6 +99,10 @@ class Asana {
     }
   }
 
+  async comment({api_token, task}) {
+    return {type: 'form', fields: [{name: 'comment', type: 'textarea'}]}
+  }
+
   run = async ({args, store}) => {
     const subCommand = args[0]
     if (subCommand === 'auth' && args.length === 2) {
@@ -124,7 +128,10 @@ class Asana {
       } else if (subCommand === 'complete' && args.length === 2) {
         const task = args[1]
         return await this.complete({api_token, task})
-      }  else {
+      } else if (subCommand === 'comment' && args.length === 2) {
+        const task = args[1]
+        return await this.comment({api_token, task})
+      } else {
         return {type: 'text', text: 'Command not found.'}
       }
     }

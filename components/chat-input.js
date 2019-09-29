@@ -30,13 +30,7 @@ export default ({onFocusChange, text, onTextChange, onSend, textareaRef}) => {
         }
 
         div :global(textarea) {
-          outline: none;
           width: 100%;
-          font-size: 20px;
-          line-height: 28px;
-          padding: 2px 5px;
-          height: 32px;
-          resize: none;
         }
 
         button {
