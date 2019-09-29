@@ -18,7 +18,7 @@ export default ({onFocusChange, text, onTextChange, onSend, textareaRef}) => {
         onChange={onTextChange}
         onFocus={() => onFocusChange(true)}
         onBlur={() => onFocusChange(false)}
-        onKeyPress={handleKeyPress}
+        onKeyDown={handleKeyPress}
         autoFocus
         ref={textareaRef}
       />

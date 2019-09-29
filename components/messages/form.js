@@ -1,6 +1,5 @@
 import { PureComponent } from 'react'
 import TextareaAutosize from 'react-autosize-textarea'
-import { HotKeys } from 'react-hotkeys'
 
 class Form extends PureComponent {
   state = {
@@ -10,7 +9,6 @@ class Form extends PureComponent {
   constructor(props) {
     super(props)
     this.firstInputRef = React.createRef()
-    this.mac = /(\bMac)/i.test(window.navigator.platform)
   }
 
   handleChange = name => ({target: {value}}) => {
@@ -20,12 +18,21 @@ class Form extends PureComponent {
   send = () => {
     const {commandId, onSubmitForm} = this.props
     const {formData} = this.state
-    this.onSubmitForm({commandId, formData})
+    // this.onSubmitForm({commandId, formData})
+    console.log('send')
+  }
+
+  handleKeyPress = e => {
+    console.log(e)
+    if (e.which == 13 && (e.metaKey || e.ctrlKey)) {
+      this.send()
+    }
   }
 
   render() {
     const { fields, commandId, isNew, theme } = this.props
     const { formData } = this.state
+
     let firstInput = true
     return (
       <div>
@@ -33,15 +40,14 @@ class Form extends PureComponent {
           fields.map(({name, type}) => {
             const result = (
               <div key={name}>
-                <HotKeys>
-                  <TextareaAutosize
-                    value={formData[name]}
-                    onChange={this.handleChange(name)}
-                    ref={firstInput ? this.firstInputRef : undefined}
-                    autoFocus={isNew}
-                    title={`Press ${this.mac ? '⌘' : 'Ctrl'}-Enter to send`}
-                  />
-                </HotKeys>
+                <TextareaAutosize
+                  value={formData[name]}
+                  onChange={this.handleChange(name)}
+                  ref={firstInput ? this.firstInputRef : undefined}
+                  autoFocus={isNew}
+                  title="Press ⌘-Enter or Ctrl-Enter to send"
+                  onKeyPress={this.handleKeyPress}
+                />
               </div>
             )
             firstInput = false
