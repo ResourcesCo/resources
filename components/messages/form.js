@@ -12,18 +12,17 @@ class Form extends PureComponent {
   }
 
   handleChange = name => ({target: {value}}) => {
-    this.setState({[name]: value})
+    const {formData} = this.state
+    this.setState({formData: {...formData, [name]: value}})
   }
 
   send = () => {
-    const {commandId, onSubmitForm} = this.props
+    const {commandId, message, onSubmitForm} = this.props
     const {formData} = this.state
-    // this.onSubmitForm({commandId, formData})
-    console.log('send')
+    onSubmitForm({commandId, message, formData})
   }
 
   handleKeyPress = e => {
-    console.log(e)
     if (e.which == 13 && (e.metaKey || e.ctrlKey)) {
       this.send()
     }
@@ -41,7 +40,7 @@ class Form extends PureComponent {
             const result = (
               <div key={name}>
                 <TextareaAutosize
-                  value={formData[name]}
+                  value={formData[name] || ''}
                   onChange={this.handleChange(name)}
                   ref={firstInput ? this.firstInputRef : undefined}
                   autoFocus={isNew}

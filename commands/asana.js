@@ -99,11 +99,25 @@ class Asana {
     }
   }
 
-  async comment({api_token, task}) {
-    return {type: 'form', fields: [{name: 'comment', type: 'textarea'}]}
+  async comment({api_token, task, message, formData, formCommandId}) {
+    if (formData) {
+      if (!api_token) {
+        return {type: 'text', text: 'No API token given. Run "help" for info.'}
+      }
+      const headers = this.headers(api_token, true)
+      const url = `https://app.asana.com/api/1.0/tasks/${task}/stories`
+      const res = await fetch(url, {method: 'POST', headers, body: JSON.stringify({data: {text: formData.text}})})
+      if (res.ok) {
+        return {type: 'form-status', text: `Comment added!`, success: true, formCommandId}
+      } else {
+        return {type: 'form-status', text: `Error adding comment`, error: true, formCommandId}
+      }
+    } else {
+      return {type: 'form', message, fields: [{name: 'text', type: 'textarea'}]}
+    }
   }
 
-  run = async ({args, store}) => {
+  run = async ({args, store, message, formData = null, formCommandId = null}) => {
     const subCommand = args[0]
     if (subCommand === 'auth' && args.length === 2) {
       const api_token = args[1]
@@ -130,7 +144,7 @@ class Asana {
         return await this.complete({api_token, task})
       } else if (subCommand === 'comment' && args.length === 2) {
         const task = args[1]
-        return await this.comment({api_token, task})
+        return await this.comment({api_token, task, message, formData, formCommandId})
       } else {
         return {type: 'text', text: 'Command not found.'}
       }
@@ -177,6 +191,11 @@ export default {
       subCommand: 'complete',
       args: ['task'],
       details: 'mark an Asana task complete',
+    },
+    {
+      subCommand: 'comment',
+      args: ['task'],
+      details: 'add a comment to an Asana task',
     },
   ]
 }

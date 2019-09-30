@@ -71,15 +71,18 @@ const getCommandHelp = () => {
 
 export let commandHelp = getCommandHelp()
 
-export default async (message, onMessagesCreated) => {
+export default async (message, onMessagesCreated, {formData, formCommandId} = {}) => {
   const commandName = message.trim().split(/\s+/, 2)[0]
   const command = commands[commandName]
   const commandId = shortid.generate()
   if (command) {
     const args = command.raw ? null : message.trim().split(/\s+/).slice(1)
-    const inputMessages = command.raw ? [] : [{...inputMessage(message), commandId, loading: true}]
-    onMessagesCreated(inputMessages)
-    const result = await command.run({command: commandName, args, message, store})
+    if (formData) {
+      onMessagesCreated([{type: 'form-status', commandId, formCommandId, loading: true}])
+    } else {
+      onMessagesCreated(command.raw ? [] : [{...inputMessage(message), commandId, loading: true}])
+    }
+    const result = await command.run({command: commandName, args, message, store, formData, formCommandId})
     const outputMessages = Array.isArray(result) ? result : (
       result ? [result] : []
     ).map(message => ({...message, commandId}))

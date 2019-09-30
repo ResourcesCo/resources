@@ -19,8 +19,8 @@ class Chat extends PureComponent {
     this.textareaRef = React.createRef()
   }
 
-  setLoaded(m) {
-    return m.type === 'input' ? {...m, loading: false} : m
+  setLoading(m, loading) {
+    return m.type === 'input' ? {...m, loading} : m
   }
 
   async componentDidMount() {
@@ -28,7 +28,7 @@ class Chat extends PureComponent {
       await store.load()
       const commands = { ...store.commands }
       for (let key of Object.keys(commands)) {
-        commands[key] = this.setLoaded(commands[key])
+        commands[key] = this.setLoading(commands[key], false)
       }
       this.setState({
         commands,
@@ -55,7 +55,7 @@ class Chat extends PureComponent {
         if (commands[message.commandId]) {
           commands[message.commandId] = {
             ...command,
-            messages: command.messages.map(m => this.setLoaded(m)),
+            messages: command.messages.map(m => this.setLoading(m, false)),
           }
         }
       } else if (message.type === 'clear') {
@@ -65,6 +65,23 @@ class Chat extends PureComponent {
         store.theme = message.theme
         store.save()
         this.props.onThemeChange(message.theme)
+      } else if (message.type === 'form-status') {
+        const formCommand = commands[message.formCommandId]
+        if (formCommand) {
+          let commandMessages = (
+            formCommand.messages
+            .map(m => this.setLoading(m, !!message.loading))
+            .filter(({type}) => type !== 'form-status')
+          )
+          if (message.success) {
+            commandMessages = commandMessages.filter(({type}) => type !== 'form')
+          }
+          const formStatusMessage = {...message, commandId: message.formCommandId}
+          commands[formStatusMessage.commandId] = {
+            ...formCommand,
+            messages: [...commandMessages, formStatusMessage],
+          }
+        }
       } else {
         if (commands[message.commandId]) {
           commands[message.commandId] = {...command, messages: [...command.messages, message]}
@@ -93,7 +110,7 @@ class Chat extends PureComponent {
   send = async () => {
     const {text} = this.state
     this.setState({text: ''})
-    const newMessages = await runCommand(text, this.addMessages)
+    await runCommand(text, this.addMessages)
   }
 
   scrollToBottom = () => {
@@ -110,6 +127,10 @@ class Chat extends PureComponent {
     const el = this.textareaRef.current
     insertTextAtCursor(el, `${id}`)
     el.focus()
+  }
+
+  handleSubmitForm = async ({commandId, formData, message}) => {
+    await runCommand(message, this.addMessages, {formData, formCommandId: commandId})
   }
 
   render() {
@@ -140,6 +161,7 @@ class Chat extends PureComponent {
                       onLoad={this.scrollToBottom}
                       theme={theme}
                       onPickId={this.handlePickId}
+                      onSubmitForm={this.handleSubmitForm}
                       isNew={message.commandId === lastCommandId}
                       {...message}
                     />

@@ -21,7 +21,7 @@ export default ({type, code, text, url, content, theme, ...props}) => {
     }
   } else if (type === 'link') {
     return <div><a target="_blank" href={url}>{text}</a></div>
-  } else if (type === 'text') {
+  } else if (type === 'text' || (type === 'form-status' && text)) {
     return <div>
         {text.split("\n").map((s, i) => <div key={i}>{s}</div>)}
     </div>
@@ -50,12 +50,14 @@ export default ({type, code, text, url, content, theme, ...props}) => {
       pickPrefix={pickPrefix}
     />
   } else if (type === 'form') {
-    const { fields, commandId, isNew } = props
+    const { fields, message, commandId, isNew, onSubmitForm } = props
     return <Form
       fields={fields}
+      message={message}
       commandId={commandId}
       theme={theme}
       isNew={isNew}
+      onSubmitForm={onSubmitForm}
     />
   } else {
     return null
