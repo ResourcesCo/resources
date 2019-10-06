@@ -58,13 +58,17 @@ const commands = {
 const getCommandHelp = () => {
   let result = []
   for (let command of Object.keys(commands)) {
-    let commandHelp = []
-    if (Array.isArray(commands[command].help)) {
-      commandHelp = [...commands[command].help]
-    } else if (commands[command].help) {
-      commandHelp = [commands[command].help]
+    const cmd = commands[command]
+    const help = cmd.help
+    if (Array.isArray(help)) {
+      for (let value of help) {
+        result.push({...value, command})
+      }
+    } else if (typeof help === 'string') {
+      result.push({args: cmd.args, details: cmd.help, command})
+    } else if (help) {
+      result.push({...help, command})
     }
-    result = [...result, ...commandHelp.map(help => ({...help, command}))]
   }
   return result
 }
@@ -82,7 +86,15 @@ export default async (message, onMessagesCreated, {formData, formCommandId} = {}
     } else {
       onMessagesCreated(command.raw ? [] : [{...inputMessage(message), commandId, loading: true}])
     }
-    const result = await command.run({command: commandName, args, message, store, formData, formCommandId})
+    const result = await command.run({
+      command: commandName,
+      args,
+      message,
+      store,
+      formData,
+      formCommandId,
+      root: command
+    })
     const outputMessages = Array.isArray(result) ? result : (
       result ? [result] : []
     ).map(message => ({...message, commandId}))

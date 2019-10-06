@@ -12,7 +12,8 @@ export default ({type, code, text, url, content, theme, ...props}) => {
     onLoad()
   }
   if (type === 'help') {
-    return <Help theme={theme} />
+    const {help} = props
+    return <Help theme={theme} help={help} />
   } else if (type === 'error') {
     if (code === 'not_found') {
       return <div>Results not found.</div>

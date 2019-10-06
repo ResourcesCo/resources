@@ -2,7 +2,7 @@
 
 TODO: intro
 
-![brief screencast](https://gh-media.resourcesco.now.sh/resourcesco-butterfly-demo.gif)
+![brief screencast](https://gh-media.resources.co/resourcesco-butterfly-demo.gif)
 
 ## web app
 
