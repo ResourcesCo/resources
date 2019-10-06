@@ -19,6 +19,10 @@ class Chat extends PureComponent {
     this.textareaRef = React.createRef()
   }
 
+  setCommandLoading(c, loading) {
+    return {...c, messages: c.messages.map(m => this.setLoading(m, loading))}
+  }
+
   setLoading(m, loading) {
     return m.type === 'input' ? {...m, loading} : m
   }
@@ -28,7 +32,7 @@ class Chat extends PureComponent {
       await store.load()
       const commands = { ...store.commands }
       for (let key of Object.keys(commands)) {
-        commands[key] = this.setLoading(commands[key], false)
+        commands[key] = this.setCommandLoading(commands[key], false)
       }
       this.setState({
         commands,

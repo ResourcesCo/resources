@@ -35,59 +35,28 @@ const getTaskUrl = task => {
 
 export default {
   help: 'Run `asana help` for more info.',
-  async run({root, args, store, message, formData = null, formCommandId = null}) {
-    if (args.length === 0) {
-      return {type: 'text', text: 'No asana command given. Run `asana help` for info on Asana commands.'}
-    }
-    const subCommandName = args[0]
-    const subCommandArgList = args.slice(1)
-    const subCommand = root.commands[subCommandName.replace('-', '_')]
-    const subCommandArgs = {}
-
-    if (subCommandArgList.length !== subCommand.args.length) {
-      return {type: 'text', text: 'Invalid number of arguments.'}
-    }
-    for (let i=0; i < subCommand.args.length; i++) {
-      subCommandArgs[subCommand.args[i]] = subCommandArgList[i]
-    }
-
-    const context = {store, root, message, formData, formCommandId}
-    if (subCommand !== 'auth') {
-      const api_token = store.env.ASANA_API_TOKEN
-      if (!api_token) {
-        return {type: 'text', text: 'No API token given. Run "help" for info.'}
+  filters: {
+    before({command: {name}, env: {api_token}}) {
+      if (name !== 'auth' && !api_token) {
+        return {type: 'error', text: 'No API token given. Run "help" for info.'}
       }
-      context.api_token = api_token
     }
-    return await subCommand.run(subCommandArgs, context)
   },
   commands: {
-    help: {
-      args: [],
-      help: 'show help for Asana commands',
-      run(_, {root}) {
-        const help = []
-        for (let key of Object.keys(root.commands)) {
-          const command = key.replace('_', '-')
-          const cmd = root.commands[key]
-          help.push({args: cmd.args, details: cmd.help, command})
-        }
-        return {type: 'help', help}
-      }
-    },
     auth: {
       args: ['api-token'],
       help: 'store api token for Asana',
-      run({api_token}, {store}) {
-        store.env.ASANA_API_TOKEN = api_token
-        store.save()
-        return {type: 'text', text: 'Saved!'}
+      run({args: {api_token}}) {
+        return [
+          {type: 'env', value: {api_token}},
+          {type: 'text', text: 'Saved!'},
+        ]
       },
     },
     workspaces: {
       args: [],
       help: 'show Asana workspaces',
-      async run(_, {api_token}) {
+      async run({env: {api_token}}) {
         return await request({
           api_token,
           url: 'https://app.asana.com/api/1.0/workspaces',
@@ -98,7 +67,7 @@ export default {
     projects: {
       args: ['workspace'],
       help: 'show Asana projects',
-      async run({workspace}, {api_token}) {
+      async run({args: {workspace}, env: {api_token}}) {
         return await request({
           api_token,
           url: `https://app.asana.com/api/1.0/workspaces/${workspace}/projects`,
@@ -109,7 +78,7 @@ export default {
     sections: {
       args: ['project'],
       help: 'show sections in an Asana project',
-      async run({project}, {api_token}) {
+      async run({args: {project}, env: {api_token}}) {
         return await request({
           api_token,
           url: `https://app.asana.com/api/1.0/projects/${project}/sections`,
@@ -120,7 +89,7 @@ export default {
     project_tasks: {
       args: ['project'],
       help: 'show Asana tasks by project',
-      async run({project}, {api_token}) {
+      async run({args: {project}, env: {api_token}}) {
         return await request({
           api_token,
           url: `https://app.asana.com/api/1.0/tasks?project=${project}&opt_expand=projects.gid&completed_since=now`,
@@ -132,7 +101,7 @@ export default {
     section_tasks: {
       args: ['section'],
       help: 'show Asana tasks by section',
-      async run({section}, {api_token}) {
+      async run({args: {section}, env: {api_token}}) {
         return await request({
           api_token,
           url: `https://app.asana.com/api/1.0/tasks?section=${section}&opt_expand=projects.gid&completed_since=now`,
@@ -144,7 +113,7 @@ export default {
     complete: {
       args: ['task'],
       help: 'mark an Asana task complete',
-      async run({task}, {api_token}) {
+      async run({args: {task}, env: {api_token}}) {
         const headers = getHeaders(api_token, true)
         const url = `https://app.asana.com/api/1.0/tasks/${task}`
         const res = await fetch(url, {method: 'PUT', headers, body: JSON.stringify({data: {completed: true}})})
@@ -158,7 +127,7 @@ export default {
     comment: {
       args: ['task'],
       help: 'add a comment to an Asana task',
-      async run({task}, {api_token, message, formData, formCommandId}) {
+      async run({args: {task}, env: {api_token}, message, formData, formCommandId}) {
         if (formData) {
           const headers = getHeaders(api_token, true)
           const url = `https://app.asana.com/api/1.0/tasks/${task}/stories`
