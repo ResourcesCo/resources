@@ -21,9 +21,8 @@ class GitHub {
           type: 'data',
           data: data,
           keyField: 'number',
-          link: 'html_url',
           title: 'title',
-          pickPrefix: ` ${owner} ${repo} `,
+          pickPrefix: `${owner} ${repo} `,
         }
       } else {
         return {type: 'text', text: 'No open issues!'}

@@ -7,8 +7,10 @@ import insertTextAtCursor from 'insert-text-at-cursor'
 
 class Chat extends PureComponent {
   state = {
-    messages: [],
+    commandIds: [],
+    commands: {},
     text: '',
+    lastCommandId: null,
   }
 
   constructor(props) {
@@ -17,10 +19,26 @@ class Chat extends PureComponent {
     this.textareaRef = React.createRef()
   }
 
+  setCommandLoading(c, loading) {
+    return {...c, messages: c.messages.map(m => this.setLoading(m, loading))}
+  }
+
+  setLoading(m, loading) {
+    return m.type === 'input' ? {...m, loading} : m
+  }
+
   async componentDidMount() {
     const loadMessages = async () => {
       await store.load()
-      this.setState({messages: store.messages})
+      const commands = { ...store.commands }
+      for (let key of Object.keys(commands)) {
+        commands[key] = this.setCommandLoading(commands[key], false)
+      }
+      this.setState({
+        commands,
+        commandIds: store.commandIds || this.state.commandIds,
+      })
+      this.props.onThemeChange(store.theme)
     }
     await loadMessages()
     if (this.scrollRef.current) {
@@ -29,34 +47,74 @@ class Chat extends PureComponent {
   }
 
   componentWillUnmount() {
-
   }
 
   addMessages = newMessages => {
-    const {messages} = this.state
-    const updatedMessages = [...messages, ...newMessages]
-    this.setMessages(updatedMessages)
+    let {commandIds, commands} = this.state
+    let clear = false
+    let loadedMessage = undefined
+    for (let message of newMessages) {
+      const command = commands[message.commandId]
+      if (message.type === 'loaded') {
+        if (commands[message.commandId]) {
+          commands[message.commandId] = {
+            ...command,
+            messages: command.messages.map(m => this.setLoading(m, false)),
+          }
+        }
+      } else if (message.type === 'clear') {
+        clear = true
+      } else if (message.type === 'set-theme') {
+        this.setState({theme: message.theme})
+        store.theme = message.theme
+        store.save()
+        this.props.onThemeChange(message.theme)
+      } else if (message.type === 'form-status') {
+        const formCommand = commands[message.formCommandId]
+        if (formCommand) {
+          let commandMessages = (
+            formCommand.messages
+            .map(m => this.setLoading(m, !!message.loading))
+            .filter(({type}) => type !== 'form-status')
+          )
+          if (message.success) {
+            commandMessages = commandMessages.filter(({type}) => type !== 'form')
+          }
+          const formStatusMessage = {...message, commandId: message.formCommandId}
+          commands[formStatusMessage.commandId] = {
+            ...formCommand,
+            messages: [...commandMessages, formStatusMessage],
+          }
+        }
+      } else {
+        if (commands[message.commandId]) {
+          commands[message.commandId] = {...command, messages: [...command.messages, message]}
+        } else {
+          commands[message.commandId] = {id: message.commandId, messages: [message]}
+          commandIds.push(message.commandId)
+        }
+      }
+      this.setState({lastCommandId: message.commandId})
+    }
+    if (clear) {
+      commands = {}
+      commandIds = []
+    }
+    this.setCommands([...commandIds], {...commands})
+    this.scrollToBottom()
   }
 
-  setMessages = updatedMessages => {
-    this.setState({messages: updatedMessages})
-    store.messages = updatedMessages
+  setCommands = (commandIds, commands) => {
+    this.setState({commandIds, commands})
+    store.commandIds = commandIds
+    store.commands = commands
     store.save()
   }
 
   send = async () => {
     const {text} = this.state
     this.setState({text: ''})
-    const newMessages = await runCommand(text)
-    if (newMessages.length === 1 && newMessages[0].type === 'clear') {
-      this.setMessages([])
-    } else if (newMessages.length === 2 && newMessages[1].type === 'set-theme') {
-      this.props.onThemeChange(newMessages[1].theme)
-      this.addMessages([newMessages[0]])
-    } else {
-      this.addMessages(newMessages)
-    }
-    this.scrollToBottom()
+    await runCommand(text, this.addMessages)
   }
 
   scrollToBottom = () => {
@@ -71,14 +129,25 @@ class Chat extends PureComponent {
 
   handlePickId = id => {
     const el = this.textareaRef.current
-    insertTextAtCursor(el, ` ${id}`)
+    insertTextAtCursor(el, `${id}`)
     el.focus()
+  }
+
+  handleSubmitForm = async ({commandId, formData, message}) => {
+    await runCommand(message, this.addMessages, {formData, formCommandId: commandId})
   }
 
   render() {
     const { onFocusChange, theme } = this.props
-    const { text, messages } = this.state
+    const { text, commandIds, commands, lastCommandId } = this.state
     const scrollRef = this.scrollRef
+    const messages = []
+    for (let commandId of commandIds) {
+      const command = commands[commandId]
+      for (let message of command ? command.messages : []) {
+        messages.push(message)
+      }
+    }
 
     return (
       <div className="chat">
@@ -91,7 +160,15 @@ class Chat extends PureComponent {
                     className={`chat-message ${message.type === 'input' ? 'input-message' : 'output-message'}`}
                     key={i}
                   >
-                    <Message key={i} onLoad={this.scrollToBottom} theme={theme} onPickId={this.handlePickId} {...message} />
+                    <Message
+                      key={i}
+                      onLoad={this.scrollToBottom}
+                      theme={theme}
+                      onPickId={this.handlePickId}
+                      onSubmitForm={this.handleSubmitForm}
+                      isNew={message.commandId === lastCommandId}
+                      {...message}
+                    />
                   </div>
                 ))
               }

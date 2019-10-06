@@ -1,5 +1,3 @@
-import { commandHelp } from '../../commands'
-
 const Example = ({ children }) => {
   return <div>
     {children}
@@ -20,10 +18,10 @@ const Details = ({ children, theme }) => {
   </div>
 }
 
-export default ({theme}) => {
+export default ({theme, help}) => {
   return <div>
     {
-      commandHelp.map(({command, subCommand, args = [], details}, i) => {
+      (help || []).map(({command, subCommand, args = [], details}, i) => {
         return <div key={i}>
           <Example>{command} {subCommand} {args.map((arg, i) => <i key={i}>{arg}{' '}</i>)}</Example>
           <Details theme={theme}>{details}</Details>

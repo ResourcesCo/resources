@@ -2,6 +2,8 @@
 
 TODO: intro
 
+![brief screencast](https://gh-media.resources.co/resourcesco-butterfly-demo-2.gif)
+
 ## web app
 
 It's a next web app. Run `npm run dev` to run the development server or
