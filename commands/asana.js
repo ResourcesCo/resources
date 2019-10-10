@@ -34,7 +34,6 @@ const getTaskUrl = task => {
 }
 
 export default {
-  help: 'Run `asana help` for more info.',
   filters: {
     before({command: {name}, env: {api_token}}) {
       if (name !== 'auth' && !api_token) {
