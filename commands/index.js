@@ -97,7 +97,7 @@ const updateCommandEnv = (commandName, envUpdates) => {
     for (let {value: messageValue} of envUpdates) {
       for (let key of Object.keys(messageValue)) {
         const envKey = `${commandName}_${key}`.toUpperCase().replace('-', '_')
-        store.env[envKey] = messageValue
+        store.env[envKey] = messageValue[key]
       }
     }
     store.save()
@@ -115,7 +115,7 @@ const runSubcommand = async ({commandName, root, args, store, message, formData,
       {
         command: 'help',
         args: [],
-        details: 'show help for Asana commands',
+        details: `show help for ${commandName} commands`,
       }
     ]
     for (let key of Object.keys(root.commands)) {
@@ -142,7 +142,7 @@ const runSubcommand = async ({commandName, root, args, store, message, formData,
     return {type: 'text', text: 'Invalid number of arguments.'}
   }
   for (let i=0; i < subCommand.args.length; i++) {
-    subCommandArgs[subCommand.args[i]] = subCommandArgList[i]
+    subCommandArgs[subCommand.args[i].replace('-', '_')] = subCommandArgList[i]
   }
 
   const env = getCommandEnv(commandName)
