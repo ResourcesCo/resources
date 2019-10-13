@@ -26,6 +26,8 @@ export default ({type, code, text, url, content, theme, ...props}) => {
     return <div>
         {text.split("\n").map((s, i) => <div key={i}>{s}</div>)}
     </div>
+  } else if (type === 'code') {
+    return <pre style={{fontFamily: 'monospace'}}>{text}</pre>
   } else if (type === 'input') {
     const { loading } = props
     const lines = text.split("\n")

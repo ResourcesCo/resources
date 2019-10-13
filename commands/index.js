@@ -2,6 +2,8 @@ import shortid from 'shortid'
 import giphy from './giphy'
 import github from './github'
 import asana from './asana'
+import openfaas from './openfaas'
+import clientGateway from './client-gateway'
 import docs from './docs'
 import note from './note'
 import clear from './clear'
@@ -20,6 +22,8 @@ const commands = {
   giphy,
   github,
   asana,
+  openfaas,
+  'client-gateway': clientGateway,
   note,
   clear,
   roll,
@@ -68,6 +72,8 @@ const getCommandHelp = () => {
       result.push({args: cmd.args, details: cmd.help, command})
     } else if (help) {
       result.push({...help, command})
+    } else if (cmd.commands) {
+      result.push({command, details: `run ${command} commands (see \`${command} help\`)`})
     }
   }
   return result
@@ -145,6 +151,14 @@ const runSubcommand = async ({commandName, root, args, store, message, formData,
     subCommandArgs[subCommand.args[i].replace('-', '_')] = subCommandArgList[i]
   }
 
+  let dependencies = null
+  if (root.dependencies) {
+    dependencies = {}
+    for (let dependency of root.dependencies) {
+      dependencies[dependency.replace('-', '_')] = {'env': getCommandEnv(dependency)}
+    }
+  }
+
   const env = getCommandEnv(commandName)
   const parentCommand = {
     ...root,
@@ -159,6 +173,7 @@ const runSubcommand = async ({commandName, root, args, store, message, formData,
     args: subCommandArgs,
     command: subCommand,
     parentCommand,
+    dependencies,
   }
 
   let beforeResult
