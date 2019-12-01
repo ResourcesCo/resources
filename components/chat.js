@@ -1,5 +1,6 @@
-import { PureComponent } from 'react';
-import runCommand from '../commands'
+import { PureComponent } from 'react'
+import runCommand from '../command-runner'
+import parse from '../command-runner/parser'
 import Message from './messages/message'
 import { store } from '../store'
 import ChatInput from './chat-input'
@@ -113,8 +114,11 @@ class Chat extends PureComponent {
 
   send = async () => {
     const {text} = this.state
-    this.setState({text: ''})
-    await runCommand(text, this.addMessages)
+    const parsed = parse(text)
+    if (Array.isArray(parsed) && parsed.length) {
+      this.setState({text: ''})
+      await runCommand(text, parsed, this.addMessages)
+    }
   }
 
   scrollToBottom = () => {
@@ -134,7 +138,7 @@ class Chat extends PureComponent {
   }
 
   handleSubmitForm = async ({commandId, formData, message}) => {
-    await runCommand(message, this.addMessages, {formData, formCommandId: commandId})
+    await runCommand(message, parse(message), this.addMessages, {formData, formCommandId: commandId})
   }
 
   render() {

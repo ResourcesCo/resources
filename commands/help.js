@@ -1,4 +1,4 @@
-import { commandHelp } from './'
+import { commandHelp } from '../command-runner'
 
 export default {
   run() {
