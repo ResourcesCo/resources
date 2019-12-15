@@ -75,6 +75,7 @@ const AppView = ({popup, selectedTheme, onThemeChange}) => {
           padding: 2px 5px;
           height: 32px;
           resize: none;
+          border: 1px solid ${theme.inputBorder};
         }
 
         ::selection {

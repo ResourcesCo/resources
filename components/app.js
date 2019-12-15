@@ -20,9 +20,7 @@ class App extends PureComponent {
   render() {
     const { selectedTheme, ready } = this.state
     return (
-      <>
-        <AppView selectedTheme={selectedTheme} onThemeChange={this.handleThemeChange} />
-      </>
+      <AppView selectedTheme={selectedTheme} onThemeChange={this.handleThemeChange} />
     )
   }
 }

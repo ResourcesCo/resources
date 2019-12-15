@@ -193,6 +193,7 @@ class Chat extends PureComponent {
             flex-direction: column;
             justify-content: flex-end;
             flex-grow: 1;
+            padding: 2px;
           }
 
           .chat-message {

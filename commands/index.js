@@ -43,7 +43,7 @@ export default {
         setTimeout(resolve, timeout)
       })
       await promise
-      return { type: 'text', text: message }
+      return { type: 'text', text: message || '' }
     },
     help: {
       args: ['milliseconds', 'message'],
