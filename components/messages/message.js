@@ -2,6 +2,7 @@ import Help from "./help"
 import Data from './data'
 import DataTree from './data-tree'
 import Form from './form'
+import TreeView from '../tree-view'
 import { useState } from 'react'
 import Loader from 'react-loader-spinner'
 
@@ -62,6 +63,13 @@ export default ({type, code, text, url, content, theme, ...props}) => {
       theme={theme}
       isNew={isNew}
       onSubmitForm={onSubmitForm}
+    />
+  } else if (type === 'tree') {
+    const { name, value } = props
+    return <TreeView
+      name={name}
+      value={value}
+      theme={theme}
     />
   } else {
     return null

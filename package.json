@@ -12,9 +12,9 @@
     "chrome-build": "rm -rf chrome && npm run build && npm run export && npm run chrome-copy && npm run chrome-replace"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.19",
-    "@fortawesome/free-solid-svg-icons": "^5.9.0",
-    "@fortawesome/react-fontawesome": "^0.1.4",
+    "@fortawesome/fontawesome-svg-core": "^1.2.26",
+    "@fortawesome/free-solid-svg-icons": "^5.12.0",
+    "@fortawesome/react-fontawesome": "^0.1.8",
     "@zeit/next-css": "^1.0.1",
     "insert-text-at-cursor": "^0.3.0",
     "next": "^9.1.5",

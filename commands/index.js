@@ -8,6 +8,7 @@ import note from './note'
 import clear from './clear'
 import help from './help'
 import roll from './roll'
+import request from './request'
 
 export default {
   help,
@@ -20,6 +21,7 @@ export default {
   note,
   clear,
   roll,
+  request,
   'dark-mode': {
     run() {
       return {type: 'set-theme', theme: 'dark'}
