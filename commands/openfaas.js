@@ -3,7 +3,7 @@ const request = async ({
   env: {gateway_url, username, password},
   clientGatewayEnv: {url: clientGatewayUrl, token: clientGatewayToken},
   json = true,
-  ...options,
+  ...options
 }) => {
   const headers = {
     Authorization: `Basic ${btoa(username + ":" + password)}`,

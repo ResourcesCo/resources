@@ -8,6 +8,7 @@ import note from './note'
 import clear from './clear'
 import help from './help'
 import roll from './roll'
+import request from './request'
 
 export default {
   help,
@@ -20,6 +21,7 @@ export default {
   note,
   clear,
   roll,
+  request,
   'dark-mode': {
     run() {
       return {type: 'set-theme', theme: 'dark'}
@@ -38,16 +40,17 @@ export default {
   },
   'sleep': {
     async run({args}) {
-      const [timeout, message] = args
+      const [timeoutStr, message] = args
+      const timeout = Math.floor(Number.parseFloat(timeoutStr) * 1000)
       const promise = new Promise((resolve, reject) => {
         setTimeout(resolve, timeout)
       })
       await promise
-      return { type: 'text', text: message }
+      return { type: 'text', text: message || '' }
     },
     help: {
-      args: ['milliseconds', 'message'],
-      details: 'Sleep for a specified number of milliseconds and then send a message'
+      args: ['seconds', 'message'],
+      details: 'Sleep for a specified number of seconds and then send a message'
     }
   }
 }

@@ -31,6 +31,7 @@ export default ({onFocusChange, text, onTextChange, onSend, textareaRef}) => {
 
         div :global(textarea) {
           width: 100%;
+          border-radius: 5px;
         }
 
         button {

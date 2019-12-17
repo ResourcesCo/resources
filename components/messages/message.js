@@ -2,6 +2,7 @@ import Help from "./help"
 import Data from './data'
 import DataTree from './data-tree'
 import Form from './form'
+import TreeView from '../tree-view'
 import { useState } from 'react'
 import Loader from 'react-loader-spinner'
 
@@ -25,7 +26,7 @@ export default ({type, code, text, url, content, theme, ...props}) => {
     return <div><a target="_blank" href={url}>{text}</a></div>
   } else if (type === 'text' || (type === 'form-status' && text)) {
     return <div>
-        {text.split("\n").map((s, i) => <div key={i}>{s}</div>)}
+        {(text || '').split("\n").map((s, i) => <div key={i}>{s}</div>)}
     </div>
   } else if (type === 'code') {
     return <pre style={{fontFamily: 'monospace'}}>{text}</pre>
@@ -54,13 +55,23 @@ export default ({type, code, text, url, content, theme, ...props}) => {
       pickPrefix={pickPrefix}
     />
   } else if (type === 'form') {
-    const { fields, message, commandId, isNew, onSubmitForm } = props
+    const { fields, isNew, message, commandId, onSubmitForm } = props
     return <Form
       fields={fields}
-      message={message}
-      commandId={commandId}
       theme={theme}
       isNew={isNew}
+      message={message}
+      commandId={commandId}
+      onSubmitForm={onSubmitForm}
+    />
+  } else if (type === 'tree') {
+    const { name, value, message, commandId, onSubmitForm } = props
+    return <TreeView
+      name={name}
+      value={value}
+      theme={theme}
+      message={message}
+      commandId={commandId}
       onSubmitForm={onSubmitForm}
     />
   } else {
