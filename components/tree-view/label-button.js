@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 export default ({children, theme}) => {
-  return <span>
+  return <div>
     <button className="id">{children}</button>
     <style jsx>{`
       button {
@@ -13,5 +13,5 @@ export default ({children, theme}) => {
         padding: 4px 12px;
       }
     `}</style>
-  </span>
+  </div>
 }

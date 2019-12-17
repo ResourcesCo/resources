@@ -55,21 +55,24 @@ export default ({type, code, text, url, content, theme, ...props}) => {
       pickPrefix={pickPrefix}
     />
   } else if (type === 'form') {
-    const { fields, message, commandId, isNew, onSubmitForm } = props
+    const { fields, isNew, message, commandId, onSubmitForm } = props
     return <Form
       fields={fields}
-      message={message}
-      commandId={commandId}
       theme={theme}
       isNew={isNew}
+      message={message}
+      commandId={commandId}
       onSubmitForm={onSubmitForm}
     />
   } else if (type === 'tree') {
-    const { name, value } = props
+    const { name, value, message, commandId, onSubmitForm } = props
     return <TreeView
       name={name}
       value={value}
       theme={theme}
+      message={message}
+      commandId={commandId}
+      onSubmitForm={onSubmitForm}
     />
   } else {
     return null
