@@ -6,18 +6,6 @@ import { store } from '../store'
 import ChatInput from './chat-input'
 import insertTextAtCursor from 'insert-text-at-cursor'
 
-const setExpanded = (value, path, expanded) => {
-  if (path.length === 0) {
-    return {...value, __vtv_expanded: expanded}
-  } else {
-    const [first, ...rest] = path
-    return {
-      ...value,
-      [first]: setExpanded(value[first], rest, expanded)
-    }
-  }
-}
-
 class Chat extends PureComponent {
   state = {
     commandIds: [],
@@ -85,18 +73,13 @@ class Chat extends PureComponent {
       } else if (message.type === 'form-status') {
         const formCommand = commands[message.formCommandId]
         if (formCommand) {
-          console.log({formCommand, message})
           if (message.treeUpdate) {
             let treeMessage = formCommand.messages.find(message => message.type === 'tree')
             treeMessage = {
               ...treeMessage,
-              value: setExpanded(
-                treeMessage.value,
-                message.treeUpdate.path,
-                message.treeUpdate.expanded
-              )
+              value: message.treeUpdate.value || treeMessage.value,
+              state: message.treeUpdate.state || treeMessage.state,
             }
-            console.log({treeMessage, formCommand})
             commands[message.formCommandId] = {
               ...formCommand,
               messages: formCommand.messages.map(m => this.setLoading(m, !!message.loading)).map(message => message.type === 'tree' ? treeMessage : message)

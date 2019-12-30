@@ -65,14 +65,16 @@ export default ({type, code, text, url, content, theme, ...props}) => {
       onSubmitForm={onSubmitForm}
     />
   } else if (type === 'tree') {
-    const { name, value, message, commandId, onSubmitForm } = props
+    const { name, value, state, message, commandId, onSubmitForm, onPickId } = props
     return <TreeView
       name={name}
       value={value}
+      state={state}
       theme={theme}
       message={message}
       commandId={commandId}
       onSubmitForm={onSubmitForm}
+      onPickId={onPickId}
     />
   } else {
     return null

@@ -143,11 +143,11 @@ export default async (message, parsed, onMessagesCreated, {formData, formCommand
   const command = commands[commandName]
   const commandId = shortid.generate()
   if (command) {
-    const args = command.raw ? null : parsed.slice(1)
+    const args = parsed.slice(1)
     if (formData) {
       onMessagesCreated([{type: 'form-status', commandId, formCommandId, loading: true}])
     } else {
-      onMessagesCreated(command.raw ? [] : [{...inputMessage(message), commandId, loading: true}])
+      onMessagesCreated([{...inputMessage(message), commandId, loading: true}])
     }
     const context = {
       args,
@@ -171,6 +171,12 @@ export default async (message, parsed, onMessagesCreated, {formData, formCommand
     }
     const outputMessages = convertToArray(result).map(message => ({...message, commandId}))
     onMessagesCreated([...outputMessages, {type: 'loaded', commandId}])
+  } else if (commandName === '_tree') {
+    onMessagesCreated([{
+      type: 'form-status',
+      treeUpdate: formData,
+      formCommandId,
+    }])
   } else {
     onMessagesCreated([
       inputMessage(message),
