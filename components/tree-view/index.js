@@ -16,20 +16,44 @@ const testHasChildren = value => {
   }
 }
 
-const TreeView = ({name, value, path = [], message, commandId, onSubmitForm, theme}) => {
-  const expanded = value.__vtv_expanded === true
+const CollectionSummary = ({type, value}) => {
+  const length = Object.keys(value).length
+  if (length === 0) {
+    return <span>{type === 'object' ? '{}' : '[]'}</span>
+  } else {
+    return <em>({length} {length === 1 ? 'item' : 'items'})</em>
+  }
+}
+
+const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPickId, theme}) => {
+  const expandedPaths = ((state || {}).expanded || [])
+  const expanded = expandedPaths.some(e => e.length === path.length && e.every((item, i) => item === path[i]))
   const setExpanded = expanded => {
-    onSubmitForm({message, commandId, formData: {path, expanded}})
+    const newState = {
+      ...state,
+      expanded: (
+        expanded ?
+        [...expandedPaths, path] :
+        expandedPaths.filter(e => !(e.length === path.length && e.every((item, i) => item === path[i])))
+      )
+    }
+    onSubmitForm({
+      message: '_tree update',
+      commandId,
+      formData: {
+        state: newState
+      }
+    })
   }
   const hasChildren = testHasChildren(value)
 
   return <>
     <div className="row">
       <ExpandButton hasChildren={hasChildren} expanded={expanded} onClick={() => setExpanded(!expanded)} />
-      <LabelButton theme={theme}>{name}</LabelButton>
+      <LabelButton theme={theme} onClick={() => onPickId(name)}>{name}</LabelButton>
       <div className="inline-details">
-        {isObject(value) && (hasChildren ? <em>({Object.keys(value).length} items)</em> : '{}')}
-        {Array.isArray(value) && (hasChildren ? <em>({Object.keys(value).length} items)</em> : '[]')}
+        {isObject(value) && <CollectionSummary type="object" value={value} />}
+        {Array.isArray(value) && <CollectionSummary type="array" value={value} />}
         {typeof value === 'string' && value}
         {value === null && <em>null</em>}
         {typeof value !== 'string' && typeof value !== 'object' && <em>{JSON.stringify(value)}</em>}
@@ -51,9 +75,10 @@ const TreeView = ({name, value, path = [], message, commandId, onSubmitForm, the
               key={key}
               name={key}
               value={value[key]}
-              message={message}
+              state={state}
               commandId={commandId}
               onSubmitForm={onSubmitForm}
+              onPickId={onPickId}
               path={[...path, key]}
               theme={theme}
             />

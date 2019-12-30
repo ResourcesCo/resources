@@ -7,6 +7,7 @@ const defaults = {
   commands: {},
   env: {},
   theme: 'dark',
+  notes: {},
 }
 
 const keys = Object.keys(defaults)

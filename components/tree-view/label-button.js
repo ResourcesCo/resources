@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-export default ({children, theme}) => {
+export default ({children, theme, ...props}) => {
   return <div>
-    <button className="id">{children}</button>
+    <button className="id" {...props}>{children}</button>
     <style jsx>{`
       button {
         cursor: pointer;
