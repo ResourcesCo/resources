@@ -5,6 +5,7 @@ import Message from './messages/message'
 import { store } from '../store'
 import ChatInput from './chat-input'
 import insertTextAtCursor from 'insert-text-at-cursor'
+import { updateTreeMessage } from './tree-view/state'
 
 class Chat extends PureComponent {
   state = {
@@ -75,14 +76,13 @@ class Chat extends PureComponent {
         if (formCommand) {
           if (message.treeUpdate) {
             let treeMessage = formCommand.messages.find(message => message.type === 'tree')
-            treeMessage = {
-              ...treeMessage,
-              value: message.treeUpdate.value || treeMessage.value,
-              state: message.treeUpdate.state || treeMessage.state,
-            }
+            treeMessage = updateTreeMessage(treeMessage, message)
             commands[message.formCommandId] = {
               ...formCommand,
-              messages: formCommand.messages.map(m => this.setLoading(m, !!message.loading)).map(message => message.type === 'tree' ? treeMessage : message)
+              messages: formCommand.messages.map(
+                m => this.setLoading(m, !!message.loading))
+                .map(message => message.type === 'tree' ? treeMessage : message
+              )
             }
           } else {
             let commandMessages = (

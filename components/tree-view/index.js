@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import ExpandButton from './expand-button'
 import LabelButton from './label-button'
+import { getState } from './state'
 
 const isObject = value => {
   return typeof value === 'object' && typeof value !== 'string' && value !== null && !Array.isArray(value)
@@ -26,9 +27,9 @@ const CollectionSummary = ({type, value}) => {
 }
 
 const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPickId, theme}) => {
-  const expandedPaths = ((state || {}).expanded || [])
-  const expanded = expandedPaths.some(e => e.length === path.length && e.every((item, i) => item === path[i]))
+  const { expanded } = getState(state, path)
   const setExpanded = expanded => {
+    const expandedPaths = ((state || {}).expanded || [])
     const newState = {
       ...state,
       expanded: (
@@ -41,6 +42,7 @@ const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPic
       message: '_tree update',
       commandId,
       formData: {
+        path,
         state: newState
       }
     })
