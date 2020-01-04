@@ -40,6 +40,10 @@ class Chat extends PureComponent {
         commands,
         commandIds: store.commandIds || this.state.commandIds,
       })
+      // this.setState({
+      //   commands: {},
+      //   commandIds: [],
+      // })
       this.props.onThemeChange(store.theme)
     }
     await loadMessages()

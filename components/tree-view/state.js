@@ -1,13 +1,32 @@
-export const updateTreeMessage = (treeMessage, updateMessage) => {
+const updateNestedState = (state, path = [], pathState) => {
+  if (path.length === 0) {
+    return pathState
+  }
+  const [key, ...remainingPath] = path
+  const stateKey = key.startsWith('_') ? `_${key}` : key
+  const result = {
+    ...state,
+    [stateKey]: updateNestedState(state[stateKey], remainingPath, pathState)
+  }
+  return result
+}
+
+export const updateTreeMessage = (treeMessage, {treeUpdate}) => {
   return {
     ...treeMessage,
-    value: updateMessage.treeUpdate.value || treeMessage.value,
-    state: updateMessage.treeUpdate.state || treeMessage.state,
+    value: treeUpdate.value || treeMessage.value,
+    state: updateNestedState(treeMessage.state, treeUpdate.path, treeUpdate.state),
   }
 }
 
-export const getState = (state, path) => {
-  const expandedPaths = ((state || {}).expanded || [])
-  const expanded = expandedPaths.some(e => e.length === path.length && e.every((item, i) => item === path[i]))
-  return { expanded }
+export const getState = state => {
+  return {
+    _expanded: false,
+    ...(state || {}),
+  }
+}
+
+export const getChildState = (state, key) => {
+  const stateKey = key.startsWith('_') ? `_${key}` : key
+  return getState(state)[key]
 }

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import ExpandButton from './expand-button'
 import LabelButton from './label-button'
-import { getState } from './state'
+import { getState, getChildState } from './state'
 
 const isObject = value => {
   return typeof value === 'object' && typeof value !== 'string' && value !== null && !Array.isArray(value)
@@ -27,23 +27,14 @@ const CollectionSummary = ({type, value}) => {
 }
 
 const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPickId, theme}) => {
-  const { expanded } = getState(state, path)
+  const { _expanded: expanded } = getState(state, path)
   const setExpanded = expanded => {
-    const expandedPaths = ((state || {}).expanded || [])
-    const newState = {
-      ...state,
-      expanded: (
-        expanded ?
-        [...expandedPaths, path] :
-        expandedPaths.filter(e => !(e.length === path.length && e.every((item, i) => item === path[i])))
-      )
-    }
     onSubmitForm({
       message: '_tree update',
       commandId,
       formData: {
         path,
-        state: newState
+        state: { ...state, _expanded: expanded }
       }
     })
   }
@@ -72,12 +63,12 @@ const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPic
     {
       expanded && (isObject(value) || Array.isArray(value)) && <div className="children">
         {
-          Object.keys(value).filter(key => key !== '__vtv_expanded').map(key => (
+          Object.keys(value).map(key => (
             <TreeView
               key={key}
               name={key}
               value={value[key]}
-              state={state}
+              state={getChildState(state, key)}
               commandId={commandId}
               onSubmitForm={onSubmitForm}
               onPickId={onPickId}
