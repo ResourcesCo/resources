@@ -59,6 +59,7 @@ class Chat extends PureComponent {
     let {commandIds, commands} = this.state
     let clear = false
     let loadedMessage = undefined
+    let scrollToBottom = false
     for (let message of newMessages) {
       const command = commands[message.commandId]
       if (message.type === 'loaded') {
@@ -104,6 +105,9 @@ class Chat extends PureComponent {
             }
           }
         }
+        if (message.formCommandId === commandIds[commandIds.length - 1]) {
+          scrollToBottom = true
+        }
       } else {
         if (commands[message.commandId]) {
           commands[message.commandId] = {...command, messages: [...command.messages, message]}
@@ -111,6 +115,7 @@ class Chat extends PureComponent {
           commands[message.commandId] = {id: message.commandId, messages: [message]}
           commandIds.push(message.commandId)
         }
+        scrollToBottom = true
       }
       this.setState({lastCommandId: message.commandId})
     }
@@ -119,7 +124,9 @@ class Chat extends PureComponent {
       commandIds = []
     }
     this.setCommands([...commandIds], {...commands})
-    this.scrollToBottom()
+    if (scrollToBottom) {
+      this.scrollToBottom()
+    }
   }
 
   setCommands = (commandIds, commands) => {
@@ -139,9 +146,11 @@ class Chat extends PureComponent {
   }
 
   scrollToBottom = () => {
-    if (this.scrollRef.current) {
-      this.scrollRef.current.scrollIntoView()
-    }
+    setTimeout(() => {
+      if (this.scrollRef.current) {
+        this.scrollRef.current.scrollIntoView()
+      }
+    }, 10)
   }
 
   handleTextChange = ({target}) => {

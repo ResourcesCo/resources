@@ -2,19 +2,12 @@ import { useState } from 'react'
 import ExpandButton from './expand-button'
 import LabelButton from './label-button'
 import { getState, getChildState } from './state'
+import { hasChildren, detectUrl } from './analyze'
+import Menu from './menu'
+import TableView from './table-view'
 
 const isObject = value => {
   return typeof value === 'object' && typeof value !== 'string' && value !== null && !Array.isArray(value)
-}
-
-const testHasChildren = value => {
-  if (isObject(value)) {
-    return Object.keys(value).length > 0
-  } else if (Array.isArray(value)) {
-    return value.length > 0
-  } else {
-    return false
-  }
 }
 
 const CollectionSummary = ({type, value}) => {
@@ -27,7 +20,8 @@ const CollectionSummary = ({type, value}) => {
 }
 
 const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPickId, theme}) => {
-  const { _expanded: expanded } = getState(state, path)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const { _expanded: expanded, _viewType: viewType } = getState(state)
   const setExpanded = expanded => {
     onSubmitForm({
       message: '_tree update',
@@ -38,18 +32,37 @@ const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPic
       }
     })
   }
-  const hasChildren = testHasChildren(value)
+  const _hasChildren = hasChildren(value)
 
   return <>
     <div className="row">
-      <ExpandButton hasChildren={hasChildren} expanded={expanded} onClick={() => setExpanded(!expanded)} />
-      <LabelButton theme={theme} onClick={() => onPickId(name)}>{name}</LabelButton>
+      <ExpandButton hasChildren={_hasChildren} expanded={expanded} onClick={() => setExpanded(!expanded)} />
+      {
+        (
+          menuOpen &&
+          <Menu
+            onPickId={onPickId}
+            name={name}
+            value={value}
+            state={state}
+            path={path}
+            onSubmitForm={onSubmitForm}
+            commandId={commandId}
+            onClose={() => setMenuOpen(false)}
+            theme={theme}
+          />
+        )
+      }
+      <LabelButton theme={theme} onClick={() => setMenuOpen(true)}>{name}</LabelButton>
       <div className="inline-details">
         {isObject(value) && <CollectionSummary type="object" value={value} />}
         {Array.isArray(value) && <CollectionSummary type="array" value={value} />}
-        {typeof value === 'string' && value}
+        {typeof value === 'string' && (
+          detectUrl(value) ? <a target="_blank" href={value}>{value}</a> : value
+        )}
         {value === null && <em>null</em>}
         {typeof value !== 'string' && typeof value !== 'object' && <em>{JSON.stringify(value)}</em>}
+        {typeof value === 'undefined' && <em>undefined</em>}
       </div>
       <style jsx>{`
         .inline-details {
@@ -61,7 +74,7 @@ const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPic
       `}</style>
     </div>
     {
-      expanded && (isObject(value) || Array.isArray(value)) && <div className="children">
+      expanded && (isObject(value) || Array.isArray(value)) && viewType === 'tree' && <div className="children">
         {
           Object.keys(value).map(key => (
             <TreeView
@@ -83,6 +96,12 @@ const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPic
           }
         `}</style>
       </div>
+    }
+    {
+      expanded && viewType === 'table' && <TableView
+        value={value}
+        theme={theme}
+      />
     }
   </>
 }

@@ -22,6 +22,7 @@ export const updateTreeMessage = (treeMessage, {treeUpdate}) => {
 export const getState = state => {
   return {
     _expanded: false,
+    _viewType: 'tree',
     ...(state || {}),
   }
 }
