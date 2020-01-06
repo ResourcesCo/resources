@@ -103,6 +103,9 @@ const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPic
         theme={theme}
       />
     }
+    {
+      expanded && viewType === 'json' && <textarea defaultValue={JSON.stringify(value)} style={{height: 200, width: 350}} />
+    }
   </>
 }
 

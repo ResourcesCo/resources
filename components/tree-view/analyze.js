@@ -2,7 +2,7 @@ export const isObject = item => {
   return typeof item === 'object' && item !== null && !Array.isArray(item)
 }
 
-export const getPaths = (item, depth) => {
+export const getPaths = (item, depth = 2) => {
   let result = []
   if (isObject(item)) {
     for (let key of Object.keys(item)) {
@@ -24,12 +24,13 @@ export const getPaths = (item, depth) => {
 export const getCollectionPaths = collection => {
   const paths = {}
   for (let item of collection) {
-    for (let path of getPaths(item, 2)) {
+    for (let path of getPaths(item)) {
       const str = JSON.stringify(path)
       paths[str] = paths[str] || 0
       paths[str] += 1
     }
   }
+  return Object.keys(paths).map(path => JSON.parse(path))
 }
 
 export const detectUrl = str => {
@@ -44,4 +45,31 @@ export const hasChildren = value => {
   } else {
     return false
   }
+}
+
+export const getAtPath = (value, path) => {
+  if (path.length === 0) {
+    return value
+  } else {
+    const [key, ...rest] = path
+    if (typeof value === 'object' && value !== null) {
+      return getAtPath(value[key], rest)
+    }
+  }
+}
+
+export const isIdentifier = s => {
+  return /^[a-zA-Z_$]\S*$/.test(s)
+}
+
+export const displayPath = path => {
+  let result = ''
+  for (let i=0; i < path.length; i++) {
+    if (isIdentifier(path[i])) {
+      result += (i === 0 ? '' : '.') + path[i]
+    } else {
+      result += `[${JSON.stringify(path[i])}]`
+    }
+  }
+  return result
 }
