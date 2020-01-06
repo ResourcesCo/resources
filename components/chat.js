@@ -5,6 +5,7 @@ import Message from './messages/message'
 import { store } from '../store'
 import ChatInput from './chat-input'
 import insertTextAtCursor from 'insert-text-at-cursor'
+import { updateTreeMessage } from './tree-view/state'
 
 class Chat extends PureComponent {
   state = {
@@ -39,6 +40,10 @@ class Chat extends PureComponent {
         commands,
         commandIds: store.commandIds || this.state.commandIds,
       })
+      // this.setState({
+      //   commands: {},
+      //   commandIds: [],
+      // })
       this.props.onThemeChange(store.theme)
     }
     await loadMessages()
@@ -54,6 +59,7 @@ class Chat extends PureComponent {
     let {commandIds, commands} = this.state
     let clear = false
     let loadedMessage = undefined
+    let scrollToBottom = false
     for (let message of newMessages) {
       const command = commands[message.commandId]
       if (message.type === 'loaded') {
@@ -75,14 +81,13 @@ class Chat extends PureComponent {
         if (formCommand) {
           if (message.treeUpdate) {
             let treeMessage = formCommand.messages.find(message => message.type === 'tree')
-            treeMessage = {
-              ...treeMessage,
-              value: message.treeUpdate.value || treeMessage.value,
-              state: message.treeUpdate.state || treeMessage.state,
-            }
+            treeMessage = updateTreeMessage(treeMessage, message)
             commands[message.formCommandId] = {
               ...formCommand,
-              messages: formCommand.messages.map(m => this.setLoading(m, !!message.loading)).map(message => message.type === 'tree' ? treeMessage : message)
+              messages: formCommand.messages.map(
+                m => this.setLoading(m, !!message.loading))
+                .map(message => message.type === 'tree' ? treeMessage : message
+              )
             }
           } else {
             let commandMessages = (
@@ -100,6 +105,9 @@ class Chat extends PureComponent {
             }
           }
         }
+        if (message.formCommandId === commandIds[commandIds.length - 1]) {
+          scrollToBottom = true
+        }
       } else {
         if (commands[message.commandId]) {
           commands[message.commandId] = {...command, messages: [...command.messages, message]}
@@ -107,6 +115,7 @@ class Chat extends PureComponent {
           commands[message.commandId] = {id: message.commandId, messages: [message]}
           commandIds.push(message.commandId)
         }
+        scrollToBottom = true
       }
       this.setState({lastCommandId: message.commandId})
     }
@@ -115,7 +124,9 @@ class Chat extends PureComponent {
       commandIds = []
     }
     this.setCommands([...commandIds], {...commands})
-    this.scrollToBottom()
+    if (scrollToBottom) {
+      this.scrollToBottom()
+    }
   }
 
   setCommands = (commandIds, commands) => {
@@ -135,9 +146,11 @@ class Chat extends PureComponent {
   }
 
   scrollToBottom = () => {
-    if (this.scrollRef.current) {
-      this.scrollRef.current.scrollIntoView()
-    }
+    setTimeout(() => {
+      if (this.scrollRef.current) {
+        this.scrollRef.current.scrollIntoView()
+      }
+    }, 10)
   }
 
   handleTextChange = ({target}) => {

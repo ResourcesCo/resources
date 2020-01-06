@@ -9,6 +9,7 @@ export default {
     linkColor: 'cyan',
     inputColor: '#bbb',
     bubble1: '#595959',
+    menuBackground: '#898989',
   },
   light: {
     foreground: '#111',
@@ -20,5 +21,6 @@ export default {
     linkColor: 'blue',
     inputColor: '#222',
     bubble1: '#c9c9c9',
+    menuBackground: '#a7a7a7',
   },
 }

@@ -9,6 +9,7 @@ import clear from './clear'
 import help from './help'
 import roll from './roll'
 import request from './request'
+import miscDev from './misc-dev'
 
 export default {
   help,
@@ -18,6 +19,7 @@ export default {
   asana,
   openfaas,
   'client-gateway': clientGateway,
+  'misc-dev': miscDev,
   note,
   clear,
   roll,
