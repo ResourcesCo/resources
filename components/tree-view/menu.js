@@ -4,7 +4,22 @@ import { hasChildren } from './analyze'
 import useClickOutside from './use-click-outside'
 
 export const MenuItem = ({ onClick, children }) => {
-  return <div><button onClick={onClick}>{children}</button></div>
+  return <div>
+    <button onClick={onClick}>{children}</button>
+    <style jsx>{`
+      div {
+        background: none;
+      }
+      button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0 0 8px;
+        margin: 0;
+        outline: none;
+      }
+    `}</style>
+  </div>
 }
 
 export default ({ onClose, theme, children }) => {
@@ -14,8 +29,13 @@ export default ({ onClose, theme, children }) => {
   return <div className="outer" ref={ref}>
     <div className="inner">
       {
-        children.map(item => {
-          return item 
+        React.Children.map(children, child => {
+          return React.isValidElement(child) ? React.cloneElement(child, {
+            onClick: e => {
+              child.props.onClick(e)
+              onClose()
+            }
+          }) : child
         })
       }
     </div>
@@ -37,14 +57,6 @@ export default ({ onClose, theme, children }) => {
         background-color: ${theme.menuBackground};
         padding: 0 5px;
         border-radius: 5px;
-      }
-      button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0 0 8px;
-        margin: 0;
-        outline: none;
       }
     `}</style>
   </div>
