@@ -30,6 +30,15 @@ export default {
                   body: data
                 }
               },
+              state: {
+                _expanded: true,
+                response: {
+                  _expanded: true,
+                  body: {
+                    _expanded: true,
+                  },
+                },
+              },
               message: message,
             }
           } catch (err) {

@@ -1,8 +1,8 @@
 import { useRef } from 'react'
 import { getState } from './state'
 import { hasChildren } from './analyze'
-import useClickOutside from './use-click-outside'
-import Menu, { MenuItem } from './menu'
+import useClickOutside from './useClickOutside'
+import Menu, { MenuItem } from './Menu'
 
 export default ({ onPickId, name, value, path, state, commandId, onSubmitForm, onClose, theme }) => {
   const isArray = Array.isArray(value)

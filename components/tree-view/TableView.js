@@ -1,5 +1,5 @@
 import { getCollectionPaths, displayPath, getAtPath, detectUrl } from './analyze'
-import Link from './link'
+import Link from './Link'
 
 const Summary = ({value, onPickId, theme}) => {
   if (typeof value === 'string') {

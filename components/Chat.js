@@ -1,9 +1,9 @@
 import { PureComponent } from 'react'
 import runCommand from '../command-runner'
 import parse from '../command-runner/parser'
-import Message from './messages/message'
+import Message from './messages/Message'
 import { store } from '../store'
-import ChatInput from './chat-input'
+import ChatInput from './ChatInput'
 import insertTextAtCursor from 'insert-text-at-cursor'
 import { updateTreeMessage } from './tree-view/state'
 
@@ -78,8 +78,12 @@ class Chat extends PureComponent {
         this.props.onThemeChange(message.theme)
       } else if (message.type === 'form-status') {
         const formCommand = commands[message.formCommandId]
+        if (message.formCommandId === commandIds[commandIds.length - 1]) {
+          scrollToBottom = true
+        }
         if (formCommand) {
           if (message.treeUpdate) {
+            scrollToBottom = false
             let treeMessage = formCommand.messages.find(message => message.type === 'tree')
             treeMessage = updateTreeMessage(treeMessage, message)
             commands[message.formCommandId] = {
@@ -104,9 +108,6 @@ class Chat extends PureComponent {
               messages: [...commandMessages, formStatusMessage],
             }
           }
-        }
-        if (message.formCommandId === commandIds[commandIds.length - 1]) {
-          scrollToBottom = true
         }
       } else {
         if (commands[message.commandId]) {

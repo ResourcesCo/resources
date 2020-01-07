@@ -1,4 +1,4 @@
-import App from '../components/app'
+import App from '../components/App'
 import { Component } from 'react'
 
 class Popup extends Component {

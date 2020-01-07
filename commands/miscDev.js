@@ -11,6 +11,9 @@ export default {
           type: 'tree',
           name: 'result',
           value: result,
+          state: {
+            _expanded: true,
+          },
         }
       },
     },

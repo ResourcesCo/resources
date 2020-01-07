@@ -1,5 +1,5 @@
 import { PureComponent } from 'react'
-import AppView from './app-view'
+import AppView from './AppView'
 import { store } from '../store'
 
 class App extends PureComponent {

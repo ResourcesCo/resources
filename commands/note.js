@@ -21,6 +21,9 @@ export default {
           type: 'tree',
           name: 'notes',
           value: notes,
+          state: {
+            _expanded: true,
+          },
           message,
         }
       }
