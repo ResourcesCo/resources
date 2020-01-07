@@ -1,8 +1,8 @@
-import Help from "./help"
-import Data from './data'
-import DataTree from './data-tree'
-import Form from './form'
-import TreeView from '../tree-view'
+import Help from "./Help"
+import Data from './Data'
+import DataTree from './DataTree'
+import Form from './Form'
+import TreeView from '../TreeView'
 import { useState } from 'react'
 import Loader from 'react-loader-spinner'
 

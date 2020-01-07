@@ -1,8 +1,4 @@
-import { useRef } from 'react'
-import { getState } from './state'
-import { hasChildren } from './analyze'
-import useClickOutside from './use-click-outside'
-import Menu, { MenuItem } from './menu'
+import Menu, { MenuItem } from './Menu'
 
 export default ({ onPickId, url, theme, onClose }) => {
   const pickId = () => {
@@ -12,8 +8,6 @@ export default ({ onPickId, url, theme, onClose }) => {
   const openUrl = () => {
     window.open(url, '_blank')
   }
-
-
 
   return <Menu theme={theme} onClose={onClose}>
     <MenuItem onClick={pickId}>Paste into console</MenuItem>

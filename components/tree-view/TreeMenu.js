@@ -1,8 +1,8 @@
 import { useRef } from 'react'
 import { getState } from './state'
 import { hasChildren } from './analyze'
-import useClickOutside from './use-click-outside'
-import Menu, { MenuItem } from './menu'
+import useClickOutside from './useClickOutside'
+import Menu, { MenuItem } from './Menu'
 
 export default ({ onPickId, name, value, path, state, commandId, onSubmitForm, onClose, theme }) => {
   const isArray = Array.isArray(value)
@@ -32,7 +32,7 @@ export default ({ onPickId, name, value, path, state, commandId, onSubmitForm, o
         if (key === 'table' && !hasChildren(value)) {
           return null
         }
-        return <MenuItem onClick={() => setViewType(key)}>View as {key}</MenuItem>
+        return <MenuItem key={key} onClick={() => setViewType(key)}>View as {key}</MenuItem>
       })
     }
     <MenuItem onClick={pickId}>Paste into console</MenuItem>

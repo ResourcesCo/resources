@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import LinkMenu from './link-menu'
+import LinkMenu from './LinkMenu'
 
 export default ({url, onPickId, theme}) => {
   const [menuOpen, setMenuOpen] = useState(false)

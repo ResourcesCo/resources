@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import Head from './head'
-import Nav from './nav'
-import Chat from './chat'
+import Head from './Head'
+import Nav from './Nav'
+import Chat from './Chat'
 import themes from '../themes'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 

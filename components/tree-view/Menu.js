@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { getState } from './state'
 import { hasChildren } from './analyze'
-import useClickOutside from './use-click-outside'
+import useClickOutside from './useClickOutside'
 
 export const MenuItem = ({ onClick, children }) => {
   return <div>

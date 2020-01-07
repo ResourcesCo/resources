@@ -1,15 +1,14 @@
 import giphy from './giphy'
 import github from './github'
 import asana from './asana'
-import openfaas from './openfaas'
-import clientGateway from './client-gateway'
+import clientGateway from './clientGateway'
 import docs from './docs'
 import note from './note'
 import clear from './clear'
 import help from './help'
 import roll from './roll'
 import request from './request'
-import miscDev from './misc-dev'
+import miscDev from './miscDev'
 
 export default {
   help,
@@ -17,14 +16,13 @@ export default {
   giphy,
   github,
   asana,
-  openfaas,
-  'client-gateway': clientGateway,
-  'misc-dev': miscDev,
+  clientGateway,
+  miscDev,
   note,
   clear,
   roll,
   request,
-  'dark-mode': {
+  darkMode: {
     run() {
       return {type: 'set-theme', theme: 'dark'}
     },
@@ -32,7 +30,7 @@ export default {
       details: 'change to the dark theme'
     }
   },
-  'light-mode': {
+  lightMode: {
     run() {
       return {type: 'set-theme', theme: 'light'}
     },
@@ -40,7 +38,7 @@ export default {
       details: 'change to the light theme'
     }
   },
-  'sleep': {
+  sleep: {
     async run({args}) {
       const [timeoutStr, message] = args
       const timeout = Math.floor(Number.parseFloat(timeoutStr) * 1000)
