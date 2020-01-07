@@ -1,9 +1,10 @@
 import { getCollectionPaths, displayPath, getAtPath, detectUrl } from './analyze'
+import Link from './link'
 
 const Summary = ({value}) => {
   if (typeof value === 'string') {
     if (detectUrl(value)) {
-      return <a target="_blank" href={value}>{value}</a>
+      return <Link value={value} /> 
     } else {
       return value
     }

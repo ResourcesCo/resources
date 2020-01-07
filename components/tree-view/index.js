@@ -3,8 +3,9 @@ import ExpandButton from './expand-button'
 import LabelButton from './label-button'
 import { getState, getChildState } from './state'
 import { hasChildren, detectUrl } from './analyze'
-import Menu from './menu'
+import TreeMenu from './tree-menu'
 import TableView from './table-view'
+import Link from './link'
 
 const isObject = value => {
   return typeof value === 'object' && typeof value !== 'string' && value !== null && !Array.isArray(value)
@@ -40,7 +41,7 @@ const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPic
       {
         (
           menuOpen &&
-          <Menu
+          <TreeMenu
             onPickId={onPickId}
             name={name}
             value={value}
@@ -58,7 +59,7 @@ const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPic
         {isObject(value) && <CollectionSummary type="object" value={value} />}
         {Array.isArray(value) && <CollectionSummary type="array" value={value} />}
         {typeof value === 'string' && (
-          detectUrl(value) ? <a target="_blank" href={value}>{value}</a> : value
+          detectUrl(value) ? <Link value={value} /> : value
         )}
         {value === null && <em>null</em>}
         {typeof value !== 'string' && typeof value !== 'object' && <em>{JSON.stringify(value)}</em>}
