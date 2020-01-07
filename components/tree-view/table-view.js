@@ -1,9 +1,10 @@
 import { getCollectionPaths, displayPath, getAtPath, detectUrl } from './analyze'
+import Link from './link'
 
-const Summary = ({value}) => {
+const Summary = ({value, onPickId, theme}) => {
   if (typeof value === 'string') {
     if (detectUrl(value)) {
-      return <a target="_blank" href={value}>{value}</a>
+      return <Link url={value} onPickId={onPickId} theme={theme} />
     } else {
       return value
     }
@@ -19,7 +20,7 @@ const Summary = ({value}) => {
   }
 }
 
-export default ({value, theme}) => {
+export default ({value, onPickId, theme}) => {
   const paths = getCollectionPaths(value)
   return <div className="table">
     <table>
@@ -34,7 +35,15 @@ export default ({value, theme}) => {
           Object.keys(value).map(key => (
             <tr key={key}>
               <td>{key}</td>
-              {paths.map((path, i) => <td key={i}><Summary value={getAtPath(value[key], path)} /></td>)}
+              {
+                paths.map((path, i) => <td key={i}>
+                  <Summary
+                    value={getAtPath(value[key], path)}
+                    onPickId={onPickId}
+                    theme={theme}
+                  />
+                </td>)
+              }
             </tr>
           ))
         }

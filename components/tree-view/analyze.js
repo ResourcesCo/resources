@@ -23,7 +23,12 @@ export const getPaths = (item, depth = 2) => {
 
 export const getCollectionPaths = collection => {
   const paths = {}
-  for (let item of collection) {
+  const values = (
+    Array.isArray(collection) ?
+    collection :
+    Object.keys(collection).map(key => collection[key])
+  )
+  for (let item of values) {
     for (let path of getPaths(item)) {
       const str = JSON.stringify(path)
       paths[str] = paths[str] || 0
