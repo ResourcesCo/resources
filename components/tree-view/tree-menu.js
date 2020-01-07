@@ -32,7 +32,7 @@ export default ({ onPickId, name, value, path, state, commandId, onSubmitForm, o
         if (key === 'table' && !hasChildren(value)) {
           return null
         }
-        return <MenuItem onClick={() => setViewType(key)}>View as {key}</MenuItem>
+        return <MenuItem key={key} onClick={() => setViewType(key)}>View as {key}</MenuItem>
       })
     }
     <MenuItem onClick={pickId}>Paste into console</MenuItem>
