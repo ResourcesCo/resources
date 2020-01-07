@@ -5,8 +5,6 @@ import useClickOutside from './use-click-outside'
 import Menu, { MenuItem } from './menu'
 
 export default ({ onPickId, name, value, path, state, commandId, onSubmitForm, onClose, theme }) => {
-  const ref = useRef(null)
-  useClickOutside(ref, onClose)
   const isArray = Array.isArray(value)
   const viewType = getState(state)._viewType || 'tree'
 
