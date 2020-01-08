@@ -51,10 +51,11 @@ export default ({ onClose, theme, children }) => {
       .inner {
         position: absolute;
         top: 100%;
-        top: calc(100% + 5px);
-        left: 12px;
-        width: 5cm;
+        top: calc(100% + .05px);
+        left: 24px;
+        width: 3cm;
         background-color: ${theme.menuBackground};
+        opacity: .95;
         padding: 0 5px;
         border-radius: 5px;
       }
