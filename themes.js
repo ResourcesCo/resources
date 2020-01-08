@@ -19,7 +19,7 @@ export default {
     selectionBackground: '#7EC0EE',
     selectionColor: 'black',
     linkColor: '#2562B1',
-    inputColor: '#FF0000', // #222
+    inputColor: '#222', //
     bubble1: '#c9c9c9',
     menuBackground: '#a7a7a7',
   },
