@@ -1,15 +1,25 @@
 import shortid from 'shortid'
 
+const saveNote = ({name, note, store}) => {
+  let noteValue
+  try {
+    noteValue = JSON.parse(note)
+  } catch (e) {
+    noteValue = note
+  }
+  store.notes[name] = noteValue
+  store.save()
+  return {type: 'text', text: `Saved as ${JSON.stringify(name)}!`}
+}
+
 export default {
   commands: {
     add: {
       args: ['note'],
       help: 'add a note',
       run({args: {note}, store}) {
-        const id = shortid()
-        store.notes[id] = note
-        store.save()
-        return {type: 'text', text: `Saved as "${id}"!`}
+        const name = shortid()
+        return saveNote({name, note, store})
       }
     },
     ls: {
@@ -36,6 +46,29 @@ export default {
         store.save()
         return {type: 'text', text: 'Deleted!'}
       }
-    }
+    },
+    save: {
+      args: ['name', 'note'],
+      help: 'save a note',
+      run({args: {name, note}, store}) {
+        return saveNote({name, note, store})
+      }
+    },
+    show: {
+      args: ['name'],
+      help: 'show a note',
+      run({store, message, args: {name}}) {
+        const note = store.notes[name]
+        return {
+          type: 'tree',
+          name,
+          value: note,
+          state: {
+            _expanded: true,
+          },
+          message,
+        }
+      }
+    },
   },
 }
