@@ -72,7 +72,7 @@ const runSubcommand = async ({commandName, root, args, store, message, formData,
         details: `show help for ${commandName} commands`,
       }
     ]
-    for (let key of Object.keys(root.commands)) {
+    for (let key of Object.keys(root.commands).filter(s => !s.startsWith('_'))) {
       const command = key.replace('_', '-')
       const cmd = root.commands[key]
       help.push({args: cmd.args, details: cmd.help, command})
@@ -171,12 +171,6 @@ export default async (message, parsed, onMessagesCreated, {formData, formCommand
     }
     const outputMessages = convertToArray(result).map(message => ({...message, commandId}))
     onMessagesCreated([...outputMessages, {type: 'loaded', commandId}])
-  } else if (commandName === '_tree') {
-    onMessagesCreated([{
-      type: 'form-status',
-      treeUpdate: formData,
-      formCommandId,
-    }])
   } else {
     onMessagesCreated([
       inputMessage(message),

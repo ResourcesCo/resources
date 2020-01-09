@@ -25,7 +25,7 @@ const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPic
   const { _expanded: expanded, _viewType: viewType } = getState(state)
   const setExpanded = expanded => {
     onSubmitForm({
-      message: '_tree update',
+      message: 'channel _updateCommand',
       commandId,
       formData: {
         path,

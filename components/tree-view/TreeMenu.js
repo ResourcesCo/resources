@@ -10,7 +10,7 @@ export default ({ onPickId, name, value, path, state, commandId, onSubmitForm, o
 
   const setViewType = viewType => {
     onSubmitForm({
-      message: '_tree update',
+      message: 'channel _updateCommand',
       commandId,
       formData: {
         path,
