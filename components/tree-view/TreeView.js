@@ -25,12 +25,10 @@ const TreeView = ({name, value, state, path = [], commandId, onMessage, onPickId
   const { _expanded: expanded, _viewType: viewType } = getState(state)
   const setExpanded = expanded => {
     onMessage({
-      type: 'form-status',
-      treeUpdate: {
-        path,
-        state: { _expanded: expanded },
-      },
-      formCommandId: commandId,
+      type: 'tree-update',
+      path,
+      state: { _expanded: expanded },
+      treeCommandId: commandId,
     })
   }
   const _hasChildren = hasChildren(value)

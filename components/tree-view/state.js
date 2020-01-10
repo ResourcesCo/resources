@@ -11,7 +11,7 @@ const updateNestedState = (state, path = [], pathState) => {
   return result
 }
 
-export const updateTreeMessage = (treeMessage, {treeUpdate}) => {
+export const updateTreeMessage = (treeMessage, treeUpdate) => {
   return {
     ...treeMessage,
     value: treeUpdate.value || treeMessage.value,

@@ -10,12 +10,10 @@ export default ({ onPickId, name, value, path, state, commandId, onMessage, onCl
 
   const setViewType = viewType => {
     onMessage({
-      type: 'form-status',
-      treeUpdate: {
-        path,
-        state: { _viewType: viewType, _expanded: true }
-      },
-      formCommandId: commandId,
+      type: 'tree-update',
+      path,
+      state: { _viewType: viewType, _expanded: true },
+      treeCommandId: commandId,
     })
   }
 
