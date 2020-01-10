@@ -196,6 +196,7 @@ class Chat extends PureComponent {
                       theme={theme}
                       onPickId={this.handlePickId}
                       onSubmitForm={this.handleSubmitForm}
+                      onMessage={message => this.addMessages([message])}
                       isNew={message.commandId === lastCommandId}
                       {...message}
                     />

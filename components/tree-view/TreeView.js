@@ -20,17 +20,17 @@ const CollectionSummary = ({type, value}) => {
   }
 }
 
-const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPickId, theme}) => {
+const TreeView = ({name, value, state, path = [], commandId, onMessage, onPickId, theme}) => {
   const [menuOpen, setMenuOpen] = useState(false)
   const { _expanded: expanded, _viewType: viewType } = getState(state)
   const setExpanded = expanded => {
-    onSubmitForm({
-      message: 'channel _updateCommand',
-      commandId,
-      formData: {
+    onMessage({
+      type: 'form-status',
+      treeUpdate: {
         path,
-        state: { _expanded: expanded }
-      }
+        state: { _expanded: expanded },
+      },
+      formCommandId: commandId,
     })
   }
   const _hasChildren = hasChildren(value)
@@ -47,7 +47,7 @@ const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPic
             value={value}
             state={state}
             path={path}
-            onSubmitForm={onSubmitForm}
+            onMessage={onMessage}
             commandId={commandId}
             onClose={() => setMenuOpen(false)}
             theme={theme}
@@ -84,7 +84,7 @@ const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPic
               value={value[key]}
               state={getChildState(state, key)}
               commandId={commandId}
-              onSubmitForm={onSubmitForm}
+              onMessage={onMessage}
               onPickId={onPickId}
               path={[...path, key]}
               theme={theme}
