@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import ExpandButton from './ExpandButton'
 import LabelButton from './LabelButton'
-import { getState, getChildState } from './state'
-import { hasChildren, detectUrl } from './analyze'
+import { getState, getChildState, getNestedState } from './state'
+import { hasChildren, detectUrl, displayPath } from './analyze'
 import TreeMenu from './TreeMenu'
 import TableView from './TableView'
 import Link from './Link'
+import lodashGet from 'lodash/get'
 
 const isObject = value => {
   return typeof value === 'object' && typeof value !== 'string' && value !== null && !Array.isArray(value)
@@ -20,9 +21,9 @@ const CollectionSummary = ({type, value}) => {
   }
 }
 
-const TreeView = ({name, value, state, path = [], commandId, onMessage, onPickId, theme}) => {
+const TreeView = ({name, value, state, path = [], commandId, showAll, onMessage, onPickId, theme}) => {
   const [menuOpen, setMenuOpen] = useState(false)
-  const { _expanded: expanded, _viewType: viewType } = getState(state)
+  const { _expanded: expanded, _viewType: viewType, _showOnly: showOnly } = getState(state)
   const setExpanded = expanded => {
     onMessage({
       type: 'tree-update',
@@ -32,6 +33,20 @@ const TreeView = ({name, value, state, path = [], commandId, onMessage, onPickId
     })
   }
   const _hasChildren = hasChildren(value)
+
+  if (showOnly) {
+    return <TreeView
+      name={displayPath(showOnly)}
+      value={lodashGet(value, showOnly)}
+      state={getNestedState(state, showOnly)}
+      commandId={commandId}
+      showAll={true}
+      onMessage={onMessage}
+      onPickId={onPickId}
+      path={showOnly}
+      theme={theme}
+    />
+  }
 
   return <>
     <div className="row">
@@ -45,8 +60,9 @@ const TreeView = ({name, value, state, path = [], commandId, onMessage, onPickId
             value={value}
             state={state}
             path={path}
-            onMessage={onMessage}
             commandId={commandId}
+            showAll={showAll}
+            onMessage={onMessage}
             onClose={() => setMenuOpen(false)}
             theme={theme}
           />
