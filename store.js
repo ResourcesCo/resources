@@ -1,3 +1,5 @@
+import throttle from 'lodash/throttle'
+
 const storageKey = 'messages'
 
 const defaults = {
@@ -34,13 +36,13 @@ class Store {
     return true
   }
 
-  async save() {
+  save = throttle(async () => {
     const data = {}
     for (let key of keys) {
       data[key] = this[key]
     }
     window.localStorage.setItem(storageKey, JSON.stringify(data))
-  }
+  }, 50)
 }
 
 export default Store

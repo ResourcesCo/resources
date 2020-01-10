@@ -76,39 +76,36 @@ class Chat extends PureComponent {
         store.theme = message.theme
         store.save()
         this.props.onThemeChange(message.theme)
+      } else if (message.type === 'tree-update') {
+        const formCommand = commands[message.treeCommandId]
+        scrollToBottom = false
+        let treeMessage = formCommand.messages.find(message => message.type === 'tree')
+        treeMessage = updateTreeMessage(treeMessage, message)
+        commands[message.treeCommandId] = {
+          ...formCommand,
+          messages: formCommand.messages.map(
+            m => this.setLoading(m, !!message.loading))
+            .map(message => message.type === 'tree' ? treeMessage : message
+          )
+        }
       } else if (message.type === 'form-status') {
         const formCommand = commands[message.formCommandId]
-        if (message.formCommandId === commandIds[commandIds.length - 1]) {
-          scrollToBottom = true
-        }
         if (formCommand) {
-          if (message.treeUpdate) {
-            scrollToBottom = false
-            let treeMessage = formCommand.messages.find(message => message.type === 'tree')
-            treeMessage = updateTreeMessage(treeMessage, message)
-            commands[message.formCommandId] = {
-              ...formCommand,
-              messages: formCommand.messages.map(
-                m => this.setLoading(m, !!message.loading))
-                .map(message => message.type === 'tree' ? treeMessage : message
-              )
-            }
-          } else {
-            let commandMessages = (
-              formCommand.messages
-              .map(m => this.setLoading(m, !!message.loading))
-              .filter(({type}) => type !== 'form-status')
-            )
-            if (message.success) {
-              commandMessages = commandMessages.filter(({type}) => type !== 'form')
-            }
-            const formStatusMessage = {...message, commandId: message.formCommandId}
-            commands[formStatusMessage.commandId] = {
-              ...formCommand,
-              messages: [...commandMessages, formStatusMessage],
-            }
+          let commandMessages = (
+            formCommand.messages
+            .map(m => this.setLoading(m, !!message.loading))
+            .filter(({type}) => type !== 'form-status')
+          )
+          if (message.success) {
+            commandMessages = commandMessages.filter(({type}) => type !== 'form')
+          }
+          const formStatusMessage = {...message, commandId: message.formCommandId}
+          commands[formStatusMessage.commandId] = {
+            ...formCommand,
+            messages: [...commandMessages, formStatusMessage],
           }
         }
+        scrollToBottom = true
       } else {
         if (commands[message.commandId]) {
           commands[message.commandId] = {...command, messages: [...command.messages, message]}
@@ -197,6 +194,7 @@ class Chat extends PureComponent {
                       theme={theme}
                       onPickId={this.handlePickId}
                       onSubmitForm={this.handleSubmitForm}
+                      onMessage={message => this.addMessages([message])}
                       isNew={message.commandId === lastCommandId}
                       {...message}
                     />

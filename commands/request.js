@@ -32,6 +32,7 @@ export default {
               },
               state: {
                 _expanded: true,
+                _showOnly: ['response', 'body'],
                 response: {
                   _expanded: true,
                   body: {

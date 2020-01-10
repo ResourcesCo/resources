@@ -5,6 +5,8 @@ import Form from './Form'
 import TreeView from '../TreeView'
 import { useState } from 'react'
 import Loader from 'react-loader-spinner'
+import { faLink } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default ({type, code, text, url, content, theme, ...props}) => {
   const [loaded, setLoaded] = useState(false)
@@ -31,12 +33,22 @@ export default ({type, code, text, url, content, theme, ...props}) => {
   } else if (type === 'code') {
     return <pre style={{fontFamily: 'monospace'}}>{text}</pre>
   } else if (type === 'input') {
-    const { loading } = props
+    const { onPickId, commandId, loading } = props
     const lines = text.split("\n")
     return <div className="input-message">
       {lines.map((s, i) => <div key={i}>
-        {s}{i === (lines.length - 1) && loading && <div style={{display: 'inline-block', paddingLeft: 5}}><Loader type="ThreeDots" color={theme.inputColor} height={15} width={20} /></div>}
+        {s}
+        {i === (lines.length - 1) && <span onClick={() => onPickId(commandId)} className="input-link" style={{cursor: 'pointer', paddingLeft: 4}}><FontAwesomeIcon size="xs" icon={faLink} /></span>}
+        {i === (lines.length - 1) && loading && <div style={{display: 'inline-block', paddingLeft: 5}}><Loader type="ThreeDots" color={theme.inputColor} height={15} width={20} /></div>}
       </div>)}
+      <style jsx>{`
+        .input-link {
+          display: none;
+        }
+        .input-message:hover .input-link {
+          display: inline;
+        }
+      `}</style>
     </div>
   } else if (type === 'image') {
     const imageStyle = (loaded ?
@@ -65,7 +77,7 @@ export default ({type, code, text, url, content, theme, ...props}) => {
       onSubmitForm={onSubmitForm}
     />
   } else if (type === 'tree') {
-    const { name, value, state, message, commandId, onSubmitForm, onPickId } = props
+    const { name, value, state, message, commandId, onMessage, onPickId } = props
     return <TreeView
       name={name}
       value={value}
@@ -73,7 +85,7 @@ export default ({type, code, text, url, content, theme, ...props}) => {
       theme={theme}
       message={message}
       commandId={commandId}
-      onSubmitForm={onSubmitForm}
+      onMessage={onMessage}
       onPickId={onPickId}
     />
   } else {
