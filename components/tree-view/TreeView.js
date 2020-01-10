@@ -29,7 +29,7 @@ const TreeView = ({name, value, state, path = [], commandId, onSubmitForm, onPic
       commandId,
       formData: {
         path,
-        state: { ...state, _expanded: expanded }
+        state: { _expanded: expanded }
       }
     })
   }

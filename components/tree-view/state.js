@@ -1,6 +1,6 @@
 const updateNestedState = (state, path = [], pathState) => {
   if (path.length === 0) {
-    return pathState
+    return {...state, ...pathState}
   }
   const [key, ...remainingPath] = path
   const stateKey = key.startsWith('_') ? `_${key}` : key

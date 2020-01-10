@@ -14,7 +14,7 @@ export default ({ onPickId, name, value, path, state, commandId, onSubmitForm, o
       commandId,
       formData: {
         path,
-        state: { ...state, _viewType: viewType, _expanded: true }
+        state: { _viewType: viewType, _expanded: true }
       }
     })
   }

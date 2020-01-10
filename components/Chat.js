@@ -59,7 +59,7 @@ class Chat extends PureComponent {
     let {commandIds, commands} = this.state
     let clear = false
     let loadedMessage = undefined
-    let scrollToBottom = false
+    let scrollToBottom = null
     for (let message of newMessages) {
       const command = commands[message.commandId]
       if (message.type === 'loaded') {
@@ -78,9 +78,6 @@ class Chat extends PureComponent {
         this.props.onThemeChange(message.theme)
       } else if (message.type === 'form-status') {
         const formCommand = commands[message.formCommandId]
-        if (message.formCommandId === commandIds[commandIds.length - 1]) {
-          scrollToBottom = true
-        }
         if (formCommand) {
           if (message.treeUpdate) {
             scrollToBottom = false
@@ -116,7 +113,9 @@ class Chat extends PureComponent {
           commands[message.commandId] = {id: message.commandId, messages: [message]}
           commandIds.push(message.commandId)
         }
-        scrollToBottom = true
+        if (scrollToBottom !== false && message.formCommandId === commandIds[commandIds.length - 1]) {
+          scrollToBottom = true
+        }
       }
       this.setState({lastCommandId: message.commandId})
     }
