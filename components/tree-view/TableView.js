@@ -1,24 +1,6 @@
-import { getCollectionPaths, displayPath, getAtPath, detectUrl } from './analyze'
-import Link from './Link'
-
-const Summary = ({value, onPickId, theme}) => {
-  if (typeof value === 'string') {
-    if (detectUrl(value)) {
-      return <Link url={value} onPickId={onPickId} theme={theme} />
-    } else {
-      return value
-    }
-  } else if (typeof value === 'object' && value !== null) {
-    const length = Object.keys(value).length
-    if (length > 0) {
-      return Array.isArray(value) ? '[]' : '{}'
-    } else {
-      return `${Array.isArray(value) ? 'Array' : 'Object'} (${length} items)`
-    }
-  } else {
-    return <em>{`${value}`}</em>
-  }
-}
+import { getCollectionPaths, displayPath, getAtPath } from './analyze'
+import Summary from './Summary'
+import LabelButton from './LabelButton'
 
 export default ({value, onPickId, theme}) => {
   const paths = getCollectionPaths(value)
@@ -34,7 +16,7 @@ export default ({value, onPickId, theme}) => {
         {
           Object.keys(value).map(key => (
             <tr key={key}>
-              <td>{key}</td>
+              <td><LabelButton theme={theme}>{key}</LabelButton></td>
               {
                 paths.map((path, i) => <td key={i}>
                   <Summary
@@ -53,7 +35,6 @@ export default ({value, onPickId, theme}) => {
       .table {
         padding: 5px;
         padding-left: 30px;
-        font-size: 70%;
       }
       table {
         border-collapse: collapse;

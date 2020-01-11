@@ -2,7 +2,7 @@ import Help from "./Help"
 import Data from './Data'
 import DataTree from './DataTree'
 import Form from './Form'
-import TreeView from '../TreeView'
+import TreeView from '../tree-view/TreeView'
 import { useState } from 'react'
 import Loader from 'react-loader-spinner'
 import { faLink } from '@fortawesome/free-solid-svg-icons'

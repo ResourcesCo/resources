@@ -5,20 +5,11 @@ import { getState, getChildState, getNestedState } from './state'
 import { hasChildren, detectUrl, displayPath } from './analyze'
 import TreeMenu from './TreeMenu'
 import TableView from './TableView'
-import Link from './Link'
+import Summary from './Summary'
 import lodashGet from 'lodash/get'
 
 const isObject = value => {
   return typeof value === 'object' && typeof value !== 'string' && value !== null && !Array.isArray(value)
-}
-
-const CollectionSummary = ({type, value}) => {
-  const length = Object.keys(value).length
-  if (length === 0) {
-    return <span>{type === 'object' ? '{}' : '[]'}</span>
-  } else {
-    return <em>({length} {length === 1 ? 'item' : 'items'})</em>
-  }
 }
 
 const TreeView = ({name, value, state, path = [], commandId, showAll, onMessage, onPickId, theme}) => {
@@ -70,14 +61,11 @@ const TreeView = ({name, value, state, path = [], commandId, showAll, onMessage,
       }
       <LabelButton theme={theme} onClick={() => setMenuOpen(true)}>{name}</LabelButton>
       <div className="inline-details">
-        {isObject(value) && <CollectionSummary type="object" value={value} />}
-        {Array.isArray(value) && <CollectionSummary type="array" value={value} />}
-        {typeof value === 'string' && (
-          detectUrl(value) ? <Link url={value} onPickId={onPickId} theme={theme} /> : value
-        )}
-        {value === null && <em>null</em>}
-        {typeof value !== 'string' && typeof value !== 'object' && <em>{JSON.stringify(value)}</em>}
-        {typeof value === 'undefined' && <em>undefined</em>}
+        <Summary
+          value={value}
+          onPickId={onPickId}
+          theme={theme}
+        />
       </div>
       <style jsx>{`
         .inline-details {
@@ -85,6 +73,7 @@ const TreeView = ({name, value, state, path = [], commandId, showAll, onMessage,
         }
         .row {
           display: flex;
+          margin: 6px 0;
         }
       `}</style>
     </div>
