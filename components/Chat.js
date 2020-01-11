@@ -223,7 +223,6 @@ class Chat extends PureComponent {
 
           .chat-message {
             padding: 3px 5px;
-            font-size: 20px;
           }
 
           .messages-pane {

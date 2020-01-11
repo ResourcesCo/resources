@@ -1,26 +1,26 @@
 export default {
   dark: {
     foreground: '#eee',
-    lightTextColor: '#ccc', // #ccc
-    background: '#24292e',  //#222427
-    inputBorder: 'rgb(140, 140, 140)', // rgb(91, 91, 91)
-    selectionBackground: '#C0C0C0',
+    lightTextColor: '#ccc',
+    background: '#24292e',
+    inputBorder: 'rgb(140, 140, 140)',
+    selectionBackground: '#c0c0c0',
     selectionColor: '#eee',
-    linkColor: '#2562B1',
-    inputColor: '#FFFF00', // #bbb
+    linkColor: '#6fd7d7',
+    inputColor: '#5ac',
     bubble1: '#595959',
     menuBackground: '#898989',
   },
   light: {
     foreground: '#111',
     lightTextColor: '#444',
-    background: '#fff',
+    background: '#f7f7f7',
     inputBorder: 'rgb(140, 140, 140)',
-    selectionBackground: '#7EC0EE',
+    selectionBackground: '#7ec0ee',
     selectionColor: 'black',
-    linkColor: '#2562B1',
-    inputColor: '#222', //
-    bubble1: '#c9c9c9',
+    linkColor: '#2562b1',
+    inputColor: '#297',
+    bubble1: '#ddd',
     menuBackground: '#a7a7a7',
   },
 }

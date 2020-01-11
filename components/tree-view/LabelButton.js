@@ -9,8 +9,8 @@ export default ({children, theme, ...props}) => {
         background-color: ${theme.bubble1};
         border-radius: 9999px;
         outline: none;
-        padding: 4px;
-        padding: 4px 3px;
+        padding: 4px 7px;
+        border: 0;
       }
     `}</style>
   </div>
