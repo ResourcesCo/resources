@@ -1,12 +1,15 @@
 import { detectUrl } from './analyze'
 import Link from './Link'
 
-const CollectionSummary = ({type, length}) => {
-  if (length === 0) {
-    return <span>{type === 'object' ? '{}' : '[]'}</span>
-  } else {
-    return <em>({length} {length === 1 ? 'item' : 'items'})</em>
-  }
+const CollectionSummary = ({type, length, theme}) => {
+  return <span>
+    {(type === 'object' ? '{' : '[')}
+    {length > 0 && (`${length} ${length === 1 ? 'item' : 'items'}`)}
+    {(type === 'object' ? '}' : ']')}
+    <style jsx>{`
+      color: ${theme.summaryColor}
+    `}</style>
+  </span>
 }
 
 export default ({value, onPickId, theme}) => {
@@ -17,22 +20,29 @@ export default ({value, onPickId, theme}) => {
       return value
     }
   } else if (typeof value === 'object' && value !== null) {
-    return <CollectionSummary type={Array.isArray(value) ? 'array' : 'object'} length={Object.keys(value).length} />
-    const length = Object.keys(value).length
-    if (length > 0) {
-      return Array.isArray(value) ? '[]' : '{}'
-    } else {
-      return `${Array.isArray(value) ? 'Array' : 'Object'} (${length} items)`
-    }
-  } else {
-    return <em>
+    return <CollectionSummary
+      type={Array.isArray(value) ? 'array' : 'object'}
+      length={Object.keys(value).length}
+      theme={theme}
+    />
+  } else if (typeof value === 'number') {
+    return <span>
       {`${value}`}
       <style jsx>{`
-        em {
-          font-style: normal;
+        span {
+          color: ${theme.numberColor};
         }
       `}</style>
-    </em>
+    </span>
+  } else {
+    return <span>
+      {`${value}`}
+      <style jsx>{`
+        span {
+          color: ${theme.valueColor};
+        }
+      `}</style>
+    </span>
   }
 }
 //
