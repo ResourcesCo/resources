@@ -2,9 +2,9 @@ import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
 import TextareaAutosize from 'react-autosize-textarea'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-export default ({onFocusChange, text, onTextChange, onSend, textareaRef}) => {
+export default ({onFocusChange, text, onTextChange, onSend, textareaRef, theme}) => {
   const handleKeyPress = e => {
-    if (e.which == 13 && e.shiftKey == false) {
+    if (e.key == 'Enter' && e.shiftKey == false) {
       e.preventDefault()
       onSend()
     }
@@ -32,6 +32,13 @@ export default ({onFocusChange, text, onTextChange, onSend, textareaRef}) => {
         div :global(textarea) {
           width: 100%;
           border-radius: 5px;
+          outline: none;
+          font-size: 20px;
+          line-height: 28px;
+          padding: 2px 5px;
+          height: 32px;
+          resize: none;
+          border: 1px solid ${theme.inputBorder};
         }
 
         button {

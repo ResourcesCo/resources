@@ -12,9 +12,14 @@ const isObject = value => {
   return typeof value === 'object' && typeof value !== 'string' && value !== null && !Array.isArray(value)
 }
 
-const TreeView = ({name, value, state, path = [], commandId, showAll, onMessage, onPickId, theme}) => {
+const TreeView = ({parentType = 'root', name, displayName, value, state, path = [], commandId, showAll, onMessage, onPickId, theme}) => {
   const [menuOpen, setMenuOpen] = useState(false)
-  const { _expanded: expanded, _viewType: viewType, _showOnly: showOnly } = getState(state)
+  const {
+    _expanded: expanded,
+    _viewType: viewType,
+    _showOnly: showOnly,
+    _editingName: editingName
+  } = getState(state)
   const setExpanded = expanded => {
     onMessage({
       type: 'tree-update',
@@ -26,8 +31,16 @@ const TreeView = ({name, value, state, path = [], commandId, showAll, onMessage,
   const _hasChildren = hasChildren(value)
 
   if (showOnly) {
+    const showOnlyParent = showOnly.slice(0, showOnly.length - 1)
+    const showOnlyParentType = (
+      showOnlyParent.length > 0 ?
+      (Array.isArray(lodashGet(value, showOnlyParent)) ? 'array' : 'object') :
+      'root'
+    )
     return <TreeView
-      name={displayPath(showOnly)}
+      parentType={showOnlyParentType}
+      name={showOnly[showOnly.length - 1]}
+      displayName={displayPath([name, ...showOnly])}
       value={lodashGet(value, showOnly)}
       state={getNestedState(state, showOnly)}
       commandId={commandId}
@@ -46,7 +59,7 @@ const TreeView = ({name, value, state, path = [], commandId, showAll, onMessage,
         (
           menuOpen &&
           <TreeMenu
-            onPickId={onPickId}
+            parentType={parentType}
             name={name}
             value={value}
             state={state}
@@ -54,12 +67,23 @@ const TreeView = ({name, value, state, path = [], commandId, showAll, onMessage,
             commandId={commandId}
             showAll={showAll}
             onMessage={onMessage}
+            onPickId={onPickId}
             onClose={() => setMenuOpen(false)}
             theme={theme}
           />
         )
       }
-      <LabelButton theme={theme} onClick={() => setMenuOpen(true)}>{name}</LabelButton>
+      <LabelButton
+        onClick={() => setMenuOpen(true)}
+        editingName={editingName}
+        commandId={commandId}
+        name={name}
+        displayName={displayName}
+        path={path}
+        value={value}
+        onMessage={onMessage}
+        theme={theme}
+      />
       <div className="inline-details">
         <Summary
           value={value}
@@ -82,6 +106,7 @@ const TreeView = ({name, value, state, path = [], commandId, showAll, onMessage,
         {
           Object.keys(value).map(key => (
             <TreeView
+              parentType={Array.isArray(value) ? 'array' : 'object'}
               key={key}
               name={key}
               value={value[key]}
