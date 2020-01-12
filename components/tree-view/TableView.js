@@ -16,7 +16,10 @@ export default ({value, onPickId, theme}) => {
         {
           Object.keys(value).map(key => (
             <tr key={key}>
-              <td><LabelButton theme={theme}>{key}</LabelButton></td>
+              <td>
+                {/*<LabelButton theme={theme} name={key} />*/}
+                {key}
+              </td>
               {
                 paths.map((path, i) => <td key={i}>
                   <Summary

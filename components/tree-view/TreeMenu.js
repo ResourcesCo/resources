@@ -4,7 +4,7 @@ import { hasChildren } from './analyze'
 import useClickOutside from './useClickOutside'
 import Menu, { MenuItem } from './Menu'
 
-export default ({ onPickId, name, value, path, state, commandId, showAll, onMessage, onClose, theme }) => {
+export default ({ onPickId, parentType, name, value, path, state, commandId, showAll, onMessage, onClose, theme }) => {
   const [action, setAction] = useState(null)
 
   const isArray = Array.isArray(value)
@@ -33,6 +33,7 @@ export default ({ onPickId, name, value, path, state, commandId, showAll, onMess
   }
 
   return <Menu theme={theme} onClose={onClose}>
+    {!showAll && ['object', 'root'].includes(parentType) && <MenuItem onClick={() => sendAction('editName')}>Edit name</MenuItem>}
     {
       ['tree', 'table', 'json'].map(key => {
         if (key === viewType) {

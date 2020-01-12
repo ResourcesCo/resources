@@ -211,6 +211,7 @@ class Chat extends PureComponent {
           onTextChange={this.handleTextChange}
           onFocusChange={onFocusChange}
           onSend={this.send}
+          theme={theme}
         />
         <style jsx>{`
           .chat {
