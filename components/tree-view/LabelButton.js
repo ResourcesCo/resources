@@ -4,24 +4,25 @@ import Textarea from '../util/Textarea'
 const NameEdit = ({name, commandId, path, onMessage, theme}) => {
   const [newName, setNewName] = useState(name)
 
-  const save = () => {
-    onMessage({
-      type: 'tree-update',
-      path,
-      action: 'editName',
-      value: newName,
-      treeCommandId: commandId,
-    })
-  }
-
-  const cancel = () => {
+  const sendAction = (data = {}) => {
     onMessage({
       type: 'tree-update',
       path,
       action: 'editName',
       editing: false,
       treeCommandId: commandId,
+      ...data,
     })
+  }
+
+  const save = () => {
+    sendAction({
+      value: newName,
+    })
+  }
+
+  const cancel = () => {
+    sendAction()
   }
 
   const handleKeyPress = e => {

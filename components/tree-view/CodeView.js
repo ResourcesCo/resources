@@ -14,7 +14,8 @@ export default ({value, commandId, path, onMessage, theme}) => {
         type: 'tree-update',
         path,
         action: 'editJson',
-        value: newValue,
+        editing: false,
+        value: JSON.parse(newValue),
         treeCommandId: commandId,
       })
     }
@@ -66,7 +67,7 @@ export default ({value, commandId, path, onMessage, theme}) => {
       </div>
       {error && <div className="error-message">Invalid JSON</div>}
     </div>
-    <div>
+    <div className="actions">
       {
         changed ? <>
           <ActionButton onClick={save} disabled={error} primary theme={theme}>Save</ActionButton>
@@ -94,13 +95,16 @@ export default ({value, commandId, path, onMessage, theme}) => {
       }
       div.error-message {
         color: ${theme.errorColor};
-        margin-top: -3px;
         margin-bottom: 3px;
+        font-size: 80%;
       }
       div.outer {
         outline: none;
         padding-left: 30px;
         border: 0;
+      }
+      div.actions {
+        padding-top: 3px;
       }
     `}</style>
   </div>

@@ -20,17 +20,18 @@ export default ({ onPickId, parentType, name, value, path, state, commandId, sho
     onViewChanged()
   }
 
-  const sendAction = action => {
+  const sendAction = (action, data = {}) => {
     onMessage({
       type: 'tree-update',
       path,
       action,
       treeCommandId: commandId,
+      ...data,
     })
   }
 
   const editJson = () => {
-    sendAction('editJson')
+    sendAction('editJson', {editing: true})
     onViewChanged()
   }
 
@@ -51,7 +52,7 @@ export default ({ onPickId, parentType, name, value, path, state, commandId, sho
       })
     }
     {!showAll && ['object', 'root'].includes(parentType) && <MenuItem onClick={editJson}>Edit JSON</MenuItem>}
-    {!showAll && ['object', 'root'].includes(parentType) && <MenuItem onClick={() => sendAction('editName')}>Rename</MenuItem>}
+    {!showAll && ['object', 'root'].includes(parentType) && <MenuItem onClick={() => sendAction('editName', {editing: true})}>Rename</MenuItem>}
     {!showAll && (path.length > 0) && <MenuItem onClick={() => sendAction('showOnlyThis')}>Show only this</MenuItem>}
     {showAll && <MenuItem onClick={() => sendAction('showAll')}>Show all</MenuItem>}
     <MenuItem onClick={pickId}>Paste into console</MenuItem>
