@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import ExpandButton from './ExpandButton'
 import LabelButton from './LabelButton'
 import { getState, getChildState, getNestedState } from './state'
@@ -8,6 +8,7 @@ import TableView from './TableView'
 import CodeView from './CodeView'
 import Summary from './Summary'
 import lodashGet from 'lodash/get'
+import scrollIntoView from 'scroll-into-view-if-needed'
 
 const isObject = value => {
   return typeof value === 'object' && typeof value !== 'string' && value !== null && !Array.isArray(value)
@@ -15,6 +16,7 @@ const isObject = value => {
 
 const TreeView = ({parentType = 'root', name, displayName, value, state, path = [], commandId, showAll, onMessage, onPickId, theme}) => {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [viewChanged, setViewChanged] = useState(false)
   const {
     _expanded: expanded,
     _viewType: viewType,
@@ -22,7 +24,9 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
     _editingName: editingName,
     _editingJson: editingJson
   } = getState(state)
+
   const setExpanded = expanded => {
+    setViewChanged(true)
     onMessage({
       type: 'tree-update',
       path,
@@ -31,6 +35,20 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
     })
   }
   const _hasChildren = hasChildren(value)
+
+  const scrollRef = useRef(null)
+
+  useEffect(() => {
+    if (viewChanged && expanded && scrollRef.current) {
+      setTimeout(() => {
+        scrollIntoView(scrollRef.current, {
+          behavior: 'smooth',
+          block: 'start',
+          scrollMode: 'if-needed',
+        })
+      }, 10)
+    }
+  }, [expanded, editingJson, viewType])
 
   if (showOnly) {
     const showOnlyParent = showOnly.slice(0, showOnly.length - 1)
@@ -54,7 +72,7 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
     />
   }
 
-  return <>
+  return <div ref={scrollRef}>
     <div className="row">
       <ExpandButton hasChildren={_hasChildren} expanded={expanded} onClick={() => setExpanded(!expanded)} />
       {
@@ -69,6 +87,7 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
             commandId={commandId}
             showAll={showAll}
             onMessage={onMessage}
+            onViewChanged={() => setViewChanged(true)}
             onPickId={onPickId}
             onClose={() => setMenuOpen(false)}
             theme={theme}
@@ -149,7 +168,7 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
         theme={theme}
       />
     }
-  </>
+  </div>
 }
 
 export default TreeView

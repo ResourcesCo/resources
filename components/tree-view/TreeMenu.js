@@ -4,7 +4,7 @@ import { hasChildren } from './analyze'
 import useClickOutside from './useClickOutside'
 import Menu, { MenuItem } from './Menu'
 
-export default ({ onPickId, parentType, name, value, path, state, commandId, showAll, onMessage, onClose, theme }) => {
+export default ({ onPickId, parentType, name, value, path, state, commandId, showAll, onMessage, onClose, onViewChanged, theme }) => {
   const [action, setAction] = useState(null)
 
   const isArray = Array.isArray(value)
@@ -17,6 +17,7 @@ export default ({ onPickId, parentType, name, value, path, state, commandId, sho
       state: { _viewType: viewType, _expanded: true },
       treeCommandId: commandId,
     })
+    onViewChanged()
   }
 
   const sendAction = action => {
@@ -26,6 +27,11 @@ export default ({ onPickId, parentType, name, value, path, state, commandId, sho
       action,
       treeCommandId: commandId,
     })
+  }
+
+  const editJson = () => {
+    sendAction('editJson')
+    onViewChanged()
   }
 
   const pickId = () => {
@@ -44,7 +50,7 @@ export default ({ onPickId, parentType, name, value, path, state, commandId, sho
         return <MenuItem key={key} onClick={() => setViewType(key)}>{key === 'json' ? 'Edit JSON' : `View as ${key}`}</MenuItem>
       })
     }
-    {!showAll && ['object', 'root'].includes(parentType) && <MenuItem onClick={() => sendAction('editJson')}>Edit JSON</MenuItem>}
+    {!showAll && ['object', 'root'].includes(parentType) && <MenuItem onClick={editJson}>Edit JSON</MenuItem>}
     {!showAll && ['object', 'root'].includes(parentType) && <MenuItem onClick={() => sendAction('editName')}>Rename</MenuItem>}
     {!showAll && (path.length > 0) && <MenuItem onClick={() => sendAction('showOnlyThis')}>Show only this</MenuItem>}
     {showAll && <MenuItem onClick={() => sendAction('showAll')}>Show all</MenuItem>}

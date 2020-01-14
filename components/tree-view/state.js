@@ -1,12 +1,18 @@
-const updateNestedState = (state, path = [], pathState) => {
+const updateNestedState = (state, path = [], pathState, options = {}) => {
   if (path.length === 0) {
-    return {...state, ...pathState}
+    const optionState = {}
+    if (options.savePrevExpanded) {
+      optionState._prevExpanded = state._expanded
+    } else if (options.restoreExpanded) {
+      optionState._expanded = state._prevExpanded
+    }
+    return {...state, ...pathState, ...optionState}
   }
   const [key, ...remainingPath] = path
   const stateKey = key.startsWith('_') ? `_${key}` : key
   const result = {
     ...state,
-    [stateKey]: updateNestedState(state[stateKey], remainingPath, pathState)
+    [stateKey]: updateNestedState(state[stateKey], remainingPath, pathState, options)
   }
   return result
 }
@@ -66,7 +72,12 @@ export const updateTreeMessage = (treeMessage, treeUpdate) => {
       )
       let updatedMessage = {
         ...treeMessage,
-        state: updateNestedState(treeMessage.state, treeUpdate.path, {_editingJson: editingJson})
+        state: updateNestedState(
+          treeMessage.state,
+          treeUpdate.path,
+          {_expanded: true, _editingJson: editingJson},
+          editingJson ? {savePrevExpanded: true} : {restoreExpanded: true}
+        )
       }
       return updatedMessage
     }

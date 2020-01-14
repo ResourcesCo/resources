@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Textarea from '../util/Textarea'
 import ActionButton from './ActionButton'
 
@@ -66,14 +66,16 @@ export default ({value, commandId, path, onMessage, theme}) => {
       </div>
       {error && <div className="error-message">Invalid JSON</div>}
     </div>
-    {
-      changed ? <div>
-        <ActionButton onClick={save} disabled={error} primary theme={theme}>Save</ActionButton>
-        <ActionButton onClick={cancel} theme={theme}>Cancel</ActionButton>
-      </div> : <div>
-        <ActionButton onClick={cancel} theme={theme}>Close</ActionButton>
-      </div>
-    }
+    <div>
+      {
+        changed ? <>
+          <ActionButton onClick={save} disabled={error} primary theme={theme}>Save</ActionButton>
+          <ActionButton onClick={cancel} theme={theme}>Cancel</ActionButton>
+        </> : <>
+          <ActionButton onClick={cancel} theme={theme}>Close</ActionButton>
+        </>
+      }
+    </div>
     <style jsx>{`
       div :global(textarea) {
         background: none;
