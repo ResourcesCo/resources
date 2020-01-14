@@ -27,6 +27,7 @@ export default ({onFocusChange, text, onTextChange, onSend, textareaRef, theme})
         .chat-input {
           display: flex;
           flex-direction: row;
+          margin: 0 1px 0 3px;
         }
 
         div :global(textarea) {

@@ -1,14 +1,42 @@
-const updateNestedState = (state, path = [], pathState) => {
+const updateNestedState = (state, path = [], pathState, options = {}) => {
   if (path.length === 0) {
-    return {...state, ...pathState}
+    const optionState = {}
+    if (options.savePrevExpanded) {
+      optionState._prevExpanded = state._expanded
+    } else if (options.restoreExpanded) {
+      optionState._expanded = state._prevExpanded
+    }
+    return {...state, ...pathState, ...optionState}
   }
   const [key, ...remainingPath] = path
   const stateKey = key.startsWith('_') ? `_${key}` : key
   const result = {
     ...state,
-    [stateKey]: updateNestedState(state[stateKey], remainingPath, pathState)
+    [stateKey]: updateNestedState(getChildState(state, key), remainingPath, pathState, options)
   }
   return result
+}
+
+const replaceKey = (value, key, childValue) => {
+  if (Array.isArray(value)) {
+    const result = value.slice()
+    result[key] = childValue
+    return result
+  } else {
+    return {
+      ...value,
+      [key]: childValue
+    }
+  }
+}
+
+const updateNestedValue = (value, path, pathValue) => {
+  if (path.length === 1) {
+    return replaceKey(value, path[0], pathValue)
+  } else {
+    const [key, ...rest] = path
+    return replaceKey(value, path[0], updateNestedValue(value[key], rest, pathValue))
+  }
 }
 
 export const updateTreeMessage = (treeMessage, treeUpdate) => {
@@ -26,14 +54,9 @@ export const updateTreeMessage = (treeMessage, treeUpdate) => {
         state: updateNestedState(treeMessage.state, [], {_showOnly: null}),
       }
     } else if (treeUpdate.action === 'editName') {
-      const editingName = (
-        typeof treeUpdate.value === 'undefined' ?
-        (typeof treeUpdate.editing === 'undefined' ? true : treeUpdate.editing) :
-        false
-      )
       let updatedMessage = {
         ...treeMessage,
-        state: updateNestedState(treeMessage.state, treeUpdate.path, {_editingName: editingName})
+        state: updateNestedState(treeMessage.state, treeUpdate.path, {_editingName: treeUpdate.editing})
       }
       if (typeof treeUpdate.value !== 'undefined') {
         if (treeUpdate.path.length === 0) {
@@ -58,8 +81,21 @@ export const updateTreeMessage = (treeMessage, treeUpdate) => {
         }
       }
       return updatedMessage
-    } else {
-      return treeMessage
+    } else if (treeUpdate.action === 'editJson') {
+      return {
+        ...treeMessage,
+        state: updateNestedState(
+          treeMessage.state,
+          treeUpdate.path,
+          {_expanded: true, _editingJson: treeUpdate.editing},
+          treeUpdate.editing ? {savePrevExpanded: true} : {restoreExpanded: true}
+        ),
+        value: (
+          typeof treeUpdate.value === 'undefined' ?
+          treeMessage.value :
+          updateNestedValue(treeMessage.value, treeUpdate.path, treeUpdate.value)
+        ),
+      }
     }
   } else {
     return {
@@ -111,10 +147,7 @@ const rename = (value, state, path, name) => {
     const stateKey = key.startsWith('_') ? `_${key}` : key
     const { state: childState, value: childValue } = rename(value[key], getChildState(state, key), rest, name)
     return {
-      value: {
-        ...value,
-        [key]: childValue
-      },
+      value: replaceKey(value, key, childValue),
       state: {
         ...getState(state),
         [stateKey]: childState,

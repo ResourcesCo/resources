@@ -47,14 +47,14 @@ export default {
         return {type: 'text', text: 'Deleted!'}
       }
     },
-    save: {
+    set: {
       args: ['name', 'note'],
       help: 'save a note',
       run({args: {name, note}, store}) {
         return saveNote({name, note, store})
       }
     },
-    show: {
+    get: {
       args: ['name'],
       help: 'show a note',
       run({store, message, args: {name}}) {

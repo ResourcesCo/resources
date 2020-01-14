@@ -4,7 +4,7 @@ import { hasChildren } from './analyze'
 import useClickOutside from './useClickOutside'
 import Menu, { MenuItem } from './Menu'
 
-export default ({ onPickId, parentType, name, value, path, state, commandId, showAll, onMessage, onClose, theme }) => {
+export default ({ onPickId, parentType, name, value, path, state, commandId, showAll, onMessage, onClose, onViewChanged, theme }) => {
   const [action, setAction] = useState(null)
 
   const isArray = Array.isArray(value)
@@ -17,15 +17,22 @@ export default ({ onPickId, parentType, name, value, path, state, commandId, sho
       state: { _viewType: viewType, _expanded: true },
       treeCommandId: commandId,
     })
+    onViewChanged()
   }
 
-  const sendAction = action => {
+  const sendAction = (action, data = {}) => {
     onMessage({
       type: 'tree-update',
       path,
       action,
       treeCommandId: commandId,
+      ...data,
     })
+  }
+
+  const editJson = () => {
+    sendAction('editJson', {editing: true})
+    onViewChanged()
   }
 
   const pickId = () => {
@@ -33,18 +40,19 @@ export default ({ onPickId, parentType, name, value, path, state, commandId, sho
   }
 
   return <Menu theme={theme} onClose={onClose}>
-    {!showAll && ['object', 'root'].includes(parentType) && <MenuItem onClick={() => sendAction('editName')}>Edit name</MenuItem>}
     {
-      ['tree', 'table', 'json'].map(key => {
+      ['tree', 'table'].map(key => {
         if (key === viewType) {
           return null
         }
         if (key === 'table' && !hasChildren(value)) {
           return null
         }
-        return <MenuItem key={key} onClick={() => setViewType(key)}>View as {key}</MenuItem>
+        return <MenuItem key={key} onClick={() => setViewType(key)}>{key === 'json' ? 'Edit JSON' : `View as ${key}`}</MenuItem>
       })
     }
+    {!showAll && ['object', 'root'].includes(parentType) && <MenuItem onClick={editJson}>Edit JSON</MenuItem>}
+    {!showAll && ['object', 'root'].includes(parentType) && <MenuItem onClick={() => sendAction('editName', {editing: true})}>Rename</MenuItem>}
     {!showAll && (path.length > 0) && <MenuItem onClick={() => sendAction('showOnlyThis')}>Show only this</MenuItem>}
     {showAll && <MenuItem onClick={() => sendAction('showAll')}>Show all</MenuItem>}
     <MenuItem onClick={pickId}>Paste into console</MenuItem>

@@ -72,12 +72,12 @@ class Form extends PureComponent {
             padding: 4px 12px;
           }
 
-          :global(textarea) {
+          div :global(textarea) {
             width: 600px;
           }
 
           @media only screen and (max-width: 700px) {
-            :global(textarea) {
+            div :global(textarea) {
               width: 95%;
             }
           }
