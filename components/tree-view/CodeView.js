@@ -1,18 +1,23 @@
 import { useState } from 'react'
 import Textarea from '../util/Textarea'
+import ActionButton from './ActionButton'
 
 export default ({value, commandId, path, onMessage, theme}) => {
   const [newValue, setNewValue] = useState(JSON.stringify(value, null, 2))
-  const [error, setError] = useState(value)
+  const [changed, setChanged] = useState(false)
+  const [hadError, setHadError] = useState(false)
+  const [error, setError] = useState(false)
 
   const save = () => {
-    onMessage({
-      type: 'tree-update',
-      path,
-      action: 'editJson',
-      value: newValue,
-      treeCommandId: commandId,
-    })
+    if (validate(newValue)) {
+      onMessage({
+        type: 'tree-update',
+        path,
+        action: 'editJson',
+        value: newValue,
+        treeCommandId: commandId,
+      })
+    }
   }
 
   const cancel = () => {
@@ -25,32 +30,70 @@ export default ({value, commandId, path, onMessage, theme}) => {
     })
   }
 
-  const handleKeyPress = e => {
+  const validate = value => {
+    let valid = true
+    try {
+      JSON.parse(value)
+    } catch (err) {
+      valid = false
+    }
+    setError(!valid)
+    if (!valid && !hadError) setHadError(true)
+    return valid
+  }
+
+  const handleKeyDown = ({target: {value}}) => {
 
   }
 
+  const handleChange = ({target: {value}}) => {
+    setNewValue(value)
+    setChanged(true)
+    if (hadError) validate(value)
+  }
+
   return <div className="outer">
-    <div>
-      <Textarea
-        value={newValue}
-        onChange={({target: {value}}) => setNewValue(value)}
-        onKeyDown={handleKeyPress}
-        onBlur={save}
-        autoFocus
-      />
+    <div className={error ? 'error' : ''}>
+      <div className="textareaWrapper">
+        <Textarea
+          value={newValue}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          onBlur={() => validate(newValue)}
+          maxRows={20}
+          autoFocus
+        />
+      </div>
+      {error && <div className="error-message">Invalid JSON</div>}
     </div>
-    <div>
-      <button onClick={save}></button>
-      <button onClick={cancel}></button>
-    </div>
+    {
+      changed ? <div>
+        <ActionButton onClick={save} disabled={error} primary theme={theme}>Save</ActionButton>
+        <ActionButton onClick={cancel} theme={theme}>Cancel</ActionButton>
+      </div> : <div>
+        <ActionButton onClick={cancel} theme={theme}>Close</ActionButton>
+      </div>
+    }
     <style jsx>{`
       div :global(textarea) {
         background: none;
-        border: 1px solid ${theme.bubble1};
-        padding: 3px;
+        margin: 0;
         resize: none;
         outline: none;
+        border: none;
         width: 95%;
+      }
+      div.textareaWrapper {
+        border: 1px solid ${theme.bubble1};
+        padding: 3px;
+      }
+      div.error div.textareaWrapper {
+        border: 1px solid ${theme.errorColor};
+      }
+      div.error-message {
+        color: ${theme.errorColor};
+        margin-top: -3px;
+        margin-bottom: 3px;
       }
       div.outer {
         outline: none;
