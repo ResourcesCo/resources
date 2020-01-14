@@ -55,6 +55,10 @@ const AppView = ({popup, selectedTheme, onThemeChange}) => {
           background-color: ${theme.background};
         }
 
+        *, *::before, *::after {
+          box-sizing: border-box;
+        }
+
         html, body, textarea, svg, button {
           color: ${theme.foreground};
         }

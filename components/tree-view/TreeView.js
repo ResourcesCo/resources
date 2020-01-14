@@ -5,6 +5,7 @@ import { getState, getChildState, getNestedState } from './state'
 import { hasChildren, detectUrl, displayPath } from './analyze'
 import TreeMenu from './TreeMenu'
 import TableView from './TableView'
+import CodeView from './CodeView'
 import Summary from './Summary'
 import lodashGet from 'lodash/get'
 
@@ -18,7 +19,8 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
     _expanded: expanded,
     _viewType: viewType,
     _showOnly: showOnly,
-    _editingName: editingName
+    _editingName: editingName,
+    _editingJson: editingJson
   } = getState(state)
   const setExpanded = expanded => {
     onMessage({
@@ -102,39 +104,50 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
       `}</style>
     </div>
     {
-      expanded && (isObject(value) || Array.isArray(value)) && viewType === 'tree' && <div className="children">
+      !editingJson && <>
         {
-          Object.keys(value).map(key => (
-            <TreeView
-              parentType={Array.isArray(value) ? 'array' : 'object'}
-              key={key}
-              name={key}
-              value={value[key]}
-              state={getChildState(state, key)}
-              commandId={commandId}
-              onMessage={onMessage}
-              onPickId={onPickId}
-              path={[...path, key]}
-              theme={theme}
-            />
-          ))
+          expanded && (isObject(value) || Array.isArray(value)) && viewType === 'tree' && <div className="children">
+            {
+              Object.keys(value).map(key => (
+                <TreeView
+                  parentType={Array.isArray(value) ? 'array' : 'object'}
+                  key={key}
+                  name={key}
+                  value={value[key]}
+                  state={getChildState(state, key)}
+                  commandId={commandId}
+                  onMessage={onMessage}
+                  onPickId={onPickId}
+                  path={[...path, key]}
+                  theme={theme}
+                />
+              ))
+            }
+            <style jsx>{`
+              .children {
+                padding-left: 10px;
+              }
+            `}</style>
+          </div>
         }
-        <style jsx>{`
-          .children {
-            padding-left: 10px;
-          }
-        `}</style>
-      </div>
+        {
+          expanded && viewType === 'table' && <TableView
+            value={value}
+            onPickId={onPickId}
+            theme={theme}
+          />
+        }
+      </>
     }
     {
-      expanded && viewType === 'table' && <TableView
+      editingJson && <CodeView
+        open={expanded}
+        commandId={commandId}
+        path={path}
         value={value}
-        onPickId={onPickId}
+        onMessage={onMessage}
         theme={theme}
       />
-    }
-    {
-      expanded && viewType === 'json' && <textarea defaultValue={JSON.stringify(value)} style={{height: 200, width: 350}} />
     }
   </>
 }

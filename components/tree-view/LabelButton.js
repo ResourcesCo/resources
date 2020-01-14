@@ -43,7 +43,7 @@ const NameEdit = ({name, commandId, path, onMessage, theme}) => {
       autoFocus
     />
     <style jsx>{`
-      :global(textarea) {
+      div :global(textarea) {
         background: none;
         border: none;
         resize: none;

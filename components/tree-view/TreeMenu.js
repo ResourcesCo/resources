@@ -33,18 +33,19 @@ export default ({ onPickId, parentType, name, value, path, state, commandId, sho
   }
 
   return <Menu theme={theme} onClose={onClose}>
-    {!showAll && ['object', 'root'].includes(parentType) && <MenuItem onClick={() => sendAction('editName')}>Edit name</MenuItem>}
     {
-      ['tree', 'table', 'json'].map(key => {
+      ['tree', 'table'].map(key => {
         if (key === viewType) {
           return null
         }
         if (key === 'table' && !hasChildren(value)) {
           return null
         }
-        return <MenuItem key={key} onClick={() => setViewType(key)}>View as {key}</MenuItem>
+        return <MenuItem key={key} onClick={() => setViewType(key)}>{key === 'json' ? 'Edit JSON' : `View as ${key}`}</MenuItem>
       })
     }
+    {!showAll && ['object', 'root'].includes(parentType) && <MenuItem onClick={() => sendAction('editJson')}>Edit JSON</MenuItem>}
+    {!showAll && ['object', 'root'].includes(parentType) && <MenuItem onClick={() => sendAction('editName')}>Rename</MenuItem>}
     {!showAll && (path.length > 0) && <MenuItem onClick={() => sendAction('showOnlyThis')}>Show only this</MenuItem>}
     {showAll && <MenuItem onClick={() => sendAction('showAll')}>Show all</MenuItem>}
     <MenuItem onClick={pickId}>Paste into console</MenuItem>

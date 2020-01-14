@@ -58,8 +58,17 @@ export const updateTreeMessage = (treeMessage, treeUpdate) => {
         }
       }
       return updatedMessage
-    } else {
-      return treeMessage
+    } else if (treeUpdate.action === 'editJson') {
+      const editingJson = (
+        typeof treeUpdate.value === 'undefined' ?
+        (typeof treeUpdate.editing === 'undefined' ? true : treeUpdate.editing) :
+        false
+      )
+      let updatedMessage = {
+        ...treeMessage,
+        state: updateNestedState(treeMessage.state, treeUpdate.path, {_editingJson: editingJson})
+      }
+      return updatedMessage
     }
   } else {
     return {
