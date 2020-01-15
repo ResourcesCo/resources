@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { Manager, Reference, Popper } from 'react-popper'
 import ExpandButton from './ExpandButton'
 import LabelButton from './LabelButton'
 import { getState, getChildState, getNestedState } from './state'
@@ -37,6 +38,7 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
   const _hasChildren = hasChildren(value)
 
   const scrollRef = useRef(null)
+  const anchorRef = useRef(null)
 
   useEffect(() => {
     if (viewChanged && expanded && scrollRef.current) {
@@ -75,36 +77,46 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
   return <div ref={scrollRef}>
     <div className="row">
       <ExpandButton hasChildren={_hasChildren} expanded={expanded} onClick={() => setExpanded(!expanded)} />
-      {
-        (
-          menuOpen &&
-          <TreeMenu
-            parentType={parentType}
-            name={name}
-            value={value}
-            state={state}
-            path={path}
-            commandId={commandId}
-            showAll={showAll}
-            onMessage={onMessage}
-            onViewChanged={() => setViewChanged(true)}
-            onPickId={onPickId}
-            onClose={() => setMenuOpen(false)}
-            theme={theme}
-          />
-        )
-      }
-      <LabelButton
-        onClick={() => setMenuOpen(true)}
-        editingName={editingName}
-        commandId={commandId}
-        name={name}
-        displayName={displayName}
-        path={path}
-        value={value}
-        onMessage={onMessage}
-        theme={theme}
-      />
+      <Manager>
+        <Reference>
+          {({ref}) => (
+            <LabelButton
+              ref={ref}
+              onClick={() => setMenuOpen(true)}
+              editingName={editingName}
+              commandId={commandId}
+              name={name}
+              displayName={displayName}
+              path={path}
+              value={value}
+              onMessage={onMessage}
+              theme={theme}
+            />
+          )}
+        </Reference>
+        {( menuOpen &&
+          <Popper placement="bottom">
+            {({ref, style, placement}) => (
+              <div ref={ref} style={style} data-placement={placement}>
+                <TreeMenu
+                  parentType={parentType}
+                  name={name}
+                  value={value}
+                  state={state}
+                  path={path}
+                  commandId={commandId}
+                  showAll={showAll}
+                  onMessage={onMessage}
+                  onViewChanged={() => setViewChanged(true)}
+                  onPickId={onPickId}
+                  onClose={() => setMenuOpen(false)}
+                  theme={theme}
+                />
+              </div>
+            )}
+          </Popper>
+        )}
+      </Manager>
       <div className="inline-details">
         <Summary
           value={value}

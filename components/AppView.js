@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import Head from './Head'
-import Nav from './Nav'
 import Chat from './Chat'
 import themes from '../themes'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
@@ -43,7 +42,6 @@ const AppView = ({popup, selectedTheme, onThemeChange}) => {
   return (
     <div>
       <Head title="Home" />
-      <Nav theme={theme} />
       <Chat onFocusChange={handleFocusChange} theme={theme} onThemeChange={onThemeChange} />
 
       <style jsx global>{`
