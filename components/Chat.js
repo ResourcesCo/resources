@@ -1,11 +1,13 @@
 import { PureComponent } from 'react'
 import runCommand from '../command-runner'
 import parse from '../command-runner/parser'
+import Nav from './Nav'
 import Message from './messages/Message'
 import { store } from '../store'
 import ChatInput from './ChatInput'
 import insertTextAtCursor from 'insert-text-at-cursor'
 import { updateTreeMessage } from './tree-view/state'
+import { Manager } from 'react-popper'
 
 class Chat extends PureComponent {
   state = {
@@ -179,45 +181,49 @@ class Chat extends PureComponent {
 
     return (
       <div className="chat">
-        <div className="messages-pane">
-          <div className="messages-scroll">
-            <div className="messages">
-              {
-                messages.filter(m => typeof m === 'object' && !!m).map((message, i) => (
-                  <div
-                    className={`chat-message ${message.type === 'input' ? 'input-message' : 'output-message'}`}
+        <div className="nav">
+          <Nav theme={theme} />
+        </div>
+        <div className="messages-scroll">
+          <div className="messages">
+            {
+              messages.filter(m => typeof m === 'object' && !!m).map((message, i) => (
+                <div
+                  className={`chat-message ${message.type === 'input' ? 'input-message' : 'output-message'}`}
+                  key={i}
+                >
+                  <Message
                     key={i}
-                  >
-                    <Message
-                      key={i}
-                      onLoad={this.scrollToBottom}
-                      theme={theme}
-                      onPickId={this.handlePickId}
-                      onSubmitForm={this.handleSubmitForm}
-                      onMessage={message => this.addMessages([message])}
-                      isNew={message.commandId === lastCommandId}
-                      {...message}
-                    />
-                  </div>
-                ))
-              }
-              <div className="the-end" ref={scrollRef}></div>
-            </div>
+                    onLoad={this.scrollToBottom}
+                    theme={theme}
+                    onPickId={this.handlePickId}
+                    onSubmitForm={this.handleSubmitForm}
+                    onMessage={message => this.addMessages([message])}
+                    isNew={message.commandId === lastCommandId}
+                    {...message}
+                  />
+                </div>
+              ))
+            }
+            <div className="the-end" ref={scrollRef}></div>
           </div>
         </div>
-        <ChatInput
-          textareaRef={this.textareaRef}
-          text={text}
-          onTextChange={this.handleTextChange}
-          onFocusChange={onFocusChange}
-          onSend={this.send}
-          theme={theme}
-        />
+        <div className="chat-input">
+          <ChatInput
+            textareaRef={this.textareaRef}
+            text={text}
+            onTextChange={this.handleTextChange}
+            onFocusChange={onFocusChange}
+            onSend={this.send}
+            theme={theme}
+          />
+        </div>
         <style jsx>{`
           .chat {
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
+            height: 100vh;
             flex-grow: 1;
             padding: 2px;
           }
@@ -226,20 +232,9 @@ class Chat extends PureComponent {
             padding: 3px 5px;
           }
 
-          .messages-pane {
-            flex-grow: 1;
-            display: flex;
-            position: relative;
-          }
-
           .messages-scroll {
-            flex: 1;
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
+            flex-grow: 1;
+            overflow: scroll;
           }
 
           .current-page-docs {

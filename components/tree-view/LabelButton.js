@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Textarea from '../util/Textarea'
 
-const NameEdit = ({name, commandId, path, onMessage, theme}) => {
+const NameEdit = React.forwardRef(({name, commandId, path, onMessage, theme}, ref) => {
   const [newName, setNewName] = useState(name)
 
   const sendAction = (data = {}) => {
@@ -59,14 +59,15 @@ const NameEdit = ({name, commandId, path, onMessage, theme}) => {
       }
     `}</style>
   </div>
-}
+})
 
-export default ({name, displayName, editingName, theme, onClick, ...props}) => {
+export default React.forwardRef(({name, displayName, editingName, theme, onClick, ...props}, ref) => {
   return editingName ? <NameEdit
+    ref={ref}
     name={name}
     theme={theme}
     {...props}
-  /> : <div>
+  /> : <div ref={ref}>
     <button className="id" onClick={onClick}>{typeof displayName !== 'undefined' ? displayName : name}</button>
     <style jsx>{`
       button {
@@ -79,4 +80,4 @@ export default ({name, displayName, editingName, theme, onClick, ...props}) => {
       }
     `}</style>
   </div>
-}
+})
