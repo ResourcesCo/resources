@@ -19,6 +19,7 @@
     "insert-text-at-cursor": "^0.3.0",
     "lodash": "^4.17.15",
     "next": "^9.1.5",
+    "prettier": "^1.19.1",
     "react": "^16.12.0",
     "react-autosize-textarea": "^7.0.0",
     "react-dom": "16.12.0",
@@ -28,5 +29,10 @@
     "scroll-into-view-if-needed": "^2.2.22",
     "shortid": "^2.2.15",
     "webextension-polyfill": "^0.4.0"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5"
   }
 }
