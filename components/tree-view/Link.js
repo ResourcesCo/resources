@@ -18,7 +18,7 @@ export default ({url, onPickId, theme}) => {
         )}
       </Reference>
       {(menuOpen &&
-        <Popper placement="bottom">
+        <Popper placement="bottom-start">
           {({ref, style, placement}) => (
             <div ref={ref} style={style} data-placement={placement}>
               <LinkMenu

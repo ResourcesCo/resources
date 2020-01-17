@@ -74,7 +74,7 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
     />
   }
 
-  return <div ref={scrollRef}>
+  return <div className="tree" ref={scrollRef}>
     <div className="row">
       <ExpandButton hasChildren={_hasChildren} expanded={expanded} onClick={() => setExpanded(!expanded)} />
       <Manager>
@@ -95,26 +95,20 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
           )}
         </Reference>
         {( menuOpen &&
-          <Popper placement="bottom">
-            {({ref, style, placement}) => (
-              <div ref={ref} style={style} data-placement={placement}>
-                <TreeMenu
-                  parentType={parentType}
-                  name={name}
-                  value={value}
-                  state={state}
-                  path={path}
-                  commandId={commandId}
-                  showAll={showAll}
-                  onMessage={onMessage}
-                  onViewChanged={() => setViewChanged(true)}
-                  onPickId={onPickId}
-                  onClose={() => setMenuOpen(false)}
-                  theme={theme}
-                />
-              </div>
-            )}
-          </Popper>
+          <TreeMenu
+            parentType={parentType}
+            name={name}
+            value={value}
+            state={state}
+            path={path}
+            commandId={commandId}
+            showAll={showAll}
+            onMessage={onMessage}
+            onViewChanged={() => setViewChanged(true)}
+            onPickId={onPickId}
+            onClose={() => setMenuOpen(false)}
+            theme={theme}
+          />
         )}
       </Manager>
       <div className="inline-details">
@@ -131,6 +125,7 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
         .row {
           display: flex;
           margin: 6px 0;
+          align-items: center;
         }
       `}</style>
     </div>

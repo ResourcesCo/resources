@@ -13,7 +13,8 @@ export default ({onClick, expanded, hasChildren}) => (
         cursor: pointer;
         padding: 0;
         margin: 0;
-        font-size: 100%;
+        margin-top: -2px;
+        font-size: 1.5em;
         min-width: 20px;
       }
       .invisible {
