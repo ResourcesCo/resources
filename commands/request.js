@@ -3,7 +3,7 @@ export default {
     get: {
       args: ['url'],
       help: 'Make a GET request',
-      async run({args: {url}, message, formData, formCommandId}) {
+      async run({ args: { url }, message, formData, formCommandId }) {
         if (formData) {
           return {
             type: 'form-status',
@@ -27,8 +27,8 @@ export default {
                 url,
                 response: {
                   headers: response.headers,
-                  body: data
-                }
+                  body: data,
+                },
               },
               state: {
                 _expanded: true,
@@ -45,15 +45,14 @@ export default {
           } catch (err) {
             return {
               type: 'error',
-              text: (
-                err.name === 'AbortError' ?
-                'The request timed out.' :
-                err.toString()
-              )
+              text:
+                err.name === 'AbortError'
+                  ? 'The request timed out.'
+                  : err.toString(),
             }
           }
         }
       },
-    }
-  }
+    },
+  },
 }

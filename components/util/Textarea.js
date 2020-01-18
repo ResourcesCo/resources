@@ -15,8 +15,12 @@ class Textarea extends PureComponent {
   }
 
   render() {
-    const {children, maxRows = 8, ...props} = this.props
-    return <TextareaAutosize maxRows={maxRows} {...props} ref={this.inputRef}>{children}</TextareaAutosize>
+    const { children, maxRows = 8, ...props } = this.props
+    return (
+      <TextareaAutosize maxRows={maxRows} {...props} ref={this.inputRef}>
+        {children}
+      </TextareaAutosize>
+    )
   }
 }
 

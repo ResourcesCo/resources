@@ -211,9 +211,10 @@ export default async (
     onMessagesCreated([...outputMessages, { type: 'loaded', commandId }])
   } else {
     onMessagesCreated(
-      [inputMessage(message), { type: 'text', text: 'Command not found.' }].map(
-        message => ({ ...message, commandId })
-      )
+      [
+        inputMessage(message),
+        { type: 'text', text: 'Command not found.' },
+      ].map(message => ({ ...message, commandId }))
     )
   }
 }

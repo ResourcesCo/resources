@@ -1,6 +1,8 @@
-const Nav = ({theme}) => (
+const Nav = ({ theme }) => (
   <nav>
-    <h1>resources<span>co</span></h1>
+    <h1>
+      resources<span>co</span>
+    </h1>
     <style jsx>{`
       h1 {
         text-align: center;

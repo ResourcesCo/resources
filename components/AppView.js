@@ -80,12 +80,11 @@ const AppView = ({ popup, selectedTheme, onThemeChange }) => {
         }
 
         ${popup &&
-          `html, body {
+            `html, body {
           min-width: 450px;
           min-height: 600px;
         }`}
-
-        ::selection {
+          ::selection {
           color: ${theme.selectionColor};
           background: ${theme.selectionBackground};
         }
