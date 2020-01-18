@@ -12,10 +12,27 @@ import lodashGet from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'
 
 const isObject = value => {
-  return typeof value === 'object' && typeof value !== 'string' && value !== null && !Array.isArray(value)
+  return (
+    typeof value === 'object' &&
+    typeof value !== 'string' &&
+    value !== null &&
+    !Array.isArray(value)
+  )
 }
 
-const TreeView = ({parentType = 'root', name, displayName, value, state, path = [], commandId, showAll, onMessage, onPickId, theme}) => {
+const TreeView = ({
+  parentType = 'root',
+  name,
+  displayName,
+  value,
+  state,
+  path = [],
+  commandId,
+  showAll,
+  onMessage,
+  onPickId,
+  theme,
+}) => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [viewChanged, setViewChanged] = useState(false)
   const {
@@ -23,7 +40,7 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
     _viewType: viewType,
     _showOnly: showOnly,
     _editingName: editingName,
-    _editingJson: editingJson
+    _editingJson: editingJson,
   } = getState(state)
 
   const setExpanded = expanded => {
@@ -54,128 +71,129 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
 
   if (showOnly) {
     const showOnlyParent = showOnly.slice(0, showOnly.length - 1)
-    const showOnlyParentType = (
-      showOnlyParent.length > 0 ?
-      (Array.isArray(lodashGet(value, showOnlyParent)) ? 'array' : 'object') :
-      'root'
+    const showOnlyParentType =
+      showOnlyParent.length > 0
+        ? Array.isArray(lodashGet(value, showOnlyParent))
+          ? 'array'
+          : 'object'
+        : 'root'
+    return (
+      <TreeView
+        parentType={showOnlyParentType}
+        name={showOnly[showOnly.length - 1]}
+        displayName={displayPath([name, ...showOnly])}
+        value={lodashGet(value, showOnly)}
+        state={getNestedState(state, showOnly)}
+        commandId={commandId}
+        showAll={true}
+        onMessage={onMessage}
+        onPickId={onPickId}
+        path={showOnly}
+        theme={theme}
+      />
     )
-    return <TreeView
-      parentType={showOnlyParentType}
-      name={showOnly[showOnly.length - 1]}
-      displayName={displayPath([name, ...showOnly])}
-      value={lodashGet(value, showOnly)}
-      state={getNestedState(state, showOnly)}
-      commandId={commandId}
-      showAll={true}
-      onMessage={onMessage}
-      onPickId={onPickId}
-      path={showOnly}
-      theme={theme}
-    />
   }
 
-  return <div className="tree" ref={scrollRef}>
-    <div className="row">
-      <ExpandButton hasChildren={_hasChildren} expanded={expanded} onClick={() => setExpanded(!expanded)} />
-      <Manager>
-        <Reference>
-          {({ref}) => (
-            <LabelButton
-              ref={ref}
-              onClick={() => setMenuOpen(true)}
-              editingName={editingName}
-              commandId={commandId}
+  return (
+    <div className="tree" ref={scrollRef}>
+      <div className="row">
+        <ExpandButton
+          hasChildren={_hasChildren}
+          expanded={expanded}
+          onClick={() => setExpanded(!expanded)}
+        />
+        <Manager>
+          <Reference>
+            {({ ref }) => (
+              <LabelButton
+                ref={ref}
+                onClick={() => setMenuOpen(true)}
+                editingName={editingName}
+                commandId={commandId}
+                name={name}
+                displayName={displayName}
+                path={path}
+                value={value}
+                onMessage={onMessage}
+                theme={theme}
+              />
+            )}
+          </Reference>
+          {menuOpen && (
+            <TreeMenu
+              parentType={parentType}
               name={name}
-              displayName={displayName}
-              path={path}
               value={value}
+              state={state}
+              path={path}
+              commandId={commandId}
+              showAll={showAll}
               onMessage={onMessage}
+              onViewChanged={() => setViewChanged(true)}
+              onPickId={onPickId}
+              onClose={() => setMenuOpen(false)}
               theme={theme}
             />
           )}
-        </Reference>
-        {( menuOpen &&
-          <TreeMenu
-            parentType={parentType}
-            name={name}
-            value={value}
-            state={state}
-            path={path}
-            commandId={commandId}
-            showAll={showAll}
-            onMessage={onMessage}
-            onViewChanged={() => setViewChanged(true)}
-            onPickId={onPickId}
-            onClose={() => setMenuOpen(false)}
-            theme={theme}
-          />
-        )}
-      </Manager>
-      <div className="inline-details">
-        <Summary
+        </Manager>
+        <div className="inline-details">
+          <Summary value={value} onPickId={onPickId} theme={theme} />
+        </div>
+        <style jsx>{`
+          .inline-details {
+            margin-left: 10px;
+          }
+          .row {
+            display: flex;
+            margin: 6px 0;
+            align-items: center;
+          }
+        `}</style>
+      </div>
+      {!editingJson && (
+        <>
+          {expanded &&
+            (isObject(value) || Array.isArray(value)) &&
+            viewType === 'tree' && (
+              <div className="children">
+                {Object.keys(value).map(key => (
+                  <TreeView
+                    parentType={Array.isArray(value) ? 'array' : 'object'}
+                    key={key}
+                    name={key}
+                    value={value[key]}
+                    state={getChildState(state, key)}
+                    commandId={commandId}
+                    onMessage={onMessage}
+                    onPickId={onPickId}
+                    path={[...path, key]}
+                    theme={theme}
+                  />
+                ))}
+                <style jsx>{`
+                  .children {
+                    padding-left: 10px;
+                  }
+                `}</style>
+              </div>
+            )}
+          {expanded && viewType === 'table' && (
+            <TableView value={value} onPickId={onPickId} theme={theme} />
+          )}
+        </>
+      )}
+      {editingJson && (
+        <CodeView
+          open={expanded}
+          commandId={commandId}
+          path={path}
           value={value}
-          onPickId={onPickId}
+          onMessage={onMessage}
           theme={theme}
         />
-      </div>
-      <style jsx>{`
-        .inline-details {
-          margin-left: 10px;
-        }
-        .row {
-          display: flex;
-          margin: 6px 0;
-          align-items: center;
-        }
-      `}</style>
+      )}
     </div>
-    {
-      !editingJson && <>
-        {
-          expanded && (isObject(value) || Array.isArray(value)) && viewType === 'tree' && <div className="children">
-            {
-              Object.keys(value).map(key => (
-                <TreeView
-                  parentType={Array.isArray(value) ? 'array' : 'object'}
-                  key={key}
-                  name={key}
-                  value={value[key]}
-                  state={getChildState(state, key)}
-                  commandId={commandId}
-                  onMessage={onMessage}
-                  onPickId={onPickId}
-                  path={[...path, key]}
-                  theme={theme}
-                />
-              ))
-            }
-            <style jsx>{`
-              .children {
-                padding-left: 10px;
-              }
-            `}</style>
-          </div>
-        }
-        {
-          expanded && viewType === 'table' && <TableView
-            value={value}
-            onPickId={onPickId}
-            theme={theme}
-          />
-        }
-      </>
-    }
-    {
-      editingJson && <CodeView
-        open={expanded}
-        commandId={commandId}
-        path={path}
-        value={value}
-        onMessage={onMessage}
-        theme={theme}
-      />
-    }
-  </div>
+  )
 }
 
 export default TreeView

@@ -14,14 +14,17 @@ const getCommandHelp = () => {
     const help = cmd.help
     if (Array.isArray(help)) {
       for (let value of help) {
-        result.push({...value, command})
+        result.push({ ...value, command })
       }
     } else if (typeof help === 'string') {
-      result.push({args: cmd.args, details: cmd.help, command})
+      result.push({ args: cmd.args, details: cmd.help, command })
     } else if (help) {
-      result.push({...help, command})
+      result.push({ ...help, command })
     } else if (cmd.commands) {
-      result.push({command, details: `run ${command} commands (see \`${command} help\`)`})
+      result.push({
+        command,
+        details: `run ${command} commands (see \`${command} help\`)`,
+      })
     }
   }
   return result
@@ -30,17 +33,19 @@ const getCommandHelp = () => {
 export let commandHelp = getCommandHelp()
 
 const convertToArray = value => {
-  return Array.isArray(value) ? value : (value ? [value] : [])
+  return Array.isArray(value) ? value : value ? [value] : []
 }
 
 const messagesByType = (messages, type) => {
-  return convertToArray(messages).filter(({type: _type}) => _type === type)
+  return convertToArray(messages).filter(({ type: _type }) => _type === type)
 }
 
 const getCommandEnv = commandName => {
   const result = {}
   const prefix = `${commandName.toUpperCase().replace('-', '_')}_`
-  for (let key of Object.keys(store.env).filter(key => key.startsWith(prefix))) {
+  for (let key of Object.keys(store.env).filter(key =>
+    key.startsWith(prefix)
+  )) {
     result[key.substr(prefix.length).toLowerCase()] = store.env[key]
   }
   return result
@@ -48,7 +53,7 @@ const getCommandEnv = commandName => {
 
 const updateCommandEnv = (commandName, envUpdates) => {
   if (envUpdates.length > 0) {
-    for (let {value: messageValue} of envUpdates) {
+    for (let { value: messageValue } of envUpdates) {
       for (let key of Object.keys(messageValue)) {
         const envKey = `${commandName}_${key}`.toUpperCase().replace('-', '_')
         store.env[envKey] = messageValue[key]
@@ -58,9 +63,20 @@ const updateCommandEnv = (commandName, envUpdates) => {
   }
 }
 
-const runSubcommand = async ({commandName, root, args, store, message, formData, formCommandId}) => {
+const runSubcommand = async ({
+  commandName,
+  root,
+  args,
+  store,
+  message,
+  formData,
+  formCommandId,
+}) => {
   if (args.length === 0) {
-    return {type: 'text', text: `No ${commandName} command given. Run \`${commandName} help\` to see the available commands.`}
+    return {
+      type: 'text',
+      text: `No ${commandName} command given. Run \`${commandName} help\` to see the available commands.`,
+    }
   }
   const subCommandName = args[0]
 
@@ -70,21 +86,26 @@ const runSubcommand = async ({commandName, root, args, store, message, formData,
         command: 'help',
         args: [],
         details: `show help for ${commandName} commands`,
-      }
+      },
     ]
-    for (let key of Object.keys(root.commands).filter(s => !s.startsWith('_'))) {
+    for (let key of Object.keys(root.commands).filter(
+      s => !s.startsWith('_')
+    )) {
       const command = key.replace('_', '-')
       const cmd = root.commands[key]
-      help.push({args: cmd.args, details: cmd.help, command})
+      help.push({ args: cmd.args, details: cmd.help, command })
     }
-    return [{type: 'help', help}]
+    return [{ type: 'help', help }]
   }
 
   const subCommandArgList = args.slice(1)
   const subCommandValue = root.commands[subCommandName.replace('-', '_')]
 
   if (!subCommandValue) {
-    return {type: 'text', text: `Unknown command. Run \`${commandName} help\` to see the available commands.`}
+    return {
+      type: 'text',
+      text: `Unknown command. Run \`${commandName} help\` to see the available commands.`,
+    }
   }
   const subCommand = {
     ...subCommandValue,
@@ -93,9 +114,9 @@ const runSubcommand = async ({commandName, root, args, store, message, formData,
 
   const subCommandArgs = {}
   if (subCommandArgList.length !== subCommand.args.length) {
-    return {type: 'text', text: 'Invalid number of arguments.'}
+    return { type: 'text', text: 'Invalid number of arguments.' }
   }
-  for (let i=0; i < subCommand.args.length; i++) {
+  for (let i = 0; i < subCommand.args.length; i++) {
     subCommandArgs[subCommand.args[i].replace('-', '_')] = subCommandArgList[i]
   }
 
@@ -103,7 +124,9 @@ const runSubcommand = async ({commandName, root, args, store, message, formData,
   if (root.dependencies) {
     dependencies = {}
     for (let dependency of root.dependencies) {
-      dependencies[dependency.replace('-', '_')] = {'env': getCommandEnv(dependency)}
+      dependencies[dependency.replace('-', '_')] = {
+        env: getCommandEnv(dependency),
+      }
     }
   }
 
@@ -133,21 +156,33 @@ const runSubcommand = async ({commandName, root, args, store, message, formData,
   }
   const result = await subCommand.run(context)
   const resultArray = convertToArray(result)
-  const updatedResult = resultArray.filter(({type}) => type !== 'env')
-  updateCommandEnv(commandName, resultArray.filter(({type}) => type === 'env'))
+  const updatedResult = resultArray.filter(({ type }) => type !== 'env')
+  updateCommandEnv(
+    commandName,
+    resultArray.filter(({ type }) => type === 'env')
+  )
   return [...convertToArray(beforeResult), ...updatedResult]
 }
 
-export default async (message, parsed, onMessagesCreated, {formData, formCommandId} = {}) => {
+export default async (
+  message,
+  parsed,
+  onMessagesCreated,
+  { formData, formCommandId } = {}
+) => {
   const commandName = parsed[0]
   const command = commands[commandName]
   const commandId = shortid.generate()
   if (command) {
     const args = parsed.slice(1)
     if (formData) {
-      onMessagesCreated([{type: 'form-status', commandId, formCommandId, loading: true}])
+      onMessagesCreated([
+        { type: 'form-status', commandId, formCommandId, loading: true },
+      ])
     } else {
-      onMessagesCreated([{...inputMessage(message), commandId, loading: true}])
+      onMessagesCreated([
+        { ...inputMessage(message), commandId, loading: true },
+      ])
     }
     const context = {
       args,
@@ -169,12 +204,16 @@ export default async (message, parsed, onMessagesCreated, {formData, formCommand
         ...context,
       })
     }
-    const outputMessages = convertToArray(result).map(message => ({...message, commandId}))
-    onMessagesCreated([...outputMessages, {type: 'loaded', commandId}])
+    const outputMessages = convertToArray(result).map(message => ({
+      ...message,
+      commandId,
+    }))
+    onMessagesCreated([...outputMessages, { type: 'loaded', commandId }])
   } else {
-    onMessagesCreated([
-      inputMessage(message),
-      { type: 'text', text: 'Command not found.' }
-    ].map(message => ({...message, commandId})))
+    onMessagesCreated(
+      [inputMessage(message), { type: 'text', text: 'Command not found.' }].map(
+        message => ({ ...message, commandId })
+      )
+    )
   }
 }
