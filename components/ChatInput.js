@@ -2,7 +2,7 @@ import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
 import TextareaAutosize from 'react-autosize-textarea'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-export default ({text, onTextChange, onSend, textareaRef, theme}) => {
+export default ({text, onFocusChange, onTextChange, onSend, textareaRef, theme}) => {
   const handleKeyPress = e => {
     if (e.key == 'Enter' && e.shiftKey == false) {
       e.preventDefault()
@@ -17,6 +17,8 @@ export default ({text, onTextChange, onSend, textareaRef, theme}) => {
         value={text}
         onChange={onTextChange}
         onKeyDown={handleKeyPress}
+        onFocus={() => onFocusChange(true)}
+        onBlur={() => onFocusChange(false)}
         autoFocus
         ref={textareaRef}
       />

@@ -168,7 +168,7 @@ class Chat extends PureComponent {
   }
 
   render() {
-    const { theme } = this.props
+    const { onFocusChange, theme } = this.props
     const { text, commandIds, commands, lastCommandId } = this.state
     const scrollRef = this.scrollRef
     const messages = []
@@ -213,6 +213,7 @@ class Chat extends PureComponent {
             textareaRef={this.textareaRef}
             text={text}
             onTextChange={this.handleTextChange}
+            onFocusChange={onFocusChange}
             onSend={this.send}
             theme={theme}
           />
