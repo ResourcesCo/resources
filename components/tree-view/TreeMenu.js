@@ -52,6 +52,8 @@ export default ({ onPickId, parentType, name, value, path, state, commandId, sho
       })
     }
     {!showAll && ['object', 'root'].includes(parentType) && <MenuItem onClick={editJson}>Edit JSON</MenuItem>}
+    {!showAll && ['object', 'array'].includes(parentType) && <MenuItem onClick={() => sendAction('insert', {position: 'above'})}>Insert Above</MenuItem>}
+    {!showAll && ['object', 'array'].includes(parentType) && <MenuItem onClick={() => sendAction('insert', {position: 'below'})}>Insert Below</MenuItem>}
     {!showAll && ['object', 'root'].includes(parentType) && <MenuItem onClick={() => sendAction('editName', {editing: true})}>Rename</MenuItem>}
     {!showAll && (path.length > 0) && <MenuItem onClick={() => sendAction('showOnlyThis')}>Show only this</MenuItem>}
     {showAll && <MenuItem onClick={() => sendAction('showAll')}>Show all</MenuItem>}
