@@ -10,14 +10,14 @@ const infoForDevices = {
     keyboardHeight: 0,
   },
   ios: {
-    toolbarHeight: 119,
+    toolbarHeight: 150,
     keyboardHeight: 333,
   }
 }
 
 const AppView = ({popup, selectedTheme, onThemeChange}) => {
   const [device, setDevice] = useState('default')
-  const [keyboardOpen, setKeyboardOpen] = useState(0)
+  const [keyboardOpen, setKeyboardOpen] = useState(false)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -37,8 +37,10 @@ const AppView = ({popup, selectedTheme, onThemeChange}) => {
     }, 30)
   }
 
-  const deviceInfo = infoForDevices[device];
   const theme = themes[selectedTheme]
+  const deviceInfo = infoForDevices[device]
+  const heightOffset = deviceInfo.toolbarHeight + (keyboardOpen ? deviceInfo.keyboardHeight : 0)
+
   return (
     <div>
       <Head title="Home" />
@@ -57,6 +59,10 @@ const AppView = ({popup, selectedTheme, onThemeChange}) => {
           box-sizing: border-box;
         }
 
+        html {
+          font-size: 80%;
+        }
+
         html, body, textarea, svg, button {
           color: ${theme.foreground};
         }
@@ -73,6 +79,11 @@ const AppView = ({popup, selectedTheme, onThemeChange}) => {
 
         a {
           color: ${theme.linkColor};
+          text-decoration: none;
+        }
+
+        a:hover {
+          text-decoration: underline;
         }
 
         #__next-prerender-indicator {
@@ -84,7 +95,8 @@ const AppView = ({popup, selectedTheme, onThemeChange}) => {
           display: flex;
           flex-direction: column;
           height: 100vh;
-          height: calc(100vh - ${deviceInfo.toolbarHeight + (keyboardOpen ? deviceInfo.keyboardHeight : 0)}px);
+          height: calc(100vh - ${heightOffset}px);
+          height: calc(-webkit-fill-available - ${heightOffset}px);
         }
       `}</style>
     </div>

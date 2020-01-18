@@ -96,7 +96,7 @@ export default ({value, commandId, path, onMessage, theme}) => {
       div.error-message {
         color: ${theme.errorColor};
         margin-bottom: 3px;
-        font-size: 80%;
+        font-size: 0.8em;
       }
       div.outer {
         outline: none;

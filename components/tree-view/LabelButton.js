@@ -75,7 +75,8 @@ export default React.forwardRef(({name, displayName, editingName, theme, onClick
         background-color: ${theme.bubble1};
         border-radius: 9999px;
         outline: none;
-        padding: 4px 7px;
+        padding: 3px 7px;
+        font-size: inherit;
         border: 0;
       }
     `}</style>
