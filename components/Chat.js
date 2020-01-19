@@ -24,11 +24,11 @@ class Chat extends PureComponent {
   }
 
   setCommandLoading(c, loading) {
-    return { ...c, messages: c.messages.map(m => this.setLoading(m, loading)) }
+    return {...c, messages: c.messages.map(m => this.setLoading(m, loading))}
   }
 
   setLoading(m, loading) {
-    return m.type === 'input' ? { ...m, loading } : m
+    return m.type === 'input' ? {...m, loading} : m
   }
 
   async componentDidMount() {
@@ -54,10 +54,11 @@ class Chat extends PureComponent {
     }
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+  }
 
   addMessages = newMessages => {
-    let { commandIds, commands } = this.state
+    let {commandIds, commands} = this.state
     let clear = false
     let loadedMessage = undefined
     let scrollToBottom = false
@@ -73,38 +74,34 @@ class Chat extends PureComponent {
       } else if (message.type === 'clear') {
         clear = true
       } else if (message.type === 'set-theme') {
-        this.setState({ theme: message.theme })
+        this.setState({theme: message.theme})
         store.theme = message.theme
         store.save()
         this.props.onThemeChange(message.theme)
       } else if (message.type === 'tree-update') {
         const formCommand = commands[message.treeCommandId]
         scrollToBottom = false
-        let treeMessage = formCommand.messages.find(
-          message => message.type === 'tree'
-        )
+        let treeMessage = formCommand.messages.find(message => message.type === 'tree')
         treeMessage = updateTreeMessage(treeMessage, message)
         commands[message.treeCommandId] = {
           ...formCommand,
-          messages: formCommand.messages
-            .map(m => this.setLoading(m, !!message.loading))
-            .map(message => (message.type === 'tree' ? treeMessage : message)),
+          messages: formCommand.messages.map(
+            m => this.setLoading(m, !!message.loading))
+            .map(message => message.type === 'tree' ? treeMessage : message
+          )
         }
       } else if (message.type === 'form-status') {
         const formCommand = commands[message.formCommandId]
         if (formCommand) {
-          let commandMessages = formCommand.messages
+          let commandMessages = (
+            formCommand.messages
             .map(m => this.setLoading(m, !!message.loading))
-            .filter(({ type }) => type !== 'form-status')
+            .filter(({type}) => type !== 'form-status')
+          )
           if (message.success) {
-            commandMessages = commandMessages.filter(
-              ({ type }) => type !== 'form'
-            )
+            commandMessages = commandMessages.filter(({type}) => type !== 'form')
           }
-          const formStatusMessage = {
-            ...message,
-            commandId: message.formCommandId,
-          }
+          const formStatusMessage = {...message, commandId: message.formCommandId}
           commands[formStatusMessage.commandId] = {
             ...formCommand,
             messages: [...commandMessages, formStatusMessage],
@@ -113,43 +110,37 @@ class Chat extends PureComponent {
         scrollToBottom = true
       } else {
         if (commands[message.commandId]) {
-          commands[message.commandId] = {
-            ...command,
-            messages: [...command.messages, message],
-          }
+          commands[message.commandId] = {...command, messages: [...command.messages, message]}
         } else {
-          commands[message.commandId] = {
-            id: message.commandId,
-            messages: [message],
-          }
+          commands[message.commandId] = {id: message.commandId, messages: [message]}
           commandIds.push(message.commandId)
         }
         scrollToBottom = true
       }
-      this.setState({ lastCommandId: message.commandId })
+      this.setState({lastCommandId: message.commandId})
     }
     if (clear) {
       commands = {}
       commandIds = []
     }
-    this.setCommands([...commandIds], { ...commands })
+    this.setCommands([...commandIds], {...commands})
     if (scrollToBottom) {
       this.scrollToBottom()
     }
   }
 
   setCommands = (commandIds, commands) => {
-    this.setState({ commandIds, commands })
+    this.setState({commandIds, commands})
     store.commandIds = commandIds
     store.commands = commands
     store.save()
   }
 
   send = async () => {
-    const { text } = this.state
+    const {text} = this.state
     const parsed = parse(text)
     if (Array.isArray(parsed) && parsed.length) {
-      this.setState({ text: '' })
+      this.setState({text: ''})
       await runCommand(text, parsed, this.addMessages)
     }
   }
@@ -162,8 +153,8 @@ class Chat extends PureComponent {
     }, 10)
   }
 
-  handleTextChange = ({ target }) => {
-    this.setState({ text: target.value })
+  handleTextChange = ({target}) => {
+    this.setState({text: target.value})
   }
 
   handlePickId = id => {
@@ -172,11 +163,8 @@ class Chat extends PureComponent {
     el.focus()
   }
 
-  handleSubmitForm = async ({ commandId, formData, message }) => {
-    await runCommand(message, parse(message), this.addMessages, {
-      formData,
-      formCommandId: commandId,
-    })
+  handleSubmitForm = async ({commandId, formData, message}) => {
+    await runCommand(message, parse(message), this.addMessages, {formData, formCommandId: commandId})
   }
 
   render() {
@@ -198,15 +186,10 @@ class Chat extends PureComponent {
         </div>
         <div className="messages-scroll">
           <div className="messages">
-            {messages
-              .filter(m => typeof m === 'object' && !!m)
-              .map((message, i) => (
+            {
+              messages.filter(m => typeof m === 'object' && !!m).map((message, i) => (
                 <div
-                  className={`chat-message ${
-                    message.type === 'input'
-                      ? 'input-message'
-                      : 'output-message'
-                  }`}
+                  className={`chat-message ${message.type === 'input' ? 'input-message' : 'output-message'}`}
                   key={i}
                 >
                   <Message
@@ -220,7 +203,8 @@ class Chat extends PureComponent {
                     {...message}
                   />
                 </div>
-              ))}
+              ))
+            }
             <div className="the-end" ref={scrollRef}></div>
           </div>
         </div>

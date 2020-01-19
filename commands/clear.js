@@ -1,8 +1,8 @@
 export default {
   run() {
-    return [{ type: 'clear' }]
+    return [{type: 'clear'}]
   },
   help: {
-    details: 'clear the channel',
-  },
+    details: 'clear the channel'
+  }
 }

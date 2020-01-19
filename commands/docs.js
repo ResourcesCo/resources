@@ -24,23 +24,19 @@ const endpoints = {
   'console.aws.amazon.com': [
     {
       pattern: /https:\/\/console\.aws\.amazon\.com\/ec2\/.*#Instances\b/,
-      apiDocUrl:
-        'https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstances.html',
+      apiDocUrl: 'https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstances.html',
     },
     {
       pattern: /https:\/\/console\.aws\.amazon\.com\/ec2(\/.*|$)/,
-      apiDocUrl:
-        'https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Welcome.html',
+      apiDocUrl: 'https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Welcome.html',
     },
     {
       pattern: /https:\/\/console\.aws\.amazon\.com\/cloudfront(\/.*|$)/,
-      apiDocUrl:
-        'https://docs.aws.amazon.com/cloudfront/latest/APIReference/Welcome.html',
+      apiDocUrl: 'https://docs.aws.amazon.com/cloudfront/latest/APIReference/Welcome.html',
     },
     {
       pattern: /https:\/\/console\.aws\.amazon\.com\/route53(\/.*|$)/,
-      apiDocUrl:
-        'https://docs.aws.amazon.com/Route53/latest/APIReference/Welcome.html',
+      apiDocUrl: 'https://docs.aws.amazon.com/Route53/latest/APIReference/Welcome.html',
     },
   ],
   's3.console.aws.amazon.com': [
@@ -48,11 +44,11 @@ const endpoints = {
       pattern: /https:\/\/s3\.console\.aws\.amazon\.com\/s3(\/.*|$)/,
       apiDocUrl: 'https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html',
     },
-  ],
+  ]
 }
 
 export default {
-  run({ message, args }) {
+  run({message, args}) {
     const url = args[0]
 
     let urlObj = {}
@@ -63,20 +59,20 @@ export default {
     }
     const results = []
     const siteEndpoints = endpoints[urlObj.host] || []
-    for (let { pattern, apiDocUrl } of siteEndpoints) {
+    for (let {pattern, apiDocUrl} of siteEndpoints) {
       if (pattern.test(url)) {
-        results.push({ type: 'link', url: apiDocUrl, text: apiDocUrl })
+        results.push({type: 'link', url: apiDocUrl, text: apiDocUrl})
         break
       }
     }
     if (results.length > 0) {
       return results
     } else {
-      return [{ type: 'error', code: 'not_found' }]
+      return [{type: 'error', code: 'not_found'}]
     }
   },
   help: {
     args: ['url'],
-    details: 'find api docs for a url',
-  },
+    details: 'find api docs for a url'
+  }
 }

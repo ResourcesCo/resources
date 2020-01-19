@@ -9,10 +9,8 @@ export default ({ onPickId, url, theme, onClose }) => {
     window.open(url, '_blank')
   }
 
-  return (
-    <Menu theme={theme} onClose={onClose}>
-      <MenuItem onClick={pickId}>Paste into console</MenuItem>
-      <MenuItem onClick={openUrl}>Browse URL</MenuItem>
-    </Menu>
-  )
+  return <Menu theme={theme} onClose={onClose}>
+    <MenuItem onClick={pickId}>Paste into console</MenuItem>
+    <MenuItem onClick={openUrl}>Browse URL</MenuItem>
+  </Menu>
 }

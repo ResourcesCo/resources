@@ -3,7 +3,7 @@ import TextareaAutosize from 'react-autosize-textarea'
 
 class Form extends PureComponent {
   state = {
-    formData: {},
+    formData: {}
   }
 
   constructor(props) {
@@ -11,15 +11,15 @@ class Form extends PureComponent {
     this.firstInputRef = React.createRef()
   }
 
-  handleChange = name => ({ target: { value } }) => {
-    const { formData } = this.state
-    this.setState({ formData: { ...formData, [name]: value } })
+  handleChange = name => ({target: {value}}) => {
+    const {formData} = this.state
+    this.setState({formData: {...formData, [name]: value}})
   }
 
   send = () => {
-    const { commandId, message, onSubmitForm } = this.props
-    const { formData } = this.state
-    onSubmitForm({ commandId, message, formData })
+    const {commandId, message, onSubmitForm} = this.props
+    const {formData} = this.state
+    onSubmitForm({commandId, message, formData})
   }
 
   handleKeyPress = e => {
@@ -35,26 +35,26 @@ class Form extends PureComponent {
     let firstInput = true
     return (
       <div>
-        {fields.map(({ name, type }) => {
-          const result = (
-            <div key={name}>
-              <TextareaAutosize
-                value={formData[name] || ''}
-                onChange={this.handleChange(name)}
-                ref={firstInput ? this.firstInputRef : undefined}
-                autoFocus={isNew}
-                title="Press ⌘-Enter or Ctrl-Enter to send"
-                onKeyPress={this.handleKeyPress}
-              />
-            </div>
-          )
-          firstInput = false
-          return result
-        })}
+        {
+          fields.map(({name, type}) => {
+            const result = (
+              <div key={name}>
+                <TextareaAutosize
+                  value={formData[name] || ''}
+                  onChange={this.handleChange(name)}
+                  ref={firstInput ? this.firstInputRef : undefined}
+                  autoFocus={isNew}
+                  title="Press ⌘-Enter or Ctrl-Enter to send"
+                  onKeyPress={this.handleKeyPress}
+                />
+              </div>
+            )
+            firstInput = false
+            return result
+          })
+        }
         <div>
-          <button className="action" onClick={this.send}>
-            send
-          </button>
+          <button className="action" onClick={this.send}>send</button>
         </div>
         <style jsx>{`
           button {

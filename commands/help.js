@@ -4,10 +4,10 @@ export default {
   run() {
     return {
       type: 'help',
-      help: commandHelp,
+      help: commandHelp
     }
   },
   help: {
-    details: 'show this help message',
-  },
+    details: 'show this help message'
+  }
 }
