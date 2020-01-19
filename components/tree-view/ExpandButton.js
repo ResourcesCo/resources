@@ -16,6 +16,7 @@ export default ({onClick, expanded, hasChildren}) => (
         margin-top: -2px;
         font-size: 1.5em;
         min-width: 20px;
+        background: none;
       }
       .invisible {
         visibility: hidden

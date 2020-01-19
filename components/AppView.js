@@ -52,7 +52,6 @@ const AppView = ({popup, selectedTheme, onThemeChange}) => {
           padding: 0;
           font-family: -apple-system, BlinkMacSystemFont, Avenir Next, Avenir,
             Helvetica, sans-serif;
-          background-color: ${theme.background};
         }
 
         *, *::before, *::after {
@@ -61,6 +60,10 @@ const AppView = ({popup, selectedTheme, onThemeChange}) => {
 
         html {
           font-size: 80%;
+        }
+
+        html, body {
+          background-color: ${theme.background};
         }
 
         html, body, textarea, svg, button {
