@@ -32,6 +32,7 @@ export default ({text, onFocusChange, onTextChange, onSend, textareaRef, theme})
         }
 
         div :global(textarea) {
+          background: none;
           width: 100%;
           border-radius: 5px;
           outline: none;
@@ -44,6 +45,7 @@ export default ({text, onFocusChange, onTextChange, onSend, textareaRef, theme})
         }
 
         button {
+          background: none;
           outline: none;
           border: none;
           padding: 0 5px;
