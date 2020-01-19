@@ -10,17 +10,23 @@ class App extends PureComponent {
 
   async componentDidMount() {
     await store.load()
-    this.setState({ready: true, selectedTheme: store.theme || this.state.selectedTheme})
+    this.setState({
+      ready: true,
+      selectedTheme: store.theme || this.state.selectedTheme,
+    })
   }
 
   handleThemeChange = theme => {
-    this.setState({selectedTheme: theme})
+    this.setState({ selectedTheme: theme })
   }
 
   render() {
     const { selectedTheme, ready } = this.state
     return (
-      <AppView selectedTheme={selectedTheme} onThemeChange={this.handleThemeChange} />
+      <AppView
+        selectedTheme={selectedTheme}
+        onThemeChange={this.handleThemeChange}
+      />
     )
   }
 }

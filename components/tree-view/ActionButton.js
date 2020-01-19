@@ -1,5 +1,10 @@
-export default ({primary = false, className, children, theme, ...props}) => (
-  <button className={`${className} ${primary ? 'primary' : ''} ${primary ? 'primary' : ''}`} {...props}>
+export default ({ primary = false, className, children, theme, ...props }) => (
+  <button
+    className={`${className} ${primary ? 'primary' : ''} ${
+      primary ? 'primary' : ''
+    }`}
+    {...props}
+  >
     {children}
     <style jsx>{`
       button {
@@ -17,7 +22,8 @@ export default ({primary = false, className, children, theme, ...props}) => (
         background-color: ${theme.primaryActionColor};
       }
 
-      button:disabled, button.primary:disabled {
+      button:disabled,
+      button.primary:disabled {
         color: ${theme.disabledActionTextColor};
         background-color: ${theme.disabledActionColor};
       }

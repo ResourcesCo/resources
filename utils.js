@@ -1,3 +1,1 @@
-export let plural = singular => (
-  `${singular}s`
-)
+export let plural = singular => `${singular}s`

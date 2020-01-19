@@ -9,7 +9,8 @@
     "firefox-build": "rm -rf firefox && npm run build && npm run export && npm run firefox-copy",
     "chrome-copy": "cp -r out chrome && mv chrome/static/chrome/manifest.json chrome/manifest.json",
     "chrome-replace": "mv chrome/_next chrome/next_ && find chrome -iname '*.html' -exec sd '/_next' '/next_' '{}' \\; && find chrome -iname '*.js' -exec sd '/_next' '/next_' '{}' \\;",
-    "chrome-build": "rm -rf chrome && npm run build && npm run export && npm run chrome-copy && npm run chrome-replace"
+    "chrome-build": "rm -rf chrome && npm run build && npm run export && npm run chrome-copy && npm run chrome-replace",
+    "reformat": "prettier --write \"**/*.js\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.26",

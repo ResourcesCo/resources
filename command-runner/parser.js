@@ -6,7 +6,7 @@ const getNextToken = input => {
     if (match) {
       return [
         remainingInput.substr(0, match.index + 1),
-        remainingInput.substr(match.index + match[0].length)
+        remainingInput.substr(match.index + match[0].length),
       ]
     } else {
       return [false, '']
@@ -17,18 +17,18 @@ const getNextToken = input => {
     if (match) {
       return [
         remainingInput.substr(0, match.index + 1),
-        remainingInput.substr(match.index + match[0].length)
+        remainingInput.substr(match.index + match[0].length),
       ]
     } else {
       return [false, '']
     }
-  } else if (remainingInput[0] === "`") {
+  } else if (remainingInput[0] === '`') {
     remainingInput = remainingInput.substr(1)
     const match = /(^|[^\\])`(\s|$)/.exec(remainingInput)
     if (match) {
       return [
         remainingInput.substr(0, match.index + 1),
-        remainingInput.substr(match.index + match[0].length)
+        remainingInput.substr(match.index + match[0].length),
       ]
     } else {
       return [false, '']

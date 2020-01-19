@@ -12,41 +12,63 @@ class Data extends PureComponent {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.buttonRef.current && prevState.pageSize !== this.state.pageSize) {
-      this.buttonRef.current.scrollIntoView({block: 'end'})
+      this.buttonRef.current.scrollIntoView({ block: 'end' })
     }
   }
 
   increasePageSize = () => {
-    this.setState({pageSize: this.state.pageSize + 5})
+    this.setState({ pageSize: this.state.pageSize + 5 })
   }
 
   decreasePageSize = () => {
-    this.setState({pageSize: this.state.pageSize - 5})
+    this.setState({ pageSize: this.state.pageSize - 5 })
   }
 
   render() {
-    const {data, keyField, link = 'html_url', title, theme, pickPrefix='', onPickId} = this.props
+    const {
+      data,
+      keyField,
+      link = 'html_url',
+      title,
+      theme,
+      pickPrefix = '',
+      onPickId,
+    } = this.props
     const { pageSize } = this.state
     return (
       <div>
-        {
-          data.slice(0, pageSize).map(record => {
-            const titleEl = record[title] ? record[title] : <i>(empty)</i>
-            const url = link && record[link]
-            return (
-              <div key={record[keyField]}>
-                <button className="id" onClick={() => onPickId(`${pickPrefix}${record[keyField]}`)}>{record[keyField]}</button>
-                {' '}
-                {
-                  url ? <a target="_blank" href={url}>{titleEl}</a> : titleEl
-                }
-              </div>
-            )
-          })
-        }
+        {data.slice(0, pageSize).map(record => {
+          const titleEl = record[title] ? record[title] : <i>(empty)</i>
+          const url = link && record[link]
+          return (
+            <div key={record[keyField]}>
+              <button
+                className="id"
+                onClick={() => onPickId(`${pickPrefix}${record[keyField]}`)}
+              >
+                {record[keyField]}
+              </button>{' '}
+              {url ? (
+                <a target="_blank" href={url}>
+                  {titleEl}
+                </a>
+              ) : (
+                titleEl
+              )}
+            </div>
+          )
+        })}
         <div ref={this.buttonRef}>
-          {data.length > pageSize && <button className="action" onClick={this.increasePageSize}>show more</button>}
-          {pageSize > 5 && <button className="action" onClick={this.decreasePageSize}>show less</button>}
+          {data.length > pageSize && (
+            <button className="action" onClick={this.increasePageSize}>
+              show more
+            </button>
+          )}
+          {pageSize > 5 && (
+            <button className="action" onClick={this.decreasePageSize}>
+              show less
+            </button>
+          )}
         </div>
         <style jsx>{`
           button {

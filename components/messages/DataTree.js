@@ -30,16 +30,24 @@ class ExpandButton extends PureComponent {
 
 class DataNode extends PureComponent {
   state = {
-    expanded: false
+    expanded: false,
   }
 
   toggleExpanded = () => {
     const { expanded } = this.state
-    this.setState({expanded: !expanded})
+    this.setState({ expanded: !expanded })
   }
 
   render() {
-    const { record, keyField, link = 'html_url', title, theme, pickPrefix='', onPickId} = this.props
+    const {
+      record,
+      keyField,
+      link = 'html_url',
+      title,
+      theme,
+      pickPrefix = '',
+      onPickId,
+    } = this.props
     const { expanded } = this.state
     const titleEl = record[title] ? record[title] : <i>(empty)</i>
     const url = link && record[link]
@@ -47,19 +55,27 @@ class DataNode extends PureComponent {
       <div key={record[keyField]}>
         <div>
           <ExpandButton expanded={expanded} onClick={this.toggleExpanded} />
-          <button className="id" onClick={() => onPickId(`${pickPrefix}${record[keyField]}`)}>{record[keyField]}</button>
-          {' '}
-          {
-            url ? <a target="_blank" href={url}>{titleEl}</a> : titleEl
-          }
+          <button
+            className="id"
+            onClick={() => onPickId(`${pickPrefix}${record[keyField]}`)}
+          >
+            {record[keyField]}
+          </button>{' '}
+          {url ? (
+            <a target="_blank" href={url}>
+              {titleEl}
+            </a>
+          ) : (
+            titleEl
+          )}
         </div>
-        {expanded && Object.keys(record).map(key => (
-          <div key={key}>
-            <button className="id">{key}</button>
-            {' '}
-            {JSON.stringify(record[key])}
-          </div>
-        ))}
+        {expanded &&
+          Object.keys(record).map(key => (
+            <div key={key}>
+              <button className="id">{key}</button>{' '}
+              {JSON.stringify(record[key])}
+            </div>
+          ))}
         <style jsx>{`
           button {
             cursor: pointer;
@@ -86,9 +102,9 @@ class DataTree extends PureComponent {
     const { data, ...props } = this.props
     return (
       <div>
-        {
-          data.map(record => <DataNode record={record} {...props} />)
-        }
+        {data.map(record => (
+          <DataNode record={record} {...props} />
+        ))}
       </div>
     )
   }
