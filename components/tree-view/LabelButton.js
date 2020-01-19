@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Textarea from '../util/Textarea'
+import StringView from './StringView'
 
 const NameEdit = React.forwardRef(({name, commandId, path, onMessage, theme}, ref) => {
   const [newName, setNewName] = useState(name)
@@ -16,8 +17,14 @@ const NameEdit = React.forwardRef(({name, commandId, path, onMessage, theme}, re
   }
 
   const save = () => {
+    let value
+    try {
+      value = JSON.parse(newName)
+    } catch (e) {
+      value = newName
+    }
     sendAction({
-      value: newName,
+      value,
     })
   }
 
@@ -68,7 +75,9 @@ export default React.forwardRef(({name, displayName, editingName, theme, onClick
     theme={theme}
     {...props}
   /> : <div ref={ref}>
-    <button className="id" onClick={onClick}>{typeof displayName !== 'undefined' ? displayName : name}</button>
+    <button className="id" onClick={onClick}>
+      {typeof displayName !== 'undefined' ? displayName : <StringView value={name} maxLength={40} />}
+    </button>
     <style jsx>{`
       button {
         cursor: pointer;

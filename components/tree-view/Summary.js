@@ -3,6 +3,7 @@ import Textarea from '../util/Textarea'
 import { detectUrl } from './analyze'
 import { getState } from './state'
 import Link from './Link'
+import StringView from './StringView'
 
 const CollectionSummary = ({type, length, theme}) => {
   return <span>
@@ -16,7 +17,7 @@ const CollectionSummary = ({type, length, theme}) => {
 }
 
 const ValueEdit = React.forwardRef(({name, value, state, commandId, path, onMessage, theme}, ref) => {
-  const [newValue, setNewValue] = useState(value)
+  const [newValue, setNewValue] = useState(`${value}`)
 
   const sendAction = (data = {}) => {
     onMessage({
@@ -30,8 +31,14 @@ const ValueEdit = React.forwardRef(({name, value, state, commandId, path, onMess
   }
 
   const save = () => {
+    let value
+    try {
+      value = JSON.parse(newValue)
+    } catch (e) {
+      value = newValue
+    }
     sendAction({
-      value: newValue,
+      value,
     })
   }
 
@@ -90,7 +97,7 @@ export default ({name, value, state, commandId, path, onMessage, onPickId, theme
       if (detectUrl(value)) {
         return <Link url={value} onPickId={onPickId} theme={theme} />
       } else {
-        return value
+        return <StringView value={value} maxLength={120} />
       }
     } else if (typeof value === 'object' && value !== null) {
       return <CollectionSummary

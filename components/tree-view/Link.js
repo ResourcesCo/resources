@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import LinkMenu from './LinkMenu'
+import StringView from './StringView'
 import { Manager, Reference } from 'react-popper'
 
 export default ({url, onPickId, theme}) => {
@@ -14,7 +15,7 @@ export default ({url, onPickId, theme}) => {
     <Manager>
       <Reference>
         {({ref}) => (
-          <a ref={ref} href={url} onClick={openMenu}>{url}</a>
+          <a ref={ref} href={url} onClick={openMenu}><StringView value={url} maxLength={120} /></a>
         )}
       </Reference>
       {(menuOpen &&

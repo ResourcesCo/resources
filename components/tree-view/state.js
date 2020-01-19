@@ -137,20 +137,20 @@ export const updateTreeMessage = (treeMessage, treeUpdate) => {
           return result
         } else {
           const result = {}
-          let newKey = 'newItem'
-          if (Object.keys(parent).includes(key)) {
-            for (let i=0; i < 10; i++) {
+          let newKey = ''
+          if (Object.keys(parent).includes(newKey)) {
+            for (let i=1; i <= 10; i++) {
               newKey = `newItem${i}`
-              if (!Object.keys(parent).includes(key)) break
+              if (!Object.keys(parent).includes(newKey)) break
             }
           }
           for (let parentKey of Object.keys(parent)) {
             if (treeUpdate.position === 'above' && (parentKey === key)) {
-              result[newKey] = null
+              result[newKey] = ''
             }
             result[parentKey] = parent[parentKey]
             if (treeUpdate.position === 'below' && (parentKey === key)) {
-              result[newKey] = null
+              result[newKey] = ''
             }
           }
           state = updateNestedState(
