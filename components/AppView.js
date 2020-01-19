@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 import Head from './Head'
 import Chat from './Chat'
 import themes from '../themes'
@@ -12,17 +12,16 @@ const infoForDevices = {
   ios: {
     toolbarHeight: 150,
     keyboardHeight: 333,
-  },
+  }
 }
 
-const AppView = ({ popup, selectedTheme, onThemeChange }) => {
+const AppView = ({popup, selectedTheme, onThemeChange}) => {
   const [device, setDevice] = useState('default')
   const [keyboardOpen, setKeyboardOpen] = useState(false)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const iOS =
-        /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream
+      const iOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream
       if (iOS) {
         setDevice('ios')
       }
@@ -40,17 +39,12 @@ const AppView = ({ popup, selectedTheme, onThemeChange }) => {
 
   const theme = themes[selectedTheme]
   const deviceInfo = infoForDevices[device]
-  const heightOffset =
-    deviceInfo.toolbarHeight + (keyboardOpen ? deviceInfo.keyboardHeight : 0)
+  const heightOffset = deviceInfo.toolbarHeight + (keyboardOpen ? deviceInfo.keyboardHeight : 0)
 
   return (
     <div>
       <Head title="Home" />
-      <Chat
-        onFocusChange={handleFocusChange}
-        theme={theme}
-        onThemeChange={onThemeChange}
-      />
+      <Chat onFocusChange={handleFocusChange} theme={theme} onThemeChange={onThemeChange} />
 
       <style jsx global>{`
         * {
@@ -58,12 +52,9 @@ const AppView = ({ popup, selectedTheme, onThemeChange }) => {
           padding: 0;
           font-family: -apple-system, BlinkMacSystemFont, Avenir Next, Avenir,
             Helvetica, sans-serif;
-          background-color: ${theme.background};
         }
 
-        *,
-        *::before,
-        *::after {
+        *, *::before, *::after {
           box-sizing: border-box;
         }
 
@@ -71,20 +62,20 @@ const AppView = ({ popup, selectedTheme, onThemeChange }) => {
           font-size: 80%;
         }
 
-        html,
-        body,
-        textarea,
-        svg,
-        button {
+        html, body {
+          background-color: ${theme.background};
+        }
+
+        html, body, textarea, svg, button {
           color: ${theme.foreground};
         }
 
-        ${popup &&
-            `html, body {
+        ${popup && `html, body {
           min-width: 450px;
           min-height: 600px;
         }`}
-          ::selection {
+
+        ::selection {
           color: ${theme.selectionColor};
           background: ${theme.selectionBackground};
         }
