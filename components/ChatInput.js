@@ -43,6 +43,7 @@ export default ({
         }
 
         div :global(textarea) {
+          background: none;
           width: 100%;
           border-radius: 5px;
           outline: none;
@@ -55,6 +56,7 @@ export default ({
         }
 
         button {
+          background: none;
           outline: none;
           border: none;
           padding: 0 5px;
