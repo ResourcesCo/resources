@@ -113,7 +113,12 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
       </Manager>
       <div className="inline-details">
         <Summary
+          name={name}
           value={value}
+          state={state}
+          path={path}
+          commandId={commandId}
+          onMessage={onMessage}
           onPickId={onPickId}
           theme={theme}
         />
@@ -121,6 +126,7 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
       <style jsx>{`
         .inline-details {
           margin-left: 10px;
+          flex-grow: 1;
         }
         .row {
           display: flex;
@@ -158,8 +164,12 @@ const TreeView = ({parentType = 'root', name, displayName, value, state, path = 
         }
         {
           expanded && viewType === 'table' && <TableView
+            name={name}
             value={value}
+            state={state}
+            commandId={commandId}
             onPickId={onPickId}
+            onMessage={onMessage}
             theme={theme}
           />
         }

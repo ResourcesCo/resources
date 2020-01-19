@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import LinkMenu from './LinkMenu'
-import { Manager, Reference, Popper } from 'react-popper'
+import { Manager, Reference } from 'react-popper'
 
 export default ({url, onPickId, theme}) => {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -18,18 +18,12 @@ export default ({url, onPickId, theme}) => {
         )}
       </Reference>
       {(menuOpen &&
-        <Popper placement="bottom-start">
-          {({ref, style, placement}) => (
-            <div ref={ref} style={style} data-placement={placement}>
-              <LinkMenu
-                onPickId={onPickId}
-                url={url}
-                onClose={() => setMenuOpen(false)}
-                theme={theme}
-              />
-            </div>
-          )}
-        </Popper>
+        <LinkMenu
+          onPickId={onPickId}
+          url={url}
+          onClose={() => setMenuOpen(false)}
+          theme={theme}
+        />
       )}
     </Manager>
   </span>

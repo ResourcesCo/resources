@@ -78,3 +78,13 @@ export const displayPath = path => {
   }
   return result
 }
+
+export const isBasicType = value => {
+  if (typeof value === 'string') {
+    return true
+  } else if (value !== null && typeof value === 'object') {
+    return false
+  } else {
+    return true
+  }
+}
