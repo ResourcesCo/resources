@@ -30,12 +30,12 @@ const replaceKey = (value, key, childValue) => {
   }
 }
 
-const updateNestedValue = (value, path, pathValue) => {
+const updateNestedValue = (value, path, pathValueOrFn) => {
   if (path.length === 1) {
-    return replaceKey(value, path[0], pathValue)
+    return replaceKey(value, path[0], typeof pathValueOrFn === 'function' ? pathValueOrFn(value[path[0]]) : pathValueOrFn)
   } else {
     const [key, ...rest] = path
-    return replaceKey(value, path[0], updateNestedValue(value[key], rest, pathValue))
+    return replaceKey(value, path[0], updateNestedValue(value[key], rest, pathValueOrFn))
   }
 }
 
@@ -81,6 +81,20 @@ export const updateTreeMessage = (treeMessage, treeUpdate) => {
         }
       }
       return updatedMessage
+    } else if (treeUpdate.action === 'edit') {
+      return {
+        ...treeMessage,
+        state: updateNestedState(
+          treeMessage.state,
+          treeUpdate.path,
+          {_editing: treeUpdate.editing}
+        ),
+        value: (
+          typeof treeUpdate.value === 'undefined' ?
+          treeMessage.value :
+          updateNestedValue(treeMessage.value, treeUpdate.path, treeUpdate.value)
+        ),
+      }
     } else if (treeUpdate.action === 'editJson') {
       return {
         ...treeMessage,
@@ -95,6 +109,71 @@ export const updateTreeMessage = (treeMessage, treeUpdate) => {
           treeMessage.value :
           updateNestedValue(treeMessage.value, treeUpdate.path, treeUpdate.value)
         ),
+      }
+    } else if (treeUpdate.action === 'insert') {
+      const parentPath = treeUpdate.path.slice(0, treeUpdate.path.length - 1)
+      const key = treeUpdate.path[treeUpdate.path.length - 1]
+      let state = treeMessage.state
+      const insert = parent => {
+        if (Array.isArray(parent)) {
+          const result = []
+          let newKey
+          for (let i=0; i < parent.length; i++) {
+            if (treeUpdate.position === 'above' && i === Number(key)) {
+              result.push(null)
+              newKey = `${i}`
+            }
+            result.push(parent[i])
+            if (treeUpdate.position === 'below' && i === Number(key)) {
+              result.push(null)
+              newKey = `${i + 1}`
+            }
+          }
+          state = updateNestedState(
+            treeMessage.state,
+            [...parentPath, newKey],
+            {_editing: true}
+          )
+          return result
+        } else {
+          const result = {}
+          let newKey = 'newItem'
+          if (Object.keys(parent).includes(key)) {
+            for (let i=0; i < 10; i++) {
+              newKey = `newItem${i}`
+              if (!Object.keys(parent).includes(key)) break
+            }
+          }
+          for (let parentKey of Object.keys(parent)) {
+            if (treeUpdate.position === 'above' && (parentKey === key)) {
+              result[newKey] = null
+            }
+            result[parentKey] = parent[parentKey]
+            if (treeUpdate.position === 'below' && (parentKey === key)) {
+              result[newKey] = null
+            }
+          }
+          state = updateNestedState(
+            treeMessage.state,
+            [...parentPath, newKey],
+            {_editingName: true}
+          )
+          return result
+        }
+      }
+
+      let value
+      console.log({parentPath, key})
+      if (parentPath.length > 0) {
+        value = updateNestedValue(treeMessage.value, parentPath, insert)
+      } else {
+        value = insert(treeMessage.value)
+      }
+
+      return {
+        ...treeMessage,
+        state,
+        value,
       }
     }
   } else {
