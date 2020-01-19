@@ -26,22 +26,22 @@ export default {
   request,
   darkMode: {
     run() {
-      return {type: 'set-theme', theme: 'dark'}
+      return { type: 'set-theme', theme: 'dark' }
     },
     help: {
-      details: 'change to the dark theme'
-    }
+      details: 'change to the dark theme',
+    },
   },
   lightMode: {
     run() {
-      return {type: 'set-theme', theme: 'light'}
+      return { type: 'set-theme', theme: 'light' }
     },
     help: {
-      details: 'change to the light theme'
-    }
+      details: 'change to the light theme',
+    },
   },
   sleep: {
-    async run({args}) {
+    async run({ args }) {
       const [timeoutStr, message] = args
       const timeout = Math.floor(Number.parseFloat(timeoutStr) * 1000)
       const promise = new Promise((resolve, reject) => {
@@ -52,7 +52,8 @@ export default {
     },
     help: {
       args: ['seconds', 'message'],
-      details: 'Sleep for a specified number of seconds and then send a message'
-    }
-  }
+      details:
+        'Sleep for a specified number of seconds and then send a message',
+    },
+  },
 }

@@ -9,8 +9,7 @@ export const getPaths = (item, depth = 2) => {
       if (isObject(item[key])) {
         if (depth > 0) {
           result = result.concat(
-            getPaths(item[key], depth - 1)
-            .map(result => [key, ...result])
+            getPaths(item[key], depth - 1).map(result => [key, ...result])
           )
         }
       } else if (!Array.isArray(item[key])) {
@@ -23,11 +22,9 @@ export const getPaths = (item, depth = 2) => {
 
 export const getCollectionPaths = collection => {
   const paths = {}
-  const values = (
-    Array.isArray(collection) ?
-    collection :
-    Object.keys(collection).map(key => collection[key])
-  )
+  const values = Array.isArray(collection)
+    ? collection
+    : Object.keys(collection).map(key => collection[key])
   for (let item of values) {
     for (let path of getPaths(item)) {
       const str = JSON.stringify(path)
@@ -69,7 +66,7 @@ export const isIdentifier = s => {
 
 export const displayPath = path => {
   let result = ''
-  for (let i=0; i < path.length; i++) {
+  for (let i = 0; i < path.length; i++) {
     if (isIdentifier(path[i])) {
       result += (i === 0 ? '' : '.') + path[i]
     } else {

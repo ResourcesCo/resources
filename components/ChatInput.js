@@ -2,7 +2,14 @@ import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
 import TextareaAutosize from 'react-autosize-textarea'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-export default ({text, onFocusChange, onTextChange, onSend, textareaRef, theme}) => {
+export default ({
+  text,
+  onFocusChange,
+  onTextChange,
+  onSend,
+  textareaRef,
+  theme,
+}) => {
   const handleKeyPress = e => {
     if (e.key == 'Enter' && e.shiftKey == false) {
       e.preventDefault()
@@ -22,7 +29,11 @@ export default ({text, onFocusChange, onTextChange, onSend, textareaRef, theme})
         autoFocus
         ref={textareaRef}
       />
-      <button onClick={onSend}><span className="rocket"><FontAwesomeIcon icon={faSpaceShuttle} /></span></button>
+      <button onClick={onSend}>
+        <span className="rocket">
+          <FontAwesomeIcon icon={faSpaceShuttle} />
+        </span>
+      </button>
       <style jsx>{`
         .chat-input {
           display: flex;
