@@ -29,11 +29,15 @@
     "react-popper": "^1.3.7",
     "scroll-into-view-if-needed": "^2.2.22",
     "shortid": "^2.2.15",
+    "vtv": "file:packages/vtv",
     "webextension-polyfill": "^0.4.0"
   },
   "prettier": {
     "semi": false,
     "singleQuote": true,
     "trailingComma": "es5"
+  },
+  "devDependencies": {
+    "lerna": "^3.20.2"
   }
 }
