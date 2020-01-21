@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Textarea from '../util/Textarea'
+import Textarea from './Textarea'
 import StringView from './StringView'
 
 const NameEdit = React.forwardRef(

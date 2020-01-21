@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Textarea from '../util/Textarea'
+import Textarea from './Textarea'
 import { detectUrl } from './analyze'
 import { getState } from './state'
 import Link from './Link'

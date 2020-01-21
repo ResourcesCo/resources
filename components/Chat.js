@@ -6,7 +6,7 @@ import Message from './messages/Message'
 import { store } from '../store'
 import ChatInput from './ChatInput'
 import insertTextAtCursor from 'insert-text-at-cursor'
-import { updateTreeMessage } from './tree-view/state'
+import { updateTreeMessage } from 'vtv'
 import { Manager } from 'react-popper'
 
 class Chat extends PureComponent {

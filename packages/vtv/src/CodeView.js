@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import Textarea from '../util/Textarea'
+import Textarea from 'vtv'
 import ActionButton from './ActionButton'
 
 export default ({ value, commandId, path, onMessage, theme }) => {
