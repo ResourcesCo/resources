@@ -4,19 +4,7 @@ import { detectUrl } from './analyze'
 import { getState } from './state'
 import Link from './Link'
 import StringView from './StringView'
-
-const CollectionSummary = ({ type, length, theme }) => {
-  return (
-    <span>
-      {type === 'object' ? '{' : '['}
-      {length > 0 && `${length} ${length === 1 ? 'item' : 'items'}`}
-      {type === 'object' ? '}' : ']'}
-      <style jsx>{`
-        color: ${theme.summaryColor};
-      `}</style>
-    </span>
-  )
-}
+import CollectionSummary from './CollectionSummary'
 
 const ValueEdit = React.forwardRef(
   ({ name, value, state, commandId, path, onMessage, theme }, ref) => {

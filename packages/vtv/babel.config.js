@@ -22,7 +22,6 @@ const productionPlugins = []
 
 module.exports = {
   presets: ['next/babel'],
-  plugins: [],
   env: {
     esm: {
       plugins: [...productionPlugins, ['@babel/plugin-transform-runtime', { useESModules: true }]],

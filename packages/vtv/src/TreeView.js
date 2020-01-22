@@ -10,6 +10,7 @@ import CodeView from './CodeView'
 import Summary from './Summary'
 import lodashGet from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'
+import { getTheme } from './themes'
 
 const isObject = value => {
   return (
@@ -31,10 +32,11 @@ const TreeView = ({
   showAll,
   onMessage,
   onPickId,
-  theme,
+  theme: themeProp,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [viewChanged, setViewChanged] = useState(false)
+
   const {
     _expanded: expanded,
     _viewType: viewType,
@@ -42,6 +44,7 @@ const TreeView = ({
     _editingName: editingName,
     _editingJson: editingJson,
   } = getState(state)
+  const theme = getTheme(themeProp)
 
   const setExpanded = expanded => {
     setViewChanged(true)
