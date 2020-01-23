@@ -54,26 +54,26 @@ const updateNestedValue = (value, path, pathValueOrFn) => {
   }
 }
 
-export const updateTreeMessage = (treeMessage, treeUpdate) => {
+export const updateTree = (treeData, treeUpdate) => {
   if (treeUpdate.action) {
     if (treeUpdate.action === 'showOnlyThis') {
-      let state = updateNestedState(treeMessage.state, [], {
+      let state = updateNestedState(treeData.state, [], {
         _showOnly: treeUpdate.path,
       })
       state = updateNestedState(state, treeUpdate.path, { _expanded: true })
       return {
-        ...treeMessage,
+        ...treeData,
         state,
       }
     } else if (treeUpdate.action === 'showAll') {
       return {
-        ...treeMessage,
-        state: updateNestedState(treeMessage.state, [], { _showOnly: null }),
+        ...treeData,
+        state: updateNestedState(treeData.state, [], { _showOnly: null }),
       }
     } else if (treeUpdate.action === 'editName') {
       let updatedMessage = {
-        ...treeMessage,
-        state: updateNestedState(treeMessage.state, treeUpdate.path, {
+        ...treeData,
+        state: updateNestedState(treeData.state, treeUpdate.path, {
           _editingName: treeUpdate.editing,
         }),
       }
@@ -102,24 +102,24 @@ export const updateTreeMessage = (treeMessage, treeUpdate) => {
       return updatedMessage
     } else if (treeUpdate.action === 'edit') {
       return {
-        ...treeMessage,
-        state: updateNestedState(treeMessage.state, treeUpdate.path, {
+        ...treeData,
+        state: updateNestedState(treeData.state, treeUpdate.path, {
           _editing: treeUpdate.editing,
         }),
         value:
           typeof treeUpdate.value === 'undefined'
-            ? treeMessage.value
+            ? treeData.value
             : updateNestedValue(
-                treeMessage.value,
+                treeData.value,
                 treeUpdate.path,
                 treeUpdate.value
               ),
       }
     } else if (treeUpdate.action === 'editJson') {
       return {
-        ...treeMessage,
+        ...treeData,
         state: updateNestedState(
-          treeMessage.state,
+          treeData.state,
           treeUpdate.path,
           { _expanded: true, _editingJson: treeUpdate.editing },
           treeUpdate.editing
@@ -128,9 +128,9 @@ export const updateTreeMessage = (treeMessage, treeUpdate) => {
         ),
         value:
           typeof treeUpdate.value === 'undefined'
-            ? treeMessage.value
+            ? treeData.value
             : updateNestedValue(
-                treeMessage.value,
+                treeData.value,
                 treeUpdate.path,
                 treeUpdate.value
               ),
@@ -138,7 +138,7 @@ export const updateTreeMessage = (treeMessage, treeUpdate) => {
     } else if (treeUpdate.action === 'insert') {
       const parentPath = treeUpdate.path.slice(0, treeUpdate.path.length - 1)
       const key = treeUpdate.path[treeUpdate.path.length - 1]
-      let state = treeMessage.state
+      let state = treeData.state
       const insert = parent => {
         if (Array.isArray(parent)) {
           const result = []
@@ -154,11 +154,9 @@ export const updateTreeMessage = (treeMessage, treeUpdate) => {
               newKey = `${i + 1}`
             }
           }
-          state = updateNestedState(
-            treeMessage.state,
-            [...parentPath, newKey],
-            { _editing: true }
-          )
+          state = updateNestedState(treeData.state, [...parentPath, newKey], {
+            _editing: true,
+          })
           return result
         } else {
           const result = {}
@@ -178,35 +176,32 @@ export const updateTreeMessage = (treeMessage, treeUpdate) => {
               result[newKey] = ''
             }
           }
-          state = updateNestedState(
-            treeMessage.state,
-            [...parentPath, newKey],
-            { _editingName: true }
-          )
+          state = updateNestedState(treeData.state, [...parentPath, newKey], {
+            _editingName: true,
+          })
           return result
         }
       }
 
       let value
-      console.log({ parentPath, key })
       if (parentPath.length > 0) {
-        value = updateNestedValue(treeMessage.value, parentPath, insert)
+        value = updateNestedValue(treeData.value, parentPath, insert)
       } else {
-        value = insert(treeMessage.value)
+        value = insert(treeData.value)
       }
 
       return {
-        ...treeMessage,
+        ...treeData,
         state,
         value,
       }
     }
   } else {
     return {
-      ...treeMessage,
-      value: treeUpdate.value || treeMessage.value,
+      ...treeData,
+      value: treeUpdate.value || treeData.value,
       state: updateNestedState(
-        treeMessage.state,
+        treeData.state,
         treeUpdate.path,
         treeUpdate.state
       ),

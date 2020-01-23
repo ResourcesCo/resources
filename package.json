@@ -18,7 +18,7 @@
     "@fortawesome/react-fontawesome": "^0.1.8",
     "@zeit/next-css": "^1.0.1",
     "insert-text-at-cursor": "^0.3.0",
-    "lodash": "^4.17.15",
+    "lodash-es": "^4.17.15",
     "next": "^9.1.5",
     "prettier": "^1.19.1",
     "react": "^16.12.0",

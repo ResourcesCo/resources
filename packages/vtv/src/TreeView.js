@@ -2,13 +2,13 @@ import { useState, useRef, useEffect } from 'react'
 import { Manager, Reference, Popper } from 'react-popper'
 import ExpandButton from './ExpandButton'
 import LabelButton from './LabelButton'
-import { getState, getChildState, getNestedState } from './state'
+import { updateTree, getState, getChildState, getNestedState } from './state'
 import { hasChildren, detectUrl, displayPath } from './analyze'
 import TreeMenu from './TreeMenu'
 import TableView from './TableView'
 import CodeView from './CodeView'
 import Summary from './Summary'
-import lodashGet from 'lodash/get'
+import { get as getNested } from 'lodash-es'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { getTheme } from './themes'
 
@@ -24,13 +24,12 @@ const isObject = value => {
 const TreeView = ({
   parentType = 'root',
   name,
-  displayName,
   value,
   state,
+  displayName,
   path = [],
-  commandId,
   showAll,
-  onMessage,
+  onChange,
   onPickId,
   theme: themeProp,
 }) => {
@@ -48,12 +47,12 @@ const TreeView = ({
 
   const setExpanded = expanded => {
     setViewChanged(true)
-    onMessage({
-      type: 'tree-update',
-      path,
-      state: { _expanded: expanded },
-      treeCommandId: commandId,
-    })
+    const { state: newState } = updateTree(
+      { value, state },
+      { path, state: { _expanded: expanded } }
+    )
+    debugger
+    onChange({ state: newState })
   }
   const _hasChildren = hasChildren(value)
 
@@ -76,7 +75,7 @@ const TreeView = ({
     const showOnlyParent = showOnly.slice(0, showOnly.length - 1)
     const showOnlyParentType =
       showOnlyParent.length > 0
-        ? Array.isArray(lodashGet(value, showOnlyParent))
+        ? Array.isArray(getNested(value, showOnlyParent))
           ? 'array'
           : 'object'
         : 'root'
@@ -85,11 +84,10 @@ const TreeView = ({
         parentType={showOnlyParentType}
         name={showOnly[showOnly.length - 1]}
         displayName={displayPath([name, ...showOnly])}
-        value={lodashGet(value, showOnly)}
+        value={getNested(value, showOnly)}
         state={getNestedState(state, showOnly)}
-        commandId={commandId}
         showAll={true}
-        onMessage={onMessage}
+        onChange={onChange}
         onPickId={onPickId}
         path={showOnly}
         theme={theme}
@@ -112,12 +110,11 @@ const TreeView = ({
                 ref={ref}
                 onClick={() => setMenuOpen(true)}
                 editingName={editingName}
-                commandId={commandId}
                 name={name}
                 displayName={displayName}
                 path={path}
                 value={value}
-                onMessage={onMessage}
+                onChange={onChange}
                 theme={theme}
               />
             )}
@@ -129,9 +126,8 @@ const TreeView = ({
               value={value}
               state={state}
               path={path}
-              commandId={commandId}
               showAll={showAll}
-              onMessage={onMessage}
+              onChange={onChange}
               onViewChanged={() => setViewChanged(true)}
               onPickId={onPickId}
               onClose={() => setMenuOpen(false)}
@@ -145,8 +141,7 @@ const TreeView = ({
             value={value}
             state={state}
             path={path}
-            commandId={commandId}
-            onMessage={onMessage}
+            onChange={onChange}
             onPickId={onPickId}
             theme={theme}
           />
@@ -176,8 +171,7 @@ const TreeView = ({
                     name={key}
                     value={value[key]}
                     state={getChildState(state, key)}
-                    commandId={commandId}
-                    onMessage={onMessage}
+                    onChange={onChange}
                     onPickId={onPickId}
                     path={[...path, key]}
                     theme={theme}
@@ -195,9 +189,8 @@ const TreeView = ({
               name={name}
               value={value}
               state={state}
-              commandId={commandId}
               onPickId={onPickId}
-              onMessage={onMessage}
+              onChange={onChange}
               theme={theme}
             />
           )}
@@ -206,10 +199,9 @@ const TreeView = ({
       {editingJson && (
         <CodeView
           open={expanded}
-          commandId={commandId}
           path={path}
           value={value}
-          onMessage={onMessage}
+          onChange={onChange}
           theme={theme}
         />
       )}

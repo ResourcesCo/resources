@@ -100,7 +100,9 @@ export default ({
       {!showAll && ['object', 'root'].includes(parentType) && (
         <MenuItem onClick={editJson}>Edit JSON</MenuItem>
       )}
-      <MenuItem onClick={pickId}>Paste into console</MenuItem>
+      {typeof onPickId === 'function' &&
+        <MenuItem onClick={pickId}>Paste into console</MenuItem>
+      }
     </Menu>
   )
 }
