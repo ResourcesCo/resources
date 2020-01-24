@@ -7,7 +7,9 @@ import { store } from '../store'
 import ChatInput from './ChatInput'
 import insertTextAtCursor from 'insert-text-at-cursor'
 import { Manager } from 'react-popper'
-import { pick, pickBy, identity } from 'lodash-es'
+import pick from 'lodash/pick'
+import pickBy from 'lodash/pickBy'
+import identity from 'lodash/identity'
 
 class Chat extends PureComponent {
   state = {

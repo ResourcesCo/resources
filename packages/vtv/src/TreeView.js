@@ -8,7 +8,7 @@ import TreeMenu from './TreeMenu'
 import TableView from './TableView'
 import CodeView from './CodeView'
 import Summary from './Summary'
-import { get as getNested } from 'lodash-es'
+import getNested from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { getTheme } from './themes'
 
@@ -29,6 +29,7 @@ const TreeView = ({
   displayName,
   path = [],
   showAll,
+  rootNode: rootNodeProp = null,
   onChange,
   onPickId,
   theme: themeProp,
@@ -45,13 +46,22 @@ const TreeView = ({
   } = getState(state)
   const theme = getTheme(themeProp)
 
+  const rootNode =
+    rootNodeProp === null
+      ? {
+          name,
+          value,
+          state,
+        }
+      : rootNodeProp
+
   const setExpanded = expanded => {
     setViewChanged(true)
+    const { value, state } = rootNode
     const { state: newState } = updateTree(
       { value, state },
       { path, state: { _expanded: expanded } }
     )
-    debugger
     onChange({ state: newState })
   }
   const _hasChildren = hasChildren(value)
@@ -83,10 +93,11 @@ const TreeView = ({
       <TreeView
         parentType={showOnlyParentType}
         name={showOnly[showOnly.length - 1]}
-        displayName={displayPath([name, ...showOnly])}
         value={getNested(value, showOnly)}
         state={getNestedState(state, showOnly)}
+        displayName={displayPath([name, ...showOnly])}
         showAll={true}
+        rootNode={rootNode}
         onChange={onChange}
         onPickId={onPickId}
         path={showOnly}
@@ -171,6 +182,7 @@ const TreeView = ({
                     name={key}
                     value={value[key]}
                     state={getChildState(state, key)}
+                    rootNode={rootNode}
                     onChange={onChange}
                     onPickId={onPickId}
                     path={[...path, key]}

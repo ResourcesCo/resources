@@ -10,7 +10,8 @@
     "chrome-copy": "cp -r out chrome && mv chrome/static/chrome/manifest.json chrome/manifest.json",
     "chrome-replace": "mv chrome/_next chrome/next_ && find chrome -iname '*.html' -exec sd '/_next' '/next_' '{}' \\; && find chrome -iname '*.js' -exec sd '/_next' '/next_' '{}' \\;",
     "chrome-build": "rm -rf chrome && npm run build && npm run export && npm run chrome-copy && npm run chrome-replace",
-    "reformat": "prettier --write \"**/*.js\""
+    "reformat": "prettier --write \"**/*.js\"",
+    "postinstall": "cd packages/vtv && npm install && npm run build"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
@@ -18,7 +19,7 @@
     "@fortawesome/react-fontawesome": "^0.1.8",
     "@zeit/next-css": "^1.0.1",
     "insert-text-at-cursor": "^0.3.0",
-    "lodash-es": "^4.17.15",
+    "lodash": "^4.17.15",
     "next": "^9.1.5",
     "prettier": "^1.19.1",
     "react": "^16.12.0",
@@ -29,6 +30,7 @@
     "react-popper": "^1.3.7",
     "scroll-into-view-if-needed": "^2.2.22",
     "shortid": "^2.2.15",
+    "vtv": "file:packages/vtv",
     "webextension-polyfill": "^0.4.0"
   },
   "prettier": {
