@@ -1,7 +1,7 @@
 {
   "name": "vtv",
   "version": "1.0.0",
-  "description": "",
+  "description": "versatile tree view",
   "main": "./build/index.js",
   "module": "./build/esm/index.js",
   "scripts": {
@@ -10,7 +10,8 @@
     "build:esm": "cross-env NODE_ENV=production BABEL_ENV=esm babel --config-file ./babel.config.js ./src --out-dir ./build/esm --ignore \"**/*.test.js\"",
     "build:es": "cross-env NODE_ENV=production BABEL_ENV=es babel --config-file ./babel.config.js ./src --out-dir ./build/es --ignore \"**/*.test.js\"",
     "prebuild": "rimraf build",
-    "release": "npm run build && npm publish build --tag latest"
+    "release": "npm run build && npm publish build --tag latest",
+    "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag v$PACKAGE_VERSION && git push --tags"
   },
   "peerDependencies": {
     "react": "^16.8.0",
@@ -18,7 +19,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.4.4",
-    "@material-ui/utils": "^4.7.1",
     "clsx": "^1.0.4",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",

@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
-import Textarea from 'vtv'
+import Textarea from './Textarea'
 import ActionButton from './ActionButton'
 
-export default ({ value, commandId, path, onMessage, theme }) => {
+export default ({ value, path, onMessage, theme }) => {
   const [newValue, setNewValue] = useState(JSON.stringify(value, null, 2))
   const [changed, setChanged] = useState(false)
   const [hadError, setHadError] = useState(false)
@@ -11,23 +11,19 @@ export default ({ value, commandId, path, onMessage, theme }) => {
   const save = () => {
     if (validate(newValue)) {
       onMessage({
-        type: 'tree-update',
         path,
         action: 'editJson',
         editing: false,
         value: JSON.parse(newValue),
-        treeCommandId: commandId,
       })
     }
   }
 
   const cancel = () => {
     onMessage({
-      type: 'tree-update',
       path,
       action: 'editJson',
       editing: false,
-      treeCommandId: commandId,
     })
   }
 

@@ -2,15 +2,7 @@ import { getCollectionPaths, displayPath, getAtPath } from './analyze'
 import Summary from './Summary'
 import LabelButton from './LabelButton'
 
-export default ({
-  value,
-  onPickId,
-  onMessage,
-  commandId,
-  name,
-  state,
-  theme,
-}) => {
+export default ({ value, onPickId, onMessage, name, state, theme }) => {
   const paths = getCollectionPaths(value)
   return (
     <div className="table">

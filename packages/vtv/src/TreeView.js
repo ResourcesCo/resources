@@ -3,7 +3,7 @@ import { Manager, Reference, Popper } from 'react-popper'
 import ExpandButton from './ExpandButton'
 import LabelButton from './LabelButton'
 import { updateTree, getState, getChildState, getNestedState } from './state'
-import { hasChildren, detectUrl, displayPath } from './analyze'
+import { hasChildren, detectUrl, displayPath, isObject } from './analyze'
 import TreeMenu from './TreeMenu'
 import TableView from './TableView'
 import CodeView from './CodeView'
@@ -11,15 +11,6 @@ import Summary from './Summary'
 import getNested from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { getTheme } from './themes'
-
-const isObject = value => {
-  return (
-    typeof value === 'object' &&
-    typeof value !== 'string' &&
-    value !== null &&
-    !Array.isArray(value)
-  )
-}
 
 const TreeView = ({
   parentType = 'root',
@@ -29,10 +20,9 @@ const TreeView = ({
   displayName,
   path = [],
   showAll,
-  rootNode: rootNodeProp = null,
-  onChange,
+  onMessage,
   onPickId,
-  theme: themeProp,
+  theme,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [viewChanged, setViewChanged] = useState(false)
@@ -44,25 +34,10 @@ const TreeView = ({
     _editingName: editingName,
     _editingJson: editingJson,
   } = getState(state)
-  const theme = getTheme(themeProp)
-
-  const rootNode =
-    rootNodeProp === null
-      ? {
-          name,
-          value,
-          state,
-        }
-      : rootNodeProp
 
   const setExpanded = expanded => {
     setViewChanged(true)
-    const { value, state } = rootNode
-    const { state: newState } = updateTree(
-      { value, state },
-      { path, state: { _expanded: expanded } }
-    )
-    onChange({ state: newState })
+    onMessage({ path, state: { _expanded: expanded } })
   }
   const _hasChildren = hasChildren(value)
 
@@ -97,8 +72,7 @@ const TreeView = ({
         state={getNestedState(state, showOnly)}
         displayName={displayPath([name, ...showOnly])}
         showAll={true}
-        rootNode={rootNode}
-        onChange={onChange}
+        onMessage={onMessage}
         onPickId={onPickId}
         path={showOnly}
         theme={theme}
@@ -125,7 +99,7 @@ const TreeView = ({
                 displayName={displayName}
                 path={path}
                 value={value}
-                onChange={onChange}
+                onMessage={onMessage}
                 theme={theme}
               />
             )}
@@ -138,7 +112,7 @@ const TreeView = ({
               state={state}
               path={path}
               showAll={showAll}
-              onChange={onChange}
+              onMessage={onMessage}
               onViewChanged={() => setViewChanged(true)}
               onPickId={onPickId}
               onClose={() => setMenuOpen(false)}
@@ -152,7 +126,7 @@ const TreeView = ({
             value={value}
             state={state}
             path={path}
-            onChange={onChange}
+            onMessage={onMessage}
             onPickId={onPickId}
             theme={theme}
           />
@@ -182,8 +156,7 @@ const TreeView = ({
                     name={key}
                     value={value[key]}
                     state={getChildState(state, key)}
-                    rootNode={rootNode}
-                    onChange={onChange}
+                    onMessage={onMessage}
                     onPickId={onPickId}
                     path={[...path, key]}
                     theme={theme}
@@ -202,7 +175,7 @@ const TreeView = ({
               value={value}
               state={state}
               onPickId={onPickId}
-              onChange={onChange}
+              onMessage={onMessage}
               theme={theme}
             />
           )}
@@ -213,7 +186,7 @@ const TreeView = ({
           open={expanded}
           path={path}
           value={value}
-          onChange={onChange}
+          onMessage={onMessage}
           theme={theme}
         />
       )}
@@ -221,4 +194,25 @@ const TreeView = ({
   )
 }
 
-export default TreeView
+export default ({ onChange, onMessage, theme, ...props }) => {
+  if (typeof onMessage === 'function' && isObject(theme)) {
+    return <TreeView onMessage={onMessage} theme={theme} {...props} />
+  } else {
+    let themeProp = theme
+    let onMessageProp = onMessage
+    if (!isObject(themeProp)) {
+      themeProp = getTheme(themeProp)
+    }
+    if (typeof onMessageProp !== 'function') {
+      onMessageProp = message => {
+        const treeData = {
+          name: props.name,
+          value: props.value,
+          state: props.state,
+        }
+        onChange(updateTree(treeData, message))
+      }
+    }
+    return <TreeView onMessage={onMessageProp} theme={themeProp} {...props} />
+  }
+}
