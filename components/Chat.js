@@ -6,8 +6,10 @@ import Message from './messages/Message'
 import { store } from '../store'
 import ChatInput from './ChatInput'
 import insertTextAtCursor from 'insert-text-at-cursor'
-import { updateTreeMessage } from './tree-view/state'
 import { Manager } from 'react-popper'
+import pick from 'lodash/pick'
+import pickBy from 'lodash/pickBy'
+import identity from 'lodash/identity'
 
 class Chat extends PureComponent {
   state = {
@@ -78,17 +80,22 @@ class Chat extends PureComponent {
         store.save()
         this.props.onThemeChange(message.theme)
       } else if (message.type === 'tree-update') {
-        const formCommand = commands[message.treeCommandId]
+        const treeCommand = commands[message.treeCommandId]
         scrollToBottom = false
-        let treeMessage = formCommand.messages.find(
+        const treeMessage = treeCommand.messages.find(
           message => message.type === 'tree'
         )
-        treeMessage = updateTreeMessage(treeMessage, message)
+        const updatedTreeMessage = {
+          ...treeMessage,
+          ...pickBy(pick(message, ['name', 'value', 'state']), identity),
+        }
         commands[message.treeCommandId] = {
-          ...formCommand,
-          messages: formCommand.messages
+          ...treeCommand,
+          messages: treeCommand.messages
             .map(m => this.setLoading(m, !!message.loading))
-            .map(message => (message.type === 'tree' ? treeMessage : message)),
+            .map(message =>
+              message.type === 'tree' ? updatedTreeMessage : message
+            ),
         }
       } else if (message.type === 'form-status') {
         const formCommand = commands[message.formCommandId]

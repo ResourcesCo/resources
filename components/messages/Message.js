@@ -2,7 +2,7 @@ import Help from './Help'
 import Data from './Data'
 import DataTree from './DataTree'
 import Form from './Form'
-import TreeView from '../tree-view/TreeView'
+import TreeView from 'vtv'
 import { useState } from 'react'
 import Loader from 'react-loader-spinner'
 import { faLink } from '@fortawesome/free-solid-svg-icons'
@@ -116,24 +116,25 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
       />
     )
   } else if (type === 'tree') {
-    const {
-      name,
-      value,
-      state,
-      message,
-      commandId,
-      onMessage,
-      onPickId,
-    } = props
+    const { name, value, state, onMessage, commandId, onPickId } = props
+
+    const onChange = ({ name, value, state }) => {
+      onMessage({
+        type: 'tree-update',
+        name,
+        value,
+        state,
+        treeCommandId: commandId,
+      })
+    }
+
     return (
       <TreeView
         name={name}
         value={value}
         state={state}
         theme={theme}
-        message={message}
-        commandId={commandId}
-        onMessage={onMessage}
+        onChange={onChange}
         onPickId={onPickId}
       />
     )

@@ -11,7 +11,9 @@ export default ({ onPickId, url, theme, onClose }) => {
 
   return (
     <Menu theme={theme} onClose={onClose}>
-      <MenuItem onClick={pickId}>Paste into console</MenuItem>
+      {typeof onPickId === 'function' && (
+        <MenuItem onClick={pickId}>Paste into console</MenuItem>
+      )}
       <MenuItem onClick={openUrl}>Browse URL</MenuItem>
     </Menu>
   )

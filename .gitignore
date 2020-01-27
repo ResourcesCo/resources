@@ -24,3 +24,9 @@ yarn-error.log*
 /chrome
 
 /_notes
+
+# monorepo packages
+/packages/*/node_modules
+/packages/*/build
+/packages/*/dist
+/packages/*/.next

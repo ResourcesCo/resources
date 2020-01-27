@@ -1,34 +1,20 @@
 import { useState } from 'react'
-import Textarea from '../util/Textarea'
+import Textarea from './Textarea'
 import { detectUrl } from './analyze'
 import { getState } from './state'
 import Link from './Link'
 import StringView from './StringView'
-
-const CollectionSummary = ({ type, length, theme }) => {
-  return (
-    <span>
-      {type === 'object' ? '{' : '['}
-      {length > 0 && `${length} ${length === 1 ? 'item' : 'items'}`}
-      {type === 'object' ? '}' : ']'}
-      <style jsx>{`
-        color: ${theme.summaryColor};
-      `}</style>
-    </span>
-  )
-}
+import CollectionSummary from './CollectionSummary'
 
 const ValueEdit = React.forwardRef(
-  ({ name, value, state, commandId, path, onMessage, theme }, ref) => {
+  ({ name, value, state, path, onMessage, theme }, ref) => {
     const [newValue, setNewValue] = useState(`${value}`)
 
     const sendAction = (data = {}) => {
       onMessage({
-        type: 'tree-update',
         path,
         action: 'edit',
         editing: false,
-        treeCommandId: commandId,
         ...data,
       })
     }
@@ -86,16 +72,7 @@ const ValueEdit = React.forwardRef(
   }
 )
 
-export default ({
-  name,
-  value,
-  state,
-  commandId,
-  path,
-  onMessage,
-  onPickId,
-  theme,
-}) => {
+export default ({ name, value, state, path, onMessage, onPickId, theme }) => {
   const { _editing: editing } = getState(state)
   if (editing) {
     return (
@@ -104,7 +81,6 @@ export default ({
         value={value}
         state={state}
         path={path}
-        commandId={commandId}
         onMessage={onMessage}
         theme={theme}
       />

@@ -11,7 +11,6 @@ export default ({
   value,
   path,
   state,
-  commandId,
   showAll,
   onMessage,
   onClose,
@@ -25,20 +24,16 @@ export default ({
 
   const setViewType = viewType => {
     onMessage({
-      type: 'tree-update',
       path,
       state: { _viewType: viewType, _expanded: true },
-      treeCommandId: commandId,
     })
     onViewChanged()
   }
 
   const sendAction = (action, data = {}) => {
     onMessage({
-      type: 'tree-update',
       path,
       action,
-      treeCommandId: commandId,
       ...data,
     })
   }
@@ -100,7 +95,9 @@ export default ({
       {!showAll && ['object', 'root'].includes(parentType) && (
         <MenuItem onClick={editJson}>Edit JSON</MenuItem>
       )}
-      <MenuItem onClick={pickId}>Paste into console</MenuItem>
+      {typeof onPickId === 'function' && (
+        <MenuItem onClick={pickId}>Paste into console</MenuItem>
+      )}
     </Menu>
   )
 }

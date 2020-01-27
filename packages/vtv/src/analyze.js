@@ -1,5 +1,10 @@
-export const isObject = item => {
-  return typeof item === 'object' && item !== null && !Array.isArray(item)
+export const isObject = value => {
+  return (
+    typeof value === 'object' &&
+    typeof value !== 'string' &&
+    value !== null &&
+    !Array.isArray(value)
+  )
 }
 
 export const getPaths = (item, depth = 2) => {

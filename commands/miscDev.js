@@ -1,4 +1,4 @@
-import { getPaths, displayPath } from '../components/tree-view/analyze'
+import { getPaths, displayPath } from 'vtv'
 
 export default {
   commands: {

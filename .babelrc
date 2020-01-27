@@ -1,0 +1,17 @@
+{
+  "presets": ["next/babel"],
+  "env": {
+    "development": {
+      "plugins": [
+        [
+          "module-resolver",
+          {
+            "alias": {
+              "vtv": "./packages/vtv/src"
+            }
+          }
+        ]
+      ]
+    }
+  }
+}
