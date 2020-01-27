@@ -40,5 +40,6 @@
   },
   "devDependencies": {
     "babel-plugin-module-resolver": "^4.0.0"
-  }
+  },
+  "license": "Apache-2.0"
 }
