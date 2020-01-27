@@ -20,17 +20,17 @@
     "@zeit/next-css": "^1.0.1",
     "insert-text-at-cursor": "^0.3.0",
     "lodash": "^4.17.15",
-    "next": "^9.1.5",
+    "next": "^9.2.1",
     "prettier": "^1.19.1",
     "react": "^16.12.0",
     "react-autosize-textarea": "^7.0.0",
     "react-dom": "16.12.0",
     "react-hotkeys": "^2.0.0",
-    "react-loader-spinner": "^3.1.4",
+    "react-loader-spinner": "^3.1.5",
     "react-popper": "^1.3.7",
-    "scroll-into-view-if-needed": "^2.2.22",
+    "scroll-into-view-if-needed": "^2.2.24",
     "shortid": "^2.2.15",
-    "vtv": "file:packages/vtv",
+    "vtv": "^1.0.0-canary.0",
     "webextension-polyfill": "^0.4.0"
   },
   "prettier": {
@@ -39,7 +39,6 @@
     "trailingComma": "es5"
   },
   "devDependencies": {
-    "babel-plugin-module-resolver": "^4.0.0",
-    "lerna": "^3.20.2"
+    "babel-plugin-module-resolver": "^4.0.0"
   }
 }
