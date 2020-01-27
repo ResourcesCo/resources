@@ -1,13 +1,17 @@
 {
   "presets": ["next/babel"],
-  "plugins": [
-    [
-      "module-resolver",
-      {
-        "alias": {
-          "vtv": "./packages/vtv/src"
-        }
-      }
-    ]
-  ]
+  "env": {
+    "development": {
+      "plugins": [
+        [
+          "module-resolver",
+          {
+            "alias": {
+              "vtv": "./packages/vtv/src"
+            }
+          }
+        ]
+      ]
+    }
+  }
 }
