@@ -4,7 +4,6 @@ import ActionButton from './ActionButton'
 
 export default ({ value, path, onMessage, theme }) => {
   const [newValue, setNewValue] = useState(JSON.stringify(value, null, 2))
-  const [changed, setChanged] = useState(false)
   const [hadError, setHadError] = useState(false)
   const [error, setError] = useState(false)
 
@@ -43,7 +42,6 @@ export default ({ value, path, onMessage, theme }) => {
 
   const handleChange = ({ target: { value } }) => {
     setNewValue(value)
-    setChanged(true)
     if (hadError) validate(value)
   }
 
@@ -63,7 +61,7 @@ export default ({ value, path, onMessage, theme }) => {
         {error && <div className="error-message">Invalid JSON</div>}
       </div>
       <div className="actions">
-        {changed ? (
+        {value !== newValue ? (
           <>
             <ActionButton onClick={save} disabled={error} primary theme={theme}>
               Save
@@ -87,11 +85,11 @@ export default ({ value, path, onMessage, theme }) => {
           resize: none;
           outline: none;
           border: none;
-          width: 95%;
+          width: 100%;
+          padding: 3px;
         }
         div.textareaWrapper {
           border: 1px solid ${theme.bubble1};
-          padding: 3px;
         }
         div.error div.textareaWrapper {
           border: 1px solid ${theme.errorColor};

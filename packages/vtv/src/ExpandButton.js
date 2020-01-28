@@ -2,7 +2,7 @@ import { faCaretRight, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default ({ onClick, expanded, hasChildren }) => (
-  <div>
+  <div className={expanded ? 'expanded' : ''}>
     <button onClick={onClick} className={hasChildren ? '' : 'invisible'}>
       <FontAwesomeIcon icon={expanded ? faCaretDown : faCaretRight} size="xs" />
     </button>
@@ -11,12 +11,16 @@ export default ({ onClick, expanded, hasChildren }) => (
         outline: none;
         border: none;
         cursor: pointer;
-        padding: 0;
         margin: 0;
         margin-top: -2px;
         font-size: 1.5em;
-        min-width: 20px;
+        text-align: left;
+        padding-left: 10px;
+        width: 22px;
         background: none;
+      }
+      .expanded button {
+        padding-left: 8px;
       }
       .invisible {
         visibility: hidden;

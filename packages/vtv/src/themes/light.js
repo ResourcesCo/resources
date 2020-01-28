@@ -1,7 +1,8 @@
-export default ({
+export default {
   foreground: '#111',
   lightTextColor: '#444',
   background: '#e7e7e7',
+  backgroundHover: '#d7d7d7',
   inputBorder: 'rgb(140, 140, 140)',
   selectionBackground: '#7ec0ee',
   selectionColor: 'black',
@@ -19,4 +20,4 @@ export default ({
   actionTextColor: '#ccc',
   disabledActionColor: '#bbb',
   disabledActionTextColor: '#888',
-})
+}
