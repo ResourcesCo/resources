@@ -11,16 +11,16 @@ export default ({ onClick, expanded, hasChildren }) => (
         outline: none;
         border: none;
         cursor: pointer;
-        padding: 0;
         margin: 0;
         margin-top: -2px;
         font-size: 1.5em;
-        min-width: 15px;
         text-align: left;
+        padding-left: 10px;
+        width: 22px;
         background: none;
       }
       .expanded button {
-        margin-left: -2px;
+        padding-left: 8px;
       }
       .invisible {
         visibility: hidden;

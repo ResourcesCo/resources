@@ -34,7 +34,7 @@ class Form extends PureComponent {
 
     let firstInput = true
     return (
-      <div>
+      <div style={{ margin: 5 }}>
         {fields.map(({ name, type }) => {
           const result = (
             <div key={name}>

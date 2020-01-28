@@ -20,19 +20,13 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
     return <Help theme={theme} help={help} />
   } else if (type === 'error') {
     if (code === 'not_found') {
-      return (
-        <div style={{ marginLeft: 5, marginRight: 5 }}>Results not found.</div>
-      )
+      return <div style={{ margin: 5 }}>Results not found.</div>
     } else {
-      return (
-        <div style={{ marginLeft: 5, marginRight: 5 }}>
-          {text || 'Unknown error.'}
-        </div>
-      )
+      return <div style={{ margin: 5 }}>{text || 'Unknown error.'}</div>
     }
   } else if (type === 'link') {
     return (
-      <div>
+      <div style={{ margin: 5 }}>
         <a target="_blank" href={url}>
           {text}
         </a>
@@ -40,14 +34,14 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
     )
   } else if (type === 'text' || (type === 'form-status' && text)) {
     return (
-      <div>
+      <div style={{ margin: 5 }}>
         {(text || '').split('\n').map((s, i) => (
           <div key={i}>{s}</div>
         ))}
       </div>
     )
   } else if (type === 'code') {
-    return <pre style={{ fontFamily: 'monospace' }}>{text}</pre>
+    return <pre style={{ fontFamily: 'monospace', margin: 5 }}>{text}</pre>
   } else if (type === 'input') {
     const { onPickId, commandId, loading } = props
     const lines = text.split('\n')
@@ -95,7 +89,7 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
     return (
       <img
         src={url}
-        style={{ ...imageStyle, marginLeft: 5 }}
+        style={{ ...imageStyle, margin: 5 }}
         onLoad={() => setTimeout(handleLoaded, 10)}
       />
     )

@@ -18,6 +18,7 @@ const NodeView = ({
   value,
   state,
   displayName,
+  showOnlyPath = [],
   path = [],
   showAll,
   onMessage,
@@ -35,9 +36,12 @@ const NodeView = ({
     _editingJson: editingJson,
   } = getState(state)
 
-  const setExpanded = expanded => {
+  const toggleExpanded = () => {
     setViewChanged(true)
-    onMessage({ path, state: { _expanded: expanded } })
+    if (editingJson) {
+      return
+    }
+    onMessage({ path, state: { _expanded: !expanded } })
   }
   const _hasChildren = hasChildren(value)
 
@@ -72,6 +76,7 @@ const NodeView = ({
         state={getNestedState(state, showOnly)}
         displayName={displayPath([name, ...showOnly])}
         showAll={true}
+        showOnlyPath={showOnly}
         onMessage={onMessage}
         onPickId={onPickId}
         path={showOnly}
@@ -80,16 +85,18 @@ const NodeView = ({
     )
   }
 
+  const indent = 10 * (path.length - showOnlyPath.length)
+
   return (
     <div className="tree" ref={scrollRef}>
       <div
         className={`row level-${path.length}`}
-        style={{ paddingLeft: 10 * (path.length - 1) }}
+        style={{ paddingLeft: indent }}
       >
         <ExpandButton
           hasChildren={_hasChildren}
           expanded={expanded}
-          onClick={() => setExpanded(!expanded)}
+          onClick={toggleExpanded}
         />
         <Manager>
           <Reference>
@@ -167,13 +174,14 @@ const NodeView = ({
                     onMessage={onMessage}
                     onPickId={onPickId}
                     path={[...path, key]}
+                    showOnlyPath={showOnlyPath}
                     theme={theme}
                   />
                 ))}
               </div>
             )}
           {expanded && viewType === 'table' && (
-            <div style={{ paddingLeft: 10 * (path.length - 1) }}>
+            <div style={{ paddingLeft: indent }}>
               <TableView
                 name={name}
                 value={value}
@@ -189,7 +197,7 @@ const NodeView = ({
       {editingJson && (
         <div
           style={{
-            paddingLeft: 10 * (path.length - 1),
+            paddingLeft: indent,
             paddingTop: 5,
             paddingBottom: 5,
             marginRight: 15,
