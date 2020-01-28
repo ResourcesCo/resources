@@ -36,7 +36,7 @@ class Data extends PureComponent {
     } = this.props
     const { pageSize } = this.state
     return (
-      <div>
+      <div className="data">
         {data.slice(0, pageSize).map(record => {
           const titleEl = record[title] ? record[title] : <i>(empty)</i>
           const url = link && record[link]
@@ -84,6 +84,10 @@ class Data extends PureComponent {
 
           button.action {
             padding: 4px 12px;
+          }
+
+          div.data {
+            marginleft: 5px;
           }
         `}</style>
       </div>

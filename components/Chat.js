@@ -248,11 +248,6 @@ class Chat extends PureComponent {
             justify-content: flex-end;
             height: 100vh;
             flex-grow: 1;
-            padding: 2px;
-          }
-
-          .chat-message {
-            padding: 3px 5px;
           }
 
           .messages-scroll {

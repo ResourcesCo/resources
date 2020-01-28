@@ -19,7 +19,7 @@ const Details = ({ children, theme }) => {
 
 export default ({ theme, help }) => {
   return (
-    <div>
+    <div style={{ margin: 5 }}>
       {(help || []).map(({ command, subCommand, args = [], details }, i) => {
         return (
           <div key={i}>

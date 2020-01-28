@@ -20,9 +20,15 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
     return <Help theme={theme} help={help} />
   } else if (type === 'error') {
     if (code === 'not_found') {
-      return <div>Results not found.</div>
+      return (
+        <div style={{ marginLeft: 5, marginRight: 5 }}>Results not found.</div>
+      )
     } else {
-      return <div>{text || 'Unknown error.'}</div>
+      return (
+        <div style={{ marginLeft: 5, marginRight: 5 }}>
+          {text || 'Unknown error.'}
+        </div>
+      )
     }
   } else if (type === 'link') {
     return (
@@ -75,6 +81,9 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
           .input-link {
             display: none;
           }
+          .input-message {
+            margin-left: 5px;
+          }
           .input-message:hover .input-link {
             display: inline;
           }
@@ -86,7 +95,7 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
     return (
       <img
         src={url}
-        style={imageStyle}
+        style={{ ...imageStyle, marginLeft: 5 }}
         onLoad={() => setTimeout(handleLoaded, 10)}
       />
     )
@@ -129,14 +138,21 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
     }
 
     return (
-      <TreeView
-        name={name}
-        value={value}
-        state={state}
-        theme={theme}
-        onChange={onChange}
-        onPickId={onPickId}
-      />
+      <div>
+        <TreeView
+          name={name}
+          value={value}
+          state={state}
+          theme={theme}
+          onChange={onChange}
+          onPickId={onPickId}
+        />
+        <style jsx>{`
+          div {
+            margin: 5px 0;
+          }
+        `}</style>
+      </div>
     )
   } else {
     return null
