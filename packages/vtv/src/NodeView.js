@@ -84,7 +84,7 @@ const NodeView = ({
     <div className="tree" ref={scrollRef}>
       <div
         className={`row level-${path.length}`}
-        style={{ paddingLeft: path.length * 10 }}
+        style={{ paddingLeft: 10 * (path.length - 1) }}
       >
         <ExpandButton
           hasChildren={_hasChildren}
@@ -173,7 +173,7 @@ const NodeView = ({
               </div>
             )}
           {expanded && viewType === 'table' && (
-            <div style={{ paddingLeft: 10 * path.length }}>
+            <div style={{ paddingLeft: 10 * (path.length - 1) }}>
               <TableView
                 name={name}
                 value={value}
@@ -187,13 +187,22 @@ const NodeView = ({
         </>
       )}
       {editingJson && (
-        <CodeView
-          open={expanded}
-          path={path}
-          value={value}
-          onMessage={onMessage}
-          theme={theme}
-        />
+        <div
+          style={{
+            paddingLeft: 10 * (path.length - 1),
+            paddingTop: 5,
+            paddingBottom: 5,
+            marginRight: 15,
+          }}
+        >
+          <CodeView
+            open={expanded}
+            path={path}
+            value={value}
+            onMessage={onMessage}
+            theme={theme}
+          />
+        </div>
       )}
     </div>
   )

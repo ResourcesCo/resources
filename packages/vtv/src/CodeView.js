@@ -87,11 +87,11 @@ export default ({ value, path, onMessage, theme }) => {
           resize: none;
           outline: none;
           border: none;
-          width: 95%;
+          width: 100%;
+          padding: 3px;
         }
         div.textareaWrapper {
           border: 1px solid ${theme.bubble1};
-          padding: 3px;
         }
         div.error div.textareaWrapper {
           border: 1px solid ${theme.errorColor};
