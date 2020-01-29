@@ -10,13 +10,13 @@ import CodeView from './CodeView'
 import Summary from './Summary'
 import getNested from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'
-import { getTheme } from './themes'
 
 const NodeView = ({
   parentType = 'root',
   name,
   value,
   state,
+  options,
   displayName,
   showOnlyPath = [],
   path = [],
@@ -74,6 +74,7 @@ const NodeView = ({
         name={showOnly[showOnly.length - 1]}
         value={getNested(value, showOnly)}
         state={getNestedState(state, showOnly)}
+        options={options}
         displayName={displayPath([name, ...showOnly])}
         showAll={true}
         showOnlyPath={showOnly}
@@ -86,6 +87,20 @@ const NodeView = ({
   }
 
   const indent = 10 * (path.length - showOnlyPath.length)
+
+  const treeMenuProps = {
+    parentType,
+    name,
+    value,
+    state,
+    path,
+    showAll,
+    onMessage,
+    onViewChanged: () => setViewChanged(true),
+    onPickId,
+    onClose: () => setMenuOpen(false),
+    theme,
+  }
 
   return (
     <div className="tree" ref={scrollRef}>
@@ -114,21 +129,7 @@ const NodeView = ({
               />
             )}
           </Reference>
-          {menuOpen && (
-            <TreeMenu
-              parentType={parentType}
-              name={name}
-              value={value}
-              state={state}
-              path={path}
-              showAll={showAll}
-              onMessage={onMessage}
-              onViewChanged={() => setViewChanged(true)}
-              onPickId={onPickId}
-              onClose={() => setMenuOpen(false)}
-              theme={theme}
-            />
-          )}
+          {menuOpen && <TreeMenu {...treeMenuProps} />}
         </Manager>
         <div className="inline-details">
           <Summary
@@ -141,6 +142,7 @@ const NodeView = ({
             theme={theme}
           />
         </div>
+        <div className="actions"></div>
         <style jsx>{`
           .inline-details {
             margin-left: 10px;
@@ -171,6 +173,7 @@ const NodeView = ({
                     name={key}
                     value={value[key]}
                     state={getChildState(state, key)}
+                    options={options}
                     onMessage={onMessage}
                     onPickId={onPickId}
                     path={[...path, key]}

@@ -1,4 +1,5 @@
 export default {
+  base: 'light',
   foreground: '#111',
   lightTextColor: '#444',
   background: '#e7e7e7',

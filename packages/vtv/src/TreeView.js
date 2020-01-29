@@ -1,16 +1,14 @@
 import { isObject } from './analyze'
 import { updateTree } from './state'
+import { getTheme } from './themes'
 import NodeView from './NodeView'
 
-export default ({ onChange, onMessage, theme, ...props }) => {
+export default ({ onChange, onMessage, theme, options = {}, ...props }) => {
   if (typeof onMessage === 'function' && isObject(theme)) {
     return <NodeView onMessage={onMessage} theme={theme} {...props} />
   } else {
     let themeProp = theme
     let onMessageProp = onMessage
-    if (!isObject(themeProp)) {
-      themeProp = getTheme(themeProp)
-    }
     if (typeof onMessageProp !== 'function') {
       onMessageProp = message => {
         const treeData = {
@@ -21,6 +19,13 @@ export default ({ onChange, onMessage, theme, ...props }) => {
         onChange(updateTree(treeData, message))
       }
     }
-    return <NodeView onMessage={onMessageProp} theme={themeProp} {...props} />
+    return (
+      <NodeView
+        onMessage={onMessageProp}
+        options={options}
+        theme={getTheme(theme)}
+        {...props}
+      />
+    )
   }
 }
