@@ -4,7 +4,7 @@ import { hasChildren } from './analyze'
 import useClickOutside from './useClickOutside'
 import { Popper } from 'react-popper'
 
-export const MenuItem = ({ onClick, children, theme }) => {
+export function MenuItem({ onClick, children, theme }) {
   return (
     <div>
       <button onClick={onClick}>{children}</button>
@@ -30,12 +30,22 @@ export const MenuItem = ({ onClick, children, theme }) => {
   )
 }
 
-export default ({ onClose, theme, children }) => {
+const defaultPopperProps = {
+  placement: 'bottom-start',
+  modifiers: { offset: { offset: '8, 3' } },
+}
+
+export default ({
+  onClose,
+  popperProps = defaultPopperProps,
+  theme,
+  children,
+}) => {
   const ref = useRef(null)
   useClickOutside(ref, onClose)
 
   return (
-    <Popper placement="bottom-start" modifiers={{ offset: { offset: '8, 3' } }}>
+    <Popper {...popperProps}>
       {({ ref: popperRef, style, placement }) => (
         <div
           className="popper"
