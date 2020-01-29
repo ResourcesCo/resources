@@ -1,5 +1,5 @@
-import { faCaretRight, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCaretRight, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 
 export default ({ onClick, expanded, hasChildren }) => (
   <div className={expanded ? 'expanded' : ''}>

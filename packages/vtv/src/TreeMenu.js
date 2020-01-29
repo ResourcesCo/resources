@@ -4,7 +4,7 @@ import { hasChildren, isBasicType } from './analyze'
 import useClickOutside from './useClickOutside'
 import Menu, { MenuItem } from './Menu'
 
-export default ({
+export default function TreeMenu({
   onPickId,
   parentType,
   name,
@@ -15,8 +15,10 @@ export default ({
   onMessage,
   onClose,
   onViewChanged,
+  bubbleOnly,
+  popperProps,
   theme,
-}) => {
+}) {
   const [action, setAction] = useState(null)
 
   const isArray = Array.isArray(value)
@@ -52,7 +54,7 @@ export default ({
   }
 
   return (
-    <Menu theme={theme} onClose={onClose}>
+    <Menu onClose={onClose} popperProps={popperProps} theme={theme}>
       {['tree', 'table'].map(key => {
         if (key === viewType) {
           return null

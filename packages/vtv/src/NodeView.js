@@ -1,22 +1,23 @@
 import { useState, useRef, useEffect } from 'react'
 import { Manager, Reference, Popper } from 'react-popper'
 import ExpandButton from './ExpandButton'
-import LabelButton from './LabelButton'
+import NodeNameView from './NodeNameView'
+import NodeValueView from './NodeValueView'
+import TreeMenuButton from './TreeMenuButton'
 import { getState, getChildState, getNestedState } from './state'
 import { hasChildren, detectUrl, displayPath, isObject } from './analyze'
 import TreeMenu from './TreeMenu'
 import TableView from './TableView'
 import CodeView from './CodeView'
-import Summary from './Summary'
 import getNested from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'
-import { getTheme } from './themes'
 
 const NodeView = ({
   parentType = 'root',
   name,
   value,
   state,
+  options,
   displayName,
   showOnlyPath = [],
   path = [],
@@ -25,7 +26,6 @@ const NodeView = ({
   onPickId,
   theme,
 }) => {
-  const [menuOpen, setMenuOpen] = useState(false)
   const [viewChanged, setViewChanged] = useState(false)
 
   const {
@@ -35,6 +35,7 @@ const NodeView = ({
     _editingName: editingName,
     _editingJson: editingJson,
   } = getState(state)
+  const { bubbleMenu } = options
 
   const toggleExpanded = () => {
     setViewChanged(true)
@@ -74,6 +75,7 @@ const NodeView = ({
         name={showOnly[showOnly.length - 1]}
         value={getNested(value, showOnly)}
         state={getNestedState(state, showOnly)}
+        options={options}
         displayName={displayPath([name, ...showOnly])}
         showAll={true}
         showOnlyPath={showOnly}
@@ -87,51 +89,45 @@ const NodeView = ({
 
   const indent = 10 * (path.length - showOnlyPath.length)
 
+  const treeMenuProps = {
+    parentType,
+    name,
+    value,
+    state,
+    path,
+    showAll,
+    onMessage,
+    onViewChanged: () => setViewChanged(true),
+    onPickId,
+    theme,
+  }
+
   return (
     <div className="tree" ref={scrollRef}>
       <div
         className={`row level-${path.length}`}
         style={{ paddingLeft: indent }}
+        tabIndex={0}
       >
         <ExpandButton
           hasChildren={_hasChildren}
           expanded={expanded}
           onClick={toggleExpanded}
         />
-        <Manager>
-          <Reference>
-            {({ ref }) => (
-              <LabelButton
-                ref={ref}
-                onClick={() => setMenuOpen(true)}
-                editingName={editingName}
-                name={name}
-                displayName={displayName}
-                path={path}
-                value={value}
-                onMessage={onMessage}
-                theme={theme}
-              />
-            )}
-          </Reference>
-          {menuOpen && (
-            <TreeMenu
-              parentType={parentType}
-              name={name}
-              value={value}
-              state={state}
-              path={path}
-              showAll={showAll}
-              onMessage={onMessage}
-              onViewChanged={() => setViewChanged(true)}
-              onPickId={onPickId}
-              onClose={() => setMenuOpen(false)}
-              theme={theme}
-            />
-          )}
-        </Manager>
+        <NodeNameView
+          editingName={editingName}
+          name={name}
+          displayName={displayName}
+          path={path}
+          value={value}
+          parentType={parentType}
+          onMessage={onMessage}
+          treeMenuProps={treeMenuProps}
+          bubbleMenu={bubbleMenu}
+          theme={theme}
+        />
         <div className="inline-details">
-          <Summary
+          <NodeValueView
             name={name}
             value={value}
             state={state}
@@ -140,6 +136,9 @@ const NodeView = ({
             onPickId={onPickId}
             theme={theme}
           />
+        </div>
+        <div className="actions">
+          <TreeMenuButton treeMenuProps={treeMenuProps} />
         </div>
         <style jsx>{`
           .inline-details {
@@ -152,9 +151,20 @@ const NodeView = ({
             padding-top: 3px;
             padding-bottom: 3px;
             align-items: center;
+            outline: none;
+          }
+          .actions {
+            visibility: hidden;
           }
           .row:hover {
             background-color: ${theme.backgroundHover};
+          }
+          .row:focus-within {
+            background-color: ${theme.backgroundActive};
+          }
+          .row:hover .actions,
+          .row:focus-within .actions {
+            visibility: visible;
           }
         `}</style>
       </div>
@@ -171,6 +181,7 @@ const NodeView = ({
                     name={key}
                     value={value[key]}
                     state={getChildState(state, key)}
+                    options={options}
                     onMessage={onMessage}
                     onPickId={onPickId}
                     path={[...path, key]}

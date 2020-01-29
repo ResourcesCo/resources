@@ -3,6 +3,7 @@ export default {
   lightTextColor: '#444',
   background: '#e7e7e7',
   backgroundHover: '#d7d7d7',
+  backgroundActive: '#ddd',
   inputBorder: 'rgb(140, 140, 140)',
   selectionBackground: '#7ec0ee',
   selectionColor: 'black',

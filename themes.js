@@ -1,9 +1,10 @@
 export default {
   dark: {
+    base: 'dark',
     foreground: '#eee',
     lightTextColor: '#ccc',
-    background: '#24292e',
-    backgroundHover: '#44494e',
+    background: '#14191e',
+    backgroundHover: '#33383d',
     inputBorder: 'rgb(140, 140, 140)',
     selectionBackground: '#c0c0c0',
     selectionColor: '#eee',
@@ -12,7 +13,7 @@ export default {
     inputColor: '#5ac',
     numberColor: '#9ce',
     valueColor: '#dd9',
-    bubble1: '#595959',
+    bubble1: '#596979',
     menuBackground: '#777',
     menuHighlight: '#878787',
     errorColor: '#c00',
@@ -23,6 +24,7 @@ export default {
     disabledActionTextColor: '#999',
   },
   light: {
+    base: 'light',
     foreground: '#111',
     lightTextColor: '#444',
     background: '#e7e7e7',

@@ -7,6 +7,11 @@ const themes = {
 }
 
 export default themes
-export const getTheme = value => (
-  typeof value === 'string' ? themes[value] : value
-)
+export const getTheme = theme => {
+  if (typeof theme === 'string') {
+    return themes[theme]
+  } else {
+    const baseTheme = themes[theme.base]
+    return { ...baseTheme, ...theme }
+  }
+}
