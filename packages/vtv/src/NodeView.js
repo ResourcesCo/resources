@@ -107,6 +107,7 @@ const NodeView = ({
       <div
         className={`row level-${path.length}`}
         style={{ paddingLeft: indent }}
+        tabIndex={0}
       >
         <ExpandButton
           hasChildren={_hasChildren}
@@ -150,9 +151,20 @@ const NodeView = ({
             padding-top: 3px;
             padding-bottom: 3px;
             align-items: center;
+            outline: none;
+          }
+          .actions {
+            visibility: hidden;
           }
           .row:hover {
             background-color: ${theme.backgroundHover};
+          }
+          .row:focus-within {
+            background-color: ${theme.backgroundActive};
+          }
+          .row:hover .actions,
+          .row:focus-within .actions {
+            visibility: visible;
           }
         `}</style>
       </div>
