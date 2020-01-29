@@ -1,13 +1,14 @@
 import { useState, useRef, useEffect } from 'react'
 import { Manager, Reference, Popper } from 'react-popper'
 import ExpandButton from './ExpandButton'
-import LabelButton from './LabelButton'
+import NodeNameView from './NodeNameView'
+import NodeValueView from './NodeValueView'
+import TreeMenuButton from './TreeMenuButton'
 import { getState, getChildState, getNestedState } from './state'
 import { hasChildren, detectUrl, displayPath, isObject } from './analyze'
 import TreeMenu from './TreeMenu'
 import TableView from './TableView'
 import CodeView from './CodeView'
-import Summary from './Summary'
 import getNested from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'
 
@@ -25,7 +26,6 @@ const NodeView = ({
   onPickId,
   theme,
 }) => {
-  const [menuOpen, setMenuOpen] = useState(false)
   const [viewChanged, setViewChanged] = useState(false)
 
   const {
@@ -35,6 +35,7 @@ const NodeView = ({
     _editingName: editingName,
     _editingJson: editingJson,
   } = getState(state)
+  const { bubbleMenu } = options
 
   const toggleExpanded = () => {
     setViewChanged(true)
@@ -98,7 +99,6 @@ const NodeView = ({
     onMessage,
     onViewChanged: () => setViewChanged(true),
     onPickId,
-    onClose: () => setMenuOpen(false),
     theme,
   }
 
@@ -113,26 +113,20 @@ const NodeView = ({
           expanded={expanded}
           onClick={toggleExpanded}
         />
-        <Manager>
-          <Reference>
-            {({ ref }) => (
-              <LabelButton
-                ref={ref}
-                onClick={() => setMenuOpen(true)}
-                editingName={editingName}
-                name={name}
-                displayName={displayName}
-                path={path}
-                value={value}
-                onMessage={onMessage}
-                theme={theme}
-              />
-            )}
-          </Reference>
-          {menuOpen && <TreeMenu {...treeMenuProps} />}
-        </Manager>
+        <NodeNameView
+          editingName={editingName}
+          name={name}
+          displayName={displayName}
+          path={path}
+          value={value}
+          parentType={parentType}
+          onMessage={onMessage}
+          treeMenuProps={treeMenuProps}
+          bubbleMenu={bubbleMenu}
+          theme={theme}
+        />
         <div className="inline-details">
-          <Summary
+          <NodeValueView
             name={name}
             value={value}
             state={state}
@@ -142,7 +136,9 @@ const NodeView = ({
             theme={theme}
           />
         </div>
-        <div className="actions"></div>
+        <div className="actions">
+          <TreeMenuButton treeMenuProps={treeMenuProps} />
+        </div>
         <style jsx>{`
           .inline-details {
             margin-left: 10px;

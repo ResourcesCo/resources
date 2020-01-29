@@ -15,6 +15,7 @@ export default ({
   onMessage,
   onClose,
   onViewChanged,
+  bubbleOnly,
   theme,
 }) => {
   const [action, setAction] = useState(null)

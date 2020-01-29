@@ -1,6 +1,6 @@
 import { getCollectionPaths, displayPath, getAtPath } from './analyze'
-import Summary from './Summary'
-import LabelButton from './LabelButton'
+import NodeValueView from './NodeValueView'
+import NodeNameView from './NodeNameView'
 
 export default ({ value, onPickId, onMessage, name, state, theme }) => {
   const paths = getCollectionPaths(value)
@@ -19,12 +19,12 @@ export default ({ value, onPickId, onMessage, name, state, theme }) => {
           {Object.keys(value).map(key => (
             <tr key={key}>
               <td>
-                {/*<LabelButton theme={theme} name={key} />*/}
+                {/*<NodeNameView theme={theme} name={key} />*/}
                 {key}
               </td>
               {paths.map((path, i) => (
                 <td key={i}>
-                  <Summary
+                  <NodeValueView
                     onMessage={onMessage}
                     value={getAtPath(value[key], path)}
                     onPickId={onPickId}

@@ -3,6 +3,10 @@ import { updateTree } from './state'
 import { getTheme } from './themes'
 import NodeView from './NodeView'
 
+const optionDefaults = {
+  bubbleMenu: false,
+}
+
 export default ({ onChange, onMessage, theme, options = {}, ...props }) => {
   if (typeof onMessage === 'function' && isObject(theme)) {
     return <NodeView onMessage={onMessage} theme={theme} {...props} />
@@ -22,7 +26,7 @@ export default ({ onChange, onMessage, theme, options = {}, ...props }) => {
     return (
       <NodeView
         onMessage={onMessageProp}
-        options={options}
+        options={{ ...optionDefaults, ...options }}
         theme={getTheme(theme)}
         {...props}
       />

@@ -1,5 +1,6 @@
 export default {
   dark: {
+    base: 'dark',
     foreground: '#eee',
     lightTextColor: '#ccc',
     background: '#24292e',
@@ -23,6 +24,7 @@ export default {
     disabledActionTextColor: '#999',
   },
   light: {
+    base: 'light',
     foreground: '#111',
     lightTextColor: '#444',
     background: '#e7e7e7',
