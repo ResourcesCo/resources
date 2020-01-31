@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Textarea from './Textarea'
 import { detectUrl } from './analyze'
 import { getState } from './state'
@@ -6,33 +6,51 @@ import Link from './Link'
 import StringView from './StringView'
 import CollectionSummary from './CollectionSummary'
 
-const ValueEdit = React.forwardRef(
-  ({ name, value, state, path, onMessage, theme }, ref) => {
-    const [newValue, setNewValue] = useState(`${value}`)
+const inputValue = value => {
+  if (typeof value === 'string') {
+    if (/^\s*$/.test(value) || /\n|\t/.test(value)) {
+      return JSON.stringify(value)
+    }
+    try {
+      JSON.parse(value)
+    } catch (e) {
+      return `${value}`
+    }
+    return JSON.stringify(value)
+  } else {
+    return JSON.stringify(value)
+  }
+}
 
-    const sendAction = (data = {}) => {
-      onMessage({
-        path,
-        action: 'edit',
-        editing: false,
-        ...data,
-      })
+const InlineValue = React.forwardRef(
+  ({ name, value, state, path, onMessage, editing, autoEdit, theme }, ref) => {
+    const [newInputValue, setNewInputValue] = useState(inputValue(value))
+
+    const sendAction = (data = {}) => {}
+
+    let newValue, parsed
+    try {
+      newValue = JSON.parse(newInputValue)
+    } catch (e) {
+      newValue = newInputValue
     }
 
     const save = () => {
-      let value
-      try {
-        value = JSON.parse(newValue)
-      } catch (e) {
-        value = newValue
-      }
-      sendAction({
-        value,
+      onMessage({
+        path,
+        action: 'edit',
+        value: newValue,
+        editing: false,
       })
     }
 
     const cancel = () => {
-      sendAction()
+      setNewInputValue(inputValue(value))
+      onMessage({
+        path,
+        action: 'edit',
+        editing: false,
+      })
     }
 
     const handleKeyPress = e => {
@@ -45,15 +63,34 @@ const ValueEdit = React.forwardRef(
       }
     }
 
+    const onBlur = () => {
+      setNewInputValue(inputValue(newValue))
+      save()
+    }
+
+    let typeClass
+    if (typeof newValue === 'string') {
+      typeClass = parsed ? 'stringValue' : 'string'
+    } else if (typeof newValue === 'number') {
+      typeClass = 'number'
+    } else {
+      typeClass = 'value'
+    }
+
     return (
-      <div>
-        <Textarea
-          value={newValue}
-          onChange={({ target: { value } }) => setNewValue(value)}
-          onKeyDown={handleKeyPress}
-          onBlur={save}
-          autoFocus
-        />
+      <div className={typeClass}>
+        {autoEdit || editing ? (
+          <Textarea
+            value={newInputValue}
+            onChange={({ target: { value } }) => setNewInputValue(value)}
+            onKeyDown={handleKeyPress}
+            onBlur={onBlur}
+            wrap="off"
+          />
+        ) : (
+          <span>{value}</span>
+        )}
+
         <style jsx>{`
           div {
             width: 100%;
@@ -66,22 +103,41 @@ const ValueEdit = React.forwardRef(
             width: 100%;
             font-size: inherit;
           }
+          div.number span,
+          div.number :global(textarea) {
+            color: ${theme.numberColor};
+          }
+          div.value span,
+          div.value :global(textarea) {
+            color: ${theme.valueColor};
+          }
         `}</style>
       </div>
     )
   }
 )
 
-export default ({ name, value, state, path, onMessage, onPickId, theme }) => {
+export default ({
+  name,
+  value,
+  state,
+  path,
+  onMessage,
+  onPickId,
+  autoEdit = true,
+  theme,
+}) => {
   const { _editing: editing } = getState(state)
   if (editing) {
     return (
-      <ValueEdit
+      <InlineValue
         name={name}
         value={value}
         state={state}
         path={path}
         onMessage={onMessage}
+        editing={editing}
+        autoEdit={autoEdit}
         theme={theme}
       />
     )
@@ -90,7 +146,18 @@ export default ({ name, value, state, path, onMessage, onPickId, theme }) => {
       if (detectUrl(value)) {
         return <Link url={value} onPickId={onPickId} theme={theme} />
       } else {
-        return <StringView value={value} maxLength={120} />
+        return (
+          <InlineValue
+            name={name}
+            value={value}
+            state={state}
+            path={path}
+            onMessage={onMessage}
+            editing={editing}
+            autoEdit={autoEdit}
+            theme={theme}
+          />
+        )
       }
     } else if (typeof value === 'object' && value !== null) {
       return (
@@ -100,27 +167,18 @@ export default ({ name, value, state, path, onMessage, onPickId, theme }) => {
           theme={theme}
         />
       )
-    } else if (typeof value === 'number') {
-      return (
-        <span>
-          {`${value}`}
-          <style jsx>{`
-            span {
-              color: ${theme.numberColor};
-            }
-          `}</style>
-        </span>
-      )
     } else {
       return (
-        <span>
-          {`${value}`}
-          <style jsx>{`
-            span {
-              color: ${theme.valueColor};
-            }
-          `}</style>
-        </span>
+        <InlineValue
+          name={name}
+          value={value}
+          state={state}
+          path={path}
+          onMessage={onMessage}
+          editing={editing}
+          autoEdit={autoEdit}
+          theme={theme}
+        />
       )
     }
   }
