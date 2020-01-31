@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Textarea from './Textarea'
 import { detectUrl } from './analyze'
 import { getState } from './state'
@@ -8,10 +8,13 @@ import CollectionSummary from './CollectionSummary'
 
 const inputValue = value => {
   if (typeof value === 'string') {
+    if (/^\s*$/.test(value) || /\n|\t/.test(value)) {
+      return JSON.stringify(value)
+    }
     try {
       JSON.parse(value)
     } catch (e) {
-      return value
+      return `${value}`
     }
     return JSON.stringify(value)
   } else {
@@ -25,7 +28,7 @@ const InlineValue = React.forwardRef(
 
     const sendAction = (data = {}) => {}
 
-    let newValue
+    let newValue, parsed
     try {
       newValue = JSON.parse(newInputValue)
     } catch (e) {
@@ -60,9 +63,14 @@ const InlineValue = React.forwardRef(
       }
     }
 
+    const onBlur = () => {
+      setNewInputValue(inputValue(newValue))
+      save()
+    }
+
     let typeClass
     if (typeof newValue === 'string') {
-      typeClass = 'string'
+      typeClass = parsed ? 'stringValue' : 'string'
     } else if (typeof newValue === 'number') {
       typeClass = 'number'
     } else {
@@ -76,7 +84,8 @@ const InlineValue = React.forwardRef(
             value={newInputValue}
             onChange={({ target: { value } }) => setNewInputValue(value)}
             onKeyDown={handleKeyPress}
-            onBlur={save}
+            onBlur={onBlur}
+            wrap="off"
           />
         ) : (
           <span>{value}</span>
@@ -115,7 +124,6 @@ export default ({
   path,
   onMessage,
   onPickId,
-  maxLength = 120,
   autoEdit = true,
   theme,
 }) => {
@@ -137,7 +145,7 @@ export default ({
     if (typeof value === 'string') {
       if (detectUrl(value)) {
         return <Link url={value} onPickId={onPickId} theme={theme} />
-      } else if (value.length < maxLength || value.indexOf('\n') !== -1) {
+      } else {
         return (
           <InlineValue
             name={name}
@@ -150,8 +158,6 @@ export default ({
             theme={theme}
           />
         )
-      } else {
-        return <StringView value={value} maxLength={maxLength} />
       }
     } else if (typeof value === 'object' && value !== null) {
       return (
