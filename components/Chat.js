@@ -1,7 +1,6 @@
 import { PureComponent } from 'react'
 import runCommand from '../command-runner'
 import parse from '../command-runner/parser'
-import Nav from './Nav'
 import Message from './messages/Message'
 import { store } from '../store'
 import ChatInput from './ChatInput'
@@ -200,9 +199,6 @@ class Chat extends PureComponent {
 
     return (
       <div className="chat">
-        <div className="nav">
-          <Nav theme={theme} />
-        </div>
         <div className="messages-scroll">
           <div className="messages">
             {messages

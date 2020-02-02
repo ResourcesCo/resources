@@ -29,6 +29,8 @@ export default ({
         autoFocus
         ref={textareaRef}
         maxRows={8}
+        autoCorrect="off"
+        autoCapitalize="none"
       />
       <button onClick={onSend}>
         <span className="rocket">
