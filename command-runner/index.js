@@ -1,4 +1,5 @@
 import shortid from 'shortid'
+import { splitPath } from 'vtv'
 import commands from '../commands'
 import { store } from '../store'
 
@@ -7,7 +8,7 @@ const inputMessage = message => ({
   text: message,
 })
 
-const getCommandHelp = () => {
+const getGlobalCommandHelp = () => {
   let result = []
   for (let command of Object.keys(commands)) {
     const cmd = commands[command]
@@ -23,14 +24,14 @@ const getCommandHelp = () => {
     } else if (cmd.commands) {
       result.push({
         command,
-        details: `run ${command} commands (see \`${command} help\`)`,
+        details: `run ${command} commands (see \`${command}.help\`)`,
       })
     }
   }
   return result
 }
 
-export let commandHelp = getCommandHelp()
+export let globalCommandHelp = getGlobalCommandHelp()
 
 const convertToArray = value => {
   return Array.isArray(value) ? value : value ? [value] : []
@@ -64,7 +65,7 @@ const updateCommandEnv = (commandName, envUpdates) => {
 }
 
 const runSubcommand = async ({
-  commandName,
+  commandPath,
   root,
   args,
   store,
@@ -72,18 +73,20 @@ const runSubcommand = async ({
   formData,
   formCommandId,
 }) => {
-  if (args.length === 0) {
+  const commandName = commandPath[0]
+  const subCommandName = commandPath[1]
+
+  if (commandPath.length === 1) {
     return {
       type: 'text',
-      text: `No ${commandName} command given. Run \`${commandName} help\` to see the available commands.`,
+      text: `No ${commandName} command given. Run \`${commandName}.help\` to see the available commands.`,
     }
   }
-  const subCommandName = args[0]
 
   if (subCommandName === 'help') {
     const help = [
       {
-        command: 'help',
+        command: `${commandName}.help`,
         args: [],
         details: `show help for ${commandName} commands`,
       },
@@ -91,14 +94,18 @@ const runSubcommand = async ({
     for (let key of Object.keys(root.commands).filter(
       s => !s.startsWith('_')
     )) {
-      const command = key.replace('_', '-')
+      const command = key
       const cmd = root.commands[key]
-      help.push({ args: cmd.args, details: cmd.help, command })
+      help.push({
+        args: cmd.args,
+        details: cmd.help,
+        command: `${commandName}.${command}`,
+      })
     }
     return [{ type: 'help', help }]
   }
 
-  const subCommandArgList = args.slice(1)
+  const subCommandArgList = args
   const subCommandValue = root.commands[subCommandName.replace('-', '_')]
 
   if (!subCommandValue) {
@@ -170,7 +177,9 @@ export default async (
   onMessagesCreated,
   { formData, formCommandId } = {}
 ) => {
-  const commandName = parsed[0]
+  const commandPath = splitPath(parsed[0])
+
+  const commandName = commandPath[0]
   const command = commands[commandName]
   const commandId = shortid.generate()
   if (command) {
@@ -185,6 +194,7 @@ export default async (
       ])
     }
     const context = {
+      commandPath,
       args,
       message,
       store,

@@ -1,3 +1,5 @@
+import j2ref from 'j2ref'
+
 export const isObject = value => {
   return (
     typeof value === 'object' &&
@@ -69,7 +71,7 @@ export const isIdentifier = s => {
   return /^[a-zA-Z_$]\S*$/.test(s)
 }
 
-export const displayPath = path => {
+export const joinPath = path => {
   let result = ''
   for (let i = 0; i < path.length; i++) {
     if (isIdentifier(path[i])) {
@@ -79,6 +81,20 @@ export const displayPath = path => {
     }
   }
   return result
+}
+
+export const splitPath = str => {
+  if (str[0] === '[') {
+    const result = j2ref(`$${str}`)
+    if (result && result.keys) {
+      return result.keys.slice(1)
+    }
+  } else {
+    const result = j2ref(str)
+    if (result) {
+      return result.keys
+    }
+  }
 }
 
 export const isBasicType = value => {

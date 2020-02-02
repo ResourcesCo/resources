@@ -28,6 +28,7 @@ export default ({
         onBlur={() => onFocusChange(false)}
         autoFocus
         ref={textareaRef}
+        maxRows={8}
       />
       <button onClick={onSend}>
         <span className="rocket">
