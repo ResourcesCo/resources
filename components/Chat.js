@@ -4,6 +4,7 @@ import parse from '../command-runner/parser'
 import Message from './messages/Message'
 import { store } from '../store'
 import ChatInput from './ChatInput'
+import Nav from './Nav'
 import insertTextAtCursor from 'insert-text-at-cursor'
 import { Manager } from 'react-popper'
 import pick from 'lodash/pick'
@@ -185,6 +186,13 @@ class Chat extends PureComponent {
     })
   }
 
+  handleSelectExample = example => {
+    this.setState({ text: example })
+    if (this.textareaRef.current) {
+      this.textareaRef.current.focus()
+    }
+  }
+
   render() {
     const { onFocusChange, theme } = this.props
     const { text, commandIds, commands, lastCommandId } = this.state
@@ -199,6 +207,9 @@ class Chat extends PureComponent {
 
     return (
       <div className="chat">
+        <div className="nav">
+          <Nav onSelectExample={this.handleSelectExample} />
+        </div>
         <div className="messages-scroll">
           <div className="messages">
             {messages

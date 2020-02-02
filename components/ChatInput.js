@@ -31,6 +31,7 @@ export default ({
         maxRows={8}
         autoCorrect="off"
         autoCapitalize="none"
+        autoFocus
       />
       <button onClick={onSend}>
         <span className="rocket">
