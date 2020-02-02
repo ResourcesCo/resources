@@ -9,7 +9,7 @@ const saveNote = ({ name, note, store }) => {
   }
   store.notes[name] = noteValue
   store.save()
-  return { type: 'text', text: `Saved as ${JSON.stringify(name)}!` }
+  return { type: 'tree', name, value: noteValue }
 }
 
 export default {

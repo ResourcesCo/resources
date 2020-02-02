@@ -119,7 +119,14 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
       />
     )
   } else if (type === 'tree') {
-    const { name, value, state, onMessage, commandId, onPickId } = props
+    const {
+      name,
+      value,
+      state = { _expanded: true },
+      onMessage,
+      commandId,
+      onPickId,
+    } = props
 
     const onChange = ({ name, value, state }) => {
       onMessage({

@@ -133,11 +133,13 @@ export default ({
       )
     } else {
       const editName = () => {
-        onMessage({
-          path,
-          action: 'editName',
-          editing: true,
-        })
+        if (parentType !== 'array') {
+          onMessage({
+            path,
+            action: 'editName',
+            editing: true,
+          })
+        }
       }
       return (
         <div>

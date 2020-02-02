@@ -1,10 +1,10 @@
-import { commandHelp } from '../command-runner'
+import { globalCommandHelp } from '../command-runner'
 
 export default {
   run() {
     return {
       type: 'help',
-      help: commandHelp,
+      help: globalCommandHelp,
     }
   },
   help: {

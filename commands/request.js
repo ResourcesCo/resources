@@ -1,5 +1,34 @@
 export default {
   commands: {
+    _default: {
+      args: [],
+      help: 'Make an HTTP request',
+      run() {
+        return {
+          type: 'tree',
+          name: 'request',
+          value: {
+            method: 'get',
+            url: '',
+            headers: {},
+            response: {
+              headers: response.headers,
+              body: data,
+            },
+          },
+          state: {
+            _expanded: true,
+            response: {
+              _expanded: true,
+              body: {
+                _expanded: true,
+              },
+            },
+          },
+          message: message,
+        }
+      },
+    },
     get: {
       args: ['url'],
       help: 'Make a GET request',

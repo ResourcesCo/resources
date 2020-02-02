@@ -5,7 +5,7 @@ import NodeNameView from './NodeNameView'
 import NodeValueView from './NodeValueView'
 import TreeMenuButton from './TreeMenuButton'
 import { getState, getChildState, getNestedState } from './state'
-import { hasChildren, detectUrl, displayPath, isObject } from './analyze'
+import { hasChildren, detectUrl, joinPath, isObject } from './analyze'
 import TreeMenu from './TreeMenu'
 import TableView from './TableView'
 import CodeView from './CodeView'
@@ -76,7 +76,7 @@ const NodeView = ({
         value={getNested(value, showOnly)}
         state={getNestedState(state, showOnly)}
         options={options}
-        displayName={displayPath([name, ...showOnly])}
+        displayName={joinPath([name, ...showOnly])}
         showAll={true}
         showOnlyPath={showOnly}
         onMessage={onMessage}

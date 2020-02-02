@@ -1,30 +1,64 @@
-const Nav = ({ theme }) => (
-  <nav>
-    <h1>
-      resources<span>co</span>
-    </h1>
-    <style jsx>{`
-      h1 {
-        text-align: center;
-        margin: 0;
-        padding: 5px 15px;
-        font-size: 32px;
-      }
-
-      h1 span {
-        font-size: 10px;
-        border: 1px solid ${theme.foreground};
-        padding: 4px 3px;
-        margin-top: -20px;
-        text-transform: uppercase;
-        border-radius: 5px;
-        margin-left: 4px;
-        font-weight: normal;
-        position: relative;
-        top: -5px;
-      }
-    `}</style>
-  </nav>
-)
-
-export default Nav
+export default function Nav({ onSelectExample, theme }) {
+  return (
+    <div className="nav">
+      <img src="static/touch-icon.png" />
+      <h1>Resources.co</h1>
+      <div className="content">
+        <select
+          value=""
+          onChange={({ target: { value } }) =>
+            value !== '' && onSelectExample(value)
+          }
+        >
+          <option value="">Examples</option>
+          <option value="help">help</option>
+          <option value="request.get https://pokeapi.co/api/v2/pokemon/bulbasaur">
+            pokeapi.co - bulbasaur
+          </option>
+        </select>
+      </div>
+      <div className="links">
+        <a href="https://github.com/resourcesco/resources" target="_blank">
+          GitHub
+        </a>{' '}
+        <span className="divider">•</span>{' '}
+        <a href="https://instagram.com/resources.co" target="_blank">
+          Instagram
+        </a>{' '}
+        <span className="divider">•</span>{' '}
+        <a href="https://twitter.com/ResourcesCo" target="_blank">
+          Twitter
+        </a>
+      </div>
+      <style jsx>{`
+        div.nav {
+          display: flex;
+          align-items: center;
+          padding: 5px;
+        }
+        img {
+          height: 32px;
+        }
+        h1 {
+          padding-left: 10px;
+        }
+        div.content {
+          padding: 10px;
+          text-align: right;
+          flex-grow: 1;
+        }
+        div.links {
+          padding-right: 5px;
+        }
+        @media (max-width: 575.98px) {
+          select {
+            display: none;
+          }
+          .divider {
+            display: none;
+          }
+        }
+      `}</style>
+    </div>
+  )
+}

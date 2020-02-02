@@ -1,4 +1,4 @@
-import { getCollectionPaths, displayPath, getAtPath } from './analyze'
+import { getCollectionPaths, joinPath, getAtPath } from './analyze'
 import NodeValueView from './NodeValueView'
 import NodeNameView from './NodeNameView'
 
@@ -11,7 +11,7 @@ export default ({ value, onPickId, onMessage, name, state, theme }) => {
           <tr>
             <th>key</th>
             {paths.map((path, i) => (
-              <th key={i}>{displayPath(path)}</th>
+              <th key={i}>{joinPath(path)}</th>
             ))}
           </tr>
         </thead>
