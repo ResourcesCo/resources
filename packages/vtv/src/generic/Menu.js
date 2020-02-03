@@ -1,7 +1,7 @@
 import { useRef } from 'react'
-import { getState } from './state'
-import { hasChildren } from './analyze'
-import useClickOutside from './useClickOutside'
+import { getState } from '../model/state'
+import { hasChildren } from '../model/analyze'
+import useClickOutside from '../util/useClickOutside'
 import { Popper } from 'react-popper'
 
 export function MenuItem({ onClick, children, theme }) {

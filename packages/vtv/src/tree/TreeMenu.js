@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { getState } from './state'
-import { hasChildren, isBasicType } from './analyze'
-import useClickOutside from './useClickOutside'
-import Menu, { MenuItem } from './Menu'
+import { getState } from '../model/state'
+import { hasChildren, isBasicType } from '../model/analyze'
+import useClickOutside from '../util/useClickOutside'
+import Menu, { MenuItem } from '../generic/Menu'
 
 export default function TreeMenu({
   onPickId,

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Manager, Reference, Popper } from 'react-popper'
-import Textarea from './Textarea'
-import StringView from './StringView'
-import TreeMenu from './TreeMenu'
+import Textarea from '../generic/Textarea'
+import StringView from '../value/StringView'
+import TreeMenu from '../tree/TreeMenu'
 
 // Node Name Key
 

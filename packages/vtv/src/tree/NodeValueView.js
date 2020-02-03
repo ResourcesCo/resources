@@ -1,10 +1,10 @@
 import { useRef, useState } from 'react'
-import Textarea from './Textarea'
-import { detectUrl } from './analyze'
-import { getState } from './state'
-import Link from './Link'
-import StringView from './StringView'
-import CollectionSummary from './CollectionSummary'
+import Textarea from '../generic/Textarea'
+import { detectUrl } from '../model/analyze'
+import { getState } from '../model/state'
+import Link from '../value/Link'
+import StringView from '../value/StringView'
+import CollectionSummary from '../value/CollectionSummary'
 
 const inputValue = value => {
   if (typeof value === 'string') {

@@ -1,4 +1,4 @@
-import Menu, { MenuItem } from './Menu'
+import Menu, { MenuItem } from '../generic/Menu'
 
 export default ({ onPickId, url, theme, onClose }) => {
   const pickId = () => {
