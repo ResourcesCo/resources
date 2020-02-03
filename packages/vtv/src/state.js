@@ -36,6 +36,11 @@ const replaceKey = (value, key, childValue) => {
 }
 
 const updateNestedValue = (value, path, pathValueOrFn) => {
+  if ((path || []).length === 0) {
+    return typeof pathValueOrFn === 'function'
+      ? pathValueOrFn(value[path[0]])
+      : pathValueOrFn
+  }
   if (path.length === 1) {
     return replaceKey(
       value,
@@ -48,7 +53,7 @@ const updateNestedValue = (value, path, pathValueOrFn) => {
     const [key, ...rest] = path
     return replaceKey(
       value,
-      path[0],
+      key,
       updateNestedValue(value[key], rest, pathValueOrFn)
     )
   }
