@@ -86,6 +86,9 @@ export default function TreeMenu({
           Insert Below
         </MenuItem>
       )}
+      {!showAll && ['object', 'array'].includes(parentType) && (
+        <MenuItem onClick={() => sendAction('delete')}>Delete</MenuItem>
+      )}
       {!showAll && path.length > 0 && (
         <MenuItem onClick={() => sendAction('showOnlyThis')}>
           Show only this
