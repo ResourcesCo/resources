@@ -30,7 +30,7 @@
     "react-popper": "^1.3.7",
     "scroll-into-view-if-needed": "^2.2.24",
     "shortid": "^2.2.15",
-    "vtv": "^1.0.0-canary.7",
+    "vtv": "1.0.0-canary.7",
     "webextension-polyfill": "^0.6.0"
   },
   "prettier": {
