@@ -75,7 +75,7 @@ export const updateTree = (treeData, treeUpdate) => {
         ...treeData,
         state: updateNestedState(treeData.state, [], { _showOnly: null }),
       }
-    } else if (treeUpdate.action === 'editName') {
+    } else if (treeUpdate.action === 'rename') {
       let updatedMessage = {
         ...treeData,
         state: updateNestedState(treeData.state, treeUpdate.path, {

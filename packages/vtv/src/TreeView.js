@@ -4,7 +4,8 @@ import { getTheme } from './themes'
 import NodeView from './NodeView'
 
 const optionDefaults = {
-  bubbleMenu: false,
+  bubbleMenu: true,
+  dotMenu: true,
 }
 
 export default ({ onChange, onMessage, theme, options = {}, ...props }) => {

@@ -12,7 +12,7 @@ const NameEdit = React.forwardRef(({ name, path, onMessage, theme }, ref) => {
   const sendAction = (data = {}) => {
     onMessage({
       path,
-      action: 'editName',
+      action: 'rename',
       editing: false,
       ...data,
     })
@@ -98,7 +98,7 @@ export default ({
   displayName,
   editingName,
   theme,
-  bubbleMenu,
+  options: { bubbleMenu, dotMenu },
   parentType,
   path,
   onMessage,
@@ -127,16 +127,20 @@ export default ({
             )}
           </Reference>
           {menuOpen && (
-            <TreeMenu {...treeMenuProps} onClose={() => setMenuOpen(false)} />
+            <TreeMenu
+              {...treeMenuProps}
+              nameOptionsFirst={true}
+              onClose={() => setMenuOpen(false)}
+            />
           )}
         </Manager>
       )
     } else {
-      const editName = () => {
+      const rename = () => {
         if (parentType !== 'array') {
           onMessage({
             path,
-            action: 'editName',
+            action: 'rename',
             editing: true,
           })
         }
@@ -146,7 +150,7 @@ export default ({
           <NameButton
             displayName={displayName}
             name={name}
-            onClick={editName}
+            onClick={rename}
             theme={theme}
           />
         </div>

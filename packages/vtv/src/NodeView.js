@@ -35,7 +35,7 @@ const NodeView = ({
     _editingName: editingName,
     _editingJson: editingJson,
   } = getState(state)
-  const { bubbleMenu } = options
+  const { bubbleMenu, dotMenu } = options
 
   const toggleExpanded = () => {
     setViewChanged(true)
@@ -123,7 +123,7 @@ const NodeView = ({
           parentType={parentType}
           onMessage={onMessage}
           treeMenuProps={treeMenuProps}
-          bubbleMenu={bubbleMenu}
+          options={options}
           theme={theme}
         />
         <div className="inline-details">
@@ -138,7 +138,7 @@ const NodeView = ({
           />
         </div>
         <div className="actions">
-          <TreeMenuButton treeMenuProps={treeMenuProps} />
+          {dotMenu && <TreeMenuButton treeMenuProps={treeMenuProps} />}
         </div>
         <style jsx>{`
           .inline-details {
