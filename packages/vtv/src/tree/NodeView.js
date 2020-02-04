@@ -4,11 +4,11 @@ import ExpandButton from './ExpandButton'
 import NodeNameView from './NodeNameView'
 import NodeValueView from './NodeValueView'
 import TreeMenuButton from './TreeMenuButton'
-import { getState, getChildState, getNestedState } from './state'
-import { hasChildren, detectUrl, joinPath, isObject } from './analyze'
+import { getState, getChildState, getNestedState } from '../model/state'
+import { hasChildren, detectUrl, joinPath, isObject } from '../model/analyze'
 import TreeMenu from './TreeMenu'
-import TableView from './TableView'
-import CodeView from './CodeView'
+import TableView from '../table/TableView'
+import CodeView from '../value/CodeView'
 import getNested from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'
 
@@ -35,7 +35,7 @@ const NodeView = ({
     _editingName: editingName,
     _editingJson: editingJson,
   } = getState(state)
-  const { bubbleMenu } = options
+  const { bubbleMenu, dotMenu } = options
 
   const toggleExpanded = () => {
     setViewChanged(true)
@@ -123,7 +123,7 @@ const NodeView = ({
           parentType={parentType}
           onMessage={onMessage}
           treeMenuProps={treeMenuProps}
-          bubbleMenu={bubbleMenu}
+          options={options}
           theme={theme}
         />
         <div className="inline-details">
@@ -138,7 +138,7 @@ const NodeView = ({
           />
         </div>
         <div className="actions">
-          <TreeMenuButton treeMenuProps={treeMenuProps} />
+          {dotMenu && <TreeMenuButton treeMenuProps={treeMenuProps} />}
         </div>
         <style jsx>{`
           .inline-details {

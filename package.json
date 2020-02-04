@@ -5,13 +5,9 @@
     "build": "next build",
     "start": "next start",
     "export": "next export",
-    "firefox-copy": "cp -r out firefox && mv firefox/static/firefox/manifest.json firefox/manifest.json",
-    "firefox-build": "rm -rf firefox && npm run build && npm run export && npm run firefox-copy",
-    "chrome-copy": "cp -r out chrome && mv chrome/static/chrome/manifest.json chrome/manifest.json",
-    "chrome-replace": "mv chrome/_next chrome/next_ && find chrome -iname '*.html' -exec sd '/_next' '/next_' '{}' \\; && find chrome -iname '*.js' -exec sd '/_next' '/next_' '{}' \\;",
-    "chrome-build": "rm -rf chrome && npm run build && npm run export && npm run chrome-copy && npm run chrome-replace",
     "reformat": "prettier --write \"**/*.js\"",
-    "postinstall": "cd packages/vtv && npm install && npm run build"
+    "postinstall": "cd packages/vtv && yarn install && yarn build",
+    "publish-vtv-pre": "cd packages/vtv && yarn version --prerelease --pre-id=canary --no-git-tag-version && yarn build && yarn publish --no-git-tag-version"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
@@ -30,7 +26,7 @@
     "react-popper": "^1.3.7",
     "scroll-into-view-if-needed": "^2.2.24",
     "shortid": "^2.2.15",
-    "vtv": "1.0.0-canary.7",
+    "vtv": "1.0.0-canary.8",
     "webextension-polyfill": "^0.6.0"
   },
   "prettier": {

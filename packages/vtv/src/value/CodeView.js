@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
-import Textarea from './Textarea'
-import ActionButton from './ActionButton'
+import Textarea from '../generic/Textarea'
+import ActionButton from '../generic/ActionButton'
 
 export default ({ value, path, onMessage, theme }) => {
   const [newValue, setNewValue] = useState(JSON.stringify(value, null, 2))

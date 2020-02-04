@@ -1,6 +1,6 @@
-import { getCollectionPaths, joinPath, getAtPath } from './analyze'
-import NodeValueView from './NodeValueView'
-import NodeNameView from './NodeNameView'
+import { getCollectionPaths, joinPath, getAtPath } from '../model/analyze'
+import NodeValueView from '../tree/NodeValueView'
+import NodeNameView from '../tree/NodeNameView'
 
 export default ({ value, onPickId, onMessage, name, state, theme }) => {
   const paths = getCollectionPaths(value)

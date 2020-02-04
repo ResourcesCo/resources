@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { getState } from './state'
-import { hasChildren, isBasicType } from './analyze'
-import useClickOutside from './useClickOutside'
-import Menu, { MenuItem } from './Menu'
+import { getState } from '../model/state'
+import { hasChildren, isBasicType } from '../model/analyze'
+import useClickOutside from '../util/useClickOutside'
+import Menu, { MenuItem } from '../generic/Menu'
 
 export default function TreeMenu({
   onPickId,
@@ -15,7 +15,7 @@ export default function TreeMenu({
   onMessage,
   onClose,
   onViewChanged,
-  bubbleOnly,
+  nameOptionsFirst,
   popperProps,
   theme,
 }) {
@@ -53,8 +53,21 @@ export default function TreeMenu({
     onPickId(name)
   }
 
+  const nameOptions = {
+    rename: !showAll && ['object', 'root'].includes(parentType) && (
+      <MenuItem onClick={() => sendAction('rename', { editing: true })}>
+        Rename
+      </MenuItem>
+    ),
+    pasteIntoConsole: typeof onPickId === 'function' && (
+      <MenuItem onClick={pickId}>Paste into console</MenuItem>
+    ),
+  }
+
   return (
     <Menu onClose={onClose} popperProps={popperProps} theme={theme}>
+      {nameOptionsFirst && nameOptions.rename}
+      {nameOptionsFirst && nameOptions.pasteIntoConsole}
       {['tree', 'table'].map(key => {
         if (key === viewType) {
           return null
@@ -71,11 +84,7 @@ export default function TreeMenu({
       {!showAll && isBasicType(value) && (
         <MenuItem onClick={edit}>Edit</MenuItem>
       )}
-      {!showAll && ['object', 'root'].includes(parentType) && (
-        <MenuItem onClick={() => sendAction('editName', { editing: true })}>
-          Rename
-        </MenuItem>
-      )}
+      {!nameOptionsFirst && nameOptions.rename}
       {!showAll && ['object', 'array'].includes(parentType) && (
         <MenuItem onClick={() => sendAction('insert', { position: 'above' })}>
           Insert Above
@@ -100,9 +109,7 @@ export default function TreeMenu({
       {!showAll && ['object', 'root'].includes(parentType) && (
         <MenuItem onClick={editJson}>Edit JSON</MenuItem>
       )}
-      {typeof onPickId === 'function' && (
-        <MenuItem onClick={pickId}>Paste into console</MenuItem>
-      )}
+      {!nameOptionsFirst && nameOptions.pasteIntoConsole}
     </Menu>
   )
 }

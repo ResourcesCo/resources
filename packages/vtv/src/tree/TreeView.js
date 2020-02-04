@@ -1,10 +1,11 @@
-import { isObject } from './analyze'
-import { updateTree } from './state'
-import { getTheme } from './themes'
+import { isObject } from '../model/analyze'
+import { updateTree } from '../model/state'
+import { getTheme } from '../themes'
 import NodeView from './NodeView'
 
 const optionDefaults = {
-  bubbleMenu: false,
+  bubbleMenu: true,
+  dotMenu: true,
 }
 
 export default ({ onChange, onMessage, theme, options = {}, ...props }) => {
