@@ -41,7 +41,7 @@ const getTaskUrl = task => {
 
 export default {
   filters: {
-    before({ command: { name }, env: { api_token } }) {
+    before({ action: { name }, env: { api_token } }) {
       if (name !== 'auth' && !api_token) {
         return {
           type: 'error',
@@ -50,11 +50,11 @@ export default {
       }
     },
   },
-  commands: {
+  actions: {
     auth: {
-      args: ['api-token'],
+      params: ['api_token'],
       help: 'store api token for Asana',
-      run({ args: { api_token } }) {
+      run({ params: { api_token } }) {
         return [
           { type: 'env', value: { api_token } },
           { type: 'text', text: 'Saved!' },
@@ -62,7 +62,7 @@ export default {
       },
     },
     workspaces: {
-      args: [],
+      params: [],
       help: 'show Asana workspaces',
       async run({ env: { api_token } }) {
         return await request({
@@ -73,9 +73,9 @@ export default {
       },
     },
     projects: {
-      args: ['workspace'],
+      params: ['workspace'],
       help: 'show Asana projects',
-      async run({ args: { workspace }, env: { api_token } }) {
+      async run({ params: { workspace }, env: { api_token } }) {
         return await request({
           api_token,
           url: `https://app.asana.com/api/1.0/workspaces/${workspace}/projects`,
@@ -84,9 +84,9 @@ export default {
       },
     },
     sections: {
-      args: ['project'],
+      params: ['project'],
       help: 'show sections in an Asana project',
-      async run({ args: { project }, env: { api_token } }) {
+      async run({ params: { project }, env: { api_token } }) {
         return await request({
           api_token,
           url: `https://app.asana.com/api/1.0/projects/${project}/sections`,
@@ -95,9 +95,9 @@ export default {
       },
     },
     project_tasks: {
-      args: ['project'],
+      params: ['project'],
       help: 'show Asana tasks by project',
-      async run({ args: { project }, env: { api_token } }) {
+      async run({ params: { project }, env: { api_token } }) {
         return await request({
           api_token,
           url: `https://app.asana.com/api/1.0/tasks?project=${project}&opt_expand=projects.gid&completed_since=now`,
@@ -107,9 +107,9 @@ export default {
       },
     },
     section_tasks: {
-      args: ['section'],
+      params: ['section'],
       help: 'show Asana tasks by section',
-      async run({ args: { section }, env: { api_token } }) {
+      async run({ params: { section }, env: { api_token } }) {
         return await request({
           api_token,
           url: `https://app.asana.com/api/1.0/tasks?section=${section}&opt_expand=projects.gid&completed_since=now`,
@@ -119,9 +119,9 @@ export default {
       },
     },
     complete: {
-      args: ['task'],
+      params: ['task'],
       help: 'mark an Asana task complete',
-      async run({ args: { task }, env: { api_token } }) {
+      async run({ params: { task }, env: { api_token } }) {
         const headers = getHeaders(api_token, true)
         const url = `https://app.asana.com/api/1.0/tasks/${task}`
         const res = await fetch(url, {
@@ -137,10 +137,10 @@ export default {
       },
     },
     comment: {
-      args: ['task'],
+      params: ['task'],
       help: 'add a comment to an Asana task',
       async run({
-        args: { task },
+        params: { task },
         env: { api_token },
         message,
         formData,

@@ -1,9 +1,9 @@
 export default {
-  commands: {
+  actions: {
     config: {
-      args: ['url', 'token'],
+      params: ['url', 'token'],
       help: 'configure client-gateway with a url and a token',
-      run({ args: { url, token } }) {
+      run({ params: { url, token } }) {
         return [
           { type: 'env', value: { url, token } },
           { type: 'text', text: 'Saved!' },

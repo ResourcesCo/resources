@@ -20,13 +20,13 @@ const Details = ({ children, theme }) => {
 export default ({ theme, help }) => {
   return (
     <div style={{ margin: 5 }}>
-      {(help || []).map(({ command, subCommand, args = [], details }, i) => {
+      {(help || []).map(({ command, subCommand, params = [], details }, i) => {
         return (
           <div key={i}>
             <Example>
               {command} {subCommand}{' '}
-              {args.map((arg, i) => (
-                <i key={i}>{arg} </i>
+              {params.map((param, i) => (
+                <i key={i}>{param} </i>
               ))}
             </Example>
             <Details theme={theme}>{details}</Details>

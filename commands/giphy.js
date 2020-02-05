@@ -17,12 +17,12 @@ class Giphy {
     return { type: 'image', url: data.data.image_url }
   }
 
-  run = async ({ args, store }) => {
-    if (args[0] === 'auth' && args.length === 2) {
-      const key = args[1]
+  run = async ({ params, store }) => {
+    if (params[0] === 'auth' && params.length === 2) {
+      const key = params[1]
       return this.auth({ key, store })
     } else {
-      const tag = args[0]
+      const tag = params[0]
       const key = store.env.GIPHY_API_KEY
       return await this.search({ tag, key })
     }
@@ -36,11 +36,11 @@ export default {
   help: [
     {
       subCommand: 'auth',
-      args: ['api-key'],
+      params: ['api-key'],
       details: 'store api key for giphy',
     },
     {
-      args: ['tag'],
+      params: ['tag'],
       details: 'show a gif from giphy',
     },
   ],

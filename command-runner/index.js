@@ -1,5 +1,5 @@
 import shortid from 'shortid'
-import { splitPath } from 'vtv'
+import { splitPath, joinPath } from 'vtv'
 import commands from '../commands'
 import { store } from '../store'
 
@@ -18,13 +18,13 @@ const getGlobalCommandHelp = () => {
         result.push({ ...value, command })
       }
     } else if (typeof help === 'string') {
-      result.push({ args: cmd.args, details: cmd.help, command })
+      result.push({ params: cmd.params, details: cmd.help, command })
     } else if (help) {
       result.push({ ...help, command })
-    } else if (cmd.commands) {
+    } else if (cmd.actions) {
       result.push({
         command,
-        details: `run ${command} commands (see \`${command}.help\`)`,
+        details: `run ${command} commands (see \`${command} help\`)`,
       })
     }
   }
@@ -43,7 +43,7 @@ const messagesByType = (messages, type) => {
 
 const getCommandEnv = commandName => {
   const result = {}
-  const prefix = `${commandName.toUpperCase().replace('-', '_')}_`
+  const prefix = `${commandName.toUpperCase()}_`
   for (let key of Object.keys(store.env).filter(key =>
     key.startsWith(prefix)
   )) {
@@ -64,108 +64,80 @@ const updateCommandEnv = (commandName, envUpdates) => {
   }
 }
 
-const runSubcommand = async ({
-  commandPath,
+const runAction = async ({
+  resourcePath,
+  actionName,
   root,
-  args,
+  params,
   store,
   message,
   formData,
   formCommandId,
 }) => {
-  const commandName = commandPath[0]
-  const subCommandName = commandPath[1]
-
-  if (commandPath.length === 1) {
-    return {
-      type: 'text',
-      text: `No ${commandName} command given. Run \`${commandName}.help\` to see the available commands.`,
-    }
-  }
-
-  if (subCommandName === 'help') {
+  if (actionName === 'help') {
     const help = [
       {
-        command: `${commandName}.help`,
-        args: [],
-        details: `show help for ${commandName} commands`,
+        command: `${joinPath(resourcePath)} help`,
+        params: [],
+        details: `show help for ${joinPath(resourcePath)} commands`,
       },
     ]
-    for (let key of Object.keys(root.commands).filter(
-      s => !s.startsWith('_')
-    )) {
+    for (let key of Object.keys(root.actions).filter(s => !s.startsWith('_'))) {
       const command = key
-      const cmd = root.commands[key]
+      const cmd = root.actions[key]
       help.push({
-        args: cmd.args,
+        params: cmd.params,
         details: cmd.help,
-        command: `${commandName}.${command}`,
+        command: `${joinPath(resourcePath)} ${key}`,
       })
     }
     return [{ type: 'help', help }]
   }
 
-  const subCommandArgList = args
-  const subCommandValue = root.commands[subCommandName.replace('-', '_')]
-
-  if (!subCommandValue) {
+  if (!root.actions[actionName]) {
     return {
       type: 'text',
-      text: `Unknown command. Run \`${commandName} help\` to see the available commands.`,
+      text: `Unknown action. Run \`${joinPath(
+        resourcePath
+      )} help\` to see the available actions.`,
     }
   }
-  const subCommand = {
-    ...subCommandValue,
-    name: subCommandName,
+  const action = {
+    ...root.actions[actionName],
+    name: actionName,
   }
 
-  const subCommandArgs = {}
-  if (subCommandArgList.length !== subCommand.args.length) {
+  const paramsByName = {}
+  if (params.length !== action.params.length) {
     return { type: 'text', text: 'Invalid number of arguments.' }
   }
-  for (let i = 0; i < subCommand.args.length; i++) {
-    subCommandArgs[subCommand.args[i].replace('-', '_')] = subCommandArgList[i]
+  for (let i = 0; i < action.params.length; i++) {
+    paramsByName[action.params[i]] = params[i]
   }
 
-  let dependencies = null
-  if (root.dependencies) {
-    dependencies = {}
-    for (let dependency of root.dependencies) {
-      dependencies[dependency.replace('-', '_')] = {
-        env: getCommandEnv(dependency),
-      }
-    }
-  }
-
-  const env = getCommandEnv(commandName)
-  const parentCommand = {
-    ...root,
-    name: commandName,
-  }
+  const env = getCommandEnv(resourcePath[0])
   const context = {
     store,
     message,
     formData,
     formCommandId,
     env,
-    args: subCommandArgs,
-    command: subCommand,
-    parentCommand,
-    dependencies,
+    params: paramsByName,
+    action,
   }
 
   let beforeResult
-  if (parentCommand && parentCommand.filters && parentCommand.filters.before) {
-    beforeResult = await parentCommand.filters.before(context)
+  if (root.filters && root.filters.before) {
+    beforeResult = await root.filters.before(context)
     if (messagesByType(beforeResult, 'error').length) {
       return convertToArray(beforeResult)
     }
   }
-  const result = await subCommand.run(context)
+  const result = await action.run(context)
   const resultArray = convertToArray(result)
   const updatedResult = resultArray.filter(({ type }) => type !== 'env')
   updateCommandEnv(
-    commandName,
+    resourcePath[0],
     resultArray.filter(({ type }) => type === 'env')
   )
   return [...convertToArray(beforeResult), ...updatedResult]
@@ -177,13 +149,13 @@ export default async (
   onMessagesCreated,
   { formData, formCommandId } = {}
 ) => {
-  const commandPath = splitPath(parsed[0])
+  const resourcePath = splitPath(parsed[0])
+  const actionName = parsed.length > 1 ? parsed[1] : '_default'
 
-  const commandName = commandPath[0]
-  const command = commands[commandName]
+  const command = commands[resourcePath[0]] // TODO: recurse
   const commandId = shortid.generate()
   if (command) {
-    const args = parsed.slice(1)
+    const params = parsed.slice(2)
     if (formData) {
       onMessagesCreated([
         { type: 'form-status', commandId, formCommandId, loading: true },
@@ -194,8 +166,9 @@ export default async (
       ])
     }
     const context = {
-      commandPath,
-      args,
+      resourcePath,
+      actionName,
+      params,
       message,
       store,
       formData,
@@ -203,16 +176,10 @@ export default async (
       root: command,
     }
     let result
-    if (command.commands) {
-      result = await runSubcommand({
-        commandName,
-        ...context,
-      })
+    if (command.actions) {
+      result = await runAction(context)
     } else {
-      result = await command.run({
-        command: commandName,
-        ...context,
-      })
+      result = await command.run(context)
     }
     const outputMessages = convertToArray(result).map(message => ({
       ...message,

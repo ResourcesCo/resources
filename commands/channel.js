@@ -1,9 +1,9 @@
 export default {
-  commands: {
+  actions: {
     updateCommand: {
-      args: ['commandId', 'data'],
+      params: ['commandId', 'data'],
       help: 'send a command update',
-      run({ args: { commandId, data } }) {
+      run({ params: { commandId, data } }) {
         return {
           type: 'tree-update',
           treeCommandId: commandId,
@@ -12,9 +12,9 @@ export default {
       },
     },
     setExpanded: {
-      args: ['commandId', 'path', 'expanded'],
+      params: ['commandId', 'path', 'expanded'],
       help: 'set expanded',
-      run({ args: { commandId, path, expanded } }) {
+      run({ params: { commandId, path, expanded } }) {
         return {
           type: 'tree-update',
           path: path.split('.'),
@@ -24,9 +24,9 @@ export default {
       },
     },
     setViewType: {
-      args: ['commandId', 'path', 'viewType'],
+      params: ['commandId', 'path', 'viewType'],
       help: 'set expanded',
-      run({ args: { commandId, path, viewType } }) {
+      run({ params: { commandId, path, viewType } }) {
         return {
           type: 'tree-update',
           path: path.split('.'),
