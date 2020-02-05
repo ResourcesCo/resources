@@ -1,6 +1,6 @@
 export default {
   filters: {
-    before({ command: { name }, env: { api_token } }) {
+    before({ action: { name }, env: { api_token } }) {
       if (name !== 'auth' && !api_token) {
         return {
           type: 'error',
@@ -9,11 +9,11 @@ export default {
       }
     },
   },
-  commands: {
+  actions: {
     auth: {
-      args: ['api-token'],
+      params: ['api-token'],
       help: 'store api token for GitHub',
-      run({ args: { api_token } }) {
+      run({ params: { api_token } }) {
         return [
           { type: 'env', value: { api_token } },
           { type: 'text', text: 'Saved!' },
@@ -21,9 +21,9 @@ export default {
       },
     },
     issues: {
-      args: ['owner', 'repo'],
+      params: ['owner', 'repo'],
       help: 'show open issues for a repo',
-      async run({ args: { owner, repo }, env: { api_token } }) {
+      async run({ params: { owner, repo }, env: { api_token } }) {
         const url = `https://api.github.com/repos/${owner}/${repo}/issues`
         const headers = {
           Authorization: `token ${api_token}`,
@@ -48,9 +48,9 @@ export default {
       },
     },
     close: {
-      args: ['owner', 'repo', 'number'],
+      params: ['owner', 'repo', 'number'],
       help: 'Close a GitHub issue',
-      async run({ args: { owner, repo, number }, env: { api_token } }) {
+      async run({ params: { owner, repo, number }, env: { api_token } }) {
         const headers = {
           Authorization: `token ${api_token}`,
           'Content-Type': 'application/json',

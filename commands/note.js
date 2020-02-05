@@ -13,17 +13,17 @@ const saveNote = ({ name, note, store }) => {
 }
 
 export default {
-  commands: {
+  actions: {
     add: {
-      args: ['note'],
+      params: ['note'],
       help: 'add a note',
-      run({ args: { note }, store }) {
+      run({ params: { note }, store }) {
         const name = shortid()
         return saveNote({ name, note, store })
       },
     },
     ls: {
-      args: [],
+      params: [],
       help: 'list notes',
       run({ store, message }) {
         const notes = store.notes
@@ -39,25 +39,25 @@ export default {
       },
     },
     rm: {
-      args: ['id'],
+      params: ['id'],
       help: 'delete notes',
-      run({ args: { id }, store }) {
+      run({ params: { id }, store }) {
         delete store.notes[id]
         store.save()
         return { type: 'text', text: 'Deleted!' }
       },
     },
     set: {
-      args: ['name', 'note'],
+      params: ['name', 'note'],
       help: 'save a note',
-      run({ args: { name, note }, store }) {
+      run({ params: { name, note }, store }) {
         return saveNote({ name, note, store })
       },
     },
     get: {
-      args: ['name'],
+      params: ['name'],
       help: 'show a note',
-      run({ store, message, args: { name } }) {
+      run({ store, message, params: { name } }) {
         const note = store.notes[name]
         return {
           type: 'tree',

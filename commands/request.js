@@ -1,7 +1,7 @@
 export default {
-  commands: {
+  actions: {
     _default: {
-      args: [],
+      params: [],
       help: 'Make an HTTP request',
       run() {
         return {
@@ -18,6 +18,7 @@ export default {
           },
           state: {
             _expanded: true,
+            _actions: [{ name: 'send', title: 'Send' }],
             response: {
               _expanded: true,
               body: {
@@ -30,9 +31,9 @@ export default {
       },
     },
     get: {
-      args: ['url'],
+      params: ['url'],
       help: 'Make a GET request',
-      async run({ args: { url }, message, formData, formCommandId }) {
+      async run({ params: { url }, message, formData, formCommandId }) {
         if (formData) {
           return {
             type: 'form-status',

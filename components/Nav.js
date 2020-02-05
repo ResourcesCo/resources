@@ -12,7 +12,7 @@ export default function Nav({ onSelectExample, theme }) {
         >
           <option value="">Examples</option>
           <option value="help">help</option>
-          <option value="request.get https://pokeapi.co/api/v2/pokemon/bulbasaur">
+          <option value="request get https://pokeapi.co/api/v2/pokemon/bulbasaur">
             pokeapi.co - bulbasaur
           </option>
         </select>

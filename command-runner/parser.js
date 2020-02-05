@@ -64,7 +64,7 @@ const getNextToken = input => {
 
 export default input => {
   const result = []
-  let remainingInput = input.trim().replace(/^request get\b/, 'request.get')
+  let remainingInput = input.trim()
   while (remainingInput.trim().length > 0) {
     const [token, _remainingInput] = getNextToken(remainingInput)
     if (token === false) {

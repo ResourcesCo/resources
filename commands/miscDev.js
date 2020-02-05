@@ -2,11 +2,11 @@ import { getPaths, splitPath, joinPath } from 'vtv'
 import parse from '../command-runner/parser'
 
 export default {
-  commands: {
+  actions: {
     get_paths: {
-      args: ['data'],
+      params: ['data'],
       help: 'get paths in some data',
-      run({ args: { data } }) {
+      run({ params: { data } }) {
         const result = getPaths(JSON.parse(data)).map(joinPath)
         return {
           type: 'tree',
@@ -19,9 +19,9 @@ export default {
       },
     },
     splitPath: {
-      args: ['str'],
+      params: ['str'],
       help: 'split a path with j2ref',
-      run({ args: { str } }) {
+      run({ params: { str } }) {
         const result = splitPath(str)
         return {
           type: 'tree',
@@ -31,9 +31,9 @@ export default {
       },
     },
     joinPath: {
-      args: ['data'],
+      params: ['data'],
       help: 'join a path with joinPath',
-      run({ args: { data } }) {
+      run({ params: { data } }) {
         let parsedData
         try {
           parsedData = JSON.parse(data)
@@ -52,9 +52,9 @@ export default {
       },
     },
     parse: {
-      args: ['input'],
+      params: ['input'],
       help: 'parse argument as a command',
-      run({ args: { input } }) {
+      run({ params: { input } }) {
         const result = parse(input)
         return {
           type: 'tree',

@@ -52,8 +52,8 @@ const endpoints = {
 }
 
 export default {
-  run({ message, args }) {
-    const url = args[0]
+  run({ message, params }) {
+    const url = params[0]
 
     let urlObj = {}
     try {
@@ -76,7 +76,7 @@ export default {
     }
   },
   help: {
-    args: ['url'],
+    params: ['url'],
     details: 'find api docs for a url',
   },
 }

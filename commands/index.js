@@ -41,8 +41,8 @@ export default {
     },
   },
   sleep: {
-    async run({ args }) {
-      const [timeoutStr, message] = args
+    async run({ params }) {
+      const [timeoutStr, message] = params
       const timeout = Math.floor(Number.parseFloat(timeoutStr) * 1000)
       const promise = new Promise((resolve, reject) => {
         setTimeout(resolve, timeout)
@@ -51,7 +51,7 @@ export default {
       return { type: 'text', text: message || '' }
     },
     help: {
-      args: ['seconds', 'message'],
+      params: ['seconds', 'message'],
       details:
         'Sleep for a specified number of seconds and then send a message',
     },
