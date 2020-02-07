@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Manager, Reference, Popper } from 'react-popper'
 import Textarea from '../generic/Textarea'
 import StringView from '../value/StringView'
-import TreeMenu from '../tree/TreeMenu'
+import NodeMenu from '../tree/NodeMenu'
 
 // Node Name Key
 
@@ -102,7 +102,7 @@ export default ({
   parentType,
   path,
   onMessage,
-  treeMenuProps,
+  nodeMenuProps,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -127,8 +127,8 @@ export default ({
             )}
           </Reference>
           {menuOpen && (
-            <TreeMenu
-              {...treeMenuProps}
+            <NodeMenu
+              {...nodeMenuProps}
               nameOptionsFirst={true}
               onClose={() => setMenuOpen(false)}
             />
