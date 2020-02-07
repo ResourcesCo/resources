@@ -2,7 +2,7 @@ import Help from './Help'
 import Data from './Data'
 import DataTree from './DataTree'
 import Form from './Form'
-import TreeView from 'vtv'
+import View from 'vtv'
 import { useState } from 'react'
 import Loader from 'react-loader-spinner'
 import { faLink } from '@fortawesome/free-solid-svg-icons'
@@ -140,7 +140,7 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
 
     return (
       <div>
-        <TreeView
+        <View
           name={name}
           value={value}
           state={state}

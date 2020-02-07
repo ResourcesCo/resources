@@ -15,7 +15,7 @@ It's a Next.js web app. Run `yarn dev` to run the development server or
 
 ```jsx
 import React, { useState } from 'react'
-import TreeView from 'vtv'
+import View from 'vtv'
 
 export default () => {
   const [value, setValue] = useState({ hello: 'world' })
@@ -24,8 +24,6 @@ export default () => {
     setValue(value)
     setState(state)
   }
-  return (
-    <TreeView value={value} state={state} onChange={onChange} theme="dark" />
-  )
+  return <View value={value} state={state} onChange={onChange} theme="dark" />
 }
 ```

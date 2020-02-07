@@ -4,7 +4,7 @@ import { hasChildren, isBasicType } from '../model/analyze'
 import useClickOutside from '../util/useClickOutside'
 import Menu, { MenuItem } from '../generic/Menu'
 
-export default function TreeMenu({
+export default function NodeMenu({
   onPickId,
   parentType,
   name,

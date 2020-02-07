@@ -1,18 +1,18 @@
 import { useState, useRef, useEffect } from 'react'
 import { Manager, Reference, Popper } from 'react-popper'
+import getNested from 'lodash/get'
+import scrollIntoView from 'scroll-into-view-if-needed'
+import { getState, getChildState, getNestedState } from '../model/state'
+import { hasChildren, detectUrl, joinPath, isObject } from '../model/analyze'
 import ExpandButton from './ExpandButton'
 import NodeNameView from './NodeNameView'
 import NodeValueView from './NodeValueView'
-import TreeMenuButton from './TreeMenuButton'
-import { getState, getChildState, getNestedState } from '../model/state'
-import { hasChildren, detectUrl, joinPath, isObject } from '../model/analyze'
-import TreeMenu from './TreeMenu'
+import NodeMenuButton from './NodeMenuButton'
+import NodeMenu from './NodeMenu'
 import TableView from '../table/TableView'
 import CodeView from '../value/CodeView'
-import getNested from 'lodash/get'
-import scrollIntoView from 'scroll-into-view-if-needed'
 
-const NodeView = ({
+export default function NodeView({
   parentType = 'root',
   name,
   value,
@@ -25,7 +25,7 @@ const NodeView = ({
   onMessage,
   onPickId,
   theme,
-}) => {
+}) {
   const [viewChanged, setViewChanged] = useState(false)
 
   const {
@@ -89,7 +89,7 @@ const NodeView = ({
 
   const indent = 10 * (path.length - showOnlyPath.length)
 
-  const treeMenuProps = {
+  const nodeMenuProps = {
     parentType,
     name,
     value,
@@ -122,7 +122,7 @@ const NodeView = ({
           value={value}
           parentType={parentType}
           onMessage={onMessage}
-          treeMenuProps={treeMenuProps}
+          nodeMenuProps={nodeMenuProps}
           options={options}
           theme={theme}
         />
@@ -138,7 +138,7 @@ const NodeView = ({
           />
         </div>
         <div className="actions">
-          {dotMenu && <TreeMenuButton treeMenuProps={treeMenuProps} />}
+          {dotMenu && <NodeMenuButton nodeMenuProps={nodeMenuProps} />}
         </div>
         <style jsx>{`
           .inline-details {
@@ -226,5 +226,3 @@ const NodeView = ({
     </div>
   )
 }
-
-export default NodeView

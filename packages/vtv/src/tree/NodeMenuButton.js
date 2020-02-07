@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
-import TreeMenu from './TreeMenu'
+import NodeMenu from './NodeMenu'
 import { Manager, Reference, Popper } from 'react-popper'
 
-export default function TreeMenuButton({ treeMenuProps: treeMenuProps_ }) {
-  const treeMenuProps = {
-    ...treeMenuProps_,
+export default function NodeMenuButton({ nodeMenuProps: nodeMenuProps_ }) {
+  const nodeMenuProps = {
+    ...nodeMenuProps_,
     popperProps: {
       placement: 'bottom-end',
       modifiers: { offset: { offset: '0, 3' } },
@@ -36,7 +36,7 @@ export default function TreeMenuButton({ treeMenuProps: treeMenuProps_ }) {
         )}
       </Reference>
       {menuOpen && (
-        <TreeMenu {...treeMenuProps} onClose={() => setMenuOpen(false)} />
+        <NodeMenu {...nodeMenuProps} onClose={() => setMenuOpen(false)} />
       )}
     </Manager>
   )
