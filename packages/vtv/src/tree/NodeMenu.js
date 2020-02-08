@@ -50,7 +50,7 @@ export default function NodeMenu({
   }
 
   const pickId = () => {
-    onPickId(name)
+    onPickId(path)
   }
 
   const nameOptions = {

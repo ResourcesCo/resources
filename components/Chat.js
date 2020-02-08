@@ -1,6 +1,6 @@
 import { PureComponent } from 'react'
 import runCommand from '../command-runner'
-import parse from '../command-runner/parser'
+import { parseCommand, updateTree } from 'vtv'
 import Message from './messages/Message'
 import { store } from '../store'
 import ChatInput from './ChatInput'
@@ -10,6 +10,7 @@ import { Manager } from 'react-popper'
 import pick from 'lodash/pick'
 import pickBy from 'lodash/pickBy'
 import identity from 'lodash/identity'
+import getNested from 'lodash/get'
 
 class Chat extends PureComponent {
   state = {
@@ -79,15 +80,29 @@ class Chat extends PureComponent {
         store.theme = message.theme
         store.save()
         this.props.onThemeChange(message.theme)
-      } else if (message.type === 'tree-update') {
+      } else if (['tree-update', 'message-command'].includes(message.type)) {
         const treeCommand = commands[message.treeCommandId]
         scrollToBottom = false
         const treeMessage = treeCommand.messages.find(
           message => message.type === 'tree'
         )
+        let updates
+        if (message.type === 'tree-update') {
+          updates = message
+        } else {
+          const {
+            type: __type,
+            commandId: __commandId,
+            ...treeUpdates
+          } = message
+          updates = updateTree(
+            pick(treeMessage, ['name', 'value', 'state']),
+            treeUpdates
+          )
+        }
         const updatedTreeMessage = {
           ...treeMessage,
-          ...pickBy(pick(message, ['name', 'value', 'state']), identity),
+          ...pickBy(pick(updates, ['name', 'value', 'state']), identity),
         }
         commands[message.treeCommandId] = {
           ...treeCommand,
@@ -119,15 +134,28 @@ class Chat extends PureComponent {
         }
         scrollToBottom = true
       } else {
+        let newMessage = message
+        if (message.type === 'message-get') {
+          const treeCommand = commands[message.treeCommandId]
+          const treeMessage = treeCommand.messages.find(
+            message => message.type === 'tree'
+          )
+          newMessage = {
+            ...message,
+            type: 'tree',
+            name: message.path[message.path.length - 1] || 'value',
+            value: getNested(treeMessage.value, message.path),
+          }
+        }
         if (commands[message.commandId]) {
           commands[message.commandId] = {
             ...command,
-            messages: [...command.messages, message],
+            messages: [...command.messages, newMessage],
           }
         } else {
           commands[message.commandId] = {
             id: message.commandId,
-            messages: [message],
+            messages: [newMessage],
           }
           commandIds.push(message.commandId)
         }
@@ -154,7 +182,7 @@ class Chat extends PureComponent {
 
   send = async () => {
     const { text } = this.state
-    const parsed = parse(text)
+    const parsed = parseCommand(text)
     if (Array.isArray(parsed) && parsed.length) {
       this.setState({ text: '' })
       await runCommand(text, parsed, this.addMessages)

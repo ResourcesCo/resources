@@ -1,4 +1,4 @@
-import channel from './channel'
+import messages from './messages'
 import giphy from './giphy'
 import github from './github'
 import asana from './asana'
@@ -12,7 +12,7 @@ import request from './request'
 import miscDev from './miscDev'
 
 export default {
-  channel,
+  messages,
   help,
   docs,
   giphy,
