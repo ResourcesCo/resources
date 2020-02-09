@@ -66,7 +66,7 @@ const updateCommandEnv = (commandName, envUpdates) => {
 
 const runAction = async ({
   resourcePath,
-  actionName,
+  actionName: originalActionName,
   root,
   params,
   store,
@@ -74,6 +74,10 @@ const runAction = async ({
   formData,
   formCommandId,
 }) => {
+  const actionName =
+    originalActionName === '_default'
+      ? root.defaultAction || '_default'
+      : originalActionName
   if (actionName === 'help') {
     const help = [
       {
@@ -123,6 +127,7 @@ const runAction = async ({
     formCommandId,
     env,
     params: paramsByName,
+    resourcePath,
     action,
   }
 

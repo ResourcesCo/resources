@@ -1,5 +1,4 @@
-import { getPaths, splitPath, joinPath } from 'vtv'
-import parse from '../command-runner/parser'
+import { getPaths, splitPath, joinPath, parseCommand } from 'vtv'
 
 export default {
   actions: {
@@ -51,11 +50,11 @@ export default {
         }
       },
     },
-    parse: {
+    parseCommand: {
       params: ['input'],
       help: 'parse argument as a command',
       run({ params: { input } }) {
-        const result = parse(input)
+        const result = parseCommand(input)
         return {
           type: 'tree',
           name: 'result',
