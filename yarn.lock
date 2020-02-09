@@ -5958,10 +5958,10 @@ vm-browserify@^1.0.1:
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
 
-vtv@1.0.0-canary.9:
-  version "1.0.0-canary.9"
-  resolved "https://registry.yarnpkg.com/vtv/-/vtv-1.0.0-canary.9.tgz#fc852eb1deeb2ec834817a36d5f92911a5e79bb4"
-  integrity sha512-dlYaOPXgCva+zDv3/4sH8oX4O83dLAhV1Zk/8SegQYu6YXcoG9N0LvRAIrBIptnrs0vTcZiv56z9mnenz5XC7w==
+vtv@1.0.0-canary.13:
+  version "1.0.0-canary.13"
+  resolved "https://registry.yarnpkg.com/vtv/-/vtv-1.0.0-canary.13.tgz#b2c2fb4a0fff835f1b7086ca1994f62aeb88756c"
+  integrity sha512-EyadBj+HvtNf3SI+fvUTNPXXciYo7somQQEa75Uh1SBYEjosRlAQUnmeYPqpI4XdK6t5Os11Qct34JPCUfKJ8w==
   dependencies:
     "@babel/runtime" "^7.4.4"
     "@fortawesome/fontawesome-svg-core" "^1.2.20"
