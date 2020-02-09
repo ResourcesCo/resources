@@ -1,14 +1,15 @@
 export default {
+  defaultAction: 'post',
   actions: {
-    _default: {
+    post: {
       params: [],
-      help: 'Make an HTTP request',
-      run() {
+      help: 'Make an HTTP POST request',
+      async run() {
         return {
           type: 'tree',
           name: 'request',
           value: {
-            method: 'get',
+            method: 'post',
             url: '',
             body: {},
             headers: {},

@@ -93,6 +93,7 @@ const runAction = async ({
         params: cmd.params,
         details: cmd.help,
         command: `${joinPath(resourcePath)} ${key}`,
+        default: root.defaultAction === key,
       })
     }
     return [{ type: 'help', help }]
