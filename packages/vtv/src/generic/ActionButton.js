@@ -1,8 +1,6 @@
-export default ({ primary = false, className, children, theme, ...props }) => (
+export default ({ primary = false, children, theme, ...props }) => (
   <button
-    className={`${className} ${primary ? 'primary' : ''} ${
-      primary ? 'primary' : ''
-    }`}
+    className={`${primary ? 'primary' : ''} ${primary ? 'primary' : ''}`}
     {...props}
   >
     {children}

@@ -1,3 +1,5 @@
+import getNested from 'lodash/get'
+
 const updateNestedState = (state, path = [], pathState, options = {}) => {
   if (path.length === 0) {
     const optionState = {}
@@ -9,10 +11,9 @@ const updateNestedState = (state, path = [], pathState, options = {}) => {
     return { ...state, ...pathState, ...optionState }
   }
   const [key, ...remainingPath] = path
-  const stateKey = key.startsWith('_') ? `_${key}` : key
   const result = {
     ...state,
-    [stateKey]: updateNestedState(
+    [getStateKey(key)]: updateNestedState(
       getChildState(state, key),
       remainingPath,
       pathState,
@@ -140,52 +141,87 @@ export const updateTree = (treeData, treeUpdate) => {
                 treeUpdate.value
               ),
       }
-    } else if (treeUpdate.action === 'insert') {
-      const parentPath = treeUpdate.path.slice(0, treeUpdate.path.length - 1)
-      const key = treeUpdate.path[treeUpdate.path.length - 1]
+    } else if (['insert', 'appendChild'].includes(treeUpdate.action)) {
       let state = treeData.state
+      let parentPath, key
+      const newValue = null
+      if (treeUpdate.action === 'insert') {
+        parentPath = treeUpdate.path.slice(0, treeUpdate.path.length - 1)
+        key = treeUpdate.path[treeUpdate.path.length - 1]
+      } else {
+        parentPath = treeUpdate.path
+        const value = getNested(treeData.value, parentPath)
+        key = null
+        state = updateNestedState(state, parentPath, {
+          _expanded: true,
+        })
+      }
       const insert = parent => {
         if (Array.isArray(parent)) {
-          const result = []
+          let result
           let newKey
-          for (let i = 0; i < parent.length; i++) {
-            if (treeUpdate.position === 'above' && i === Number(key)) {
-              result.push(null)
-              newKey = `${i}`
-            }
-            result.push(parent[i])
-            if (treeUpdate.position === 'below' && i === Number(key)) {
-              result.push(null)
-              newKey = `${i + 1}`
+          if (key === null) {
+            result = [...parent, newValue]
+            newKey = result.length - 1
+          } else {
+            result = []
+            for (let i = 0; i < parent.length; i++) {
+              if (treeUpdate.position === 'above' && i === Number(key)) {
+                result.push(newValue)
+                newKey = `${i}`
+              }
+              result.push(parent[i])
+              if (treeUpdate.position === 'below' && i === Number(key)) {
+                result.push(newValue)
+                newKey = `${i + 1}`
+              }
             }
           }
-          state = updateNestedState(treeData.state, [...parentPath, newKey], {
+          state = updateNestedState(state, [...parentPath, newKey], {
             _editing: true,
           })
           return result
         } else {
-          const result = {}
-          let newKey = ''
+          let newKey = 'newItem'
           if (Object.keys(parent).includes(newKey)) {
-            for (let i = 1; i <= 10; i++) {
+            for (let i = 1; i <= 1000; i++) {
               newKey = `newItem${i}`
               if (!Object.keys(parent).includes(newKey)) break
             }
           }
-          for (let parentKey of Object.keys(parent)) {
-            if (treeUpdate.position === 'above' && parentKey === key) {
-              result[newKey] = ''
-            }
-            result[parentKey] = parent[parentKey]
-            if (treeUpdate.position === 'below' && parentKey === key) {
-              result[newKey] = ''
+          let result
+          if (key === null) {
+            result = { ...parent, [newKey]: newValue }
+          } else {
+            result = {}
+            for (let parentKey of Object.keys(parent)) {
+              if (treeUpdate.position === 'above' && parentKey === key) {
+                result[newKey] = newValue
+              }
+              result[parentKey] = parent[parentKey]
+              if (treeUpdate.position === 'below' && parentKey === key) {
+                result[newKey] = newValue
+              }
             }
           }
-          state = updateNestedState(treeData.state, [...parentPath, newKey], {
-            _editingName: true,
+          state = updateNestedState(state, [...parentPath, newKey], {
+            _editing: true,
           })
           return result
         }
+      }
+
+      let value
+      if (parentPath.length > 0) {
+        value = updateNestedValue(treeData.value, parentPath, insert)
+      } else {
+        value = insert(treeData.value)
+      }
+
+      return {
+        ...treeData,
+        value,
+        state,
       }
     } else if (treeUpdate.action === 'delete') {
       const parentPath = treeUpdate.path.slice(0, treeUpdate.path.length - 1)
@@ -244,9 +280,12 @@ export const getState = state => {
   }
 }
 
+export function getStateKey(key) {
+  return typeof key === 'string' ? (key.startsWith('_') ? `_${key}` : key) : key
+}
+
 export const getChildState = (state, key) => {
-  const stateKey = key.startsWith('_') ? `_${key}` : key
-  return getState(getState(state)[key])
+  return getState(getState(state)[getStateKey(key)])
 }
 
 export const getNestedState = (state, path) => {
@@ -261,8 +300,8 @@ export const getNestedState = (state, path) => {
 const rename = (value, state, path, name) => {
   if (path.length === 1) {
     const oldName = path[0]
-    const oldStateKey = oldName.startsWith('_') ? `_${oldName}` : oldName
-    const newStateKey = name.startsWith('_') ? `_${name}` : name
+    const oldStateKey = getStateKey(oldName)
+    const newStateKey = getStateKey(name)
     const { [oldStateKey]: deleted2, ...newState } = getState(state)
     const newValue = {}
     Object.keys(value).forEach(key => {
@@ -274,7 +313,7 @@ const rename = (value, state, path, name) => {
     }
   } else if (path.length > 1) {
     const [key, ...rest] = path
-    const stateKey = key.startsWith('_') ? `_${key}` : key
+    const stateKey = getStateKey(key)
     const { state: childState, value: childValue } = rename(
       value[key],
       getChildState(state, key),

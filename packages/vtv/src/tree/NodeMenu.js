@@ -7,6 +7,7 @@ import Menu, { MenuItem } from '../generic/Menu'
 export default function NodeMenu({
   onPickId,
   parentType,
+  nodeType,
   name,
   value,
   path,
@@ -54,7 +55,7 @@ export default function NodeMenu({
   }
 
   const nameOptions = {
-    rename: !showAll && ['object', 'root'].includes(parentType) && (
+    rename: !showAll && ['object', null].includes(parentType) && (
       <MenuItem onClick={() => sendAction('rename', { editing: true })}>
         Rename
       </MenuItem>
@@ -85,14 +86,19 @@ export default function NodeMenu({
         <MenuItem onClick={edit}>Edit</MenuItem>
       )}
       {!nameOptionsFirst && nameOptions.rename}
+      {!showAll && ['object', 'array'].includes(nodeType) && (
+        <MenuItem onClick={() => sendAction('appendChild')}>
+          Append Child
+        </MenuItem>
+      )}
       {!showAll && ['object', 'array'].includes(parentType) && (
         <MenuItem onClick={() => sendAction('insert', { position: 'above' })}>
-          Insert Above
+          Insert Before
         </MenuItem>
       )}
       {!showAll && ['object', 'array'].includes(parentType) && (
         <MenuItem onClick={() => sendAction('insert', { position: 'below' })}>
-          Insert Below
+          Insert After
         </MenuItem>
       )}
       {!showAll && ['object', 'array'].includes(parentType) && (
@@ -106,7 +112,7 @@ export default function NodeMenu({
       {showAll && (
         <MenuItem onClick={() => sendAction('showAll')}>Show all</MenuItem>
       )}
-      {!showAll && ['object', 'root'].includes(parentType) && (
+      {!showAll && ['object', null].includes(parentType) && (
         <MenuItem onClick={editJson}>Edit JSON</MenuItem>
       )}
       {!nameOptionsFirst && nameOptions.pasteIntoConsole}
