@@ -9,6 +9,20 @@ export const isObject = value => {
   )
 }
 
+export const getNodeType = value => {
+  if (isObject(value)) {
+    return 'object'
+  } else if (Array.isArray(value)) {
+    return 'array'
+  } else if (typeof value === 'string') {
+    return 'string'
+  } else if (typeof value === 'number') {
+    return 'number'
+  } else {
+    return 'value'
+  }
+}
+
 export const getPaths = (item, depth = 2) => {
   let result = []
   if (isObject(item)) {

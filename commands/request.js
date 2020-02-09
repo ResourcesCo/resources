@@ -10,15 +10,12 @@ export default {
           value: {
             method: 'get',
             url: '',
+            body: {},
             headers: {},
-            response: {
-              headers: response.headers,
-              body: data,
-            },
           },
           state: {
             _expanded: true,
-            _actions: [{ name: 'send', title: 'Send' }],
+            _actions: [{ name: 'send', title: 'Send', primary: true }],
             response: {
               _expanded: true,
               body: {
@@ -26,7 +23,6 @@ export default {
               },
             },
           },
-          message: message,
         }
       },
     },

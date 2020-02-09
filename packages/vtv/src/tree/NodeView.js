@@ -3,7 +3,13 @@ import { Manager, Reference, Popper } from 'react-popper'
 import getNested from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { getState, getChildState, getNestedState } from '../model/state'
-import { hasChildren, detectUrl, joinPath, isObject } from '../model/analyze'
+import {
+  hasChildren,
+  detectUrl,
+  joinPath,
+  isObject,
+  getNodeType,
+} from '../model/analyze'
 import ExpandButton from './ExpandButton'
 import NodeNameView from './NodeNameView'
 import NodeValueView from './NodeValueView'
@@ -11,9 +17,10 @@ import NodeMenuButton from './NodeMenuButton'
 import NodeMenu from './NodeMenu'
 import TableView from '../table/TableView'
 import CodeView from '../value/CodeView'
+import ActionButton from '../generic/ActionButton'
 
 export default function NodeView({
-  parentType = 'root',
+  parentType = null,
   name,
   value,
   state,
@@ -34,6 +41,7 @@ export default function NodeView({
     _showOnly: showOnly,
     _editingName: editingName,
     _editingJson: editingJson,
+    _actions: actions,
   } = getState(state)
   const { bubbleMenu, dotMenu } = options
 
@@ -44,7 +52,6 @@ export default function NodeView({
     }
     onMessage({ path, state: { _expanded: !expanded } })
   }
-  const _hasChildren = hasChildren(value)
 
   const scrollRef = useRef(null)
   const anchorRef = useRef(null)
@@ -61,6 +68,9 @@ export default function NodeView({
     }
   }, [expanded, editingJson, viewType])
 
+  const _hasChildren = hasChildren(value)
+  const nodeType = getNodeType(value)
+
   if (showOnly) {
     const showOnlyParent = showOnly.slice(0, showOnly.length - 1)
     const showOnlyParentType =
@@ -68,7 +78,7 @@ export default function NodeView({
         ? Array.isArray(getNested(value, showOnlyParent))
           ? 'array'
           : 'object'
-        : 'root'
+        : null
     return (
       <NodeView
         parentType={showOnlyParentType}
@@ -91,6 +101,7 @@ export default function NodeView({
 
   const nodeMenuProps = {
     parentType,
+    nodeType,
     name,
     value,
     state,
@@ -126,7 +137,7 @@ export default function NodeView({
           options={options}
           theme={theme}
         />
-        <div className="inline-details">
+        <div className="node-content">
           <NodeValueView
             name={name}
             value={value}
@@ -141,7 +152,7 @@ export default function NodeView({
           {dotMenu && <NodeMenuButton nodeMenuProps={nodeMenuProps} />}
         </div>
         <style jsx>{`
-          .inline-details {
+          .node-content {
             margin-left: 10px;
             flex-grow: 1;
           }
@@ -176,7 +187,7 @@ export default function NodeView({
               <div className="children">
                 {Object.keys(value).map(key => (
                   <NodeView
-                    parentType={Array.isArray(value) ? 'array' : 'object'}
+                    parentType={nodeType}
                     key={key}
                     name={key}
                     value={value[key]}
