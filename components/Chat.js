@@ -159,7 +159,9 @@ class Chat extends PureComponent {
           }
           commandIds.push(message.commandId)
         }
-        scrollToBottom = true
+        if (message.type !== 'input') {
+          scrollToBottom = true
+        }
       }
       this.setState({ lastCommandId: message.commandId })
     }

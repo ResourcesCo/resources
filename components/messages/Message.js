@@ -138,8 +138,12 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
       })
     }
 
-    const handlePickId = path => {
-      onPickId(joinPath(['messages', commandId, ...path]))
+    const handlePickId = pathOrString => {
+      if (typeof pathOrString === 'string') {
+        onPickId(pathOrString)
+      } else {
+        onPickId(joinPath(['messages', commandId, ...pathOrString]))
+      }
     }
 
     return (
