@@ -150,7 +150,14 @@ export default function NodeView({
         </div>
         <div className="actions-content">
           {(actions || []).map(({ name, title, primary }) => (
-            <ActionButton primary={primary} onClick={() => null} theme={theme}>
+            <ActionButton
+              key={name}
+              primary={primary}
+              onClick={() =>
+                onMessage({ action: 'runAction', actionName: name })
+              }
+              theme={theme}
+            >
               {title}
             </ActionButton>
           ))}

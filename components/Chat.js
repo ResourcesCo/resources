@@ -210,7 +210,7 @@ class Chat extends PureComponent {
   }
 
   handleSubmitForm = async ({ commandId, formData, message }) => {
-    await runCommand(message, parse(message), this.addMessages, {
+    await runCommand(message, parseCommand(message), this.addMessages, {
       formData,
       formCommandId: commandId,
     })

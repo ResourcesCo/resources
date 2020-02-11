@@ -258,6 +258,16 @@ export const updateTree = (treeData, treeUpdate) => {
         ...treeData,
         value,
       }
+    } else if (treeUpdate.action === 'set') {
+      return {
+        value: {
+          ...treeData.value,
+          response: treeUpdate.value,
+        },
+        state: updateNestedState(treeData.state, ['response'], {
+          _expanded: true,
+        }),
+      }
     }
   } else {
     return {

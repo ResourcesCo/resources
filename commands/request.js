@@ -4,10 +4,27 @@ export default {
     post: {
       params: [],
       help: 'Make an HTTP POST request',
-      async run() {
+      async run({ formData, formCommandId, message }) {
+        if (
+          formData &&
+          formData.action === 'runAction' &&
+          formData.actionName === 'send'
+        ) {
+          return {
+            type: 'message-command',
+            treeCommandId: formCommandId,
+            action: 'set',
+            path: ['response'],
+            value: {
+              headers: {},
+              body: {},
+            },
+          }
+        }
         return {
           type: 'tree',
           name: 'request',
+          message,
           value: {
             method: 'post',
             url: '',

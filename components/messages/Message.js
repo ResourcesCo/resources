@@ -126,6 +126,8 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
       onMessage,
       commandId,
       onPickId,
+      message,
+      onSubmitForm,
     } = props
 
     const onChange = ({ name, value, state }) => {
@@ -154,6 +156,7 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
           state={state}
           theme={theme}
           onChange={onChange}
+          onAction={m => onSubmitForm({ commandId, message, formData: m })}
           onPickId={handlePickId}
         />
         <style jsx>{`
