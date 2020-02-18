@@ -63,12 +63,21 @@ export default ({ value, path, onMessage, theme }) => {
       <div className="actions">
         {value !== newValue ? (
           <>
-            <ActionButton onClick={save} disabled={error} primary theme={theme}>
-              Save
-            </ActionButton>
-            <ActionButton onClick={cancel} theme={theme}>
-              Cancel
-            </ActionButton>
+            <div className="actionButton">
+              <ActionButton
+                onClick={save}
+                disabled={error}
+                primary
+                theme={theme}
+              >
+                Save
+              </ActionButton>
+            </div>
+            <div className="actionButton">
+              <ActionButton onClick={cancel} theme={theme}>
+                Cancel
+              </ActionButton>
+            </div>
           </>
         ) : (
           <>
@@ -106,6 +115,10 @@ export default ({ value, path, onMessage, theme }) => {
         }
         div.actions {
           padding-top: 3px;
+        }
+        div.actionButton {
+          display: inline-block;
+          padding-right: 5px;
         }
       `}</style>
     </div>

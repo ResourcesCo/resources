@@ -72,7 +72,7 @@ const runAction = async ({
   store,
   message,
   formData,
-  formCommandId,
+  parentCommandId,
 }) => {
   const actionName =
     originalActionName === '_default'
@@ -125,7 +125,7 @@ const runAction = async ({
     store,
     message,
     formData,
-    formCommandId,
+    parentCommandId,
     env,
     params: paramsByName,
     resourcePath,
@@ -149,12 +149,9 @@ const runAction = async ({
   return [...convertToArray(beforeResult), ...updatedResult]
 }
 
-export default async (
-  message,
-  parsed,
-  onMessagesCreated,
-  { formData, formCommandId } = {}
-) => {
+export default async (message, parsed, onMessagesCreated, options = {}) => {
+  const formData = options.formData
+  let parentCommandId = options.parentCommandId
   const resourcePath = splitPath(parsed[0])
   const actionName = parsed.length > 1 ? parsed[1] : '_default'
 
@@ -164,7 +161,7 @@ export default async (
     const params = parsed.slice(2)
     if (formData) {
       onMessagesCreated([
-        { type: 'form-status', commandId, formCommandId, loading: true },
+        { type: 'form-status', commandId, parentCommandId, loading: true },
       ])
     } else {
       onMessagesCreated([
@@ -178,7 +175,7 @@ export default async (
       message,
       store,
       formData,
-      formCommandId,
+      parentCommandId,
       root: command,
     }
     let result
@@ -187,10 +184,20 @@ export default async (
     } else {
       result = await command.run(context)
     }
-    const outputMessages = convertToArray(result).map(message => ({
-      ...message,
-      commandId,
-    }))
+    const outputMessages = convertToArray(result).map(message => {
+      if (['message-command', 'message-get'].includes(message.type)) {
+        return {
+          ...message,
+          commandId,
+          parentCommandId,
+        }
+      } else {
+        return {
+          ...message,
+          commandId,
+        }
+      }
+    })
     onMessagesCreated([...outputMessages, { type: 'loaded', commandId }])
   } else {
     onMessagesCreated(

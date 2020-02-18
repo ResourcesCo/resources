@@ -13,7 +13,6 @@ export default ({ primary = false, children, theme, ...props }) => (
         outline: none;
         padding: 4px 7px;
         border: 0;
-        margin-right: 5px;
       }
 
       button.primary {

@@ -137,6 +137,23 @@ export default function NodeView({
           options={options}
           theme={theme}
         />
+        {actions && (
+          <div className="actions-content">
+            {actions.map(({ name, title, primary }) => (
+              <ActionButton
+                key={name}
+                primary={primary}
+                onClick={() =>
+                  onMessage({ action: 'runAction', actionName: name })
+                }
+                theme={theme}
+              >
+                {title}
+              </ActionButton>
+            ))}
+          </div>
+        )}
+
         <div className="node-content">
           <NodeValueView
             name={name}
@@ -148,29 +165,15 @@ export default function NodeView({
             theme={theme}
           />
         </div>
-        <div className="actions-content">
-          {(actions || []).map(({ name, title, primary }) => (
-            <ActionButton
-              key={name}
-              primary={primary}
-              onClick={() =>
-                onMessage({ action: 'runAction', actionName: name })
-              }
-              theme={theme}
-            >
-              {title}
-            </ActionButton>
-          ))}
-        </div>
         <div className="actions-right">
           {dotMenu && <NodeMenuButton nodeMenuProps={nodeMenuProps} />}
         </div>
         <style jsx>{`
           .node-content {
             margin-left: 10px;
+            flex-grow: 1;
           }
           .actions-content {
-            flex-grow: 1;
             margin-left: 10px;
           }
           .row {
@@ -183,6 +186,7 @@ export default function NodeView({
           }
           .actions-right {
             visibility: hidden;
+            margin-right: 5px;
           }
           .row:hover {
             background-color: ${theme.backgroundHover};

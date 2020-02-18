@@ -4,7 +4,7 @@ export default {
     post: {
       params: [],
       help: 'Make an HTTP POST request',
-      async run({ formData, formCommandId, message }) {
+      async run({ formData, message }) {
         if (
           formData &&
           formData.action === 'runAction' &&
@@ -12,7 +12,6 @@ export default {
         ) {
           return {
             type: 'message-command',
-            treeCommandId: formCommandId,
             action: 'set',
             path: ['response'],
             value: {
@@ -47,12 +46,12 @@ export default {
     get: {
       params: ['url'],
       help: 'Make a GET request',
-      async run({ params: { url }, message, formData, formCommandId }) {
+      async run({ params: { url }, message, formData, parentCommandId }) {
         if (formData) {
           return {
             type: 'form-status',
             treeUpdate: formData,
-            formCommandId,
+            parentCommandId,
           }
         } else {
           const timeout = 5000

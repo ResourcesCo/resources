@@ -81,7 +81,7 @@ class Chat extends PureComponent {
         store.save()
         this.props.onThemeChange(message.theme)
       } else if (['tree-update', 'message-command'].includes(message.type)) {
-        const treeCommand = commands[message.treeCommandId]
+        const treeCommand = commands[message.parentCommandId]
         scrollToBottom = false
         const treeMessage = treeCommand.messages.find(
           message => message.type === 'tree'
@@ -104,7 +104,7 @@ class Chat extends PureComponent {
           ...treeMessage,
           ...pickBy(pick(updates, ['name', 'value', 'state']), identity),
         }
-        commands[message.treeCommandId] = {
+        commands[message.parentCommandId] = {
           ...treeCommand,
           messages: treeCommand.messages
             .map(m => this.setLoading(m, !!message.loading))
@@ -113,7 +113,7 @@ class Chat extends PureComponent {
             ),
         }
       } else if (message.type === 'form-status') {
-        const formCommand = commands[message.formCommandId]
+        const formCommand = commands[message.parentCommandId]
         if (formCommand) {
           let commandMessages = formCommand.messages
             .map(m => this.setLoading(m, !!message.loading))
@@ -125,7 +125,7 @@ class Chat extends PureComponent {
           }
           const formStatusMessage = {
             ...message,
-            commandId: message.formCommandId,
+            commandId: message.parentCommandId,
           }
           commands[formStatusMessage.commandId] = {
             ...formCommand,
@@ -136,7 +136,7 @@ class Chat extends PureComponent {
       } else {
         let newMessage = message
         if (message.type === 'message-get') {
-          const treeCommand = commands[message.treeCommandId]
+          const treeCommand = commands[message.parentCommandId]
           const treeMessage = treeCommand.messages.find(
             message => message.type === 'tree'
           )
@@ -212,7 +212,7 @@ class Chat extends PureComponent {
   handleSubmitForm = async ({ commandId, formData, message }) => {
     await runCommand(message, parseCommand(message), this.addMessages, {
       formData,
-      formCommandId: commandId,
+      parentCommandId: commandId,
     })
   }
 

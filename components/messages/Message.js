@@ -136,7 +136,7 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
         name,
         value,
         state,
-        treeCommandId: commandId,
+        parentCommandId: commandId,
       })
     }
 
