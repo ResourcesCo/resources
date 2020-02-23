@@ -16,7 +16,6 @@ export default function NodeMenu({
   onMessage,
   onClose,
   onViewChanged,
-  nameOptionsFirst,
   popperProps,
   theme,
 }) {
@@ -77,7 +76,6 @@ export default function NodeMenu({
           </MenuItem>
         )
       })}
-      {!nameOptionsFirst && nameOptions.rename}
       {!showAll && ['object', 'array'].includes(nodeType) && (
         <MenuItem onClick={() => sendAction('appendChild')}>
           Append Child

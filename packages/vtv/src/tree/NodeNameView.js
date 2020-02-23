@@ -127,11 +127,7 @@ export default ({
             )}
           </Reference>
           {menuOpen && (
-            <NodeMenu
-              {...nodeMenuProps}
-              nameOptionsFirst={true}
-              onClose={() => setMenuOpen(false)}
-            />
+            <NodeMenu {...nodeMenuProps} onClose={() => setMenuOpen(false)} />
           )}
         </Manager>
       )
