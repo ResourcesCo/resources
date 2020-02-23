@@ -54,21 +54,16 @@ export default function NodeMenu({
     onPickId(path)
   }
 
-  const nameOptions = {
-    rename: !showAll && ['object', null].includes(parentType) && (
-      <MenuItem onClick={() => sendAction('rename', { editing: true })}>
-        Rename
-      </MenuItem>
-    ),
-    pasteIntoConsole: typeof onPickId === 'function' && (
-      <MenuItem onClick={pickId}>Paste into console</MenuItem>
-    ),
-  }
-
   return (
     <Menu onClose={onClose} popperProps={popperProps} theme={theme}>
-      {nameOptionsFirst && nameOptions.rename}
-      {nameOptionsFirst && nameOptions.pasteIntoConsole}
+      {!showAll && ['object', null].includes(parentType) && (
+        <MenuItem onClick={() => sendAction('rename', { editing: true })}>
+          Rename
+        </MenuItem>
+      )}
+      {!showAll && isBasicType(value) && (
+        <MenuItem onClick={edit}>Edit</MenuItem>
+      )}
       {['tree', 'table'].map(key => {
         if (key === viewType) {
           return null
@@ -78,13 +73,10 @@ export default function NodeMenu({
         }
         return (
           <MenuItem key={key} onClick={() => setViewType(key)}>
-            {key === 'json' ? 'Edit JSON' : `View as ${key}`}
+            View as {key}
           </MenuItem>
         )
       })}
-      {!showAll && isBasicType(value) && (
-        <MenuItem onClick={edit}>Edit</MenuItem>
-      )}
       {!nameOptionsFirst && nameOptions.rename}
       {!showAll && ['object', 'array'].includes(nodeType) && (
         <MenuItem onClick={() => sendAction('appendChild')}>
@@ -104,6 +96,7 @@ export default function NodeMenu({
       {!showAll && ['object', 'array'].includes(parentType) && (
         <MenuItem onClick={() => sendAction('delete')}>Delete</MenuItem>
       )}
+      {!showAll && <MenuItem onClick={editJson}>Edit JSON</MenuItem>}
       {!showAll && path.length > 0 && (
         <MenuItem onClick={() => sendAction('showOnlyThis')}>
           Show only this
@@ -112,10 +105,9 @@ export default function NodeMenu({
       {showAll && (
         <MenuItem onClick={() => sendAction('showAll')}>Show all</MenuItem>
       )}
-      {!showAll && ['object', null].includes(parentType) && (
-        <MenuItem onClick={editJson}>Edit JSON</MenuItem>
+      {typeof onPickId === 'function' && (
+        <MenuItem onClick={pickId}>Paste into console</MenuItem>
       )}
-      {!nameOptionsFirst && nameOptions.pasteIntoConsole}
     </Menu>
   )
 }

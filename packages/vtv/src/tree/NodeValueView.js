@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import Textarea from '../generic/Textarea'
 import { detectUrl } from '../model/analyze'
 import { getState } from '../model/state'
@@ -23,8 +23,25 @@ const inputValue = value => {
 }
 
 const InlineValue = React.forwardRef(
-  ({ name, value, state, path, onMessage, editing, autoEdit, theme }, ref) => {
+  (
+    {
+      name,
+      value,
+      state,
+      path,
+      onMessage,
+      editing,
+      editingJson,
+      autoEdit,
+      theme,
+    },
+    ref
+  ) => {
     const [newInputValue, setNewInputValue] = useState(inputValue(value))
+
+    useEffect(() => {
+      setNewInputValue(inputValue(value))
+    }, [editingJson])
 
     const sendAction = (data = {}) => {}
 
@@ -79,7 +96,7 @@ const InlineValue = React.forwardRef(
 
     return (
       <div className={typeClass}>
-        {autoEdit || editing ? (
+        {!editingJson && (autoEdit || editing) ? (
           <Textarea
             value={newInputValue}
             onChange={({ target: { value } }) => setNewInputValue(value)}
@@ -127,7 +144,7 @@ export default ({
   autoEdit = true,
   theme,
 }) => {
-  const { _editing: editing } = getState(state)
+  const { _editing: editing, _editingJson: editingJson } = getState(state)
   if (editing) {
     return (
       <InlineValue
@@ -137,6 +154,7 @@ export default ({
         path={path}
         onMessage={onMessage}
         editing={editing}
+        editingJson={editingJson}
         autoEdit={autoEdit}
         theme={theme}
       />
@@ -154,6 +172,7 @@ export default ({
             path={path}
             onMessage={onMessage}
             editing={editing}
+            editingJson={editingJson}
             autoEdit={autoEdit}
             theme={theme}
           />
@@ -176,6 +195,7 @@ export default ({
           path={path}
           onMessage={onMessage}
           editing={editing}
+          editingJson={editingJson}
           autoEdit={autoEdit}
           theme={theme}
         />
