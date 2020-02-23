@@ -1,22 +1,54 @@
+const jsonHeaders = headers => {
+  const keys = [...headers.keys()]
+  keys.sort()
+  const result = {}
+  for (let key of keys) {
+    result[key] = []
+  }
+  for (let header of headers) {
+    const [key, value] = header
+    result[key].push(value)
+  }
+  for (let key of keys) {
+    if (result[key].length === 1) {
+      result[key] = result[key][0]
+    }
+  }
+  return result
+}
+
 export default {
   defaultAction: 'post',
   actions: {
     post: {
       params: [],
       help: 'Make an HTTP POST request',
-      async run({ formData, message }) {
+      async run({ formData, message, parentMessage, ...context }) {
         if (
           formData &&
           formData.action === 'runAction' &&
           formData.actionName === 'send'
         ) {
+          console.log({ message })
+          const timeout = 5000
+          const controller = new AbortController()
+          setTimeout(() => controller.abort(), timeout)
+          const request = parentMessage.value
+          const response = await fetch(request.url, {
+            signal: controller.signal,
+            method: request.method,
+            headers: request.headers,
+            body: JSON.stringify(request.body),
+          })
+          const data = await response.json()
+          console.log({ response })
           return {
             type: 'message-command',
             action: 'set',
             path: ['response'],
             value: {
-              headers: {},
-              body: {},
+              headers: jsonHeaders(response.headers),
+              body: data,
             },
           }
         }

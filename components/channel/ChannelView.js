@@ -1,9 +1,9 @@
 import { PureComponent } from 'react'
-import runCommand from '../command-runner'
+import runCommand from '../../command-runner'
 import { parseCommand, updateTree } from 'vtv'
-import Message from './messages/Message'
-import { store } from '../store'
-import ChatInput from './ChatInput'
+import Message from '../messages/Message'
+import { store } from '../../store'
+import ChannelInput from './ChannelInput'
 import Nav from './Nav'
 import insertTextAtCursor from 'insert-text-at-cursor'
 import { Manager } from 'react-popper'
@@ -81,15 +81,15 @@ class Chat extends PureComponent {
         store.save()
         this.props.onThemeChange(message.theme)
       } else if (['tree-update', 'message-command'].includes(message.type)) {
-        const treeCommand = commands[message.parentCommandId]
         scrollToBottom = false
+        const treeCommand = commands[message.parentCommandId]
         const treeMessage = treeCommand.messages.find(
           message => message.type === 'tree'
         )
         let updates
         if (message.type === 'tree-update') {
           updates = message
-        } else {
+        } else if (message.type === 'message-command') {
           const {
             type: __type,
             commandId: __commandId,
@@ -210,9 +210,14 @@ class Chat extends PureComponent {
   }
 
   handleSubmitForm = async ({ commandId, formData, message }) => {
+    const { commands } = this.state
+    const parentMessage = (
+      getNested(commands, [commandId, 'messages']) || []
+    ).filter(message => message.type === 'tree')[0]
     await runCommand(message, parseCommand(message), this.addMessages, {
       formData,
       parentCommandId: commandId,
+      parentMessage,
     })
   }
 
@@ -269,7 +274,7 @@ class Chat extends PureComponent {
           </div>
         </div>
         <div className="chat-input">
-          <ChatInput
+          <ChannelInput
             textareaRef={this.textareaRef}
             text={text}
             onTextChange={this.handleTextChange}

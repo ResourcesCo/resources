@@ -61,6 +61,7 @@ const updateNestedValue = (value, path, pathValueOrFn) => {
 }
 
 export const updateTree = (treeData, treeUpdate) => {
+  console.log({treeData, treeUpdate})
   if (treeUpdate.action) {
     if (treeUpdate.action === 'showOnlyThis') {
       let state = updateNestedState(treeData.state, [], {

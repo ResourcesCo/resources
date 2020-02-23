@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Head from './Head'
-import Chat from './Chat'
+import { ChannelView } from './channel'
 import themes from '../themes'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 
@@ -46,7 +46,7 @@ const AppView = ({ popup, selectedTheme, onThemeChange }) => {
   return (
     <div>
       <Head title="Home" />
-      <Chat
+      <ChannelView
         onFocusChange={handleFocusChange}
         theme={theme}
         onThemeChange={onThemeChange}

@@ -1,7 +1,7 @@
 export default function Nav({ onSelectExample, theme }) {
   return (
     <div className="nav">
-      <img src="static/touch-icon.png" />
+      <img src="static/touch-icon.png" className="logo" />
       <h1>Resources.co</h1>
       <div className="content">
         <select
@@ -36,11 +36,12 @@ export default function Nav({ onSelectExample, theme }) {
           align-items: center;
           padding: 5px;
         }
-        img {
+        img.logo {
+          padding-left: 4px;
           height: 32px;
         }
         h1 {
-          padding-left: 10px;
+          padding-left: 8px;
         }
         div.content {
           padding: 10px;

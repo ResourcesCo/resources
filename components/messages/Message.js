@@ -15,7 +15,55 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
     setLoaded(true)
     onLoad()
   }
-  if (type === 'help') {
+  if (type === 'tree') {
+    const {
+      name,
+      value,
+      state = { _expanded: true },
+      onMessage,
+      commandId,
+      onPickId,
+      message,
+      onSubmitForm,
+    } = props
+
+    const onChange = ({ name, value, state }) => {
+      onMessage({
+        type: 'tree-update',
+        name,
+        value,
+        state,
+        parentCommandId: commandId,
+      })
+    }
+
+    const handlePickId = pathOrString => {
+      if (typeof pathOrString === 'string') {
+        onPickId(pathOrString)
+      } else {
+        onPickId(joinPath(['messages', commandId, ...pathOrString]))
+      }
+    }
+
+    return (
+      <div>
+        <View
+          name={name}
+          value={value}
+          state={state}
+          theme={theme}
+          onChange={onChange}
+          onAction={m => onSubmitForm({ commandId, message, formData: m })}
+          onPickId={handlePickId}
+        />
+        <style jsx>{`
+          div {
+            margin: 5px 0;
+          }
+        `}</style>
+      </div>
+    )
+  } else if (type === 'help') {
     const { help } = props
     return <Help theme={theme} help={help} />
   } else if (type === 'error') {
@@ -117,54 +165,6 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
         commandId={commandId}
         onSubmitForm={onSubmitForm}
       />
-    )
-  } else if (type === 'tree') {
-    const {
-      name,
-      value,
-      state = { _expanded: true },
-      onMessage,
-      commandId,
-      onPickId,
-      message,
-      onSubmitForm,
-    } = props
-
-    const onChange = ({ name, value, state }) => {
-      onMessage({
-        type: 'tree-update',
-        name,
-        value,
-        state,
-        parentCommandId: commandId,
-      })
-    }
-
-    const handlePickId = pathOrString => {
-      if (typeof pathOrString === 'string') {
-        onPickId(pathOrString)
-      } else {
-        onPickId(joinPath(['messages', commandId, ...pathOrString]))
-      }
-    }
-
-    return (
-      <div>
-        <View
-          name={name}
-          value={value}
-          state={state}
-          theme={theme}
-          onChange={onChange}
-          onAction={m => onSubmitForm({ commandId, message, formData: m })}
-          onPickId={handlePickId}
-        />
-        <style jsx>{`
-          div {
-            margin: 5px 0;
-          }
-        `}</style>
-      </div>
     )
   } else {
     return null
