@@ -111,7 +111,9 @@ export const updateTree = (treeData, treeUpdate) => {
         if (typeof treeUpdate.value !== 'undefined') {
           if (treeUpdate.path.length === 0) {
             draft.name = treeUpdate.value
-          } else if (treeUpdate.path[0] !== treeUpdate.value) {
+          } else if (
+            treeUpdate.path[treeUpdate.path.length - 1] !== treeUpdate.value
+          ) {
             const lastIndex = treeUpdate.path.length - 1
             const parentPath = treeUpdate.path.slice(0, lastIndex)
             const key = treeUpdate.path[lastIndex]

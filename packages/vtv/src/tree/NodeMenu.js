@@ -16,6 +16,7 @@ export default function NodeMenu({
   onMessage,
   onClose,
   onViewChanged,
+  nameOptionsFirst = false,
   popperProps,
   theme,
 }) {
@@ -55,11 +56,13 @@ export default function NodeMenu({
 
   return (
     <Menu onClose={onClose} popperProps={popperProps} theme={theme}>
-      {!showAll && ['object', null].includes(parentType) && (
-        <MenuItem onClick={() => sendAction('rename', { editing: true })}>
-          Rename
-        </MenuItem>
-      )}
+      {nameOptionsFirst &&
+        !showAll &&
+        ['object', null].includes(parentType) && (
+          <MenuItem onClick={() => sendAction('rename', { editing: true })}>
+            Rename
+          </MenuItem>
+        )}
       {!showAll && isBasicType(value) && (
         <MenuItem onClick={edit}>Edit</MenuItem>
       )}
@@ -91,6 +94,13 @@ export default function NodeMenu({
           Insert After
         </MenuItem>
       )}
+      {!nameOptionsFirst &&
+        !showAll &&
+        ['object', null].includes(parentType) && (
+          <MenuItem onClick={() => sendAction('rename', { editing: true })}>
+            Rename
+          </MenuItem>
+        )}
       {!showAll && ['object', 'array'].includes(parentType) && (
         <MenuItem onClick={() => sendAction('delete')}>Delete</MenuItem>
       )}

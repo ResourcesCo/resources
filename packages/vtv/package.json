@@ -10,10 +10,7 @@
     "build:esm": "cross-env NODE_ENV=production BABEL_ENV=esm babel --config-file ./babel.config.js ./src --out-dir ./build/esm --ignore \"**/*.test.js\"",
     "build:es": "cross-env NODE_ENV=production BABEL_ENV=es babel --config-file ./babel.config.js ./src --out-dir ./build/es --ignore \"**/*.test.js\""
   },
-  "peerDependencies": {
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
-  },
+  "peerDependencies": {},
   "dependencies": {
     "@babel/runtime": "^7.4.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.20",
