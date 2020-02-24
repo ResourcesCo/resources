@@ -82,7 +82,7 @@ export const getAtPath = (value, path) => {
 }
 
 export const isIdentifier = s => {
-  return /^[a-zA-Z_$]\S*$/.test(s)
+  return /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(s)
 }
 
 export const joinPath = path => {

@@ -97,7 +97,7 @@ export default function NodeView({
     )
   }
 
-  const indent = 10 * (path.length - showOnlyPath.length)
+  const indent = 12 * (path.length - showOnlyPath.length)
 
   const nodeMenuProps = {
     parentType,
@@ -137,6 +137,23 @@ export default function NodeView({
           options={options}
           theme={theme}
         />
+        {actions && (
+          <div className="actions-content">
+            {actions.map(({ name, title, primary }) => (
+              <ActionButton
+                key={name}
+                primary={primary}
+                onClick={() =>
+                  onMessage({ action: 'runAction', actionName: name })
+                }
+                theme={theme}
+              >
+                {title}
+              </ActionButton>
+            ))}
+          </div>
+        )}
+
         <div className="node-content">
           <NodeValueView
             name={name}
@@ -148,13 +165,16 @@ export default function NodeView({
             theme={theme}
           />
         </div>
-        <div className="actions">
+        <div className="actions-right">
           {dotMenu && <NodeMenuButton nodeMenuProps={nodeMenuProps} />}
         </div>
         <style jsx>{`
           .node-content {
             margin-left: 10px;
             flex-grow: 1;
+          }
+          .actions-content {
+            margin-left: 10px;
           }
           .row {
             display: flex;
@@ -164,8 +184,9 @@ export default function NodeView({
             align-items: center;
             outline: none;
           }
-          .actions {
+          .actions-right {
             visibility: hidden;
+            margin-right: 5px;
           }
           .row:hover {
             background-color: ${theme.backgroundHover};
@@ -173,8 +194,8 @@ export default function NodeView({
           .row:focus-within {
             background-color: ${theme.backgroundActive};
           }
-          .row:hover .actions,
-          .row:focus-within .actions {
+          .row:hover .actions-right,
+          .row:focus-within .actions-right {
             visibility: visible;
           }
         `}</style>

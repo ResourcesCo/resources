@@ -7,7 +7,7 @@ export default {
       run({ resourcePath }) {
         return {
           type: 'message-get',
-          treeCommandId: resourcePath[1],
+          parentCommandId: resourcePath[1],
           path: resourcePath.slice(2),
         }
       },
@@ -18,7 +18,7 @@ export default {
       run({ resourcePath }) {
         return {
           type: 'message-command',
-          treeCommandId: resourcePath[1],
+          parentCommandId: resourcePath[1],
           path: resourcePath.slice(2),
           state: {
             _expanded: true,
@@ -32,7 +32,7 @@ export default {
       run({ resourcePath }) {
         return {
           type: 'message-command',
-          treeCommandId: resourcePath[1],
+          parentCommandId: resourcePath[1],
           path: resourcePath.slice(2),
           state: {
             _expanded: false,

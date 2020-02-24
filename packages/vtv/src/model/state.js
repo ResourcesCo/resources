@@ -1,4 +1,9 @@
 import getNested from 'lodash/get'
+import produce from 'immer'
+
+export function getStateKey(key) {
+  return typeof key === 'string' ? (key.startsWith('_') ? `_${key}` : key) : key
+}
 
 const updateNestedState = (state, path = [], pathState, options = {}) => {
   if (path.length === 0) {
@@ -60,87 +65,107 @@ const updateNestedValue = (value, path, pathValueOrFn) => {
   }
 }
 
+export const draftValue = (draft, path) => {
+  let draftValue = draft.value
+  for (let key of path) {
+    draftValue = draftValue[key]
+  }
+  return draftValue
+}
+
+export const getDraftUpdate = (draft, path) => {
+  if (path.length === 0) {
+    return [draft, 'value']
+  } else {
+    const lastIndex = path.length - 1
+    const parentPath = path.slice(0, lastIndex)
+    return [draftValue(draft, parentPath), path[lastIndex]]
+  }
+}
+
+export const draftState = (draft, path) => {
+  let draftState = draft.state
+  for (let key of path) {
+    const stateKey = getStateKey(key)
+    draftState[stateKey] = draftState[stateKey] || {}
+    draftState = draftState[stateKey]
+  }
+  return draftState
+}
+
 export const updateTree = (treeData, treeUpdate) => {
   if (treeUpdate.action) {
     if (treeUpdate.action === 'showOnlyThis') {
-      let state = updateNestedState(treeData.state, [], {
-        _showOnly: treeUpdate.path,
+      return produce(treeData, draft => {
+        draftState(draft, [])._showOnly = treeUpdate.path
+        draftState(draft, treeUpdate.path)._expanded = true
       })
-      state = updateNestedState(state, treeUpdate.path, { _expanded: true })
-      return {
-        ...treeData,
-        state,
-      }
     } else if (treeUpdate.action === 'showAll') {
-      return {
-        ...treeData,
-        state: updateNestedState(treeData.state, [], { _showOnly: null }),
-      }
+      return produce(treeData, draft => {
+        const rootDraftState = draftState(draft, [])
+        delete rootDraftState['_showOnly']
+      })
     } else if (treeUpdate.action === 'rename') {
-      let updatedMessage = {
-        ...treeData,
-        state: updateNestedState(treeData.state, treeUpdate.path, {
-          _editingName: treeUpdate.editing,
-        }),
-      }
-      if (typeof treeUpdate.value !== 'undefined') {
-        if (treeUpdate.path.length === 0) {
-          return {
-            ...updatedMessage,
-            name: treeUpdate.value,
+      return produce(treeData, draft => {
+        draftState(draft, treeUpdate.path)._editingName = treeUpdate.editing
+        if (typeof treeUpdate.value !== 'undefined') {
+          if (treeUpdate.path.length === 0) {
+            draft.name = treeUpdate.value
+          } else if (
+            treeUpdate.path[treeUpdate.path.length - 1] !== treeUpdate.value
+          ) {
+            const lastIndex = treeUpdate.path.length - 1
+            const parentPath = treeUpdate.path.slice(0, lastIndex)
+            const key = treeUpdate.path[lastIndex]
+            const draftParentValue = draftValue(draft, parentPath)
+
+            const keys = Object.keys(draftParentValue)
+            const keysToAppend = keys.slice(keys.indexOf(key) + 1)
+            const valuesToAppend = []
+            for (let key of keysToAppend) {
+              valuesToAppend.push(draftParentValue[key])
+              delete draftParentValue[key]
+            }
+            draftParentValue[treeUpdate.value] = draftParentValue[key]
+            delete draftParentValue[key]
+            for (let i = 0; i < keysToAppend.length; i++) {
+              draftParentValue[keysToAppend[i]] = valuesToAppend[i]
+            }
+
+            const draftParentState = draftState(draft, parentPath)
+            draftParentState[getStateKey(treeUpdate.value)] =
+              draftParentState[getStateKey(key)]
+            delete draftParentState[getStateKey(key)]
           }
-        } else if (treeUpdate.path[0] !== treeUpdate.value) {
-          const { value: valueAfterRename, state: stateAfterRename } = rename(
-            updatedMessage.value,
-            updatedMessage.state,
-            treeUpdate.path,
-            treeUpdate.value
-          )
-          return {
-            ...updatedMessage,
-            value: valueAfterRename,
-            state: stateAfterRename,
+        }
+      })
+    } else if (treeUpdate.action === 'edit') {
+      return produce(treeData, draft => {
+        draftState(draft, treeUpdate.path)._editing = treeUpdate.editing
+        if (typeof treeUpdate.value !== 'undefined') {
+          const [parent, key] = getDraftUpdate(draft, treeUpdate.path)
+          parent[key] = treeUpdate.value
+        }
+      })
+    } else if (treeUpdate.action === 'editJson') {
+      return produce(treeData, draft => {
+        const nodeDraftState = draftState(draft, treeUpdate.path)
+        nodeDraftState._editingJson = treeUpdate.editing
+        if (treeUpdate.editing) {
+          if (nodeDraftState._expanded !== true) {
+            nodeDraftState._prevExpanded = nodeDraftState._expanded
+            nodeDraftState._expanded = true
           }
         } else {
-          return updatedMessage
+          if (typeof nodeDraftState._prevExpanded === 'boolean') {
+            nodeDraftState._expanded = nodeDraftState._prevExpanded
+          }
         }
-      }
-      return updatedMessage
-    } else if (treeUpdate.action === 'edit') {
-      return {
-        ...treeData,
-        state: updateNestedState(treeData.state, treeUpdate.path, {
-          _editing: treeUpdate.editing,
-        }),
-        value:
-          typeof treeUpdate.value === 'undefined'
-            ? treeData.value
-            : updateNestedValue(
-                treeData.value,
-                treeUpdate.path,
-                treeUpdate.value
-              ),
-      }
-    } else if (treeUpdate.action === 'editJson') {
-      return {
-        ...treeData,
-        state: updateNestedState(
-          treeData.state,
-          treeUpdate.path,
-          { _expanded: true, _editingJson: treeUpdate.editing },
-          treeUpdate.editing
-            ? { savePrevExpanded: true }
-            : { restoreExpanded: true }
-        ),
-        value:
-          typeof treeUpdate.value === 'undefined'
-            ? treeData.value
-            : updateNestedValue(
-                treeData.value,
-                treeUpdate.path,
-                treeUpdate.value
-              ),
-      }
+        if (typeof treeUpdate.value !== 'undefined') {
+          const [parent, key] = getDraftUpdate(draft, treeUpdate.path)
+          parent[key] = treeUpdate.value
+        }
+      })
     } else if (['insert', 'appendChild'].includes(treeUpdate.action)) {
       let state = treeData.state
       let parentPath, key
@@ -258,6 +283,16 @@ export const updateTree = (treeData, treeUpdate) => {
         ...treeData,
         value,
       }
+    } else if (treeUpdate.action === 'set') {
+      return {
+        value: {
+          ...treeData.value,
+          response: treeUpdate.value,
+        },
+        state: updateNestedState(treeData.state, ['response'], {
+          _expanded: true,
+        }),
+      }
     }
   } else {
     return {
@@ -280,10 +315,6 @@ export const getState = state => {
   }
 }
 
-export function getStateKey(key) {
-  return typeof key === 'string' ? (key.startsWith('_') ? `_${key}` : key) : key
-}
-
 export const getChildState = (state, key) => {
   return getState(getState(state)[getStateKey(key)])
 }
@@ -294,40 +325,5 @@ export const getNestedState = (state, path) => {
   } else {
     const [key, ...rest] = path
     return getNestedState(getChildState(state, key), rest)
-  }
-}
-
-const rename = (value, state, path, name) => {
-  if (path.length === 1) {
-    const oldName = path[0]
-    const oldStateKey = getStateKey(oldName)
-    const newStateKey = getStateKey(name)
-    const { [oldStateKey]: deleted2, ...newState } = getState(state)
-    const newValue = {}
-    Object.keys(value).forEach(key => {
-      newValue[key === oldName ? name : key] = value[key]
-    })
-    return {
-      value: newValue,
-      state: { ...newState, [newStateKey]: getChildState(state, oldName) },
-    }
-  } else if (path.length > 1) {
-    const [key, ...rest] = path
-    const stateKey = getStateKey(key)
-    const { state: childState, value: childValue } = rename(
-      value[key],
-      getChildState(state, key),
-      rest,
-      name
-    )
-    return {
-      value: replaceKey(value, key, childValue),
-      state: {
-        ...getState(state),
-        [stateKey]: childState,
-      },
-    }
-  } else {
-    return { value, state }
   }
 }

@@ -72,26 +72,28 @@ const NameEdit = React.forwardRef(({ name, path, onMessage, theme }, ref) => {
   )
 })
 
-const NameButton = ({ displayName, name, onClick, theme }) => (
-  <button className="id" onClick={onClick}>
-    {typeof displayName !== 'undefined' ? (
-      displayName
-    ) : (
-      <StringView value={name} maxLength={40} />
-    )}
-    <style jsx>{`
-      button {
-        cursor: pointer;
-        background-color: ${theme.bubble1};
-        border-radius: 9999px;
-        outline: none;
-        padding: 3px 7px;
-        font-size: inherit;
-        border: 0;
-      }
-    `}</style>
-  </button>
-)
+const NameButton = ({ displayName, name, onClick, theme }) => {
+  return (
+    <button className="id" onClick={onClick}>
+      {typeof displayName !== 'undefined' ? (
+        displayName
+      ) : (
+        <StringView value={name} maxLength={40} />
+      )}
+      <style jsx>{`
+        button {
+          cursor: pointer;
+          background-color: ${theme.bubble1};
+          border-radius: 9999px;
+          outline: none;
+          padding: 3px 7px;
+          font-size: inherit;
+          border: 0;
+        }
+      `}</style>
+    </button>
+  )
+}
 
 export default ({
   name,
@@ -105,6 +107,10 @@ export default ({
   nodeMenuProps,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false)
+
+  const rename = () => {
+    onMessage({ path, action: 'rename', editing: true })
+  }
 
   if (editingName) {
     return (
@@ -121,6 +127,7 @@ export default ({
                   displayName={displayName}
                   name={name}
                   onClick={() => setMenuOpen(true)}
+                  onDoubleClick={rename}
                   theme={theme}
                 />
               </div>

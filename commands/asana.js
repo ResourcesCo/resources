@@ -144,7 +144,7 @@ export default {
         env: { api_token },
         message,
         formData,
-        formCommandId,
+        parentCommandId,
       }) {
         if (formData) {
           const headers = getHeaders(api_token, true)
@@ -159,14 +159,14 @@ export default {
               type: 'form-status',
               text: `Comment added!`,
               success: true,
-              formCommandId,
+              parentCommandId,
             }
           } else {
             return {
               type: 'form-status',
               text: `Error adding comment`,
               error: true,
-              formCommandId,
+              parentCommandId,
             }
           }
         } else {

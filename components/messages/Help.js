@@ -20,19 +20,26 @@ const Details = ({ children, theme }) => {
 export default ({ theme, help }) => {
   return (
     <div style={{ margin: 5 }}>
-      {(help || []).map(({ command, subCommand, params = [], details }, i) => {
-        return (
-          <div key={i}>
-            <Example>
-              {command} {subCommand}{' '}
-              {params.map((param, i) => (
-                <i key={i}>{param} </i>
-              ))}
-            </Example>
-            <Details theme={theme}>{details}</Details>
-          </div>
-        )
-      })}
+      {(help || []).map(
+        (
+          { command, subCommand, params = [], details, default: isDefault },
+          i
+        ) => {
+          return (
+            <div key={i}>
+              <Example>
+                {command} {subCommand}{' '}
+                {params.map((param, i) => (
+                  <i key={i}>{param} </i>
+                ))}
+              </Example>
+              <Details theme={theme}>
+                {details} {isDefault && <em>(default)</em>}
+              </Details>
+            </div>
+          )
+        }
+      )}
     </div>
   )
 }

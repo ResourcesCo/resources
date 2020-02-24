@@ -72,7 +72,8 @@ const runAction = async ({
   store,
   message,
   formData,
-  formCommandId,
+  parentCommandId,
+  parentMessage,
 }) => {
   const actionName =
     originalActionName === '_default'
@@ -93,6 +94,7 @@ const runAction = async ({
         params: cmd.params,
         details: cmd.help,
         command: `${joinPath(resourcePath)} ${key}`,
+        default: root.defaultAction === key,
       })
     }
     return [{ type: 'help', help }]
@@ -124,7 +126,8 @@ const runAction = async ({
     store,
     message,
     formData,
-    formCommandId,
+    parentCommandId,
+    parentMessage,
     env,
     params: paramsByName,
     resourcePath,
@@ -152,18 +155,32 @@ export default async (
   message,
   parsed,
   onMessagesCreated,
-  { formData, formCommandId } = {}
+  { formData, parentCommandId, parentMessage } = {}
 ) => {
   const resourcePath = splitPath(parsed[0])
   const actionName = parsed.length > 1 ? parsed[1] : '_default'
 
   const command = commands[resourcePath[0]] // TODO: recurse
   const commandId = shortid.generate()
+  const setActionLoading = loading => {
+    onMessagesCreated([
+      {
+        type: 'tree-update',
+        commandId,
+        parentCommandId,
+        action: 'setActionLoading',
+        actionName: formData.actionName,
+        loading,
+      },
+    ])
+  }
   if (command) {
     const params = parsed.slice(2)
-    if (formData) {
+    if (formData && formData.action === 'runAction') {
+      setActionLoading(true)
+    } else if (formData) {
       onMessagesCreated([
-        { type: 'form-status', commandId, formCommandId, loading: true },
+        { type: 'form-status', commandId, parentCommandId, loading: true },
       ])
     } else {
       onMessagesCreated([
@@ -177,7 +194,8 @@ export default async (
       message,
       store,
       formData,
-      formCommandId,
+      parentCommandId,
+      parentMessage,
       root: command,
     }
     let result
@@ -186,10 +204,23 @@ export default async (
     } else {
       result = await command.run(context)
     }
-    const outputMessages = convertToArray(result).map(message => ({
-      ...message,
-      commandId,
-    }))
+    const outputMessages = convertToArray(result).map(message => {
+      if (['message-command', 'message-get'].includes(message.type)) {
+        return {
+          ...message,
+          commandId,
+          parentCommandId,
+        }
+      } else {
+        return {
+          ...message,
+          commandId,
+        }
+      }
+    })
+    if (formData && formData.action === 'runAction') {
+      setActionLoading(false)
+    }
     onMessagesCreated([...outputMessages, { type: 'loaded', commandId }])
   } else {
     onMessagesCreated(

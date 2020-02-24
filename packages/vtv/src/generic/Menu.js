@@ -44,6 +44,18 @@ export default ({
   const ref = useRef(null)
   useClickOutside(ref, onClose)
 
+  const menuItems = React.Children.map(children, child => {
+    return React.isValidElement(child)
+      ? React.cloneElement(child, {
+          onClick: e => {
+            child.props.onClick(e)
+            onClose()
+          },
+          theme,
+        })
+      : child
+  })
+
   return (
     <Popper {...popperProps}>
       {({ ref: popperRef, style, placement }) => (
@@ -54,17 +66,9 @@ export default ({
           data-placement={placement}
         >
           <div className="menu" ref={ref}>
-            {React.Children.map(children, child => {
-              return React.isValidElement(child)
-                ? React.cloneElement(child, {
-                    onClick: e => {
-                      child.props.onClick(e)
-                      onClose()
-                    },
-                    theme,
-                  })
-                : child
-            })}
+            {(placement || '').startsWith('top-')
+              ? [...menuItems].reverse()
+              : menuItems}
           </div>
           <style jsx>{`
             .menu {
