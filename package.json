@@ -8,9 +8,14 @@
     "start": "next start",
     "export": "next export",
     "reformat": "prettier --write \"**/*.js\"",
-    "postinstall": "cd packages/vtv && yarn install && yarn build",
+    "postinstall": "yarn vtv:install && yarn console:install",
+    "vtv:install": "cd packages/vtv && yarn install",
+    "console:install": "cd packages/console && yarn install",
     "publish-vtv-pre": "cd packages/vtv && yarn version --prerelease --pre-id=canary --no-git-tag-version && yarn build && yarn publish --no-git-tag-version",
-    "packages:link": "cd packages/vtv && yarn link && cd ../../packages/console && yarn link vtv && yarn link && cd ../.. && yarn link @resources/console"
+    "packages:link": "yarn packages:link:console && yarn packages:link:root",
+    "packages:link:console": "cd packages/console/node_modules && rm -rf vtv && ln -s ../../vtv vtv",
+    "packages:link:root": "cd node_modules && rm -rf vtv && ln -s ../packages/vtv vtv && cd @resources && rm -rf console && ln -s ../../packages/console",
+    "packages:link:reset": "rm node_modules/vtv node_modules/@resources/console packages/console/node_modules/vtv && yarn install"
   },
   "dependencies": {
     "@resources/console": "1.0.0-canary.0",
@@ -18,7 +23,8 @@
     "lodash": "^4.17.15",
     "next": "^9.2.1",
     "prettier": "^1.19.1",
-    "react": "^16.12.0"
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
   },
   "prettier": {
     "semi": false,

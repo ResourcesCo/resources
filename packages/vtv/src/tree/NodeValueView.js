@@ -35,13 +35,11 @@ const InlineValue = ({
 }) => {
   const inputRef = useRef()
   const [newInputValue, setNewInputValue] = useState(inputValue(value))
-
   useEffect(() => {
     setNewInputValue(inputValue(value))
   }, [editingJson])
 
   useEffect(() => {
-    console.log('editing changed', inputRef)
     if (editing && inputRef.current) {
       inputRef.current.setSelectionRange(
         inputRef.current.value.length,
