@@ -2,9 +2,7 @@ import { PureComponent } from 'react'
 import runCommand from '../../command-runner'
 import { parseCommand, updateTree } from 'vtv'
 import Message from '../messages/Message'
-import { store } from '../../store'
 import ChannelInput from './ChannelInput'
-import Nav from './Nav'
 import insertTextAtCursor from 'insert-text-at-cursor'
 import { Manager } from 'react-popper'
 import pick from 'lodash/pick'
@@ -36,6 +34,7 @@ class Chat extends PureComponent {
 
   async componentDidMount() {
     const loadMessages = async () => {
+      const { store } = this.props
       await store.load()
       const commands = { ...store.commands }
       for (let key of Object.keys(commands)) {
@@ -60,6 +59,7 @@ class Chat extends PureComponent {
   componentWillUnmount() {}
 
   addMessages = newMessages => {
+    const { store } = this.props
     let { commandIds, commands } = this.state
     let clear = false
     let loadedMessage = undefined
@@ -176,6 +176,7 @@ class Chat extends PureComponent {
   }
 
   setCommands = (commandIds, commands) => {
+    const { store } = this.props
     this.setState({ commandIds, commands })
     store.commandIds = commandIds
     store.commands = commands
@@ -183,11 +184,17 @@ class Chat extends PureComponent {
   }
 
   send = async () => {
+    const { store } = this.props
     const { text } = this.state
     const parsed = parseCommand(text)
     if (Array.isArray(parsed) && parsed.length) {
       this.setState({ text: '' })
-      await runCommand(text, parsed, this.addMessages)
+      await runCommand({
+        message: text,
+        parsed,
+        onMessagesCreated: this.addMessages,
+        store,
+      })
     }
   }
 
@@ -229,7 +236,7 @@ class Chat extends PureComponent {
   }
 
   render() {
-    const { onFocusChange, theme } = this.props
+    const { onFocusChange, theme, navComponent: Nav } = this.props
     const { text, commandIds, commands, lastCommandId } = this.state
     const scrollRef = this.scrollRef
     const messages = []
@@ -243,7 +250,7 @@ class Chat extends PureComponent {
     return (
       <div className="chat">
         <div className="nav">
-          <Nav onSelectExample={this.handleSelectExample} />
+          {Nav && <Nav onSelectExample={this.handleSelectExample} />}
         </div>
         <div className="messages-scroll">
           <div className="messages">

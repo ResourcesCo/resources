@@ -1,7 +1,6 @@
 import shortid from 'shortid'
 import { splitPath, joinPath } from 'vtv'
 import commands from '../commands'
-import { store } from '../store'
 
 const inputMessage = message => ({
   type: 'input',
@@ -41,7 +40,7 @@ const messagesByType = (messages, type) => {
   return convertToArray(messages).filter(({ type: _type }) => _type === type)
 }
 
-const getCommandEnv = commandName => {
+const getCommandEnv = (store, commandName) => {
   const result = {}
   const prefix = `${commandName.toUpperCase()}_`
   for (let key of Object.keys(store.env).filter(key =>
@@ -52,7 +51,7 @@ const getCommandEnv = commandName => {
   return result
 }
 
-const updateCommandEnv = (commandName, envUpdates) => {
+const updateCommandEnv = (store, commandName, envUpdates) => {
   if (envUpdates.length > 0) {
     for (let { value: messageValue } of envUpdates) {
       for (let key of Object.keys(messageValue)) {
@@ -121,7 +120,7 @@ const runAction = async ({
     paramsByName[action.params[i]] = params[i]
   }
 
-  const env = getCommandEnv(resourcePath[0])
+  const env = getCommandEnv(store, resourcePath[0])
   const context = {
     store,
     message,
@@ -145,18 +144,22 @@ const runAction = async ({
   const resultArray = convertToArray(result)
   const updatedResult = resultArray.filter(({ type }) => type !== 'env')
   updateCommandEnv(
+    store,
     resourcePath[0],
     resultArray.filter(({ type }) => type === 'env')
   )
   return [...convertToArray(beforeResult), ...updatedResult]
 }
 
-export default async (
+export default async function runCommand({
   message,
   parsed,
   onMessagesCreated,
-  { formData, parentCommandId, parentMessage } = {}
-) => {
+  formData,
+  parentCommandId,
+  parentMessage,
+  store,
+}) {
   const resourcePath = splitPath(parsed[0])
   const actionName = parsed.length > 1 ? parsed[1] : '_default'
 

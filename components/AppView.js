@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Head from './Head'
-import { ChannelView } from './channel'
-import themes from '../themes'
+import Nav from './Nav'
+import { ChannelView, getTheme } from '@resources/console'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 
 const infoForDevices = {
@@ -15,7 +15,7 @@ const infoForDevices = {
   },
 }
 
-const AppView = ({ popup, selectedTheme, onThemeChange }) => {
+const AppView = ({ popup, selectedTheme, onThemeChange, store }) => {
   const [device, setDevice] = useState('default')
   const [keyboardOpen, setKeyboardOpen] = useState(false)
 
@@ -38,7 +38,7 @@ const AppView = ({ popup, selectedTheme, onThemeChange }) => {
     }, 30)
   }
 
-  const theme = themes[selectedTheme]
+  const theme = getTheme(selectedTheme)
   const deviceInfo = infoForDevices[device]
   const heightOffset =
     deviceInfo.toolbarHeight + (keyboardOpen ? deviceInfo.keyboardHeight : 0)
@@ -47,9 +47,11 @@ const AppView = ({ popup, selectedTheme, onThemeChange }) => {
     <div>
       <Head title="Home" />
       <ChannelView
+        navComponent={Nav}
         onFocusChange={handleFocusChange}
         theme={theme}
         onThemeChange={onThemeChange}
+        store={store}
       />
 
       <style jsx global>{`
