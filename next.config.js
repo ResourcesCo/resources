@@ -8,6 +8,8 @@ module.exports = withCSS({
       fs: 'empty',
     }
 
+    config.resolve.extensions.push('.jsx')
+
     config.optimization.minimizer = []
 
     config.plugins.push(

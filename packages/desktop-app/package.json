@@ -15,6 +15,7 @@
     "@zeit/next-css": "^1.0.1",
     "electron-serve": "^0.4.1",
     "electron-store": "^5.1.0",
+    "react-loader-spinner": "^3.1.5",
     "vtv": "^1.0.0-canary.14"
   },
   "devDependencies": {

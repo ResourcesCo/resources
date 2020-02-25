@@ -23,7 +23,7 @@ async function start() {
   } else {
     const port = process.argv[2]
     await mainWindow.loadURL(`http://localhost:${port}/home`)
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
   }
 }
 

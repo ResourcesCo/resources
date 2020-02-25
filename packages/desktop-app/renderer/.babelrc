@@ -5,8 +5,8 @@
       "module-resolver",
       {
         "alias": {
-          "@resources/console": "../console/src",
-          "vtv": "../vtv/src"
+          "@resources/console": "./renderer/packages/console/src",
+          "vtv": "./renderer/packages/vtv/src"
         }
       }
     ]
