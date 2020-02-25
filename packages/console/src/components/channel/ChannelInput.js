@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
 import TextareaAutosize from 'react-autosize-textarea'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -17,6 +18,12 @@ export default ({
     }
   }
 
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.focus()
+    }
+  }, [textareaRef])
+
   return (
     <div className="chat-input">
       <TextareaAutosize
@@ -26,12 +33,10 @@ export default ({
         onKeyDown={handleKeyPress}
         onFocus={() => onFocusChange(true)}
         onBlur={() => onFocusChange(false)}
-        autoFocus
         ref={textareaRef}
         maxRows={8}
         autoCorrect="off"
         autoCapitalize="none"
-        autoFocus
       />
       <button onClick={onSend}>
         <span className="rocket">

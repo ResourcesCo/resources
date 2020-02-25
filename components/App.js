@@ -26,6 +26,7 @@ class App extends PureComponent {
       <AppView
         selectedTheme={selectedTheme}
         onThemeChange={this.handleThemeChange}
+        store={store}
       />
     )
   }

@@ -2,15 +2,14 @@ import { PureComponent } from 'react'
 import runCommand from '../../command-runner'
 import { parseCommand, updateTree } from 'vtv'
 import Message from '../messages/Message'
-import { store } from '../../store'
 import ChannelInput from './ChannelInput'
-import Nav from './Nav'
 import insertTextAtCursor from 'insert-text-at-cursor'
 import { Manager } from 'react-popper'
 import pick from 'lodash/pick'
 import pickBy from 'lodash/pickBy'
 import identity from 'lodash/identity'
 import getNested from 'lodash/get'
+import produce from 'immer'
 
 class Chat extends PureComponent {
   state = {
@@ -34,12 +33,38 @@ class Chat extends PureComponent {
     return m.type === 'input' ? { ...m, loading } : m
   }
 
+  removeTemporaryCommandState(command) {
+    if (command.type === 'tree') {
+      return produce(command, draft => {
+        const removeTemporaryKeys = value => {
+          if (
+            value !== null &&
+            typeof value === 'object' &&
+            !Array.isArray(value)
+          ) {
+            delete value['_editing']
+            for (let key of Object.keys(value)) {
+              if (key.startsWith('__') || !key.startsWith('_')) {
+                removeTemporaryKeys(value[key])
+              }
+            }
+          }
+        }
+        removeTemporaryKeys(draft.state)
+      })
+    } else {
+      return command
+    }
+  }
+
   async componentDidMount() {
     const loadMessages = async () => {
+      const { store } = this.props
       await store.load()
       const commands = { ...store.commands }
       for (let key of Object.keys(commands)) {
         commands[key] = this.setCommandLoading(commands[key], false)
+        commands[key] = this.removeTemporaryCommandState(commands[key])
       }
       this.setState({
         commands,
@@ -60,6 +85,7 @@ class Chat extends PureComponent {
   componentWillUnmount() {}
 
   addMessages = newMessages => {
+    const { store } = this.props
     let { commandIds, commands } = this.state
     let clear = false
     let loadedMessage = undefined
@@ -176,6 +202,7 @@ class Chat extends PureComponent {
   }
 
   setCommands = (commandIds, commands) => {
+    const { store } = this.props
     this.setState({ commandIds, commands })
     store.commandIds = commandIds
     store.commands = commands
@@ -183,11 +210,17 @@ class Chat extends PureComponent {
   }
 
   send = async () => {
+    const { store } = this.props
     const { text } = this.state
     const parsed = parseCommand(text)
     if (Array.isArray(parsed) && parsed.length) {
       this.setState({ text: '' })
-      await runCommand(text, parsed, this.addMessages)
+      await runCommand({
+        message: text,
+        parsed,
+        onMessagesCreated: this.addMessages,
+        store,
+      })
     }
   }
 
@@ -210,14 +243,20 @@ class Chat extends PureComponent {
   }
 
   handleSubmitForm = async ({ commandId, formData, message }) => {
+    const { store } = this.props
     const { commands } = this.state
     const parentMessage = (
       getNested(commands, [commandId, 'messages']) || []
     ).filter(message => message.type === 'tree')[0]
-    await runCommand(message, parseCommand(message), this.addMessages, {
+    const parsed = parseCommand(message)
+    await runCommand({
+      message,
+      parsed,
+      onMessagesCreated: this.addMessages,
       formData,
       parentCommandId: commandId,
       parentMessage,
+      store,
     })
   }
 
@@ -229,7 +268,7 @@ class Chat extends PureComponent {
   }
 
   render() {
-    const { onFocusChange, theme } = this.props
+    const { onFocusChange, theme, navComponent: Nav } = this.props
     const { text, commandIds, commands, lastCommandId } = this.state
     const scrollRef = this.scrollRef
     const messages = []
@@ -243,7 +282,7 @@ class Chat extends PureComponent {
     return (
       <div className="chat">
         <div className="nav">
-          <Nav onSelectExample={this.handleSelectExample} />
+          {Nav && <Nav onSelectExample={this.handleSelectExample} />}
         </div>
         <div className="messages-scroll">
           <div className="messages">

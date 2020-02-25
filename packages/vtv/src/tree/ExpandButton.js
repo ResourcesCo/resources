@@ -3,7 +3,11 @@ import { faCaretRight, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 
 export default ({ onClick, expanded, hasChildren }) => (
   <div className={expanded ? 'expanded' : ''}>
-    <button onClick={onClick} className={hasChildren ? '' : 'invisible'}>
+    <button
+      onClick={onClick}
+      className={hasChildren ? '' : 'invisible'}
+      tabIndex="-1"
+    >
       <FontAwesomeIcon icon={expanded ? faCaretDown : faCaretRight} size="xs" />
     </button>
     <style jsx>{`

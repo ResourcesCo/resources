@@ -1,6 +1,6 @@
 import Menu, { MenuItem } from '../generic/Menu'
 
-export default ({ onPickId, url, theme, onClose }) => {
+export default ({ onEdit, onPickId, url, theme, onClose }) => {
   const pickId = () => {
     onPickId(`request get ${url}`)
   }
@@ -11,6 +11,7 @@ export default ({ onPickId, url, theme, onClose }) => {
 
   return (
     <Menu theme={theme} onClose={onClose}>
+      <MenuItem onClick={onEdit}>Edit</MenuItem>
       {typeof onPickId === 'function' && (
         <MenuItem onClick={pickId}>Paste into console</MenuItem>
       )}

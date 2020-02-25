@@ -52,6 +52,7 @@ const NameEdit = React.forwardRef(({ name, path, onMessage, theme }, ref) => {
         onKeyDown={handleKeyPress}
         onBlur={save}
         autoFocus
+        tabIndex="-1"
       />
       <style jsx>{`
         div :global(textarea) {
@@ -74,7 +75,7 @@ const NameEdit = React.forwardRef(({ name, path, onMessage, theme }, ref) => {
 
 const NameButton = ({ displayName, name, onClick, theme }) => {
   return (
-    <button className="id" onClick={onClick}>
+    <button className="id" onClick={onClick} tabIndex="-1">
       {typeof displayName !== 'undefined' ? (
         displayName
       ) : (

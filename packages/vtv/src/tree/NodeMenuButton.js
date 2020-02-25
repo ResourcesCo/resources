@@ -18,7 +18,7 @@ export default function NodeMenuButton({ nodeMenuProps: nodeMenuProps_ }) {
       <Reference>
         {({ ref }) => (
           <div>
-            <button ref={ref} onClick={() => setMenuOpen(true)}>
+            <button ref={ref} onClick={() => setMenuOpen(true)} tabIndex="-1">
               <FontAwesomeIcon icon={faEllipsisH} size="sm" />
             </button>
             <style jsx>{`

@@ -1,4 +1,5 @@
 const withCSS = require('@zeit/next-css')
+const ExtraWatchWebpackPlugin = require('extra-watch-webpack-plugin')
 
 module.exports = withCSS({
   webpack: config => {
@@ -8,6 +9,12 @@ module.exports = withCSS({
     }
 
     config.optimization.minimizer = []
+
+    config.plugins.push(
+      new ExtraWatchWebpackPlugin({
+        dirs: ['packages/vtv/src', 'packages/console/src'],
+      })
+    )
 
     return config
   },

@@ -3,7 +3,7 @@ import LinkMenu from './LinkMenu'
 import StringView from './StringView'
 import { Manager, Reference } from 'react-popper'
 
-export default ({ url, onPickId, theme }) => {
+export default ({ url, onEdit, onPickId, theme }) => {
   const [menuOpen, setMenuOpen] = useState(false)
 
   const openMenu = e => {
@@ -23,6 +23,7 @@ export default ({ url, onPickId, theme }) => {
         </Reference>
         {menuOpen && (
           <LinkMenu
+            onEdit={onEdit}
             onPickId={onPickId}
             url={url}
             onClose={() => setMenuOpen(false)}
