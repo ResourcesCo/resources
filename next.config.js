@@ -1,17 +1,21 @@
 const withCSS = require('@zeit/next-css')
-const withTM = require('next-transpile-modules')(['vtv', '@resources/console'])
+const ExtraWatchWebpackPlugin = require('extra-watch-webpack-plugin')
 
-module.exports = withTM(
-  withCSS({
-    webpack: config => {
-      // Fixes npm packages that depend on `fs` module
-      config.node = {
-        fs: 'empty',
-      }
+module.exports = withCSS({
+  webpack: config => {
+    // Fixes npm packages that depend on `fs` module
+    config.node = {
+      fs: 'empty',
+    }
 
-      config.optimization.minimizer = []
+    config.optimization.minimizer = []
 
-      return config
-    },
-  })
-)
+    config.plugins.push(
+      new ExtraWatchWebpackPlugin({
+        dirs: ['packages/vtv/src', 'packages/console/src'],
+      })
+    )
+
+    return config
+  },
+})

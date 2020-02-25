@@ -78,6 +78,7 @@ const InlineValue = ({
 
   const handleKeyPress = e => {
     if (e.key === 'Enter' && e.shiftKey === false) {
+      e.target.blur()
       e.preventDefault()
       save()
     } else if (e.key === 'Esc' || e.key === 'Escape') {
@@ -110,6 +111,7 @@ const InlineValue = ({
           onKeyDown={handleKeyPress}
           onBlur={onBlur}
           wrap="off"
+          tabIndex="-1"
         />
       ) : (
         <span>{value}</span>
