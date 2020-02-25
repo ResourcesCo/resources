@@ -22,117 +22,125 @@ const inputValue = value => {
   }
 }
 
-const InlineValue = React.forwardRef(
-  (
-    {
-      name,
-      value,
-      state,
-      path,
-      onMessage,
-      editing,
-      editingJson,
-      autoEdit,
-      theme,
-    },
-    ref
-  ) => {
-    const [newInputValue, setNewInputValue] = useState(inputValue(value))
+const InlineValue = ({
+  name,
+  value,
+  state,
+  path,
+  onMessage,
+  editing,
+  editingJson,
+  autoEdit,
+  theme,
+}) => {
+  const inputRef = useRef()
+  const [newInputValue, setNewInputValue] = useState(inputValue(value))
 
-    useEffect(() => {
-      setNewInputValue(inputValue(value))
-    }, [editingJson])
+  useEffect(() => {
+    setNewInputValue(inputValue(value))
+  }, [editingJson])
 
-    const sendAction = (data = {}) => {}
-
-    let newValue, parsed
-    try {
-      newValue = JSON.parse(newInputValue)
-    } catch (e) {
-      newValue = newInputValue
+  useEffect(() => {
+    console.log('editing changed', inputRef)
+    if (editing && inputRef.current) {
+      inputRef.current.setSelectionRange(
+        inputRef.current.value.length,
+        inputRef.current.value.length
+      )
+      inputRef.current.focus()
     }
+  }, [editing, inputRef])
 
-    const save = () => {
-      onMessage({
-        path,
-        action: 'edit',
-        value: newValue,
-        editing: false,
-      })
-    }
+  const sendAction = (data = {}) => {}
 
-    const cancel = () => {
-      setNewInputValue(inputValue(value))
-      onMessage({
-        path,
-        action: 'edit',
-        editing: false,
-      })
-    }
-
-    const handleKeyPress = e => {
-      if (e.key === 'Enter' && e.shiftKey === false) {
-        e.preventDefault()
-        save()
-      } else if (e.key === 'Esc' || e.key === 'Escape') {
-        e.preventDefault()
-        cancel()
-      }
-    }
-
-    const onBlur = () => {
-      setNewInputValue(inputValue(newValue))
-      save()
-    }
-
-    let typeClass
-    if (typeof newValue === 'string') {
-      typeClass = parsed ? 'stringValue' : 'string'
-    } else if (typeof newValue === 'number') {
-      typeClass = 'number'
-    } else {
-      typeClass = 'value'
-    }
-
-    return (
-      <div className={typeClass}>
-        {!editingJson && (autoEdit || editing) ? (
-          <Textarea
-            value={newInputValue}
-            onChange={({ target: { value } }) => setNewInputValue(value)}
-            onKeyDown={handleKeyPress}
-            onBlur={onBlur}
-            wrap="off"
-          />
-        ) : (
-          <span>{value}</span>
-        )}
-
-        <style jsx>{`
-          div {
-            width: 100%;
-          }
-          div :global(textarea) {
-            background: none;
-            border: none;
-            resize: none;
-            outline: none;
-            width: 100%;
-            font-size: inherit;
-          }
-          div.number span,
-          div.number :global(textarea) {
-            color: ${theme.numberColor};
-          }
-          div.value span,
-          div.value :global(textarea) {
-            color: ${theme.valueColor};
-          }
-        `}</style>
-      </div>
-    )
+  let newValue, parsed
+  try {
+    newValue = JSON.parse(newInputValue)
+  } catch (e) {
+    newValue = newInputValue
   }
-)
+
+  const save = () => {
+    onMessage({
+      path,
+      action: 'edit',
+      value: newValue,
+      editing: false,
+    })
+  }
+
+  const cancel = () => {
+    setNewInputValue(inputValue(value))
+    onMessage({
+      path,
+      action: 'edit',
+      editing: false,
+    })
+  }
+
+  const handleKeyPress = e => {
+    if (e.key === 'Enter' && e.shiftKey === false) {
+      e.preventDefault()
+      save()
+    } else if (e.key === 'Esc' || e.key === 'Escape') {
+      e.preventDefault()
+      cancel()
+    }
+  }
+
+  const onBlur = () => {
+    setNewInputValue(inputValue(newValue))
+    save()
+  }
+
+  let typeClass
+  if (typeof newValue === 'string') {
+    typeClass = parsed ? 'stringValue' : 'string'
+  } else if (typeof newValue === 'number') {
+    typeClass = 'number'
+  } else {
+    typeClass = 'value'
+  }
+
+  return (
+    <div className={typeClass}>
+      {!editingJson && (autoEdit || editing) ? (
+        <Textarea
+          ref={inputRef}
+          value={newInputValue}
+          onChange={({ target: { value } }) => setNewInputValue(value)}
+          onKeyDown={handleKeyPress}
+          onBlur={onBlur}
+          wrap="off"
+        />
+      ) : (
+        <span>{value}</span>
+      )}
+
+      <style jsx>{`
+        div {
+          width: 100%;
+        }
+        div :global(textarea) {
+          background: none;
+          border: none;
+          resize: none;
+          outline: none;
+          width: 100%;
+          font-size: inherit;
+        }
+        div.number span,
+        div.number :global(textarea) {
+          color: ${theme.numberColor};
+        }
+        div.value span,
+        div.value :global(textarea) {
+          color: ${theme.valueColor};
+        }
+      `}</style>
+    </div>
+  )
+}
 
 export default ({
   name,
@@ -162,7 +170,21 @@ export default ({
   } else {
     if (typeof value === 'string') {
       if (detectUrl(value)) {
-        return <Link url={value} onPickId={onPickId} theme={theme} />
+        const handleEdit = () => {
+          onMessage({
+            path,
+            action: 'edit',
+            editing: true,
+          })
+        }
+        return (
+          <Link
+            url={value}
+            onEdit={handleEdit}
+            onPickId={onPickId}
+            theme={theme}
+          />
+        )
       } else {
         return (
           <InlineValue

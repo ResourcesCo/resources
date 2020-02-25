@@ -1,7 +1,7 @@
 export default function Nav({ onSelectExample, theme }) {
   return (
     <div className="nav">
-      <img src="static/touch-icon.png" className="logo" />
+      <img src="/images/touch-icon.png" className="logo" />
       <h1>Resources.co</h1>
       <div className="content">
         <select

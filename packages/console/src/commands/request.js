@@ -29,7 +29,6 @@ export default {
           formData.action === 'runAction' &&
           formData.actionName === 'send'
         ) {
-          console.log({ message })
           const timeout = 5000
           const controller = new AbortController()
           setTimeout(() => controller.abort(), timeout)
@@ -41,7 +40,6 @@ export default {
             body: JSON.stringify(request.body),
           })
           const data = await response.json()
-          console.log({ response })
           return {
             type: 'message-command',
             action: 'set',

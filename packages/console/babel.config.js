@@ -49,5 +49,15 @@ module.exports = {
         ['@babel/plugin-transform-runtime', { useESModules: true }],
       ],
     },
+    development: {
+      plugins: [
+        'module-resolver',
+        {
+          alias: {
+            vtv: '../vtv/src',
+          },
+        },
+      ],
+    },
   },
 }

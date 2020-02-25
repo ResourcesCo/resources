@@ -9,6 +9,7 @@ import pick from 'lodash/pick'
 import pickBy from 'lodash/pickBy'
 import identity from 'lodash/identity'
 import getNested from 'lodash/get'
+import produce from 'immer'
 
 class Chat extends PureComponent {
   state = {
@@ -32,6 +33,30 @@ class Chat extends PureComponent {
     return m.type === 'input' ? { ...m, loading } : m
   }
 
+  removeTemporaryCommandState(command) {
+    if (command.type === 'tree') {
+      return produce(command, draft => {
+        const removeTemporaryKeys = value => {
+          if (
+            value !== null &&
+            typeof value === 'object' &&
+            !Array.isArray(value)
+          ) {
+            delete value['_editing']
+            for (let key of Object.keys(value)) {
+              if (key.startsWith('__') || !key.startsWith('_')) {
+                removeTemporaryKeys(value[key])
+              }
+            }
+          }
+        }
+        removeTemporaryKeys(draft.state)
+      })
+    } else {
+      return command
+    }
+  }
+
   async componentDidMount() {
     const loadMessages = async () => {
       const { store } = this.props
@@ -39,6 +64,7 @@ class Chat extends PureComponent {
       const commands = { ...store.commands }
       for (let key of Object.keys(commands)) {
         commands[key] = this.setCommandLoading(commands[key], false)
+        commands[key] = this.removeTemporaryCommandState(commands[key])
       }
       this.setState({
         commands,
@@ -217,14 +243,20 @@ class Chat extends PureComponent {
   }
 
   handleSubmitForm = async ({ commandId, formData, message }) => {
+    const { store } = this.props
     const { commands } = this.state
     const parentMessage = (
       getNested(commands, [commandId, 'messages']) || []
     ).filter(message => message.type === 'tree')[0]
-    await runCommand(message, parseCommand(message), this.addMessages, {
+    const parsed = parseCommand(message)
+    await runCommand({
+      message,
+      parsed,
+      onMessagesCreated: this.addMessages,
       formData,
       parentCommandId: commandId,
       parentMessage,
+      store,
     })
   }
 
