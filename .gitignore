@@ -30,3 +30,5 @@ yarn-error.log*
 /packages/*/build
 /packages/*/dist
 /packages/*/.next
+
+/packages/desktop-app/renderer/packages

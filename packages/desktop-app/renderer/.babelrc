@@ -1,0 +1,14 @@
+{
+  "presets": ["next/babel"],
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "alias": {
+          "@resources/console": "./renderer/packages/console/src",
+          "vtv": "./renderer/packages/vtv/src"
+        }
+      }
+    ]
+  ]
+}

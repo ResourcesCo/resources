@@ -1,0 +1,35 @@
+{
+  "name": "ResourcesCo",
+  "description": "Resources.co Desktop App",
+  "version": "1.0.0-canary.0",
+  "author": "Developer Resources Inc. <support@resources.co>",
+  "main": "app/background.js",
+  "private": true,
+  "scripts": {
+    "dev": "nextron",
+    "build": "nextron build",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "@resources/console": "^1.0.0-canary.0",
+    "@zeit/next-css": "^1.0.1",
+    "electron-serve": "^0.4.1",
+    "electron-store": "^5.1.0",
+    "react-loader-spinner": "^3.1.5",
+    "vtv": "^1.0.0-canary.14"
+  },
+  "devDependencies": {
+    "babel-plugin-module-resolver": "^4.0.0",
+    "electron": "^7.1.9",
+    "electron-builder": "^22.2.0",
+    "electron-notarize": "^0.2.1",
+    "extra-watch-webpack-plugin": "^1.0.3",
+    "next": "^9.1.7",
+    "nextron": "^5.14.4",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "build": {
+    "afterSign": "scripts/notarize.js"
+  }
+}

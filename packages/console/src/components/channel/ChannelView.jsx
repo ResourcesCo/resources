@@ -1,4 +1,4 @@
-import { PureComponent } from 'react'
+import React, { PureComponent } from 'react'
 import runCommand from '../../command-runner'
 import { parseCommand, updateTree } from 'vtv'
 import Message from '../messages/Message'
@@ -12,15 +12,14 @@ import getNested from 'lodash/get'
 import produce from 'immer'
 
 class Chat extends PureComponent {
-  state = {
-    commandIds: [],
-    commands: {},
-    text: '',
-    lastCommandId: null,
-  }
-
   constructor(props) {
     super(props)
+    this.state = {
+      commandIds: [],
+      commands: {},
+      text: '',
+      lastCommandId: null,
+    }
     this.scrollRef = React.createRef()
     this.textareaRef = React.createRef()
   }
@@ -84,7 +83,7 @@ class Chat extends PureComponent {
 
   componentWillUnmount() {}
 
-  addMessages = newMessages => {
+  addMessages = (newMessages) => {
     const { store } = this.props
     let { commandIds, commands } = this.state
     let clear = false
@@ -260,7 +259,7 @@ class Chat extends PureComponent {
     })
   }
 
-  handleSelectExample = example => {
+  handleSelectExample = (example) => {
     this.setState({ text: example })
     if (this.textareaRef.current) {
       this.textareaRef.current.focus()
