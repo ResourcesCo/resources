@@ -1,5 +1,5 @@
-appId: co.resources.Resources
-productName: Resources
+appId: co.resources.ResourcesCo
+productName: Resources.co
 copyright: Copyright © 2020 Developer Resources Inc.
 directories:
   output: dist
@@ -16,3 +16,5 @@ mac:
   entitlements: build/entitlements.mac.plist
   entitlementsInherit: build/entitlements.mac.plist
   icon: build/icon.icns
+  target:
+    - zip
