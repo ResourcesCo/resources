@@ -1,4 +1,4 @@
-appId: co.resources.ResourcesCo
+appId: com.benatkin.ResourcesCo
 productName: Resources.co
 copyright: Copyright © 2020 Developer Resources Inc.
 directories:
@@ -18,3 +18,4 @@ mac:
   icon: build/icon.icns
   target:
     - zip
+  minimumSystemVersion: 10.13.0

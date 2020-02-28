@@ -18,6 +18,10 @@ module.exports = withCSS({
       })
     )
 
+    if (process.env.ELECTRON === 'true') {
+      config.target = 'electron-renderer'
+    }
+
     return config
   },
 })

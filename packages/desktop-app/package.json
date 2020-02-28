@@ -13,6 +13,7 @@
   "dependencies": {
     "@resources/console": "^1.0.0-canary.0",
     "@zeit/next-css": "^1.0.1",
+    "electron-rebuild": "^1.10.0",
     "electron-serve": "^0.4.1",
     "electron-store": "^5.1.0",
     "react-loader-spinner": "^3.1.5",
@@ -30,6 +31,7 @@
     "react-dom": "^16.12.0"
   },
   "build": {
+    "appId": "com.benatkin.ResourcesCo",
     "afterSign": "scripts/notarize.js"
   }
 }
