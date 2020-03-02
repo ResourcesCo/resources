@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import runCommand from '../../command-runner'
 import { parseCommand, updateTree } from 'vtv'
 import Message from '../messages/Message'
+import DefaultNav from './Nav'
 import ChannelInput from './ChannelInput'
 import insertTextAtCursor from 'insert-text-at-cursor'
 import { Manager } from 'react-popper'
@@ -83,7 +84,7 @@ class Chat extends PureComponent {
 
   componentWillUnmount() {}
 
-  addMessages = (newMessages) => {
+  addMessages = newMessages => {
     const { store } = this.props
     let { commandIds, commands } = this.state
     let clear = false
@@ -259,7 +260,7 @@ class Chat extends PureComponent {
     })
   }
 
-  handleSelectExample = (example) => {
+  handleSelectExample = example => {
     this.setState({ text: example })
     if (this.textareaRef.current) {
       this.textareaRef.current.focus()
@@ -267,7 +268,8 @@ class Chat extends PureComponent {
   }
 
   render() {
-    const { onFocusChange, theme, navComponent: Nav } = this.props
+    const { onFocusChange, theme } = this.props
+    const Nav = this.props.navComponent || DefaultNav
     const { text, commandIds, commands, lastCommandId } = this.state
     const scrollRef = this.scrollRef
     const messages = []
@@ -281,7 +283,7 @@ class Chat extends PureComponent {
     return (
       <div className="chat">
         <div className="nav">
-          {Nav && <Nav onSelectExample={this.handleSelectExample} />}
+          <Nav onSelectExample={this.handleSelectExample} theme={theme} />
         </div>
         <div className="messages-scroll">
           <div className="messages">

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Manager, Reference, Popper } from 'react-popper'
 import Textarea from '../generic/Textarea'
 import StringView from '../value/StringView'

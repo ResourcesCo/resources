@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { getState } from '../model/state'
 import { hasChildren, isBasicType } from '../model/analyze'
 import useClickOutside from '../util/useClickOutside'

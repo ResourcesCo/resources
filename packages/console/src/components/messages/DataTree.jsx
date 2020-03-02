@@ -1,6 +1,6 @@
+import React, { PureComponent } from 'react'
 import { faCaretRight, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { PureComponent } from 'react'
 
 class ExpandButton extends PureComponent {
   render() {

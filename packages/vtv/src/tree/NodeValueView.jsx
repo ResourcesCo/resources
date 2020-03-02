@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import Textarea from '../generic/Textarea'
 import { detectUrl } from '../model/analyze'
 import { getState } from '../model/state'

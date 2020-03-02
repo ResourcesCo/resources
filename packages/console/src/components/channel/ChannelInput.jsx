@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
 import TextareaAutosize from 'react-autosize-textarea'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

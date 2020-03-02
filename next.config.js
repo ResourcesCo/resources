@@ -14,9 +14,13 @@ module.exports = withCSS({
 
     config.plugins.push(
       new ExtraWatchWebpackPlugin({
-        dirs: ['packages/vtv/src', 'packages/console/src'],
+        dirs: ['node_modules/vtv/src', 'node_modules/@resources/console/src'],
       })
     )
+
+    if (process.env.ELECTRON === 'true') {
+      config.target = 'electron-renderer'
+    }
 
     return config
   },

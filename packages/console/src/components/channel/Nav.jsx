@@ -1,3 +1,5 @@
+import React from 'react'
+
 export default function Nav({ onSelectExample, theme }) {
   return (
     <div className="nav">
@@ -17,6 +19,9 @@ export default function Nav({ onSelectExample, theme }) {
         </select>
       </div>
       <style jsx>{`
+        div.nav {
+          background-color: ${theme.background};
+        }
         div.nav {
           display: flex;
           align-items: center;

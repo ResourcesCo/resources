@@ -1,3 +1,4 @@
+import React from 'react'
 import { getCollectionPaths, joinPath, getAtPath } from '../model/analyze'
 import NodeValueView from '../tree/NodeValueView'
 import NodeNameView from '../tree/NodeNameView'
