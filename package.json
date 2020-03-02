@@ -14,7 +14,7 @@
     "publish-vtv-pre": "cd packages/vtv && yarn version --prerelease --pre-id=canary --no-git-tag-version && yarn publish --no-git-tag-version",
     "packages:link": "yarn packages:link:console && yarn packages:link:root",
     "packages:link:console": "cd packages/console/node_modules && rm -rf vtv && ln -s ../../vtv vtv",
-    "packages:link:root": "cd node_modules && rm -rf vtv && ln -s ../packages/vtv vtv && cd @resources && rm -rf console && ln -s ../../packages/console console",
+    "packages:link:root": "cd node_modules && rm -rf vtv && ln -s ../packages/vtv vtv && cd ../@resources && rm -rf console && ln -s ../../packages/console console",
     "packages:link:desktop": "cd packages/desktop-app/node_modules && rm -rf vtv && ln -s ../../vtv vtv && cd @resources && rm -rf console && ln -s ../../../console console",
     "packages:link:reset": "rm node_modules/vtv node_modules/@resources/console packages/console/node_modules/vtv && yarn install",
     "packages:copy-all-for-desktop": "rm -rf packages/desktop-app/renderer/packages && mkdir -p packages/desktop-app/renderer/packages && cp -a packages/vtv packages/desktop-app/renderer/packages/vtv && cp -a packages/console packages/desktop-app/renderer/packages/console",
