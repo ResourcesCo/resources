@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import runCommand from '../../command-runner'
 import { parseCommand, updateTree } from 'vtv'
 import Message from '../messages/Message'
-import Nav from './Nav'
+import DefaultNav from './Nav'
 import ChannelInput from './ChannelInput'
 import insertTextAtCursor from 'insert-text-at-cursor'
 import { Manager } from 'react-popper'
@@ -269,6 +269,7 @@ class Chat extends PureComponent {
 
   render() {
     const { onFocusChange, theme } = this.props
+    const Nav = this.props.navComponent || DefaultNav
     const { text, commandIds, commands, lastCommandId } = this.state
     const scrollRef = this.scrollRef
     const messages = []
