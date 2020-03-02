@@ -1,6 +1,6 @@
 {
   "name": "vtv",
-  "version": "1.0.0-canary.14",
+  "version": "1.0.0-canary.15",
   "description": "versatile tree view",
   "main": "./src/index.js",
   "module": "./src/index.js",

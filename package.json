@@ -1,6 +1,6 @@
 {
   "name": "resources-co",
-  "version": "1.0.0-canary.14",
+  "version": "1.0.0-canary.15",
   "license": "Apache-2.0",
   "scripts": {
     "dev": "next -p 3333",
@@ -12,16 +12,17 @@
     "vtv:install": "cd packages/vtv && yarn install",
     "console:install": "cd packages/console && yarn install",
     "publish-vtv-pre": "cd packages/vtv && yarn version --prerelease --pre-id=canary --no-git-tag-version && yarn publish --no-git-tag-version",
+    "publish-console-pre": "cd packages/console && yarn version --prerelease --pre-id=canary --no-git-tag-version && yarn publish --no-git-tag-version",
     "packages:link": "yarn packages:link:console && yarn packages:link:root",
     "packages:link:console": "cd packages/console/node_modules && rm -rf vtv && ln -s ../../vtv vtv",
-    "packages:link:root": "cd node_modules && rm -rf vtv && ln -s ../packages/vtv vtv && cd ../@resources && rm -rf console && ln -s ../../packages/console console",
+    "packages:link:root": "cd node_modules && rm -rf vtv && ln -s ../packages/vtv vtv && mkdir -p @resources && cd @resources && rm -rf console && ln -s ../../packages/console console",
     "packages:link:desktop": "cd packages/desktop-app/node_modules && rm -rf vtv && ln -s ../../vtv vtv && cd @resources && rm -rf console && ln -s ../../../console console",
     "packages:link:reset": "rm node_modules/vtv node_modules/@resources/console packages/console/node_modules/vtv && yarn install",
     "packages:copy-all-for-desktop": "rm -rf packages/desktop-app/renderer/packages && mkdir -p packages/desktop-app/renderer/packages && cp -a packages/vtv packages/desktop-app/renderer/packages/vtv && cp -a packages/console packages/desktop-app/renderer/packages/console",
     "packages:copy-src-for-desktop": "rm -rf packages/desktop-app/renderer/packages/vtv/src && mkdir -p packages/desktop-app/renderer/packages/vtv && cp -r packages/vtv/src packages/desktop-app/renderer/packages/vtv/src && rm -rf packages/desktop-app/renderer/packages/console/src && mkdir -p packages/desktop-app/renderer/packages/console && cp -r packages/console/src packages/desktop-app/renderer/packages/console/src"
   },
   "dependencies": {
-    "@resources/console": "1.0.0-canary.0",
+    "@resources/console": "1.0.0-canary.4",
     "@zeit/next-css": "^1.0.1",
     "immer": "^5.3.6",
     "lodash": "^4.17.15",
@@ -31,7 +32,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-loader-spinner": "^3.1.5",
-    "vtv": "^1.0.0-canary.14"
+    "vtv": "^1.0.0-canary.15"
   },
   "prettier": {
     "semi": false,

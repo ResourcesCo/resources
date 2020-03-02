@@ -913,10 +913,10 @@
   dependencies:
     prop-types "^15.5.10"
 
-"@resources/console@1.0.0-canary.0":
-  version "1.0.0-canary.0"
-  resolved "https://registry.yarnpkg.com/@resources/console/-/console-1.0.0-canary.0.tgz#8f7ac0942cb0a683daa6317c6011afe32530fc0d"
-  integrity sha512-T07hKs8VjRxfCw3ucG30lJk+yHIGNHRCGHwoS9c02RXxCXh+xhTjflRQziAKh0LMZYOBap+lsgIvRxTyIkH3Rw==
+"@resources/console@1.0.0-canary.4":
+  version "1.0.0-canary.4"
+  resolved "https://registry.yarnpkg.com/@resources/console/-/console-1.0.0-canary.4.tgz#607ac789b48054eac782ab7389274643aef80bd4"
+  integrity sha512-oGOwsVl56Xp1ZZ581ZkcYbd2MF0jcyab71HhHz/UE71KKXQJmv281mdRlMXBEx2wyabksC9/cW9zWVrk//ezSA==
   dependencies:
     "@babel/runtime" "^7.4.4"
     "@fortawesome/fontawesome-svg-core" "^1.2.20"
@@ -924,6 +924,7 @@
     "@fortawesome/react-fontawesome" "^0.1.8"
     clsx "^1.0.4"
     immer "^5.3.6"
+    insert-text-at-cursor "^0.3.0"
     j2ref "^1.0.0"
     lodash "^4.17.15"
     react-autosize-textarea "^7.0.0"
@@ -3078,6 +3079,11 @@ inherits@2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
   integrity sha1-Yzwsg+PaQqUC9SRmAiSA9CCCYd4=
+
+insert-text-at-cursor@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/insert-text-at-cursor/-/insert-text-at-cursor-0.3.0.tgz#1819607680ec1570618347c4cd475e791faa25da"
+  integrity sha512-/nPtyeX9xPUvxZf+r0518B7uqNKlP+LqNJqSiXFEaa2T71rWIwTVXGH7hB9xO/EVdwa5/pWlFCPwShOW81XIxQ==
 
 invariant@^2.2.2:
   version "2.2.4"
@@ -6024,6 +6030,24 @@ vtv@^1.0.0-canary.14:
   version "1.0.0-canary.14"
   resolved "https://registry.yarnpkg.com/vtv/-/vtv-1.0.0-canary.14.tgz#17e0646fd4af304d0c7e4394707421232bc049f2"
   integrity sha512-jB9+o62s+D8KvJieeCwTpTN8j8XmbUneewa2ggGwVeAiw/OArAusWE5MuG9Y6S5doBoireKiE64eHKLR2JloRg==
+  dependencies:
+    "@babel/runtime" "^7.4.4"
+    "@fortawesome/fontawesome-svg-core" "^1.2.20"
+    "@fortawesome/free-solid-svg-icons" "^5.12.0"
+    "@fortawesome/react-fontawesome" "^0.1.8"
+    clsx "^1.0.4"
+    immer "^5.3.6"
+    j2ref "^1.0.0"
+    lodash "^4.17.15"
+    prop-types "^15.7.2"
+    react-autosize-textarea "^7.0.0"
+    react-is "^16.8.0"
+    react-popper "^1.3.7"
+
+vtv@^1.0.0-canary.15:
+  version "1.0.0-canary.15"
+  resolved "https://registry.yarnpkg.com/vtv/-/vtv-1.0.0-canary.15.tgz#2e534e7889058190bc28ade5005cb01cc5114fbb"
+  integrity sha512-jCTJAYNQVElpn+R4wDEQX+5mBL/eSkJajg35AQH0S7pBEtix6zKOsw+VDDRbp+Y3B8iD+TeuL3eBmzz7V0053g==
   dependencies:
     "@babel/runtime" "^7.4.4"
     "@fortawesome/fontawesome-svg-core" "^1.2.20"
