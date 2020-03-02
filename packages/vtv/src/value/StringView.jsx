@@ -1,3 +1,5 @@
+import React from 'react'
+
 export default ({ value, maxLength }) => {
   if (/\n|"|^$/.test(value)) {
     if (value.length > maxLength - 10) {

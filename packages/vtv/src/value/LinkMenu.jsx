@@ -1,3 +1,4 @@
+import React from 'react'
 import Menu, { MenuItem } from '../generic/Menu'
 
 export default ({ onEdit, onPickId, url, theme, onClose }) => {

@@ -1,4 +1,4 @@
-import { PureComponent } from 'react'
+import React, { PureComponent } from 'react'
 import TextareaAutosize from 'react-autosize-textarea'
 
 const Textarea = React.forwardRef(({ children, ...props }, ref) => {

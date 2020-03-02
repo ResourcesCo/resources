@@ -1,3 +1,5 @@
+import React from 'react'
+
 export default ({ primary = false, children, theme, ...props }) => (
   <button
     className={`${primary ? 'primary' : ''} ${primary ? 'primary' : ''}`}

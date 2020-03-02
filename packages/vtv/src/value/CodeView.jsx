@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Textarea from '../generic/Textarea'
 import ActionButton from '../generic/ActionButton'
 

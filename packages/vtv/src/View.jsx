@@ -1,3 +1,4 @@
+import React from 'react'
 import { isObject } from './model/analyze'
 import { updateTree } from './model/state'
 import { getTheme } from './themes'

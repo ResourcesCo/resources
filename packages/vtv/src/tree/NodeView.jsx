@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Manager, Reference, Popper } from 'react-popper'
 import getNested from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'

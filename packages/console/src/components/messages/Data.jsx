@@ -1,4 +1,4 @@
-import { PureComponent } from 'react'
+import React, { PureComponent } from 'react'
 
 class Data extends PureComponent {
   state = {
