@@ -1,9 +1,9 @@
 import getNested from 'lodash/get'
 import produce from 'immer'
+import { getStateKey, draftValue, draftState } from './util'
+import { rename } from './actions'
 
-export function getStateKey(key) {
-  return typeof key === 'string' ? (key.startsWith('_') ? `_${key}` : key) : key
-}
+export { getStateKey, draftValue, draftState }
 
 const updateNestedState = (state, path = [], pathState, options = {}) => {
   if (path.length === 0) {
@@ -65,14 +65,6 @@ const updateNestedValue = (value, path, pathValueOrFn) => {
   }
 }
 
-export const draftValue = (draft, path) => {
-  let draftValue = draft.value
-  for (let key of path) {
-    draftValue = draftValue[key]
-  }
-  return draftValue
-}
-
 export const getDraftUpdate = (draft, path) => {
   if (path.length === 0) {
     return [draft, 'value']
@@ -81,16 +73,6 @@ export const getDraftUpdate = (draft, path) => {
     const parentPath = path.slice(0, lastIndex)
     return [draftValue(draft, parentPath), path[lastIndex]]
   }
-}
-
-export const draftState = (draft, path) => {
-  let draftState = draft.state
-  for (let key of path) {
-    const stateKey = getStateKey(key)
-    draftState[stateKey] = draftState[stateKey] || {}
-    draftState = draftState[stateKey]
-  }
-  return draftState
 }
 
 export const updateTree = (treeData, treeUpdate) => {
@@ -106,39 +88,7 @@ export const updateTree = (treeData, treeUpdate) => {
         delete rootDraftState['_showOnly']
       })
     } else if (treeUpdate.action === 'rename') {
-      return produce(treeData, draft => {
-        draftState(draft, treeUpdate.path)._editingName = treeUpdate.editing
-        if (typeof treeUpdate.value !== 'undefined') {
-          if (treeUpdate.path.length === 0) {
-            draft.name = treeUpdate.value
-          } else if (
-            treeUpdate.path[treeUpdate.path.length - 1] !== treeUpdate.value
-          ) {
-            const lastIndex = treeUpdate.path.length - 1
-            const parentPath = treeUpdate.path.slice(0, lastIndex)
-            const key = treeUpdate.path[lastIndex]
-            const draftParentValue = draftValue(draft, parentPath)
-
-            const keys = Object.keys(draftParentValue)
-            const keysToAppend = keys.slice(keys.indexOf(key) + 1)
-            const valuesToAppend = []
-            for (let key of keysToAppend) {
-              valuesToAppend.push(draftParentValue[key])
-              delete draftParentValue[key]
-            }
-            draftParentValue[treeUpdate.value] = draftParentValue[key]
-            delete draftParentValue[key]
-            for (let i = 0; i < keysToAppend.length; i++) {
-              draftParentValue[keysToAppend[i]] = valuesToAppend[i]
-            }
-
-            const draftParentState = draftState(draft, parentPath)
-            draftParentState[getStateKey(treeUpdate.value)] =
-              draftParentState[getStateKey(key)]
-            delete draftParentState[getStateKey(key)]
-          }
-        }
-      })
+      return rename(treeData, treeUpdate)
     } else if (treeUpdate.action === 'edit') {
       return produce(treeData, draft => {
         draftState(draft, treeUpdate.path)._editing = treeUpdate.editing
@@ -326,4 +276,27 @@ export const getNestedState = (state, path) => {
     const [key, ...rest] = path
     return getNestedState(getChildState(state, key), rest)
   }
+}
+
+export const removeTemporaryState = tree => {
+  return produce(tree, draft => {
+    const removeTemporaryKeys = value => {
+      if (
+        value !== null &&
+        typeof value === 'object' &&
+        !Array.isArray(value)
+      ) {
+        for (let temporaryKey of temporaryKeys) {
+          delete value[temporaryKey]
+        }
+
+        for (let key of Object.keys(value)) {
+          if (key.startsWith('__') || !key.startsWith('_')) {
+            removeTemporaryKeys(value[key])
+          }
+        }
+      }
+    }
+    removeTemporaryKeys(draft.state)
+  })
 }
