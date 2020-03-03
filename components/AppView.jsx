@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Head from './Head'
 import Nav from './Nav'
 import { ChannelView, getTheme } from '@resources/console'
@@ -16,26 +16,32 @@ const infoForDevices = {
 }
 
 const AppView = ({ popup, selectedTheme, onThemeChange, store }) => {
+  const mounted = useRef()
   const [device, setDevice] = useState('default')
   const [keyboardOpen, setKeyboardOpen] = useState(false)
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const iOS =
-        /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream
-      if (iOS) {
-        setDevice('ios')
+    if (mounted.current) {
+      if (typeof window !== 'undefined') {
+        const iOS =
+          /iPad|iPhone|iPod/.test(window.navigator.userAgent) &&
+          !window.MSStream
+        if (iOS) {
+          setDevice('ios')
+        }
       }
     }
   })
 
   const handleFocusChange = focus => {
-    setKeyboardOpen(focus)
-    setTimeout(() => {
-      if (device === 'ios' && typeof window !== 'undefined') {
-        window.document.body.scrollTop = 0
-      }
-    }, 30)
+    if (mounted.current) {
+      setKeyboardOpen(focus)
+      setTimeout(() => {
+        if (device === 'ios' && typeof window !== 'undefined') {
+          window.document.body.scrollTop = 0
+        }
+      }, 30)
+    }
   }
 
   const theme = getTheme(selectedTheme)
@@ -44,8 +50,8 @@ const AppView = ({ popup, selectedTheme, onThemeChange, store }) => {
     deviceInfo.toolbarHeight + (keyboardOpen ? deviceInfo.keyboardHeight : 0)
 
   return (
-    <div>
-      <Head title="Home" />
+    <div ref={mounted}>
+      <Head title="Resources.co" />
       <ChannelView
         navComponent={Nav}
         onFocusChange={handleFocusChange}

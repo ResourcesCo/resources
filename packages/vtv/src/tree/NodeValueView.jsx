@@ -6,8 +6,10 @@ import Link from '../value/Link'
 import StringView from '../value/StringView'
 import CollectionSummary from '../value/CollectionSummary'
 
-const inputValue = value => {
-  if (typeof value === 'string') {
+const inputValue = (value, isNew = false) => {
+  if (isNew && value === null) {
+    return ''
+  } else if (typeof value === 'string') {
     if (/^\s*$/.test(value) || /\n|\t/.test(value)) {
       return JSON.stringify(value)
     }
@@ -30,11 +32,12 @@ const InlineValue = ({
   onMessage,
   editing,
   editingJson,
+  isNew,
   autoEdit,
   theme,
 }) => {
   const inputRef = useRef()
-  const [newInputValue, setNewInputValue] = useState(inputValue(value))
+  const [newInputValue, setNewInputValue] = useState(inputValue(value, isNew))
   useEffect(() => {
     setNewInputValue(inputValue(value))
   }, [editingJson])
@@ -50,12 +53,17 @@ const InlineValue = ({
   }, [editing, inputRef])
 
   const sendAction = (data = {}) => {}
-
-  let newValue, parsed
-  try {
-    newValue = JSON.parse(newInputValue)
-  } catch (e) {
-    newValue = newInputValue
+  let newValue
+  let parsed = false
+  if (newInputValue === '') {
+    newValue = null
+  } else {
+    try {
+      newValue = JSON.parse(newInputValue)
+      parsed = true
+    } catch (e) {
+      newValue = newInputValue
+    }
   }
 
   const save = () => {
@@ -152,7 +160,11 @@ export default ({
   autoEdit = true,
   theme,
 }) => {
-  const { _editing: editing, _editingJson: editingJson } = getState(state)
+  const {
+    _editing: editing,
+    _editingJson: editingJson,
+    _isNew: isNew,
+  } = getState(state)
   if (editing) {
     return (
       <InlineValue
@@ -168,38 +180,22 @@ export default ({
       />
     )
   } else {
-    if (typeof value === 'string') {
-      if (detectUrl(value)) {
-        const handleEdit = () => {
-          onMessage({
-            path,
-            action: 'edit',
-            editing: true,
-          })
-        }
-        return (
-          <Link
-            url={value}
-            onEdit={handleEdit}
-            onPickId={onPickId}
-            theme={theme}
-          />
-        )
-      } else {
-        return (
-          <InlineValue
-            name={name}
-            value={value}
-            state={state}
-            path={path}
-            onMessage={onMessage}
-            editing={editing}
-            editingJson={editingJson}
-            autoEdit={autoEdit}
-            theme={theme}
-          />
-        )
+    if (typeof value === 'string' && detectUrl(value)) {
+      const handleEdit = () => {
+        onMessage({
+          path,
+          action: 'edit',
+          editing: true,
+        })
       }
+      return (
+        <Link
+          url={value}
+          onEdit={handleEdit}
+          onPickId={onPickId}
+          theme={theme}
+        />
+      )
     } else if (typeof value === 'object' && value !== null) {
       return (
         <CollectionSummary
@@ -218,6 +214,7 @@ export default ({
           onMessage={onMessage}
           editing={editing}
           editingJson={editingJson}
+          isNew={isNew}
           autoEdit={autoEdit}
           theme={theme}
         />

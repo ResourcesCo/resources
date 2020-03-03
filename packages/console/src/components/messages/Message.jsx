@@ -9,12 +9,6 @@ import { faLink } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default ({ type, code, text, url, content, theme, ...props }) => {
-  const [loaded, setLoaded] = useState(false)
-  const handleLoaded = () => {
-    const { onLoad } = props
-    setLoaded(true)
-    onLoad()
-  }
   if (type === 'tree') {
     const {
       name,
@@ -133,14 +127,8 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
       </div>
     )
   } else if (type === 'image') {
-    const imageStyle = loaded ? { maxHeight: '50vh' } : { height: '50vh' }
-    return (
-      <img
-        src={url}
-        style={{ ...imageStyle, margin: 5 }}
-        onLoad={() => setTimeout(handleLoaded, 10)}
-      />
-    )
+    const imageStyle = { maxHeight: '50vh' }
+    return <img src={url} style={{ ...imageStyle, margin: 5 }} />
   } else if (type === 'data') {
     const { data, keyField, title, link, pickPrefix, onPickId } = props
     return (

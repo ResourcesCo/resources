@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import runCommand from '../../command-runner'
-import { parseCommand, updateTree } from 'vtv'
+import { parseCommand, updateTree, removeTemporaryState } from 'vtv'
 import Message from '../messages/Message'
 import DefaultNav from './Nav'
 import ChannelInput from './ChannelInput'
@@ -11,6 +11,74 @@ import pickBy from 'lodash/pickBy'
 import identity from 'lodash/identity'
 import getNested from 'lodash/get'
 import produce from 'immer'
+
+class MessageList extends PureComponent {
+  render() {
+    const {
+      commands,
+      commandIds,
+      lastCommandId,
+      scrollRef,
+      onPickId,
+      onSubmitForm,
+      onMessage,
+      theme,
+    } = this.props
+
+    const messages = []
+    for (let commandId of commandIds) {
+      const command = commands[commandId]
+      for (let message of command ? command.messages : []) {
+        messages.push(message)
+      }
+    }
+
+    return (
+      <div className="messages-scroll">
+        <div className="messages">
+          {messages
+            .filter(m => typeof m === 'object' && !!m)
+            .map((message, i) => (
+              <div
+                className={`chat-message ${
+                  message.type === 'input' ? 'input-message' : 'output-message'
+                }`}
+                key={i}
+              >
+                <Message
+                  key={i}
+                  theme={theme}
+                  onPickId={onPickId}
+                  onSubmitForm={onSubmitForm}
+                  onMessage={onMessage}
+                  isNew={message.commandId === lastCommandId}
+                  {...message}
+                />
+              </div>
+            ))}
+          <div className="the-end" ref={scrollRef}></div>
+        </div>
+        <style jsx>{`
+          .messages-scroll {
+            flex-grow: 1;
+            overflow: scroll;
+          }
+
+          .messages {
+            flex: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+          }
+
+          .input-message {
+            color: ${theme.inputColor};
+          }
+        `}</style>
+      </div>
+    )
+  }
+}
 
 class Chat extends PureComponent {
   constructor(props) {
@@ -35,23 +103,7 @@ class Chat extends PureComponent {
 
   removeTemporaryCommandState(command) {
     if (command.type === 'tree') {
-      return produce(command, draft => {
-        const removeTemporaryKeys = value => {
-          if (
-            value !== null &&
-            typeof value === 'object' &&
-            !Array.isArray(value)
-          ) {
-            delete value['_editing']
-            for (let key of Object.keys(value)) {
-              if (key.startsWith('__') || !key.startsWith('_')) {
-                removeTemporaryKeys(value[key])
-              }
-            }
-          }
-        }
-        removeTemporaryKeys(draft.state)
-      })
+      return removeTemporaryState(command)
     } else {
       return command
     }
@@ -267,52 +319,31 @@ class Chat extends PureComponent {
     }
   }
 
+  handleAddMessage = message => {
+    this.addMessages([message])
+  }
+
   render() {
     const { onFocusChange, theme } = this.props
     const Nav = this.props.navComponent || DefaultNav
     const { text, commandIds, commands, lastCommandId } = this.state
     const scrollRef = this.scrollRef
-    const messages = []
-    for (let commandId of commandIds) {
-      const command = commands[commandId]
-      for (let message of command ? command.messages : []) {
-        messages.push(message)
-      }
-    }
 
     return (
       <div className="chat">
         <div className="nav">
           <Nav onSelectExample={this.handleSelectExample} theme={theme} />
         </div>
-        <div className="messages-scroll">
-          <div className="messages">
-            {messages
-              .filter(m => typeof m === 'object' && !!m)
-              .map((message, i) => (
-                <div
-                  className={`chat-message ${
-                    message.type === 'input'
-                      ? 'input-message'
-                      : 'output-message'
-                  }`}
-                  key={i}
-                >
-                  <Message
-                    key={i}
-                    onLoad={this.scrollToBottom}
-                    theme={theme}
-                    onPickId={this.handlePickId}
-                    onSubmitForm={this.handleSubmitForm}
-                    onMessage={message => this.addMessages([message])}
-                    isNew={message.commandId === lastCommandId}
-                    {...message}
-                  />
-                </div>
-              ))}
-            <div className="the-end" ref={scrollRef}></div>
-          </div>
-        </div>
+        <MessageList
+          commands={commands}
+          commandIds={commandIds}
+          lastCommandId={lastCommandId}
+          scrollRef={scrollRef}
+          onPickId={this.handlePickId}
+          onSubmitForm={this.handleSubmitForm}
+          onMessage={this.handleAddMessage}
+          theme={theme}
+        />
         <div className="chat-input">
           <ChannelInput
             textareaRef={this.textareaRef}
@@ -330,27 +361,6 @@ class Chat extends PureComponent {
             justify-content: flex-end;
             height: 100vh;
             flex-grow: 1;
-          }
-
-          .messages-scroll {
-            flex-grow: 1;
-            overflow: scroll;
-          }
-
-          .current-page-docs {
-            color: green;
-            min-height: 300px;
-          }
-
-          .messages {
-            flex: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-          }
-
-          .input-message {
-            color: ${theme.inputColor};
           }
         `}</style>
       </div>
