@@ -20,13 +20,13 @@ export default ({ onClick, expanded, hasChildren, theme }) => (
         margin-top: -2px;
         font-size: 1.5em;
         text-align: left;
-        padding-left: 10px;
+        padding: 0 0 0 10px;
         width: 22px;
         background: none;
         color: ${theme.foreground};
       }
       .expanded button {
-        padding-left: 8px;
+        padding: 0 0 0 8px;
       }
       .invisible {
         visibility: hidden;

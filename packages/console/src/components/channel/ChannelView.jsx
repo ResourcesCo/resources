@@ -368,7 +368,13 @@ class ChannelView extends PureComponent {
             background-color: ${theme.background};
             color: ${theme.foreground};
             font-family: ${theme.fontFamily};
-            padding: 2px;
+            font-size: 80%;
+            padding: 3px;
+          }
+
+          .chat :global(::selection) {
+            color: ${theme.selectionColor};
+            background: ${theme.selectionBackground};
           }
         `}</style>
       </div>

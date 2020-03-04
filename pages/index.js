@@ -3,7 +3,7 @@ import { ChannelView } from '@resources/console'
 export default () => {
   return (
     <>
-      <ChannelView />
+      <ChannelView storageType="localStorage" />
       <style jsx global>{`
         html,
         body,

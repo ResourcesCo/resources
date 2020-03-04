@@ -54,7 +54,6 @@ export default ({
           display: flex;
           flex-direction: row;
           align-items: center;
-          margin: 0 1px 0 3px;
         }
 
         div :global(textarea) {
@@ -76,7 +75,7 @@ export default ({
           background: none;
           outline: none;
           border: none;
-          padding: 0 5px;
+          padding: 0 2px 0 5px;
           font-size: 32px;
           color: ${theme.foreground};
         }
