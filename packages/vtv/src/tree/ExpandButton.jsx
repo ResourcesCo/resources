@@ -2,7 +2,7 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretRight, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ onClick, expanded, hasChildren }) => (
+export default ({ onClick, expanded, hasChildren, theme }) => (
   <div className={expanded ? 'expanded' : ''}>
     <button
       onClick={onClick}
@@ -23,6 +23,7 @@ export default ({ onClick, expanded, hasChildren }) => (
         padding-left: 10px;
         width: 22px;
         background: none;
+        color: ${theme.foreground};
       }
       .expanded button {
         padding-left: 8px;

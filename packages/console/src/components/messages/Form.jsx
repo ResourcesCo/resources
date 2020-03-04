@@ -74,6 +74,7 @@ class Form extends PureComponent {
 
           div :global(textarea) {
             width: 600px;
+            color: ${theme.foreground};
           }
 
           @media only screen and (max-width: 700px) {

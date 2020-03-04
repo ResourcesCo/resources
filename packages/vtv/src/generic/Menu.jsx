@@ -21,6 +21,8 @@ export function MenuItem({ onClick, children, theme }) {
           outline: none;
           width: 100%;
           text-align: left;
+          color: ${theme.foreground};
+          font-family: ${theme.fontFamily};
         }
         button:hover {
           background-color: ${theme.menuHighlight};

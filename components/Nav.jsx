@@ -30,21 +30,24 @@ export default function Nav({ onSelectExample, theme }) {
           Twitter
         </a>
       </div>
+
       <style jsx>{`
         div.nav {
           display: flex;
           align-items: center;
           padding: 5px;
+          background-color: #222227;
         }
         img.logo {
-          padding-left: 4px;
           height: 32px;
+          padding-left: 1px;
         }
         h1 {
           padding-left: 8px;
+          font-size: 22px;
         }
         div.content {
-          padding: 10px;
+          padding: 5px 10px;
           text-align: right;
           flex-grow: 1;
         }

@@ -1,4 +1,10 @@
+export const shared = {
+  fontFamily:
+    '-apple-system, BlinkMacSystemFont, Avenir Next, Avenir, Helvetica, sans-serif',
+}
+
 export const dark = {
+  ...shared,
   base: 'dark',
   foreground: '#eee',
   lightTextColor: '#ccc',
@@ -24,6 +30,7 @@ export const dark = {
 }
 
 export const light = {
+  ...shared,
   base: 'light',
   foreground: '#111',
   lightTextColor: '#444',

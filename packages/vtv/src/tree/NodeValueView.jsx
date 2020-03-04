@@ -136,6 +136,7 @@ const InlineValue = ({
           outline: none;
           width: 100%;
           font-size: inherit;
+          color: ${theme.foreground};
         }
         div.number span,
         div.number :global(textarea) {

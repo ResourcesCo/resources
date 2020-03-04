@@ -54,7 +54,11 @@ class DataNode extends PureComponent {
     return (
       <div key={record[keyField]}>
         <div>
-          <ExpandButton expanded={expanded} onClick={this.toggleExpanded} />
+          <ExpandButton
+            expanded={expanded}
+            onClick={this.toggleExpanded}
+            theme={theme}
+          />
           <button
             className="id"
             onClick={() => onPickId(`${pickPrefix}${record[keyField]}`)}
