@@ -74,8 +74,11 @@ class Data extends PureComponent {
           button {
             cursor: pointer;
             background-color: ${theme.bubble1};
+            color: ${theme.foreground};
+            border: none;
             border-radius: 9999px;
             outline: none;
+            margin: 4px;
           }
 
           button.id {
@@ -88,6 +91,10 @@ class Data extends PureComponent {
 
           div.data {
             marginleft: 5px;
+          }
+
+          a {
+            color: ${theme.linkColor};
           }
         `}</style>
       </div>
