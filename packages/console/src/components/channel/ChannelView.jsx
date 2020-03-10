@@ -1,9 +1,4 @@
 import React, { PureComponent } from 'react'
-import runCommand from '../../command-runner'
-import { parseCommand, updateTree, removeTemporaryState } from 'vtv'
-import Message from '../messages/Message'
-import DefaultNav from './Nav'
-import ChannelInput from './ChannelInput'
 import insertTextAtCursor from 'insert-text-at-cursor'
 import { Manager } from 'react-popper'
 import pick from 'lodash/pick'
@@ -11,6 +6,12 @@ import pickBy from 'lodash/pickBy'
 import identity from 'lodash/identity'
 import getNested from 'lodash/get'
 import produce from 'immer'
+import { parseCommand, updateTree, removeTemporaryState } from 'vtv'
+import { getTheme } from '../../themes'
+import runCommand from '../../command-runner'
+import { MemoryStore, LocalStorageStore } from '../../store'
+import Message from '../messages/Message'
+import ChannelInput from './ChannelInput'
 
 class MessageList extends PureComponent {
   render() {
@@ -80,7 +81,7 @@ class MessageList extends PureComponent {
   }
 }
 
-class Chat extends PureComponent {
+class ChannelView extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
@@ -324,15 +325,17 @@ class Chat extends PureComponent {
   }
 
   render() {
-    const { onFocusChange, theme } = this.props
-    const Nav = this.props.navComponent || DefaultNav
+    const { onFocusChange, navComponent, theme } = this.props
+    const Nav = navComponent
     const { text, commandIds, commands, lastCommandId } = this.state
     const scrollRef = this.scrollRef
 
     return (
       <div className="chat">
         <div className="nav">
-          <Nav onSelectExample={this.handleSelectExample} theme={theme} />
+          {Nav && (
+            <Nav onSelectExample={this.handleSelectExample} theme={theme} />
+          )}
         </div>
         <MessageList
           commands={commands}
@@ -359,8 +362,19 @@ class Chat extends PureComponent {
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            height: 100vh;
+            height: 100%;
+            box-sizing: border-box;
             flex-grow: 1;
+            background-color: ${theme.background};
+            color: ${theme.foreground};
+            font-family: ${theme.fontFamily};
+            font-size: 80%;
+            padding: 3px;
+          }
+
+          .chat :global(::selection) {
+            color: ${theme.selectionColor};
+            background: ${theme.selectionBackground};
           }
         `}</style>
       </div>
@@ -368,4 +382,37 @@ class Chat extends PureComponent {
   }
 }
 
-export default Chat
+class ChannelViewWrapper extends PureComponent {
+  state = {
+    theme: 'dark',
+  }
+
+  handleThemeChange = theme => {
+    this.setState({ theme })
+  }
+
+  get store() {
+    if (!this._store) {
+      if (this.props.storageType === 'localStorage') {
+        this._store = new LocalStorageStore()
+      } else {
+        this._store = new MemoryStore()
+      }
+    }
+    return this._store
+  }
+
+  render() {
+    const { theme, onThemeChange, store, storageType, ...props } = this.props
+    return (
+      <ChannelView
+        theme={theme || getTheme(this.state.theme)}
+        onThemeChange={onThemeChange || this.handleThemeChange}
+        store={store || this.store}
+        {...props}
+      />
+    )
+  }
+}
+
+export default ChannelViewWrapper

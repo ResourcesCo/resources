@@ -8,5 +8,6 @@ export {
   removeTemporaryState,
   updateTree,
 } from './model'
+export { getTheme } from './themes'
 
 export default View

@@ -60,6 +60,8 @@ class Form extends PureComponent {
           button {
             cursor: pointer;
             background-color: ${theme.bubble1};
+            border: none;
+            color: ${theme.foreground};
             border-radius: 9999px;
             outline: none;
           }
@@ -74,6 +76,8 @@ class Form extends PureComponent {
 
           div :global(textarea) {
             width: 600px;
+            color: ${theme.foreground};
+            background: ${theme.bubble1};
           }
 
           @media only screen and (max-width: 700px) {

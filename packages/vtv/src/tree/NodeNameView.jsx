@@ -60,6 +60,7 @@ const NameEdit = React.forwardRef(({ name, path, onMessage, theme }, ref) => {
           border: none;
           resize: none;
           outline: none;
+          color: ${theme.foreground};
         }
         div {
           background-color: ${theme.bubble1};
@@ -85,6 +86,8 @@ const NameButton = ({ displayName, name, onClick, theme }) => {
         button {
           cursor: pointer;
           background-color: ${theme.bubble1};
+          color: ${theme.foreground};
+          font-family: ${theme.fontFamily};
           border-radius: 9999px;
           outline: none;
           padding: 3px 7px;

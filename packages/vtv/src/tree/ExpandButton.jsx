@@ -2,7 +2,7 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretRight, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ onClick, expanded, hasChildren }) => (
+export default ({ onClick, expanded, hasChildren, theme }) => (
   <div className={expanded ? 'expanded' : ''}>
     <button
       onClick={onClick}
@@ -20,12 +20,13 @@ export default ({ onClick, expanded, hasChildren }) => (
         margin-top: -2px;
         font-size: 1.5em;
         text-align: left;
-        padding-left: 10px;
+        padding: 0 0 0 10px;
         width: 22px;
         background: none;
+        color: ${theme.foreground};
       }
       .expanded button {
-        padding-left: 8px;
+        padding: 0 0 0 8px;
       }
       .invisible {
         visibility: hidden;

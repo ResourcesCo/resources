@@ -4,7 +4,10 @@ import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
 import NodeMenu from './NodeMenu'
 import { Manager, Reference, Popper } from 'react-popper'
 
-export default function NodeMenuButton({ nodeMenuProps: nodeMenuProps_ }) {
+export default function NodeMenuButton({
+  nodeMenuProps: nodeMenuProps_,
+  theme,
+}) {
   const nodeMenuProps = {
     ...nodeMenuProps_,
     popperProps: {
@@ -30,6 +33,7 @@ export default function NodeMenuButton({ nodeMenuProps: nodeMenuProps_ }) {
                 text-align: left;
                 width: 22px;
                 background: none;
+                color: ${theme.foreground};
               }
             `}</style>
           </div>

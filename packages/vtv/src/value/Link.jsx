@@ -18,6 +18,16 @@ export default ({ url, onEdit, onPickId, theme }) => {
           {({ ref }) => (
             <a ref={ref} href={url} onClick={openMenu}>
               <StringView value={url} maxLength={120} />
+              <style jsx>{`
+                a {
+                  color: ${theme.linkColor};
+                  text-decoration: none;
+                }
+
+                a:hover {
+                  text-decoration: underline;
+                }
+              `}</style>
             </a>
           )}
         </Reference>

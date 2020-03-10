@@ -24,6 +24,12 @@ export default ({
     }
   }, [textareaRef])
 
+  const handleFocusChange = focused => {
+    if (typeof onFocusChange === 'function') {
+      onFocusChange(focused)
+    }
+  }
+
   return (
     <div className="chat-input">
       <TextareaAutosize
@@ -31,8 +37,8 @@ export default ({
         value={text}
         onChange={onTextChange}
         onKeyDown={handleKeyPress}
-        onFocus={() => onFocusChange(true)}
-        onBlur={() => onFocusChange(false)}
+        onFocus={() => handleFocusChange(true)}
+        onBlur={() => handleFocusChange(false)}
         ref={textareaRef}
         maxRows={8}
         autoCorrect="off"
@@ -48,7 +54,6 @@ export default ({
           display: flex;
           flex-direction: row;
           align-items: center;
-          margin: 0 1px 0 3px;
         }
 
         div :global(textarea) {
@@ -56,24 +61,24 @@ export default ({
           width: 100%;
           border-radius: 5px;
           outline: none;
-          font-size: 20px;
-          line-height: 28px;
-          padding: 2px 5px;
-          height: 32px;
+          font-size: 18px;
+          line-height: 1.2;
+          padding: 5px 5px;
           resize: none;
           border: 1px solid ${theme.inputBorder};
+          color: ${theme.foreground};
+          font-family: ${theme.fontFamily};
         }
 
         button {
           background: none;
           outline: none;
           border: none;
-          padding: 0 5px;
-          font-size: 32px;
-        }
-
-        button :global(svg) {
+          padding: 0 2px 0 5px;
+          color: ${theme.foreground};
           cursor: pointer;
+          font-size: 28px;
+          line-height: 1.2;
         }
       `}</style>
     </div>

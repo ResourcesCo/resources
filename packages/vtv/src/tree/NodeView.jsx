@@ -124,6 +124,7 @@ export default function NodeView({
           hasChildren={_hasChildren}
           expanded={expanded}
           onClick={toggleExpanded}
+          theme={theme}
         />
         <NodeNameView
           editingName={editingName}
@@ -166,7 +167,9 @@ export default function NodeView({
           />
         </div>
         <div className="actions-right">
-          {dotMenu && <NodeMenuButton nodeMenuProps={nodeMenuProps} />}
+          {dotMenu && (
+            <NodeMenuButton nodeMenuProps={nodeMenuProps} theme={theme} />
+          )}
         </div>
         <style jsx>{`
           .node-content {
