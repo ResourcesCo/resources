@@ -1,9 +1,18 @@
-import { ChannelView } from '@resources/console'
+import { useState } from 'react'
+import Nav from '../components/Nav'
+import { ChannelView, getTheme } from '@resources/console'
 
 export default () => {
+  const [themeName, setThemeName] = useState('dark')
+  const theme = getTheme(themeName)
   return (
     <>
-      <ChannelView storageType="localStorage" />
+      <ChannelView
+        navComponent={Nav}
+        storageType="localStorage"
+        theme={theme}
+        onThemeChange={name => setThemeName(name)}
+      />
       <style jsx global>{`
         html,
         body,

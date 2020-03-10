@@ -14,7 +14,7 @@ module.exports = withCSS({
 
     config.plugins.push(
       new ExtraWatchWebpackPlugin({
-        dirs: ['node_modules/vtv/src', 'node_modules/@resources/console/src'],
+        dirs: ['packages/vtv/src', 'packages/console/src'],
       })
     )
 

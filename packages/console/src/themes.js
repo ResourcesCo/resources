@@ -63,7 +63,7 @@ export function getTheme(value) {
   } else {
     return {
       ...themes[value.base],
-      ...themes[theme],
+      ...themes[value],
     }
   }
 }

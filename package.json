@@ -4,11 +4,11 @@
   "license": "Apache-2.0",
   "scripts": {
     "dev": "next -p 3333",
-    "build": "yarn packages:link && next build",
+    "build": "next build",
     "start": "next start",
     "export": "next export",
     "reformat": "prettier --write \"**/*.js\"",
-    "postinstall": "yarn vtv:install && yarn console:install",
+    "postinstall": "yarn vtv:install && yarn console:install && yarn packages:link",
     "vtv:install": "cd packages/vtv && yarn install",
     "console:install": "cd packages/console && yarn install",
     "publish-vtv-pre": "cd packages/vtv && yarn version --prerelease --pre-id=canary --no-git-tag-version && yarn publish --no-git-tag-version",

@@ -325,8 +325,8 @@ class ChannelView extends PureComponent {
   }
 
   render() {
-    const { onFocusChange, theme } = this.props
-    const Nav = this.props.navComponent
+    const { onFocusChange, navComponent, theme } = this.props
+    const Nav = navComponent
     const { text, commandIds, commands, lastCommandId } = this.state
     const scrollRef = this.scrollRef
 
@@ -403,12 +403,13 @@ class ChannelViewWrapper extends PureComponent {
   }
 
   render() {
-    const theme = this.props.theme || getTheme(this.state.theme)
+    const { theme, onThemeChange, store, storageType, ...props } = this.props
     return (
       <ChannelView
-        theme={theme}
-        onThemeChange={this.handleThemeChange}
-        store={this.store}
+        theme={theme || getTheme(this.state.theme)}
+        onThemeChange={onThemeChange || this.handleThemeChange}
+        store={store || this.store}
+        {...props}
       />
     )
   }

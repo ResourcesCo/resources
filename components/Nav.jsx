@@ -32,27 +32,38 @@ export default function Nav({ onSelectExample, theme }) {
       </div>
 
       <style jsx>{`
+        div.nav,
+        div.nav * {
+          background: ${theme.background};
+          color: ${theme.foreground};
+          font-family: ${theme.fontFamily};
+          margin: 0;
+          padding: 0;
+        }
         div.nav {
           display: flex;
           align-items: center;
           padding: 5px;
-          background-color: #222227;
         }
-        img.logo {
+        div.nav img.logo {
           height: 32px;
           padding-left: 1px;
         }
-        h1 {
+        div.nav h1 {
           padding-left: 8px;
-          font-size: 22px;
+          font-size: 26px;
         }
-        div.content {
+        div.nav div.content {
           padding: 5px 10px;
           text-align: right;
           flex-grow: 1;
         }
-        div.links {
+        div.nav div.links {
           padding-right: 5px;
+        }
+        div.nav a {
+          color: ${theme.linkColor};
+          text-decoration: none;
         }
         @media (max-width: 575.98px) {
           select {
