@@ -61,10 +61,9 @@ export default ({
           width: 100%;
           border-radius: 5px;
           outline: none;
-          font-size: 20px;
-          line-height: 28px;
-          padding: 2px 5px;
-          height: 32px;
+          font-size: 18px;
+          line-height: 1.2;
+          padding: 5px 5px;
           resize: none;
           border: 1px solid ${theme.inputBorder};
           color: ${theme.foreground};
@@ -76,12 +75,10 @@ export default ({
           outline: none;
           border: none;
           padding: 0 2px 0 5px;
-          font-size: 32px;
           color: ${theme.foreground};
-        }
-
-        button :global(svg) {
           cursor: pointer;
+          font-size: 28px;
+          line-height: 1.2;
         }
       `}</style>
     </div>
