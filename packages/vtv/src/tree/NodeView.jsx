@@ -166,7 +166,6 @@ export default function NodeView({
             onPickId={onPickId}
             theme={theme}
           />
-          {error && <span className="error">{error}</span>}
         </div>
         <div className="actions-right">
           {dotMenu && (

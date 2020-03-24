@@ -73,6 +73,7 @@ const runAction = async ({
   formData,
   parentCommandId,
   parentMessage,
+  onMessagesCreated,
 }) => {
   const actionName =
     originalActionName === '_default'
@@ -121,12 +122,14 @@ const runAction = async ({
   }
 
   const env = getCommandEnv(store, resourcePath[0])
+  const handleMessages = messages => {}
   const context = {
     store,
     message,
     formData,
     parentCommandId,
     parentMessage,
+    onMessagesCreated,
     env,
     params: paramsByName,
     resourcePath,
@@ -190,6 +193,24 @@ export default async function runCommand({
         { ...inputMessage(message), commandId, loading: true },
       ])
     }
+    const handleMessagesCreated = messages => {
+      onMessagesCreated(
+        convertToArray(messages).map(message => {
+          if (['message-command', 'message-get'].includes(message.type)) {
+            return {
+              ...message,
+              commandId,
+              parentCommandId,
+            }
+          } else {
+            return {
+              ...message,
+              commandId,
+            }
+          }
+        })
+      )
+    }
     const context = {
       resourcePath,
       actionName,
@@ -199,6 +220,7 @@ export default async function runCommand({
       formData,
       parentCommandId,
       parentMessage,
+      onMessagesCreated: handleMessagesCreated,
       root: command,
     }
     let result
@@ -207,24 +229,11 @@ export default async function runCommand({
     } else {
       result = await command.run(context)
     }
-    const outputMessages = convertToArray(result).map(message => {
-      if (['message-command', 'message-get'].includes(message.type)) {
-        return {
-          ...message,
-          commandId,
-          parentCommandId,
-        }
-      } else {
-        return {
-          ...message,
-          commandId,
-        }
-      }
-    })
     if (formData && formData.action === 'runAction') {
       setActionLoading(false)
     }
-    onMessagesCreated([...outputMessages, { type: 'loaded', commandId }])
+    handleMessagesCreated(result)
+    onMessagesCreated({ type: 'loaded', commandId })
   } else {
     onMessagesCreated(
       [

@@ -23,12 +23,22 @@ export default {
     post: {
       params: [],
       help: 'Make an HTTP POST request',
-      async run({ formData, message, parentMessage, ...context }) {
+      async run({
+        formData,
+        message,
+        parentMessage,
+        onMessagesCreated,
+        ...context
+      }) {
         if (
           formData &&
           formData.action === 'runAction' &&
           formData.actionName === 'send'
         ) {
+          onMessagesCreated({
+            type: 'message-command',
+            action: 'clearErrors',
+          })
           const request = parentMessage.value
           if (typeof request.url === 'string' && request.url.length > 0) {
             const timeout = 5000
@@ -41,21 +51,15 @@ export default {
               body: JSON.stringify(request.body),
             })
             const data = await response.json()
-            return [
-              {
-                type: 'message-command',
-                action: 'set',
-                path: ['response'],
-                value: {
-                  headers: jsonHeaders(response.headers),
-                  body: data,
-                },
+            return {
+              type: 'message-command',
+              action: 'set',
+              path: ['response'],
+              value: {
+                headers: jsonHeaders(response.headers),
+                body: data,
               },
-              {
-                type: 'message-command',
-                action: 'clearErrors',
-              },
-            ]
+            }
           } else {
             return {
               type: 'message-command',
