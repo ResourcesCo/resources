@@ -42,6 +42,7 @@ export default function NodeView({
     _editingName: editingName,
     _editingJson: editingJson,
     _actions: actions,
+    _error: error,
   } = getState(state)
   const { bubbleMenu, dotMenu } = options
 
@@ -165,6 +166,7 @@ export default function NodeView({
             onPickId={onPickId}
             theme={theme}
           />
+          {error && <span className="error">{error}</span>}
         </div>
         <div className="actions-right">
           {dotMenu && (
@@ -190,6 +192,9 @@ export default function NodeView({
           .actions-right {
             visibility: hidden;
             margin-right: 5px;
+          }
+          .error {
+            color: red;
           }
           .row:hover {
             background-color: ${theme.backgroundHover};

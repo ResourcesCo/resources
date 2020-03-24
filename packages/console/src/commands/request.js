@@ -53,9 +53,9 @@ export default {
           } else {
             return {
               type: 'message-command',
-              action: 'error',
+              action: 'setError',
               path: ['url'],
-              message: 'Invalid URL',
+              error: 'Invalid URL',
             }
           }
         }
