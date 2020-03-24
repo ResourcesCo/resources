@@ -1,6 +1,6 @@
 import getNested from 'lodash/get'
 import produce from 'immer'
-import { getStateKey, draftValue, draftState } from './util'
+import { getStateKey, draftValue, draftState, clearStateProperty } from './util'
 import { rename } from './actions'
 
 export { getStateKey, draftValue, draftState }
@@ -249,6 +249,10 @@ export const updateTree = (treeData, treeUpdate) => {
           _error: treeUpdate.error,
         }),
       }
+    } else if (treeUpdate.action === 'clearErrors') {
+      return produce(treeData, draft => {
+        clearStateProperty(draft, treeUpdate.path || [], '_error')
+      })
     }
   } else {
     return {

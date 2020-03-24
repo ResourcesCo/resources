@@ -41,15 +41,21 @@ export default {
               body: JSON.stringify(request.body),
             })
             const data = await response.json()
-            return {
-              type: 'message-command',
-              action: 'set',
-              path: ['response'],
-              value: {
-                headers: jsonHeaders(response.headers),
-                body: data,
+            return [
+              {
+                type: 'message-command',
+                action: 'set',
+                path: ['response'],
+                value: {
+                  headers: jsonHeaders(response.headers),
+                  body: data,
+                },
               },
-            }
+              {
+                type: 'message-command',
+                action: 'clearErrors',
+              },
+            ]
           } else {
             return {
               type: 'message-command',
