@@ -30,12 +30,11 @@ const InlineValue = ({
   state,
   path,
   onMessage,
-  editing,
-  editingJson,
   isNew,
   autoEdit,
   theme,
 }) => {
+  const { _editing: editing, _editingJson: editingJson, _error: error } = state
   const inputRef = useRef()
   const [newInputValue, setNewInputValue] = useState(inputValue(value, isNew))
   useEffect(() => {
@@ -109,9 +108,25 @@ const InlineValue = ({
     typeClass = 'value'
   }
 
+  const sizeClass = value => {
+    if (value.length <= 10) {
+      return 'small'
+    } else if (value.length <= 20) {
+      return 'medium'
+    } else if (value.length <= 30) {
+      return 'large'
+    } else {
+      return 'full-width'
+    }
+  }
+  const useTextArea = !editingJson && (autoEdit || editing)
   return (
-    <div className={typeClass}>
-      {!editingJson && (autoEdit || editing) ? (
+    <div
+      className={`${typeClass} ${error ? 'has-error' : ''} ${
+        useTextArea ? sizeClass(newInputValue) : ''
+      }`}
+    >
+      {useTextArea ? (
         <Textarea
           ref={inputRef}
           value={newInputValue}
@@ -124,21 +139,40 @@ const InlineValue = ({
       ) : (
         <span>{value}</span>
       )}
+      {error && <span className="error">{error}</span>}
 
       <style jsx>{`
         div {
           width: 100%;
+          display: flex;
         }
         div :global(textarea) {
           background: none;
           border: none;
           resize: none;
           outline: none;
-          width: 100%;
           font-size: inherit;
           color: ${theme.foreground};
           margin: 0;
           padding: 0;
+        }
+        div.has-error :global(textarea) {
+          border-bottom: 1px solid red;
+        }
+        div.small :global(textarea) {
+          max-width: 80px;
+          flex-grow: 1;
+        }
+        div.medium :global(textarea) {
+          max-width: 180px;
+          flex-grow: 1;
+        }
+        div.large :global(textarea) {
+          max-width: 250px;
+          flex-grow: 1;
+        }
+        div.full-width :global(textarea) {
+          flex-grow: 1;
         }
         div.number span,
         div.number :global(textarea) {
@@ -147,6 +181,10 @@ const InlineValue = ({
         div.value span,
         div.value :global(textarea) {
           color: ${theme.valueColor};
+        }
+        div.has-error .error {
+          color: red;
+          padding-left: 3px;
         }
       `}</style>
     </div>

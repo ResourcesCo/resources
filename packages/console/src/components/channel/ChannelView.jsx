@@ -137,12 +137,15 @@ class ChannelView extends PureComponent {
 
   componentWillUnmount() {}
 
-  addMessages = newMessages => {
+  addMessages = messageOrArray => {
     const { store } = this.props
     let { commandIds, commands } = this.state
     let clear = false
     let loadedMessage = undefined
     let scrollToBottom = false
+    const newMessages = Array.isArray(messageOrArray)
+      ? messageOrArray
+      : [messageOrArray]
     for (let message of newMessages) {
       const command = commands[message.commandId]
       if (message.type === 'loaded') {

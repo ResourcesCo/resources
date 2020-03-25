@@ -23,31 +23,50 @@ export default {
     post: {
       params: [],
       help: 'Make an HTTP POST request',
-      async run({ formData, message, parentMessage, ...context }) {
+      async run({
+        formData,
+        message,
+        parentMessage,
+        onMessagesCreated,
+        ...context
+      }) {
         if (
           formData &&
           formData.action === 'runAction' &&
           formData.actionName === 'send'
         ) {
-          const timeout = 5000
-          const controller = new AbortController()
-          setTimeout(() => controller.abort(), timeout)
-          const request = parentMessage.value
-          const response = await fetch(request.url, {
-            signal: controller.signal,
-            method: request.method,
-            headers: request.headers,
-            body: JSON.stringify(request.body),
-          })
-          const data = await response.json()
-          return {
+          onMessagesCreated({
             type: 'message-command',
-            action: 'set',
-            path: ['response'],
-            value: {
-              headers: jsonHeaders(response.headers),
-              body: data,
-            },
+            action: 'clearErrors',
+          })
+          const request = parentMessage.value
+          if (typeof request.url === 'string' && request.url.length > 0) {
+            const timeout = 5000
+            const controller = new AbortController()
+            setTimeout(() => controller.abort(), timeout)
+            const response = await fetch(request.url, {
+              signal: controller.signal,
+              method: request.method,
+              headers: request.headers,
+              body: JSON.stringify(request.body),
+            })
+            const data = await response.json()
+            return {
+              type: 'message-command',
+              action: 'set',
+              path: ['response'],
+              value: {
+                headers: jsonHeaders(response.headers),
+                body: data,
+              },
+            }
+          } else {
+            return {
+              type: 'message-command',
+              action: 'setError',
+              path: ['url'],
+              error: 'Invalid URL',
+            }
           }
         }
         return {
