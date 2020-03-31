@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Nav from '../components/Nav'
+import Head from '../components/Head'
 import { ChannelView, getTheme } from '@resources/console'
 
 export default () => {
@@ -13,6 +14,7 @@ export default () => {
         theme={theme}
         onThemeChange={name => setThemeName(name)}
       />
+      <Head title="Resources.co" />
       <style jsx global>{`
         html,
         body,

@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import Textarea from '../generic/Textarea'
 import { detectUrl } from '../model/analyze'
 import { getState } from '../model/state'
@@ -109,7 +110,9 @@ const InlineValue = ({
   }
 
   const sizeClass = value => {
-    if (value.length <= 10) {
+    if (typeof value !== 'string') {
+      return 'full-width'
+    } else if (value.length <= 10) {
       return 'small'
     } else if (value.length <= 20) {
       return 'medium'
@@ -191,7 +194,7 @@ const InlineValue = ({
   )
 }
 
-export default ({
+function NodeValueView({
   name,
   value,
   state,
@@ -200,7 +203,7 @@ export default ({
   onPickId,
   autoEdit = true,
   theme,
-}) => {
+}) {
   const {
     _editing: editing,
     _editingJson: editingJson,
@@ -263,3 +266,9 @@ export default ({
     }
   }
 }
+
+NodeValueView.propTypes = {
+  path: PropTypes.arrayOf(PropTypes.string).isRequired,
+}
+
+export default NodeValueView

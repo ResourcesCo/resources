@@ -235,6 +235,7 @@ export default function NodeView({
               <TableView
                 name={name}
                 value={value}
+                path={path}
                 state={state}
                 onPickId={onPickId}
                 onMessage={onMessage}
