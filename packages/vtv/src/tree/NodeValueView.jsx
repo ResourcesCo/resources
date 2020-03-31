@@ -110,7 +110,9 @@ const InlineValue = ({
   }
 
   const sizeClass = value => {
-    if (value.length <= 10) {
+    if (typeof value !== 'string') {
+      return 'full-width'
+    } else if (value.length <= 10) {
       return 'small'
     } else if (value.length <= 20) {
       return 'medium'
