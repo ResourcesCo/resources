@@ -1,9 +1,24 @@
 import getNested from 'lodash/get'
 import produce from 'immer'
-import { getStateKey, draftValue, draftState, clearStateProperty } from './util'
+import {
+  getStateKey,
+  draftValue,
+  draftState,
+  clearStateProperty,
+  getState,
+  getChildState,
+  getNestedState,
+} from './util'
 import { rename } from './actions'
 
-export { getStateKey, draftValue, draftState }
+export {
+  getStateKey,
+  draftValue,
+  draftState,
+  getState,
+  getChildState,
+  getNestedState,
+}
 
 const updateNestedState = (state, path = [], pathState, options = {}) => {
   if (path.length === 0) {
@@ -264,27 +279,6 @@ export const updateTree = (treeData, treeUpdate) => {
         treeUpdate.state
       ),
     }
-  }
-}
-
-export const getState = state => {
-  return {
-    _expanded: false,
-    _viewType: 'tree',
-    ...(state || {}),
-  }
-}
-
-export const getChildState = (state, key) => {
-  return getState(getState(state)[getStateKey(key)])
-}
-
-export const getNestedState = (state, path) => {
-  if (path.length === 0) {
-    return getState(state)
-  } else {
-    const [key, ...rest] = path
-    return getNestedState(getChildState(state, key), rest)
   }
 }
 

@@ -1,9 +1,10 @@
 import React from 'react'
 import { getCollectionPaths, joinPath, getAtPath } from '../model/analyze'
+import { getChildState } from '../model'
 import NodeValueView from '../tree/NodeValueView'
 import NodeNameView from '../tree/NodeNameView'
 
-export default ({ value, onPickId, onMessage, name, state, theme }) => {
+export default ({ name, value, path, state, onPickId, onMessage, theme }) => {
   const paths = getCollectionPaths(value)
   return (
     <div className="table">
@@ -23,11 +24,14 @@ export default ({ value, onPickId, onMessage, name, state, theme }) => {
                 {/*<NodeNameView theme={theme} name={key} />*/}
                 {key}
               </td>
-              {paths.map((path, i) => (
+              {paths.map((columnPath, i) => (
                 <td key={i}>
                   <NodeValueView
                     onMessage={onMessage}
-                    value={getAtPath(value[key], path)}
+                    name={name}
+                    value={getAtPath(value[key], columnPath)}
+                    path={[...path, key, ...columnPath]}
+                    state={getChildState(value[key], columnPath)}
                     onPickId={onPickId}
                     theme={theme}
                   />
