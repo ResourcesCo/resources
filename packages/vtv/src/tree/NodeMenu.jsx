@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { getState } from '../model/state'
 import { hasChildren, isBasicType } from '../model/analyze'
 import useClickOutside from '../util/useClickOutside'
+import ClipboardMenu from './ClipboardMenu'
 import Menu, { MenuItem } from '../generic/Menu'
 
 export default function NodeMenu({
@@ -93,6 +94,9 @@ export default function NodeMenu({
         <MenuItem onClick={() => sendAction('insert', { position: 'below' })}>
           Insert After
         </MenuItem>
+      )}
+      {!showAll && ['object', 'array'].includes(parentType) && (
+        <MenuItem submenu={ClipboardMenu}>Clipboard</MenuItem>
       )}
       {!nameOptionsFirst &&
         !showAll &&

@@ -2,15 +2,20 @@ import React, { useRef } from 'react'
 import { getState } from '../model/state'
 import { hasChildren } from '../model/analyze'
 import useClickOutside from '../util/useClickOutside'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCaretRight } from '@fortawesome/free-solid-svg-icons'
 import { Popper } from 'react-popper'
 
-export function MenuItem({ onClick, children, theme }) {
+export function MenuItem({ onClick, children, submenu, theme }) {
   return (
-    <div>
+    <div className="menu-item">
       <button onClick={onClick}>{children}</button>
+      {submenu && <FontAwesomeIcon icon={faCaretRight} size="md" />}
       <style jsx>{`
-        div {
+        div.menu-item {
           background: none;
+          display: flex;
+          align-items: center;
         }
         button {
           background: none;
@@ -24,8 +29,11 @@ export function MenuItem({ onClick, children, theme }) {
           color: ${theme.foreground};
           font-family: ${theme.fontFamily};
         }
-        button:hover {
+        div.menu-item:hover {
           background-color: ${theme.menuHighlight};
+        }
+        div.menu-item :global(svg) {
+          padding-right: 3px;
         }
       `}</style>
     </div>
@@ -58,6 +66,9 @@ export default ({
       : child
   })
 
+  const sortedMenuItems = placement =>
+    (placement || '').startsWith('top-') ? [...menuItems].reverse() : menuItems
+
   return (
     <Popper {...popperProps}>
       {({ ref: popperRef, style, placement }) => (
@@ -68,9 +79,7 @@ export default ({
           data-placement={placement}
         >
           <div className="menu" ref={ref}>
-            {(placement || '').startsWith('top-')
-              ? [...menuItems].reverse()
-              : menuItems}
+            {sortedMenuItems(placement)}
           </div>
           <style jsx>{`
             .menu {
