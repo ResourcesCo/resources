@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import { getState } from '../model/state'
 import { hasChildren, isBasicType } from '../model/analyze'
 import useClickOutside from '../util/useClickOutside'
 import ClipboardMenu from './ClipboardMenu'
 import Menu, { MenuItem } from '../generic/Menu'
 
-export default function NodeMenu({
+function NodeMenu({
   onPickId,
   parentType,
   nodeType,
@@ -19,6 +20,7 @@ export default function NodeMenu({
   onViewChanged,
   nameOptionsFirst = false,
   popperProps,
+  clipboard,
   theme,
 }) {
   const [action, setAction] = useState(null)
@@ -81,7 +83,7 @@ export default function NodeMenu({
         )
       })}
       {!showAll && ['object', 'array'].includes(nodeType) && (
-        <MenuItem onClick={() => sendAction('appendChild')}>
+        <MenuItem onClick={() => sendAction('insert', { position: 'append' })}>
           Append Child
         </MenuItem>
       )}
@@ -108,6 +110,7 @@ export default function NodeMenu({
               parentType={parentType}
               onMessage={onMessage}
               onClose={onClose}
+              clipboard={clipboard}
               theme={theme}
             />
           }
@@ -140,3 +143,10 @@ export default function NodeMenu({
     </Menu>
   )
 }
+
+NodeMenu.propTypes = {
+  clipboard: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
+}
+
+export default NodeMenu

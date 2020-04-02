@@ -131,11 +131,11 @@ export const updateTree = (treeData, treeUpdate) => {
           parent[key] = treeUpdate.value
         }
       })
-    } else if (['insert', 'appendChild'].includes(treeUpdate.action)) {
+    } else if (['insert', 'paste'].includes(treeUpdate.action)) {
       let state = treeData.state
       let parentPath, key
-      const newValue = null
-      if (treeUpdate.action === 'insert') {
+      const newValue = treeUpdate.action === 'paste' ? treeUpdate.value : null
+      if (['above', 'below'].includes(treeUpdate.position)) {
         parentPath = treeUpdate.path.slice(0, treeUpdate.path.length - 1)
         key = treeUpdate.path[treeUpdate.path.length - 1]
       } else {
@@ -167,9 +167,11 @@ export const updateTree = (treeData, treeUpdate) => {
               }
             }
           }
-          state = updateNestedState(state, [...parentPath, newKey], {
-            _editing: true,
-          })
+          if (treeUpdate.action === 'insert') {
+            state = updateNestedState(state, [...parentPath, newKey], {
+              _editing: true,
+            })
+          }
           return result
         } else {
           let newKey = 'newItem'
@@ -194,9 +196,11 @@ export const updateTree = (treeData, treeUpdate) => {
               }
             }
           }
-          state = updateNestedState(state, [...parentPath, newKey], {
-            _editing: true,
-          })
+          if (treeUpdate.action === 'insert') {
+            state = updateNestedState(state, [...parentPath, newKey], {
+              _editing: true,
+            })
+          }
           return result
         }
       }

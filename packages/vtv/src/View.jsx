@@ -3,6 +3,7 @@ import { isObject } from './model/analyze'
 import { updateTree } from './model/state'
 import { getTheme } from './themes'
 import NodeView from './tree/NodeView'
+import Clipboard from './util/Clipboard'
 
 const optionDefaults = {
   bubbleMenu: true,
@@ -14,12 +15,21 @@ export default function View({
   onMessage,
   onAction,
   theme,
+  clipboard,
   receiveAllMessages = false,
   options = {},
   ...props
 }) {
+  const clipboardProp = clipboard || new Clipboard()
   if (typeof onMessage === 'function') {
-    return <NodeView onMessage={onMessage} theme={getTheme(theme)} {...props} />
+    return (
+      <NodeView
+        {...props}
+        onMessage={onMessage}
+        clipboard={clipboardProp}
+        theme={getTheme(theme)}
+      />
+    )
   } else {
     let themeProp = theme
     let onMessageProp = onMessage
@@ -41,10 +51,11 @@ export default function View({
     }
     return (
       <NodeView
+        {...props}
         onMessage={onMessageProp}
         options={{ ...optionDefaults, ...options }}
+        clipboard={clipboardProp}
         theme={getTheme(theme)}
-        {...props}
       />
     )
   }

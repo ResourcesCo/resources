@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { Manager, Reference, Popper } from 'react-popper'
 import getNested from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'
@@ -19,7 +20,7 @@ import TableView from '../table/TableView'
 import CodeView from '../value/CodeView'
 import ActionButton from '../generic/ActionButton'
 
-export default function NodeView({
+function NodeView({
   parentType = null,
   name,
   value,
@@ -31,6 +32,7 @@ export default function NodeView({
   showAll,
   onMessage,
   onPickId,
+  clipboard,
   theme,
 }) {
   const [viewChanged, setViewChanged] = useState(false)
@@ -93,6 +95,7 @@ export default function NodeView({
         onMessage={onMessage}
         onPickId={onPickId}
         path={showOnly}
+        clipboard={clipboard}
         theme={theme}
       />
     )
@@ -111,6 +114,7 @@ export default function NodeView({
     onMessage,
     onViewChanged: () => setViewChanged(true),
     onPickId,
+    clipboard,
     theme,
   }
 
@@ -225,6 +229,7 @@ export default function NodeView({
                     onPickId={onPickId}
                     path={[...path, key]}
                     showOnlyPath={showOnlyPath}
+                    clipboard={clipboard}
                     theme={theme}
                   />
                 ))}
@@ -266,3 +271,10 @@ export default function NodeView({
     </div>
   )
 }
+
+NodeView.propTypes = {
+  clipboard: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
+}
+
+export default NodeView

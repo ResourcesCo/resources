@@ -16,34 +16,6 @@ export function MenuItem({
 }) {
   const [itemHover, setItemHover] = useState(false)
   const [submenuHover, setSubmenuHover] = useState(false)
-  const styles = (
-    <style jsx>{`
-      div.menu-item {
-        background: none;
-        display: flex;
-        align-items: center;
-      }
-      div.menu-item button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 4px 8px;
-        margin: 0;
-        outline: none;
-        width: 100%;
-        text-align: left;
-        color: ${theme.foreground};
-        font-family: ${theme.fontFamily};
-      }
-      div.menu-item:hover {
-        background-color: ${theme.menuHighlight};
-      }
-      div.menu-item {
-        padding-right: 3px;
-      }
-    `}</style>
-  )
-
   return submenu ? (
     <Manager>
       <Reference>
@@ -56,7 +28,31 @@ export function MenuItem({
           >
             <button onClick={onClick}>{children}</button>
             <FontAwesomeIcon icon={faCaretRight} size="sm" />
-            {styles}
+            <style jsx>{`
+              div.menu-item {
+                background: none;
+                display: flex;
+                align-items: center;
+              }
+              div.menu-item button {
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 4px 8px;
+                margin: 0;
+                outline: none;
+                width: 100%;
+                text-align: left;
+                color: ${theme.foreground};
+                font-family: ${theme.fontFamily};
+              }
+              div.menu-item:hover {
+                background-color: ${theme.menuHighlight};
+              }
+              div.menu-item {
+                padding-right: 3px;
+              }
+            `}</style>
           </div>
         )}
       </Reference>
@@ -69,13 +65,37 @@ export function MenuItem({
   ) : (
     <div className="menu-item">
       {copyToClipboard ? (
-        <CopyToClipboard text={copyToClipboard}>
-          <button onClick={onClick}>{children}</button>
+        <CopyToClipboard text={copyToClipboard} onCopy={onClick}>
+          <button>{children}</button>
         </CopyToClipboard>
       ) : (
         <button onClick={onClick}>{children}</button>
       )}
-      {styles}
+      <style jsx>{`
+        div.menu-item {
+          background: none;
+          display: flex;
+          align-items: center;
+        }
+        div.menu-item button {
+          background: none;
+          border: none;
+          cursor: pointer;
+          padding: 4px 8px;
+          margin: 0;
+          outline: none;
+          width: 100%;
+          text-align: left;
+          color: ${theme.foreground};
+          font-family: ${theme.fontFamily};
+        }
+        div.menu-item:hover {
+          background-color: ${theme.menuHighlight};
+        }
+        div.menu-item {
+          padding-right: 3px;
+        }
+      `}</style>
     </div>
   )
 }
