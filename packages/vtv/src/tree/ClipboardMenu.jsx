@@ -1,14 +1,55 @@
 import React from 'react'
 import Menu, { MenuItem } from '../generic/Menu'
 
-export default function NodeMenu({ name, value, path, state, parentType }) {
-  const doClipboardAction = (action, position = null) => {}
+export default function ClipboardMenu({
+  name,
+  value,
+  path,
+  state,
+  nodeType,
+  parentType,
+  showAll,
+  onMessage,
+  theme,
+  ...props
+}) {
+  const doClipboardAction = (action, position = null) => {
+    if (action === 'cut') {
+      onMessage({
+        path,
+        action: 'delete',
+      })
+    }
+  }
   const hasPasteData = true
+  const valueJson = JSON.stringify(
+    parentType === 'object' ? { name: value } : value,
+    null,
+    2
+  )
 
   return (
-    <Menu>
-      <MenuItem onClick={() => doClipboardAction('cut')}>Cut</MenuItem>
-      <MenuItem onClick={() => doClipboardAction('copy')}>Copy</MenuItem>
+    <Menu
+      onClose={() => null}
+      popperProps={{
+        placement: 'left-start',
+        modifiers: { offset: { offset: '0, -3' } },
+      }}
+      theme={theme}
+      {...props}
+    >
+      <MenuItem
+        onClick={() => doClipboardAction('cut')}
+        copyToClipboard={valueJson}
+      >
+        Cut
+      </MenuItem>
+      <MenuItem
+        onClick={() => doClipboardAction('copy')}
+        copyToClipboard={valueJson}
+      >
+        Copy
+      </MenuItem>
       {!showAll && hasPasteData && ['object', 'array'].includes(nodeType) && (
         <MenuItem onClick={() => doClipboardAction('paste', 'child')}>
           Paste Child

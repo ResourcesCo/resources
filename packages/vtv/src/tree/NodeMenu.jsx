@@ -96,7 +96,24 @@ export default function NodeMenu({
         </MenuItem>
       )}
       {!showAll && ['object', 'array'].includes(parentType) && (
-        <MenuItem submenu={ClipboardMenu}>Clipboard</MenuItem>
+        <MenuItem
+          submenu={
+            <ClipboardMenu
+              name={name}
+              value={value}
+              path={path}
+              state={state}
+              showAll={showAll}
+              nodeType={nodeType}
+              parentType={parentType}
+              onMessage={onMessage}
+              onClose={onClose}
+              theme={theme}
+            />
+          }
+        >
+          Clipboard
+        </MenuItem>
       )}
       {!nameOptionsFirst &&
         !showAll &&
