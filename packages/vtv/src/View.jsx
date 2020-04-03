@@ -10,6 +10,8 @@ const optionDefaults = {
   dotMenu: true,
 }
 
+const defaultClipboard = new Clipboard()
+
 export default function View({
   onChange,
   onMessage,
@@ -20,7 +22,7 @@ export default function View({
   options = {},
   ...props
 }) {
-  const clipboardProp = clipboard || new Clipboard()
+  const clipboardProp = clipboard || defaultClipboard
   if (typeof onMessage === 'function') {
     return (
       <NodeView
