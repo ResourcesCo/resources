@@ -9,7 +9,7 @@ import {
   getChildState,
   getNestedState,
 } from './util'
-import { rename } from './actions'
+import { rename, edit, editJson } from './actions'
 
 export {
   getStateKey,
@@ -80,16 +80,6 @@ const updateNestedValue = (value, path, pathValueOrFn) => {
   }
 }
 
-export const getDraftUpdate = (draft, path) => {
-  if (path.length === 0) {
-    return [draft, 'value']
-  } else {
-    const lastIndex = path.length - 1
-    const parentPath = path.slice(0, lastIndex)
-    return [draftValue(draft, parentPath), path[lastIndex]]
-  }
-}
-
 export const updateTree = (treeData, treeUpdate) => {
   const action = treeUpdate.action
   if (action) {
@@ -106,32 +96,9 @@ export const updateTree = (treeData, treeUpdate) => {
     } else if (action === 'rename') {
       return rename(treeData, treeUpdate)
     } else if (action === 'edit') {
-      return produce(treeData, draft => {
-        draftState(draft, treeUpdate.path)._editing = treeUpdate.editing
-        if (typeof treeUpdate.value !== 'undefined') {
-          const [parent, key] = getDraftUpdate(draft, treeUpdate.path)
-          parent[key] = treeUpdate.value
-        }
-      })
+      return edit(treeData, treeUpdate)
     } else if (action === 'editJson') {
-      return produce(treeData, draft => {
-        const nodeDraftState = draftState(draft, treeUpdate.path)
-        nodeDraftState._editingJson = treeUpdate.editing
-        if (treeUpdate.editing) {
-          if (nodeDraftState._expanded !== true) {
-            nodeDraftState._prevExpanded = nodeDraftState._expanded
-            nodeDraftState._expanded = true
-          }
-        } else {
-          if (typeof nodeDraftState._prevExpanded === 'boolean') {
-            nodeDraftState._expanded = nodeDraftState._prevExpanded
-          }
-        }
-        if (typeof treeUpdate.value !== 'undefined') {
-          const [parent, key] = getDraftUpdate(draft, treeUpdate.path)
-          parent[key] = treeUpdate.value
-        }
-      })
+      return editJson(treeData, treeUpdate)
     } else if (['insert', 'paste'].includes(action)) {
       let state = treeData.state
       let parentPath, key
