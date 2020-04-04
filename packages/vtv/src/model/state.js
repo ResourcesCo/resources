@@ -8,6 +8,7 @@ import {
   getState,
   getChildState,
   getNestedState,
+  removeTemporaryState,
 } from './util'
 import { rename, edit, editJson } from './actions'
 
@@ -18,6 +19,7 @@ export {
   getState,
   getChildState,
   getNestedState,
+  removeTemporaryState,
 }
 
 const updateNestedState = (state, path = [], pathState, options = {}) => {
@@ -80,10 +82,16 @@ const updateNestedValue = (value, path, pathValueOrFn) => {
   }
 }
 
+const actions = { rename, edit, editJson }
+
 export const updateTree = (treeData, treeUpdate) => {
   const action = treeUpdate.action
+
   if (action) {
-    if (action === 'showOnlyThis') {
+    if (action in actions) {
+      const actionFn = actions[action]
+      return actionFn(treeData, treeUpdate)
+    } else if (action === 'showOnlyThis') {
       return produce(treeData, draft => {
         draftState(draft, [])._showOnly = treeUpdate.path
         draftState(draft, treeUpdate.path)._expanded = true
@@ -93,12 +101,6 @@ export const updateTree = (treeData, treeUpdate) => {
         const rootDraftState = draftState(draft, [])
         delete rootDraftState['_showOnly']
       })
-    } else if (action === 'rename') {
-      return rename(treeData, treeUpdate)
-    } else if (action === 'edit') {
-      return edit(treeData, treeUpdate)
-    } else if (action === 'editJson') {
-      return editJson(treeData, treeUpdate)
     } else if (['insert', 'paste'].includes(action)) {
       let state = treeData.state
       let parentPath, key
@@ -260,27 +262,4 @@ export const updateTree = (treeData, treeUpdate) => {
       ),
     }
   }
-}
-
-export const removeTemporaryState = tree => {
-  return produce(tree, draft => {
-    const removeTemporaryKeys = value => {
-      if (
-        value !== null &&
-        typeof value === 'object' &&
-        !Array.isArray(value)
-      ) {
-        for (let temporaryKey of temporaryKeys) {
-          delete value[temporaryKey]
-        }
-
-        for (let key of Object.keys(value)) {
-          if (key.startsWith('__') || !key.startsWith('_')) {
-            removeTemporaryKeys(value[key])
-          }
-        }
-      }
-    }
-    removeTemporaryKeys(draft.state)
-  })
 }
