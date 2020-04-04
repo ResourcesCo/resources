@@ -10,7 +10,7 @@ import {
   getNestedState,
   removeTemporaryState,
 } from './util'
-import { rename, edit, editJson } from './actions'
+import { rename, edit, editJson, del } from './actions'
 
 export {
   getStateKey,
@@ -82,7 +82,7 @@ const updateNestedValue = (value, path, pathValueOrFn) => {
   }
 }
 
-const actions = { rename, edit, editJson }
+const actions = { rename, edit, editJson, delete: del }
 
 export const updateTree = (treeData, treeUpdate) => {
   const action = treeUpdate.action
@@ -194,41 +194,6 @@ export const updateTree = (treeData, treeUpdate) => {
         ...treeData,
         value,
         state,
-      }
-    } else if (action === 'delete') {
-      const parentPath = treeUpdate.path.slice(0, treeUpdate.path.length - 1)
-      const key = treeUpdate.path[treeUpdate.path.length - 1]
-      let state = treeData.state
-      const del = parent => {
-        if (Array.isArray(parent)) {
-          const result = []
-          for (let i = 0; i < parent.length; i++) {
-            if (i !== Number(key)) {
-              result.push(parent[i])
-            }
-          }
-          return result
-        } else {
-          const result = {}
-          for (let parentKey of Object.keys(parent)) {
-            if (parentKey !== key) {
-              result[parentKey] = parent[parentKey]
-            }
-          }
-          return result
-        }
-      }
-
-      let value
-      if (parentPath.length > 0) {
-        value = updateNestedValue(treeData.value, parentPath, del)
-      } else {
-        value = del(treeData.value)
-      }
-
-      return {
-        ...treeData,
-        value,
       }
     } else if (action === 'set') {
       return {
