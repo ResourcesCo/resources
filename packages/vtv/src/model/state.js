@@ -101,10 +101,11 @@ export const updateTree = (treeData, treeUpdate) => {
         const rootDraftState = draftState(draft, [])
         delete rootDraftState['_showOnly']
       })
-    } else if (['insert', 'paste'].includes(action)) {
+    } else if (action === 'insert') {
       let state = treeData.state
       let parentPath, key
-      let newValue = action === 'paste' ? treeUpdate.value : null
+      const valueGiven = 'value' in treeUpdate
+      let newValue = valueGiven ? treeUpdate.value : null
       if (['above', 'below'].includes(treeUpdate.position)) {
         parentPath = treeUpdate.path.slice(0, treeUpdate.path.length - 1)
         key = treeUpdate.path[treeUpdate.path.length - 1]
@@ -145,8 +146,10 @@ export const updateTree = (treeData, treeUpdate) => {
           return result
         } else {
           let newKey = 'newItem'
+
+          // pasting a key-value pair into an object
           if (
-            action === 'paste' &&
+            valueGiven &&
             typeof newValue === 'object' &&
             Object.keys(newValue).length === 1
           ) {
