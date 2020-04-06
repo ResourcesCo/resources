@@ -9,9 +9,7 @@ export default function del(treeData, treeUpdate) {
     )
     delete parentState[treeUpdate.path[treeUpdate.path - 1]]
     const [parent, key] = getDraftUpdate(draft, treeUpdate.path)
-    console.log({ path: treeUpdate.path, parent: original(parent), key })
     if (Array.isArray(parent)) {
-      console.log('splicing')
       parent.splice(Number(key), 1)
     } else {
       delete parent[key]

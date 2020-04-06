@@ -25,7 +25,6 @@ function ClipboardMenu({
     if (['cut', 'copy'].includes(action)) {
       // copy to internal clipboard
       clipboard.data = data
-      console.log('set data', clipboard.data)
       if (action === 'cut') {
         onMessage({
           path,
@@ -33,7 +32,6 @@ function ClipboardMenu({
         })
       }
     } else if (action === 'paste') {
-      console.log('got data', clipboard.data)
       if (typeof clipboard.data === 'string') {
         const value = JSON.parse(clipboard.data)
         onMessage({
