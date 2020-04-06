@@ -57,6 +57,7 @@ export default ({
         }
 
         div :global(textarea) {
+          flex-grow: 1;
           background: none;
           width: 100%;
           border-radius: 5px;

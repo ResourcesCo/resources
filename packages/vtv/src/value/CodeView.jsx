@@ -96,6 +96,7 @@ export default ({ value, path, onMessage, theme }) => {
           border: none;
           width: 100%;
           padding: 3px;
+          color: ${theme.foreground};
         }
         div.textareaWrapper {
           border: 1px solid ${theme.bubble1};

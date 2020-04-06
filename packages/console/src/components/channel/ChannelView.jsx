@@ -350,7 +350,7 @@ class ChannelView extends PureComponent {
           onMessage={this.handleAddMessage}
           theme={theme}
         />
-        <div className="chat-input">
+        <div className="channel-input-wrapper">
           <ChannelInput
             textareaRef={this.textareaRef}
             text={text}
@@ -365,6 +365,7 @@ class ChannelView extends PureComponent {
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
+            align-items: stretch;
             height: 100%;
             box-sizing: border-box;
             flex-grow: 1;

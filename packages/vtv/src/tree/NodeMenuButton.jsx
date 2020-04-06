@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
 import NodeMenu from './NodeMenu'
-import { Manager, Reference, Popper } from 'react-popper'
+import { Manager, Reference } from 'react-popper'
 
 export default function NodeMenuButton({
   nodeMenuProps: nodeMenuProps_,

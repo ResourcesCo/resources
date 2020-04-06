@@ -8,8 +8,9 @@ import {
   getState,
   getChildState,
   getNestedState,
+  removeTemporaryState,
 } from './util'
-import { rename } from './actions'
+import { rename, edit, editJson, del } from './actions'
 
 export {
   getStateKey,
@@ -18,6 +19,7 @@ export {
   getState,
   getChildState,
   getNestedState,
+  removeTemporaryState,
 }
 
 const updateNestedState = (state, path = [], pathState, options = {}) => {
@@ -80,62 +82,30 @@ const updateNestedValue = (value, path, pathValueOrFn) => {
   }
 }
 
-export const getDraftUpdate = (draft, path) => {
-  if (path.length === 0) {
-    return [draft, 'value']
-  } else {
-    const lastIndex = path.length - 1
-    const parentPath = path.slice(0, lastIndex)
-    return [draftValue(draft, parentPath), path[lastIndex]]
-  }
-}
+const actions = { rename, edit, editJson, delete: del }
 
 export const updateTree = (treeData, treeUpdate) => {
-  if (treeUpdate.action) {
-    if (treeUpdate.action === 'showOnlyThis') {
+  const action = treeUpdate.action
+
+  if (action) {
+    if (action in actions) {
+      const actionFn = actions[action]
+      return actionFn(treeData, treeUpdate)
+    } else if (action === 'showOnlyThis') {
       return produce(treeData, draft => {
         draftState(draft, [])._showOnly = treeUpdate.path
         draftState(draft, treeUpdate.path)._expanded = true
       })
-    } else if (treeUpdate.action === 'showAll') {
+    } else if (action === 'showAll') {
       return produce(treeData, draft => {
         const rootDraftState = draftState(draft, [])
         delete rootDraftState['_showOnly']
       })
-    } else if (treeUpdate.action === 'rename') {
-      return rename(treeData, treeUpdate)
-    } else if (treeUpdate.action === 'edit') {
-      return produce(treeData, draft => {
-        draftState(draft, treeUpdate.path)._editing = treeUpdate.editing
-        if (typeof treeUpdate.value !== 'undefined') {
-          const [parent, key] = getDraftUpdate(draft, treeUpdate.path)
-          parent[key] = treeUpdate.value
-        }
-      })
-    } else if (treeUpdate.action === 'editJson') {
-      return produce(treeData, draft => {
-        const nodeDraftState = draftState(draft, treeUpdate.path)
-        nodeDraftState._editingJson = treeUpdate.editing
-        if (treeUpdate.editing) {
-          if (nodeDraftState._expanded !== true) {
-            nodeDraftState._prevExpanded = nodeDraftState._expanded
-            nodeDraftState._expanded = true
-          }
-        } else {
-          if (typeof nodeDraftState._prevExpanded === 'boolean') {
-            nodeDraftState._expanded = nodeDraftState._prevExpanded
-          }
-        }
-        if (typeof treeUpdate.value !== 'undefined') {
-          const [parent, key] = getDraftUpdate(draft, treeUpdate.path)
-          parent[key] = treeUpdate.value
-        }
-      })
-    } else if (['insert', 'appendChild'].includes(treeUpdate.action)) {
+    } else if (['insert', 'paste'].includes(action)) {
       let state = treeData.state
       let parentPath, key
-      const newValue = null
-      if (treeUpdate.action === 'insert') {
+      let newValue = action === 'paste' ? treeUpdate.value : null
+      if (['above', 'below'].includes(treeUpdate.position)) {
         parentPath = treeUpdate.path.slice(0, treeUpdate.path.length - 1)
         key = treeUpdate.path[treeUpdate.path.length - 1]
       } else {
@@ -167,12 +137,22 @@ export const updateTree = (treeData, treeUpdate) => {
               }
             }
           }
-          state = updateNestedState(state, [...parentPath, newKey], {
-            _editing: true,
-          })
+          if (action === 'insert') {
+            state = updateNestedState(state, [...parentPath, newKey], {
+              _editing: true,
+            })
+          }
           return result
         } else {
           let newKey = 'newItem'
+          if (
+            action === 'paste' &&
+            typeof newValue === 'object' &&
+            Object.keys(newValue).length === 1
+          ) {
+            newKey = Object.keys(newValue)[0]
+            newValue = newValue[newKey]
+          }
           if (Object.keys(parent).includes(newKey)) {
             for (let i = 1; i <= 1000; i++) {
               newKey = `newItem${i}`
@@ -194,9 +174,11 @@ export const updateTree = (treeData, treeUpdate) => {
               }
             }
           }
-          state = updateNestedState(state, [...parentPath, newKey], {
-            _editing: true,
-          })
+          if (action === 'insert') {
+            state = updateNestedState(state, [...parentPath, newKey], {
+              _editing: true,
+            })
+          }
           return result
         }
       }
@@ -213,42 +195,7 @@ export const updateTree = (treeData, treeUpdate) => {
         value,
         state,
       }
-    } else if (treeUpdate.action === 'delete') {
-      const parentPath = treeUpdate.path.slice(0, treeUpdate.path.length - 1)
-      const key = treeUpdate.path[treeUpdate.path.length - 1]
-      let state = treeData.state
-      const del = parent => {
-        if (Array.isArray(parent)) {
-          const result = []
-          for (let i = 0; i < parent.length; i++) {
-            if (i !== Number(key)) {
-              result.push(parent[i])
-            }
-          }
-          return result
-        } else {
-          const result = {}
-          for (let parentKey of Object.keys(parent)) {
-            if (parentKey !== key) {
-              result[parentKey] = parent[parentKey]
-            }
-          }
-          return result
-        }
-      }
-
-      let value
-      if (parentPath.length > 0) {
-        value = updateNestedValue(treeData.value, parentPath, del)
-      } else {
-        value = del(treeData.value)
-      }
-
-      return {
-        ...treeData,
-        value,
-      }
-    } else if (treeUpdate.action === 'set') {
+    } else if (action === 'set') {
       return {
         value: {
           ...treeData.value,
@@ -258,13 +205,13 @@ export const updateTree = (treeData, treeUpdate) => {
           _expanded: true,
         }),
       }
-    } else if (treeUpdate.action === 'setError') {
+    } else if (action === 'setError') {
       return {
         state: updateNestedState(treeData.state, treeUpdate.path, {
           _error: treeUpdate.error,
         }),
       }
-    } else if (treeUpdate.action === 'clearErrors') {
+    } else if (action === 'clearErrors') {
       return produce(treeData, draft => {
         clearStateProperty(draft, treeUpdate.path || [], '_error')
       })
@@ -280,27 +227,4 @@ export const updateTree = (treeData, treeUpdate) => {
       ),
     }
   }
-}
-
-export const removeTemporaryState = tree => {
-  return produce(tree, draft => {
-    const removeTemporaryKeys = value => {
-      if (
-        value !== null &&
-        typeof value === 'object' &&
-        !Array.isArray(value)
-      ) {
-        for (let temporaryKey of temporaryKeys) {
-          delete value[temporaryKey]
-        }
-
-        for (let key of Object.keys(value)) {
-          if (key.startsWith('__') || !key.startsWith('_')) {
-            removeTemporaryKeys(value[key])
-          }
-        }
-      }
-    }
-    removeTemporaryKeys(draft.state)
-  })
 }
