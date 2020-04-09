@@ -1,18 +1,21 @@
 import produce, { original } from 'immer'
-import { getDraftUpdate, draftState, stateKey } from '../util'
+import {
+  getDraftUpdate,
+  getDraftStateUpdate,
+  spliceArrayKeysInObject,
+} from '../util'
 
 export default function del(treeData, treeUpdate) {
   return produce(treeData, draft => {
-    const parentState = draftState(
-      draft,
-      treeUpdate.path.slice(0, treeUpdate.path.length - 1)
-    )
-    delete parentState[treeUpdate.path[treeUpdate.path - 1]]
+    const [parentState, stateKey] = getDraftStateUpdate(draft, treeUpdate.path)
     const [parent, key] = getDraftUpdate(draft, treeUpdate.path)
     if (Array.isArray(parent)) {
+      const originalLength = parent.length
       parent.splice(Number(key), 1)
+      spliceArrayKeysInObject(parentState, originalLength, Number(key), 1)
     } else {
       delete parent[key]
+      delete parentState[stateKey]
     }
   })
 }

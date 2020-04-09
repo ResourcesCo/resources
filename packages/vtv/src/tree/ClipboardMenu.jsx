@@ -39,6 +39,7 @@ function ClipboardMenu({
           action: 'insert',
           value,
           position,
+          paste: true,
         })
       }
     }
