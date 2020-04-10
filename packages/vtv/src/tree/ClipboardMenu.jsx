@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Menu, { MenuItem } from '../generic/Menu'
 
+import { getStateKey } from '../model/util'
+
 function ClipboardMenu({
   name,
   value,
@@ -16,15 +18,33 @@ function ClipboardMenu({
   ...props
 }) {
   const hasPasteData = true
+
+  // needed for copy to clipboard component
   const valueJson = JSON.stringify(
     parentType === 'object' ? { [name]: value } : value,
     null,
     2
   )
-  const doClipboardAction = (clipboardAction, { data, position }) => {
+
+  const doClipboardAction = (
+    clipboardAction,
+    { name, value, state, position }
+  ) => {
     if (['cut', 'copy'].includes(clipboardAction)) {
+      const valueJson = JSON.stringify(
+        parentType === 'object' ? { [name]: value } : value,
+        null,
+        2
+      )
+      const stateJson = JSON.stringify(
+        parentType === 'object' ? { [getStateKey(name)]: state } : state,
+        null,
+        2
+      )
+
       // copy to internal clipboard
-      clipboard.data = data
+      clipboard.value = valueJson
+      clipboard.state = stateJson
       if (clipboardAction === 'cut') {
         onMessage({
           path,
@@ -32,12 +52,21 @@ function ClipboardMenu({
         })
       }
     } else if (clipboardAction === 'paste') {
-      if (typeof clipboard.data === 'string') {
-        const value = JSON.parse(clipboard.data)
+      if (typeof clipboard.value === 'string') {
+        const value = JSON.parse(clipboard.value)
+        let state = undefined
+        if (typeof clipboard.state === 'string' && clipboard.state.length) {
+          try {
+            state = JSON.parse(clipboard.state)
+          } catch (err) {
+            state = undefined
+          }
+        }
         onMessage({
           path,
           action: 'insert',
           value,
+          state,
           position,
           paste: true,
         })
@@ -56,13 +85,13 @@ function ClipboardMenu({
       {...props}
     >
       <MenuItem
-        onClick={() => doClipboardAction('cut', { data: valueJson })}
+        onClick={() => doClipboardAction('cut', { name, value, state })}
         {...(clipboard.copyToSystemClipboard && { copyToClipboard: valueJson })}
       >
         Cut
       </MenuItem>
       <MenuItem
-        onClick={() => doClipboardAction('copy', { data: valueJson })}
+        onClick={() => doClipboardAction('copy', { name, value, state })}
         {...(clipboard.copyToSystemClipboard && { copyToClipboard: valueJson })}
       >
         Copy

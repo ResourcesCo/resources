@@ -48,6 +48,8 @@ export default function insert(treeData, treeUpdate) {
     const valueGiven = 'value' in treeUpdate
     let newValue = valueGiven ? treeUpdate.value : null
 
+    let newState = valueGiven ? treeUpdate.state : undefined
+
     let prefix = 'newItem'
     if (
       valueGiven &&
@@ -56,6 +58,7 @@ export default function insert(treeData, treeUpdate) {
     ) {
       prefix = Object.keys(newValue)[0]
       newValue = newValue[prefix]
+      newState = newState[getStateKey(prefix)]
     }
 
     if (['above', 'below'].includes(position)) {
@@ -85,7 +88,7 @@ export default function insert(treeData, treeUpdate) {
         originalLength,
         Number(newKey),
         0,
-        getState()
+        getState(newState)
       )
     } else {
       if (['above', 'below'].includes(position)) {
@@ -93,7 +96,7 @@ export default function insert(treeData, treeUpdate) {
       } else {
         parent[newKey] = newValue
       }
-      parentState[newStateKey] = getState()
+      parentState[newStateKey] = getState(newState)
     }
 
     if (position === 'append') {

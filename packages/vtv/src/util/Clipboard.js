@@ -6,6 +6,7 @@ const defaultOptions = {
 export default class Clipboard {
   constructor(options) {
     this.data = undefined
+    this.state = undefined
     const opts = { ...defaultOptions, ...options }
     this.copyToSystemClipboard = opts.copyToSystemClipboard
     this.pasteFromSystemClipboard = opts.pasteFromSystemClipboard
