@@ -1,4 +1,5 @@
 import produce, { original } from 'immer'
+import { defaultPrefix } from '../constants'
 import {
   getDraftUpdate,
   getDraftStateUpdate,
@@ -13,7 +14,7 @@ function getNewKey(parent, prefix) {
   let newKey = prefix
   if (Object.keys(parent).includes(newKey)) {
     for (let i = 1; i <= 1000; i++) {
-      newKey = `newItem${i}`
+      newKey = `${prefix}${i}`
       if (!Object.keys(parent).includes(newKey)) break
     }
   }
@@ -50,7 +51,7 @@ export default function insert(treeData, treeUpdate) {
 
     let newState = valueGiven ? treeUpdate.state : undefined
 
-    let prefix = 'newItem'
+    let prefix = defaultPrefix
     if (
       valueGiven &&
       !Array.isArray(parent) &&
@@ -103,7 +104,12 @@ export default function insert(treeData, treeUpdate) {
       parentState._expanded = true
     }
     if (!treeUpdate.paste) {
-      parentState[newStateKey]._editing = true
+      if (Array.isArray(parent)) {
+        parentState[newStateKey]._editing = true
+      } else {
+        parentState[newStateKey]._editingName = 'new'
+        parentState[newStateKey]._editing = 'new'
+      }
     }
   })
 }

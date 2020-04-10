@@ -9,6 +9,7 @@ import CollectionSummary from '../value/CollectionSummary'
 
 const inputValue = (value, isNew = false) => {
   if (isNew && value === null) {
+    console.log('returning empty string')
     return ''
   } else if (typeof value === 'string') {
     if (/^\s*$/.test(value) || /\n|\t/.test(value)) {
@@ -31,19 +32,23 @@ const InlineValue = ({
   state,
   path,
   onMessage,
-  isNew,
+  editing,
+  editingName,
+  editingJson,
+  error,
   autoEdit,
   theme,
 }) => {
-  const { _editing: editing, _editingJson: editingJson, _error: error } = state
   const inputRef = useRef()
-  const [newInputValue, setNewInputValue] = useState(inputValue(value, isNew))
+  const [newInputValue, setNewInputValue] = useState(
+    inputValue(value, editing === 'new')
+  )
   useEffect(() => {
-    setNewInputValue(inputValue(value))
-  }, [editingJson])
+    setNewInputValue(inputValue(value, editing === 'new'))
+  }, [editingJson, editing])
 
   useEffect(() => {
-    if (editing && inputRef.current) {
+    if (!editingName && editing && inputRef.current) {
       inputRef.current.setSelectionRange(
         inputRef.current.value.length,
         inputRef.current.value.length
@@ -55,6 +60,7 @@ const InlineValue = ({
   const sendAction = (data = {}) => {}
   let newValue
   let parsed = false
+  console.log({ newInputValue, value, editing })
   if (newInputValue === '') {
     newValue = null
   } else {
@@ -205,9 +211,10 @@ function NodeValueView({
   theme,
 }) {
   const {
+    _editingName: editingName,
     _editing: editing,
     _editingJson: editingJson,
-    _isNew: isNew,
+    _error: error,
   } = getState(state)
   if (editing) {
     return (
@@ -218,7 +225,9 @@ function NodeValueView({
         path={path}
         onMessage={onMessage}
         editing={editing}
+        editingName={editingName}
         editingJson={editingJson}
+        error={error}
         autoEdit={autoEdit}
         theme={theme}
       />
@@ -257,8 +266,9 @@ function NodeValueView({
           path={path}
           onMessage={onMessage}
           editing={editing}
+          editingName={editingName}
           editingJson={editingJson}
-          isNew={isNew}
+          error={error}
           autoEdit={autoEdit}
           theme={theme}
         />

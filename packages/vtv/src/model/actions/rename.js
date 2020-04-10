@@ -3,8 +3,13 @@ import { getStateKey, draftValue, draftState, renameDraftKey } from '../util'
 
 export default function rename(treeData, treeUpdate) {
   return produce(treeData, draft => {
-    draftState(draft, treeUpdate.path)._editingName = treeUpdate.editing
-    if (typeof treeUpdate.value !== 'undefined') {
+    const state = draftState(draft, treeUpdate.path)
+    if (treeUpdate.editing) {
+      state._editingName = treeUpdate.editing
+    } else {
+      delete state['_editingName']
+    }
+    if ('value' in treeUpdate) {
       if (treeUpdate.path.length === 0) {
         draft.name = treeUpdate.value
       } else if (
@@ -21,6 +26,24 @@ export default function rename(treeData, treeUpdate) {
         draftParentState[getStateKey(treeUpdate.value)] =
           draftParentState[getStateKey(key)]
         delete draftParentState[getStateKey(key)]
+      }
+
+      if (!state._editingName) {
+        if (treeUpdate.tab) {
+          // edit if tab is pressed
+          state._editing = state._editing || true
+        } else if (
+          state._editing === 'new' &&
+          (treeUpdate.tab || treeUpdate.enter)
+        ) {
+          state._editing = 'new'
+        } else {
+          delete state['_editing']
+        }
+      }
+    } else {
+      if (!state._editingName) {
+        delete state['_editing']
       }
     }
   })
