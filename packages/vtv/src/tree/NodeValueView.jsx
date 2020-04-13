@@ -9,7 +9,6 @@ import CollectionSummary from '../value/CollectionSummary'
 
 const inputValue = (value, isNew = false) => {
   if (isNew && value === null) {
-    console.log('returning empty string')
     return ''
   } else if (typeof value === 'string') {
     if (/^\s*$/.test(value) || /\n|\t/.test(value)) {
@@ -60,7 +59,6 @@ const InlineValue = ({
   const sendAction = (data = {}) => {}
   let newValue
   let parsed = false
-  console.log({ newInputValue, value, editing })
   if (newInputValue === '') {
     newValue = null
   } else {

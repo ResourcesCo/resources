@@ -10,7 +10,18 @@ import {
   getNestedState,
   removeTemporaryState,
 } from './util'
-import { rename, edit, editJson, insert, del } from './actions'
+import {
+  rename,
+  edit,
+  editJson,
+  insert,
+  del,
+  showAll,
+  showOnlyThis,
+  set,
+  setError,
+  clearErrors,
+} from './actions'
 
 export {
   getStateKey,
@@ -82,7 +93,18 @@ const updateNestedValue = (value, path, pathValueOrFn) => {
   }
 }
 
-const actions = { rename, edit, editJson, insert, delete: del }
+const actions = {
+  rename,
+  edit,
+  editJson,
+  insert,
+  delete: del,
+  showAll,
+  showOnlyThis,
+  set,
+  setError,
+  clearErrors,
+}
 
 export const updateTree = (treeData, treeUpdate) => {
   const action = treeUpdate.action
@@ -91,36 +113,6 @@ export const updateTree = (treeData, treeUpdate) => {
     if (action in actions) {
       const actionFn = actions[action]
       return actionFn(treeData, treeUpdate)
-    } else if (action === 'showOnlyThis') {
-      return produce(treeData, draft => {
-        draftState(draft, [])._showOnly = treeUpdate.path
-        draftState(draft, treeUpdate.path)._expanded = true
-      })
-    } else if (action === 'showAll') {
-      return produce(treeData, draft => {
-        const rootDraftState = draftState(draft, [])
-        delete rootDraftState['_showOnly']
-      })
-    } else if (action === 'set') {
-      return {
-        value: {
-          ...treeData.value,
-          response: treeUpdate.value,
-        },
-        state: updateNestedState(treeData.state, treeUpdate.path, {
-          _expanded: true,
-        }),
-      }
-    } else if (action === 'setError') {
-      return {
-        state: updateNestedState(treeData.state, treeUpdate.path, {
-          _error: treeUpdate.error,
-        }),
-      }
-    } else if (action === 'clearErrors') {
-      return produce(treeData, draft => {
-        clearStateProperty(draft, treeUpdate.path || [], '_error')
-      })
     }
   } else {
     return {
