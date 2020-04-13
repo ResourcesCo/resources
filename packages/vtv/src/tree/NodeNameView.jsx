@@ -6,73 +6,76 @@ import NodeMenu from '../tree/NodeMenu'
 
 // Node Name Key
 
-const NameEdit = React.forwardRef(({ name, path, onMessage, theme }, ref) => {
-  const [newName, setNewName] = useState(name)
+const NameEdit = React.forwardRef(
+  ({ name, editingName, path, onMessage, theme }, ref) => {
+    const [newName, setNewName] = useState(editingName === 'new' ? '' : name)
 
-  const sendAction = (data = {}) => {
-    onMessage({
-      path,
-      action: 'rename',
-      editing: false,
-      ...data,
-    })
-  }
-
-  const save = () => {
-    let value
-    try {
-      value = JSON.parse(newName)
-    } catch (e) {
-      value = newName
+    const sendAction = (data = {}) => {
+      onMessage({
+        path,
+        action: 'rename',
+        editing: false,
+        ...data,
+      })
     }
-    sendAction({
-      value,
-    })
-  }
 
-  const cancel = () => {
-    sendAction()
-  }
-
-  const handleKeyPress = e => {
-    if (e.key === 'Enter' && e.shiftKey === false) {
-      e.preventDefault()
-      save()
-    } else if (e.key === 'Esc' || e.key === 'Escape') {
-      e.preventDefault()
-      cancel()
+    const save = (data = {}) => {
+      let value
+      try {
+        value = JSON.parse(newName)
+      } catch (e) {
+        value = newName
+      }
+      sendAction({
+        value,
+        ...data,
+      })
     }
-  }
 
-  return (
-    <div>
-      <Textarea
-        value={newName}
-        onChange={({ target: { value } }) => setNewName(value)}
-        onKeyDown={handleKeyPress}
-        onBlur={save}
-        autoFocus
-        tabIndex="-1"
-      />
-      <style jsx>{`
-        div :global(textarea) {
-          background: none;
-          border: none;
-          resize: none;
-          outline: none;
-          color: ${theme.foreground};
-        }
-        div {
-          background-color: ${theme.bubble1};
-          border-radius: 12px;
-          outline: none;
-          padding: 4px 7px;
-          border: 0;
-        }
-      `}</style>
-    </div>
-  )
-})
+    const cancel = () => {
+      sendAction()
+    }
+
+    const handleKeyPress = e => {
+      if ((e.key === 'Enter' && e.shiftKey === false) || e.key === 'Tab') {
+        e.preventDefault()
+        save({ tab: e.key === 'Tab', enter: e.key === 'Enter' })
+      } else if (e.key === 'Esc' || e.key === 'Escape') {
+        e.preventDefault()
+        cancel()
+      }
+    }
+
+    return (
+      <div>
+        <Textarea
+          value={newName}
+          onChange={({ target: { value } }) => setNewName(value)}
+          onKeyDown={handleKeyPress}
+          onBlur={save}
+          autoFocus
+          tabIndex="-1"
+        />
+        <style jsx>{`
+          div :global(textarea) {
+            background: none;
+            border: none;
+            resize: none;
+            outline: none;
+            color: ${theme.foreground};
+          }
+          div {
+            background-color: ${theme.bubble1};
+            border-radius: 12px;
+            outline: none;
+            padding: 4px 7px;
+            border: 0;
+          }
+        `}</style>
+      </div>
+    )
+  }
+)
 
 const NameButton = ({ displayName, name, onClick, theme }) => {
   return (
@@ -118,7 +121,13 @@ export default ({
 
   if (editingName) {
     return (
-      <NameEdit name={name} path={path} onMessage={onMessage} theme={theme} />
+      <NameEdit
+        name={name}
+        editingName={editingName}
+        path={path}
+        onMessage={onMessage}
+        theme={theme}
+      />
     )
   } else {
     if (bubbleMenu) {

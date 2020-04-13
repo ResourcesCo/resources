@@ -220,7 +220,7 @@ function NodeView({
                 {Object.keys(value).map(key => (
                   <NodeView
                     parentType={nodeType}
-                    key={[key, value[key]]}
+                    key={[key, value[key], getChildState(state, key)]}
                     name={key}
                     value={value[key]}
                     state={getChildState(state, key)}
