@@ -7,8 +7,8 @@ import Link from '../value/Link'
 import StringView from '../value/StringView'
 import CollectionSummary from '../value/CollectionSummary'
 
-const inputValue = (value, isNew = false) => {
-  if (isNew && value === null) {
+const inputValue = (value, noNull = false) => {
+  if (noNull && value === null) {
     return ''
   } else if (typeof value === 'string') {
     if (/^\s*$/.test(value) || /\n|\t/.test(value)) {
@@ -99,6 +99,11 @@ const InlineValue = ({
     }
   }
 
+  const onFocus = () => {
+    setNewInputValue(inputValue(value, true))
+    save()
+  }
+
   const onBlur = () => {
     setNewInputValue(inputValue(newValue))
     save()
@@ -139,6 +144,7 @@ const InlineValue = ({
           value={newInputValue}
           onChange={({ target: { value } }) => setNewInputValue(value)}
           onKeyDown={handleKeyPress}
+          onFocus={onFocus}
           onBlur={onBlur}
           wrap="off"
           tabIndex="-1"
