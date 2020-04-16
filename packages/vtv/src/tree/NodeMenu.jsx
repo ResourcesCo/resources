@@ -118,6 +118,9 @@ function NodeMenu({
           Clipboard
         </MenuItem>
       )}
+      {!showAll && ['object', 'array'].includes(parentType) && (
+        <MenuItem onClick={() => sendAction('upload')}>Upload file</MenuItem>
+      )}
       {!nameOptionsFirst &&
         !showAll &&
         ['object', null].includes(parentType) && (

@@ -18,6 +18,7 @@ import NodeMenuButton from './NodeMenuButton'
 import NodeMenu from './NodeMenu'
 import TableView from '../table/TableView'
 import CodeView from '../value/CodeView'
+import AttachmentView from '../value/AttachmentView'
 import ActionButton from '../generic/ActionButton'
 
 function NodeView({
@@ -43,6 +44,7 @@ function NodeView({
     _showOnly: showOnly,
     _editingName: editingName,
     _editingJson: editingJson,
+    _attachments: attachments,
     _actions: actions,
     _error: error,
   } = getState(state)
@@ -249,6 +251,24 @@ function NodeView({
             </div>
           )}
         </>
+      )}
+      {attachments && attachments.open && (
+        <div
+          style={{
+            paddingLeft: indent,
+            paddingTop: 5,
+            paddingBottom: 5,
+            marginRight: 15,
+          }}
+        >
+          <AttachmentView
+            open={expanded}
+            path={path}
+            value={value}
+            onMessage={onMessage}
+            theme={theme}
+          />
+        </div>
       )}
       {editingJson && (
         <div

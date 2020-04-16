@@ -21,6 +21,7 @@ import {
   set,
   setError,
   clearErrors,
+  attach,
 } from './actions'
 
 export {
@@ -104,6 +105,7 @@ const actions = {
   set,
   setError,
   clearErrors,
+  attach,
 }
 
 export const updateTree = (treeData, treeUpdate) => {
