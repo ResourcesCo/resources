@@ -7,8 +7,8 @@ import Link from '../value/Link'
 import StringView from '../value/StringView'
 import CollectionSummary from '../value/CollectionSummary'
 
-const inputValue = (value, noNull = false) => {
-  if (noNull && value === null) {
+const inputValue = value => {
+  if (value === null) {
     return ''
   } else if (typeof value === 'string') {
     if (/^\s*$/.test(value) || /\n|\t/.test(value)) {
@@ -39,11 +39,10 @@ const InlineValue = ({
   theme,
 }) => {
   const inputRef = useRef()
-  const [newInputValue, setNewInputValue] = useState(
-    inputValue(value, editing === 'new')
-  )
+  const [focused, setFocused] = useState(false)
+  const [newInputValue, setNewInputValue] = useState(inputValue(value))
   useEffect(() => {
-    setNewInputValue(inputValue(value, editing === 'new'))
+    setNewInputValue(inputValue(value))
   }, [editingJson, editing])
 
   useEffect(() => {
@@ -94,17 +93,19 @@ const InlineValue = ({
       e.preventDefault()
       save()
     } else if (e.key === 'Esc' || e.key === 'Escape') {
+      e.target.blur()
       e.preventDefault()
       cancel()
     }
   }
 
   const onFocus = () => {
-    setNewInputValue(inputValue(value, true))
+    setFocused(true)
     save()
   }
 
   const onBlur = () => {
+    setFocused(false)
     setNewInputValue(inputValue(newValue))
     save()
   }
@@ -141,7 +142,15 @@ const InlineValue = ({
       {useTextArea ? (
         <Textarea
           ref={inputRef}
-          value={newInputValue}
+          value={
+            focused
+              ? newInputValue
+              : value === null
+              ? editing === 'new'
+                ? ''
+                : 'null'
+              : newInputValue
+          }
           onChange={({ target: { value } }) => setNewInputValue(value)}
           onKeyDown={handleKeyPress}
           onFocus={onFocus}

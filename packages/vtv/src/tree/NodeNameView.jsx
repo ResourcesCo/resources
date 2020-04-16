@@ -3,6 +3,8 @@ import { Manager, Reference, Popper } from 'react-popper'
 import Textarea from '../generic/Textarea'
 import StringView from '../value/StringView'
 import NodeMenu from '../tree/NodeMenu'
+import setCaretAtEnd from '../util/setCaretAtEnd'
+import escapeHtml from '../util/escapeHtml'
 
 // Node Name Key
 
@@ -85,8 +87,9 @@ const NameEditInPlace = React.forwardRef(
     useEffect(() => {
       if (editableRef.current) {
         editableRef.current.focus()
+        setCaretAtEnd(editableRef.current)
       }
-    }, editableRef)
+    }, [editableRef])
 
     const sendAction = (data = {}) => {
       onMessage({
@@ -129,21 +132,29 @@ const NameEditInPlace = React.forwardRef(
 
     return (
       <div>
+        &#x200b;
         <span
           contentEditable
           ref={editableRef}
           onKeyDown={handleKeyPress}
           onBlur={save}
-        >
-          {name}
-        </span>
+          dangerouslySetInnerHTML={{
+            __html: escapeHtml(editingName === 'new' ? '' : name),
+          }}
+        ></span>
         <style jsx>{`
           div {
             background-color: ${theme.bubble1};
             border-radius: 12px;
             outline: none;
-            padding: 4px 7px;
+            padding: 3px 7px;
             border: 0;
+            outline: none;
+            margin: 0 0;
+          }
+          span {
+            outline: none;
+            margin: 0 0;
           }
         `}</style>
       </div>
