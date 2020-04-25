@@ -16,6 +16,10 @@ export function MenuItem({
 }) {
   const [itemHover, setItemHover] = useState(false)
   const [submenuHover, setSubmenuHover] = useState(false)
+  const setHoverOff = () => {
+    setItemHover(false)
+    setSubmenuHover(false)
+  }
   return submenu ? (
     <Manager>
       <Reference>
@@ -24,7 +28,7 @@ export function MenuItem({
             ref={ref}
             className="menu-item"
             onMouseEnter={() => setItemHover(true)}
-            onMouseLeave={() => setItemHover(false)}
+            onMouseLeave={() => setHoverOff()}
           >
             <button onClick={onClick}>{children}</button>
             <FontAwesomeIcon icon={faCaretRight} size="sm" />
@@ -149,6 +153,9 @@ export default ({
               opacity: 0.95;
               padding: 2px;
               border-radius: 5px;
+              display: flex;
+              flex-direction: column;
+              align-items: stretch;
             }
           `}</style>
         </div>

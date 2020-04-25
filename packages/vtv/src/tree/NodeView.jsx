@@ -18,7 +18,6 @@ import NodeMenuButton from './NodeMenuButton'
 import NodeMenu from './NodeMenu'
 import TableView from '../table/TableView'
 import CodeView from '../value/CodeView'
-import AttachmentView from '../value/AttachmentView'
 import ActionButton from '../generic/ActionButton'
 
 function NodeView({
@@ -170,6 +169,7 @@ function NodeView({
             path={path}
             onMessage={onMessage}
             onPickId={onPickId}
+            clipboard={clipboard}
             theme={theme}
           />
         </div>
@@ -246,29 +246,12 @@ function NodeView({
                 state={state}
                 onPickId={onPickId}
                 onMessage={onMessage}
+                clipboard={clipboard}
                 theme={theme}
               />
             </div>
           )}
         </>
-      )}
-      {attachments && attachments.open && (
-        <div
-          style={{
-            paddingLeft: indent,
-            paddingTop: 5,
-            paddingBottom: 5,
-            marginRight: 15,
-          }}
-        >
-          <AttachmentView
-            open={expanded}
-            path={path}
-            value={value}
-            onMessage={onMessage}
-            theme={theme}
-          />
-        </div>
       )}
       {editingJson && (
         <div

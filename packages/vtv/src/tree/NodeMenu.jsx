@@ -119,7 +119,7 @@ function NodeMenu({
         </MenuItem>
       )}
       {!showAll && ['object', 'array'].includes(parentType) && (
-        <MenuItem onClick={() => sendAction('upload')}>Upload file</MenuItem>
+        <MenuItem onClick={() => sendAction('attach')}>Attach file</MenuItem>
       )}
       {!nameOptionsFirst &&
         !showAll &&

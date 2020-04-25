@@ -4,7 +4,16 @@ import { getChildState } from '../model'
 import NodeValueView from '../tree/NodeValueView'
 import NodeNameView from '../tree/NodeNameView'
 
-export default ({ name, value, path, state, onPickId, onMessage, theme }) => {
+export default ({
+  name,
+  value,
+  path,
+  state,
+  onPickId,
+  onMessage,
+  clipboard,
+  theme,
+}) => {
   const paths = getCollectionPaths(value)
   return (
     <div className="table">

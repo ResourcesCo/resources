@@ -4,8 +4,8 @@ import Textarea from '../generic/Textarea'
 import { detectUrl } from '../model/analyze'
 import { getState } from '../model/state'
 import Link from '../value/Link'
-import StringView from '../value/StringView'
 import CollectionSummary from '../value/CollectionSummary'
+import AttachmentView from '../value/AttachmentView'
 
 const inputValue = value => {
   if (value === null) {
@@ -132,14 +132,17 @@ const InlineValue = ({
       return 'full-width'
     }
   }
-  const useTextArea = !editingJson && (autoEdit || editing)
+  const showStringExcerpt =
+    typeof value === 'string' && !editingJson && value.length > 500
+  const useTextArea =
+    !editingJson && !showStringExcerpt && (autoEdit || editing)
   return (
     <div
       className={`${typeClass} ${error ? 'has-error' : ''} ${
         useTextArea ? sizeClass(newInputValue) : ''
       }`}
     >
-      {useTextArea ? (
+      {useTextArea && (
         <Textarea
           ref={inputRef}
           value={
@@ -158,9 +161,11 @@ const InlineValue = ({
           wrap="off"
           tabIndex="-1"
         />
-      ) : (
-        <span>{value}</span>
       )}
+      {showStringExcerpt && (
+        <span>{`${value.substr(0, 50)}… (${value.length} characters)`}</span>
+      )}
+      {!useTextArea && !showStringExcerpt && <span>{value}</span>}
       {error && <span className="error">{error}</span>}
 
       <style jsx>{`
@@ -221,15 +226,27 @@ function NodeValueView({
   onMessage,
   onPickId,
   autoEdit = true,
+  clipboard,
   theme,
 }) {
   const {
     _editingName: editingName,
     _editing: editing,
     _editingJson: editingJson,
+    _attachments: attachments,
     _error: error,
   } = getState(state)
-  if (editing) {
+  if (attachments) {
+    return (
+      <AttachmentView
+        path={path}
+        onMessage={onMessage}
+        attachments={attachments}
+        clipboard={clipboard}
+        theme={theme}
+      />
+    )
+  } else if (editing) {
     return (
       <InlineValue
         name={name}
