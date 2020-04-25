@@ -6,6 +6,40 @@ import useClickOutside from '../util/useClickOutside'
 import ClipboardMenu from './ClipboardMenu'
 import Menu, { MenuItem } from '../generic/Menu'
 
+function InsertMenu({ showAll, nodeType, parentType, sendAction, ...props }) {
+  return (
+    <Menu
+      onClose={() => null}
+      popperProps={{
+        placement: 'left-start',
+        modifiers: { offset: { offset: '0, -3' } },
+      }}
+      {...props}
+    >
+      {!showAll && ['object', 'array'].includes(nodeType) && (
+        <MenuItem onClick={() => sendAction('insert', { position: 'append' })}>
+          Child (Append)
+        </MenuItem>
+      )}
+      {!showAll && ['object', 'array'].includes(nodeType) && (
+        <MenuItem onClick={() => sendAction('insert', { position: 'prepend' })}>
+          Child (Prepend)
+        </MenuItem>
+      )}
+      {!showAll && ['object', 'array'].includes(parentType) && (
+        <MenuItem onClick={() => sendAction('insert', { position: 'above' })}>
+          Before
+        </MenuItem>
+      )}
+      {!showAll && ['object', 'array'].includes(parentType) && (
+        <MenuItem onClick={() => sendAction('insert', { position: 'below' })}>
+          After
+        </MenuItem>
+      )}
+    </Menu>
+  )
+}
+
 function NodeMenu({
   onPickId,
   parentType,
@@ -82,21 +116,20 @@ function NodeMenu({
           </MenuItem>
         )
       })}
-      {!showAll && ['object', 'array'].includes(nodeType) && (
-        <MenuItem onClick={() => sendAction('insert', { position: 'append' })}>
-          Append Child
-        </MenuItem>
-      )}
-      {!showAll && ['object', 'array'].includes(parentType) && (
-        <MenuItem onClick={() => sendAction('insert', { position: 'above' })}>
-          Insert Before
-        </MenuItem>
-      )}
-      {!showAll && ['object', 'array'].includes(parentType) && (
-        <MenuItem onClick={() => sendAction('insert', { position: 'below' })}>
-          Insert After
-        </MenuItem>
-      )}
+      <MenuItem
+        submenu={
+          <InsertMenu
+            showAll={showAll}
+            nodeType={nodeType}
+            parentType={parentType}
+            sendAction={sendAction}
+            onClose={onClose}
+            theme={theme}
+          />
+        }
+      >
+        Insert
+      </MenuItem>
       {!showAll && ['object', 'array'].includes(parentType) && (
         <MenuItem
           submenu={

@@ -74,7 +74,7 @@ export default function insert(treeData, treeUpdate) {
     } else {
       parentState = draftState(draft, path)
       if (Array.isArray(parent)) {
-        newKey = parent.length
+        newKey = position === 'append' ? parent.length : 0
       } else {
         newKey = getNewKey(parent, prefix)
       }
@@ -95,12 +95,22 @@ export default function insert(treeData, treeUpdate) {
       if (['above', 'below'].includes(position)) {
         insertInPlace(parent, key, position, newKey, newValue)
       } else {
-        parent[newKey] = newValue
+        if (position === 'append' || Object.keys(parent).length === 0) {
+          parent[newKey] = newValue
+        } else {
+          insertInPlace(
+            parent,
+            Object.keys(parent)[0],
+            'above',
+            newKey,
+            newValue
+          )
+        }
       }
       parentState[newStateKey] = getState(newState)
     }
 
-    if (position === 'append') {
+    if (['append', 'prepend'].includes(position)) {
       parentState._expanded = true
     }
     if (!treeUpdate.paste) {
