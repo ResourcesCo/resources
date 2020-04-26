@@ -1,44 +1,10 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { getState } from '../model/state'
-import { hasChildren, isBasicType } from '../model/analyze'
-import useClickOutside from '../util/useClickOutside'
+import { isBasicType } from '../model/analyze'
+import InsertMenu from './InsertMenu'
+import ViewMenu from './ViewMenu'
 import ClipboardMenu from './ClipboardMenu'
 import Menu, { MenuItem } from '../generic/Menu'
-
-function InsertMenu({ showAll, nodeType, parentType, sendAction, ...props }) {
-  return (
-    <Menu
-      onClose={() => null}
-      popperProps={{
-        placement: 'left-start',
-        modifiers: { offset: { offset: '0, -3' } },
-      }}
-      {...props}
-    >
-      {!showAll && ['object', 'array'].includes(nodeType) && (
-        <MenuItem onClick={() => sendAction('insert', { position: 'append' })}>
-          Child (Append)
-        </MenuItem>
-      )}
-      {!showAll && ['object', 'array'].includes(nodeType) && (
-        <MenuItem onClick={() => sendAction('insert', { position: 'prepend' })}>
-          Child (Prepend)
-        </MenuItem>
-      )}
-      {!showAll && ['object', 'array'].includes(parentType) && (
-        <MenuItem onClick={() => sendAction('insert', { position: 'above' })}>
-          Before
-        </MenuItem>
-      )}
-      {!showAll && ['object', 'array'].includes(parentType) && (
-        <MenuItem onClick={() => sendAction('insert', { position: 'below' })}>
-          After
-        </MenuItem>
-      )}
-    </Menu>
-  )
-}
 
 function NodeMenu({
   onPickId,
@@ -60,15 +26,6 @@ function NodeMenu({
   const [action, setAction] = useState(null)
 
   const isArray = Array.isArray(value)
-  const viewType = getState(state)._viewType || 'tree'
-
-  const setViewType = viewType => {
-    onMessage({
-      path,
-      state: { _viewType: viewType, _expanded: true },
-    })
-    onViewChanged()
-  }
 
   const sendAction = (action, data = {}) => {
     onMessage({
@@ -103,26 +60,29 @@ function NodeMenu({
       {!showAll && isBasicType(value) && (
         <MenuItem onClick={edit}>Edit</MenuItem>
       )}
-      {['tree', 'table'].map(key => {
-        if (key === viewType) {
-          return null
+      <MenuItem
+        submenu={
+          <ViewMenu
+            path={path}
+            value={value}
+            state={state}
+            onMessage={onMessage}
+            onViewChanged={onViewChanged}
+            onClose={onClose}
+            theme={theme}
+          />
         }
-        if (key === 'table' && !hasChildren(value)) {
-          return null
-        }
-        return (
-          <MenuItem key={key} onClick={() => setViewType(key)}>
-            View as {key}
-          </MenuItem>
-        )
-      })}
+      >
+        View
+      </MenuItem>
       <MenuItem
         submenu={
           <InsertMenu
             showAll={showAll}
             nodeType={nodeType}
             parentType={parentType}
-            sendAction={sendAction}
+            path={path}
+            onMessage={onMessage}
             onClose={onClose}
             theme={theme}
           />

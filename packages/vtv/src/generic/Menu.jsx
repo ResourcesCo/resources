@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { getState } from '../model/state'
-import { hasChildren } from '../model/analyze'
+import clsx from 'clsx'
 import useClickOutside from '../util/useClickOutside'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons'
@@ -8,6 +7,7 @@ import { Popper, Manager, Reference } from 'react-popper'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 export function MenuItem({
+  checked,
   onClick,
   copyToClipboard,
   children,
@@ -25,8 +25,8 @@ export function MenuItem({
       <Reference>
         {({ ref }) => (
           <div
-            ref={ref}
             className="menu-item"
+            ref={ref}
             onMouseEnter={() => setItemHover(true)}
             onMouseLeave={() => setHoverOff()}
           >
@@ -67,7 +67,7 @@ export function MenuItem({
         })}
     </Manager>
   ) : (
-    <div className="menu-item">
+    <div className={clsx('menu-item', { checked })}>
       {copyToClipboard ? (
         <CopyToClipboard text={copyToClipboard} onCopy={onClick}>
           <button>{children}</button>
@@ -98,6 +98,9 @@ export function MenuItem({
         }
         div.menu-item {
           padding-right: 3px;
+        }
+        div.menu-item.checked button {
+          font-weight: bold;
         }
       `}</style>
     </div>
