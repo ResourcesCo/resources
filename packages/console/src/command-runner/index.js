@@ -163,6 +163,17 @@ export default async function runCommand({
   parentMessage,
   store,
 }) {
+  if (['{', '['].includes(parsed[0].substr(0, 1))) {
+    return runCommand({
+      message: parsed[0].substr(0, 1) === '{' ? '{json data}' : '[json data]',
+      parsed: ['note', 'add', parsed[0]],
+      onMessagesCreated,
+      formData,
+      parentCommandId,
+      parentMessage,
+      store,
+    })
+  }
   const resourcePath = splitPath(parsed[0])
   const actionName = parsed.length > 1 ? parsed[1] : '_default'
 
