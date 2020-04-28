@@ -1,4 +1,5 @@
 import j2ref from 'j2ref'
+import { nodeTypes } from './nodeTypes'
 
 export const isObject = value => {
   return (
@@ -11,15 +12,15 @@ export const isObject = value => {
 
 export const getNodeType = value => {
   if (isObject(value)) {
-    return 'object'
+    return nodeTypes.object
   } else if (Array.isArray(value)) {
-    return 'array'
+    return nodeTypes.array
   } else if (typeof value === 'string') {
-    return 'string'
+    return nodeTypes.string
   } else if (typeof value === 'number') {
-    return 'number'
+    return nodeTypes.number
   } else {
-    return 'value'
+    return nodeTypes.value
   }
 }
 

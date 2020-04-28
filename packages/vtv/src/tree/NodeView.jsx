@@ -11,6 +11,7 @@ import {
   isObject,
   getNodeType,
 } from '../model/analyze'
+import { nodeTypes } from '../model/nodeTypes'
 import ExpandButton from './ExpandButton'
 import NodeNameView from './NodeNameView'
 import NodeValueView from './NodeValueView'
@@ -21,7 +22,7 @@ import CodeView from '../value/CodeView'
 import ActionButton from '../generic/ActionButton'
 
 function NodeView({
-  parentType = null,
+  parentType = nodeTypes.nonexistent,
   name,
   value,
   state,

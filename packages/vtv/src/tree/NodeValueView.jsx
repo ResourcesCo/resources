@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Textarea from '../generic/Textarea'
-import { detectUrl } from '../model/analyze'
+import { getNodeType, detectUrl } from '../model/analyze'
 import { getState } from '../model/state'
 import Link from '../value/Link'
 import CollectionSummary from '../value/CollectionSummary'
@@ -111,9 +111,10 @@ const InlineValue = ({
   }
 
   let typeClass
-  if (typeof newValue === 'string') {
+  const nodeType = getNodeType(newValue)
+  if (nodeType.isString) {
     typeClass = parsed ? 'stringValue' : 'string'
-  } else if (typeof newValue === 'number') {
+  } else if (nodeType.isNumber) {
     typeClass = 'number'
   } else {
     typeClass = 'value'

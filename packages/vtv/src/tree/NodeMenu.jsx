@@ -52,7 +52,7 @@ function NodeMenu({
     <Menu onClose={onClose} popperProps={popperProps} theme={theme}>
       {nameOptionsFirst &&
         !showAll &&
-        ['object', null].includes(parentType) && (
+        ['object', null].includes(parentType.baseType) && (
           <MenuItem onClick={() => sendAction('rename', { editing: true })}>
             Rename
           </MenuItem>
@@ -90,7 +90,7 @@ function NodeMenu({
       >
         Insert
       </MenuItem>
-      {!showAll && ['object', 'array'].includes(parentType) && (
+      {!showAll && ['object', 'array'].includes(parentType.baseType) && (
         <MenuItem
           submenu={
             <ClipboardMenu
@@ -111,17 +111,17 @@ function NodeMenu({
           Clipboard
         </MenuItem>
       )}
-      {!showAll && ['object', 'array'].includes(parentType) && (
+      {!showAll && ['object', 'array'].includes(parentType.baseType) && (
         <MenuItem onClick={() => sendAction('attach')}>Attach file</MenuItem>
       )}
       {!nameOptionsFirst &&
         !showAll &&
-        ['object', null].includes(parentType) && (
+        ['object', null].includes(parentType.baseType) && (
           <MenuItem onClick={() => sendAction('rename', { editing: true })}>
             Rename
           </MenuItem>
         )}
-      {!showAll && ['object', 'array'].includes(parentType) && (
+      {!showAll && ['object', 'array'].includes(parentType.baseType) && (
         <MenuItem onClick={() => sendAction('delete')}>Delete</MenuItem>
       )}
       {!showAll && <MenuItem onClick={editJson}>Edit JSON</MenuItem>}
