@@ -10,19 +10,18 @@ import {
   joinPath,
   isObject,
   getNodeType,
+  getStringType,
 } from '../model/analyze'
-import { nodeTypes } from '../model/nodeTypes'
 import ExpandButton from './ExpandButton'
 import NodeNameView from './NodeNameView'
 import NodeValueView from './NodeValueView'
 import NodeMenuButton from './NodeMenuButton'
-import NodeMenu from './NodeMenu'
 import TableView from '../table/TableView'
 import CodeView from '../value/CodeView'
 import ActionButton from '../generic/ActionButton'
 
 function NodeView({
-  parentType = nodeTypes.nonexistent,
+  parentType = null,
   name,
   value,
   state,
@@ -75,6 +74,12 @@ function NodeView({
 
   const _hasChildren = hasChildren(value)
   const nodeType = getNodeType(value)
+  let stringType = null
+  let isExpandable = _hasChildren
+  if (nodeType === 'string') {
+    stringType = getStringType(value)
+    isExpandable = stringType !== 'inline'
+  }
 
   if (showOnly) {
     const showOnlyParent = showOnly.slice(0, showOnly.length - 1)
@@ -128,7 +133,7 @@ function NodeView({
         tabIndex={0}
       >
         <ExpandButton
-          hasChildren={_hasChildren}
+          disabled={!isExpandable}
           expanded={expanded}
           onClick={toggleExpanded}
           theme={theme}

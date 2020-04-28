@@ -1,12 +1,13 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretRight, faCaretDown } from '@fortawesome/free-solid-svg-icons'
+import clsx from 'clsx'
 
-export default ({ onClick, expanded, hasChildren, theme }) => (
+export default ({ onClick, expanded, disabled, theme }) => (
   <div className={expanded ? 'expanded' : ''}>
     <button
       onClick={onClick}
-      className={hasChildren ? '' : 'invisible'}
+      className={clsx({ invisible: disabled })}
       tabIndex="-1"
     >
       <FontAwesomeIcon icon={expanded ? faCaretDown : faCaretRight} size="xs" />

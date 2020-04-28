@@ -242,7 +242,7 @@ export default ({
       )
     } else {
       const rename = () => {
-        if (parentType.isArray) {
+        if (parentType === 'array') {
           onMessage({
             path,
             action: 'rename',

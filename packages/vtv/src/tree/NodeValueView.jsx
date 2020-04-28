@@ -112,9 +112,9 @@ const InlineValue = ({
 
   let typeClass
   const nodeType = getNodeType(newValue)
-  if (nodeType.isString) {
+  if (nodeType === 'string') {
     typeClass = parsed ? 'stringValue' : 'string'
-  } else if (nodeType.isNumber) {
+  } else if (nodeType === 'number') {
     typeClass = 'number'
   } else {
     typeClass = 'value'

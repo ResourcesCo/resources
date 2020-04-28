@@ -24,16 +24,16 @@ export default function InsertMenu({
       }}
       {...props}
     >
-      {!showAll && ['object', 'array'].includes(parentType.baseType) && (
+      {!showAll && ['object', 'array'].includes(parentType) && (
         <MenuItem onClick={() => insert('above')}>Above</MenuItem>
       )}
-      {!showAll && ['object', 'array'].includes(parentType.baseType) && (
+      {!showAll && ['object', 'array'].includes(parentType) && (
         <MenuItem onClick={() => insert('below')}>Below</MenuItem>
       )}
-      {['object', 'array'].includes(nodeType.baseType) && (
+      {['object', 'array'].includes(nodeType) && (
         <MenuItem onClick={() => insert('append')}>Child (Append)</MenuItem>
       )}
-      {['object', 'array'].includes(nodeType.baseType) && (
+      {['object', 'array'].includes(nodeType) && (
         <MenuItem onClick={() => insert('prepend')}>Child (Prepend)</MenuItem>
       )}
     </Menu>

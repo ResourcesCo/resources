@@ -12,7 +12,7 @@ function InsertObjectMenu({ onInsert, theme, ...props }) {
       theme={theme}
       {...props}
     >
-      <MenuItem onClick={() => onInsert('data-uri', true)}>Data URI</MenuItem>
+      <MenuItem onClick={() => onInsert('data-url', true)}>Data URL</MenuItem>
       <MenuItem onClick={() => onInsert('base64', true)}>Base64</MenuItem>
       <MenuItem onClick={() => onInsert('text', true)}>Text</MenuItem>
     </Menu>
@@ -67,7 +67,7 @@ function readFile(file, type) {
     reader.addEventListener('error', err => {
       reject(err)
     })
-    if (type === 'data-uri') {
+    if (type === 'data-url') {
       reader.readAsDataURL(file)
     } else if (type === 'text') {
       reader.readAsText(file)
@@ -89,7 +89,7 @@ function getMetadata(file) {
 
 export default ({ path, onMessage, file, onClose, clipboard, theme }) => {
   const handleInsert = async (type, object = false) => {
-    let data = await readFile(file, type === 'text' ? 'text' : 'data-uri')
+    let data = await readFile(file, type === 'text' ? 'text' : 'data-url')
     if (type === 'base64') {
       data = data.replace('data:', '').replace(/^.*;base64,/, '')
     }
@@ -115,8 +115,8 @@ export default ({ path, onMessage, file, onClose, clipboard, theme }) => {
       theme={theme}
       onClose={onClose}
     >
-      <MenuItem onClick={() => handleInsert('data-uri')}>
-        Insert as Data URI
+      <MenuItem onClick={() => handleInsert('data-url')}>
+        Insert as Data URL
       </MenuItem>
       <MenuItem onClick={() => handleInsert('base64')}>
         Insert as Base64

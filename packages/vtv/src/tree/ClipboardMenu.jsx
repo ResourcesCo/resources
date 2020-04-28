@@ -21,7 +21,7 @@ function ClipboardMenu({
 
   // needed for copy to clipboard component
   const valueJson = JSON.stringify(
-    parentType.isObject ? { [name]: value } : value,
+    parentType === 'object' ? { [name]: value } : value,
     null,
     2
   )
@@ -32,12 +32,12 @@ function ClipboardMenu({
   ) => {
     if (['cut', 'copy'].includes(clipboardAction)) {
       const valueJson = JSON.stringify(
-        parentType.isObject ? { [name]: value } : value,
+        parentType === 'object' ? { [name]: value } : value,
         null,
         2
       )
       const stateJson = JSON.stringify(
-        parentType.isObject ? { [getStateKey(name)]: state } : state,
+        parentType === 'object' ? { [getStateKey(name)]: state } : state,
         null,
         2
       )
@@ -101,33 +101,27 @@ function ClipboardMenu({
       >
         Copy
       </MenuItem>
-      {!showAll &&
-        hasPasteData &&
-        ['object', 'array'].includes(nodeType.baseType) && (
-          <MenuItem
-            onClick={() => doClipboardAction('paste', { position: 'append' })}
-          >
-            Paste Child
-          </MenuItem>
-        )}
-      {!showAll &&
-        hasPasteData &&
-        ['object', 'array'].includes(parentType.baseType) && (
-          <MenuItem
-            onClick={() => doClipboardAction('paste', { position: 'above' })}
-          >
-            Paste Before
-          </MenuItem>
-        )}
-      {!showAll &&
-        hasPasteData &&
-        ['object', 'array'].includes(parentType.baseType) && (
-          <MenuItem
-            onClick={() => doClipboardAction('paste', { position: 'below' })}
-          >
-            Paste After
-          </MenuItem>
-        )}
+      {!showAll && hasPasteData && ['object', 'array'].includes(nodeType) && (
+        <MenuItem
+          onClick={() => doClipboardAction('paste', { position: 'append' })}
+        >
+          Paste Child
+        </MenuItem>
+      )}
+      {!showAll && hasPasteData && ['object', 'array'].includes(parentType) && (
+        <MenuItem
+          onClick={() => doClipboardAction('paste', { position: 'above' })}
+        >
+          Paste Before
+        </MenuItem>
+      )}
+      {!showAll && hasPasteData && ['object', 'array'].includes(parentType) && (
+        <MenuItem
+          onClick={() => doClipboardAction('paste', { position: 'below' })}
+        >
+          Paste After
+        </MenuItem>
+      )}
     </Menu>
   )
 }
