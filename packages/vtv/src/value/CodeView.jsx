@@ -1,29 +1,28 @@
 import React, { useState, useRef, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import Textarea from '../generic/Textarea'
 import ActionButton from '../generic/ActionButton'
 
-export default ({ value, path, onMessage, theme }) => {
+export default function CodeView({ editMode, value, path, onMessage, theme }) {
+  const [editing, setEditing] = useState(false)
   const [newValue, setNewValue] = useState(JSON.stringify(value, null, 2))
-  const [hadError, setHadError] = useState(false)
   const [error, setError] = useState(false)
 
   const save = () => {
     if (validate(newValue)) {
+      setEditing(false)
       onMessage({
         path,
         action: 'editJson',
-        editing: false,
         value: JSON.parse(newValue),
       })
     }
   }
 
   const cancel = () => {
-    onMessage({
-      path,
-      action: 'editJson',
-      editing: false,
-    })
+    setError(false)
+    setEditing(false)
+    setNewValue(JSON.stringify(value, null, 2))
   }
 
   const validate = value => {
@@ -34,7 +33,6 @@ export default ({ value, path, onMessage, theme }) => {
       valid = false
     }
     setError(!valid)
-    if (!valid && !hadError) setHadError(true)
     return valid
   }
 
@@ -42,7 +40,8 @@ export default ({ value, path, onMessage, theme }) => {
 
   const handleChange = ({ target: { value } }) => {
     setNewValue(value)
-    if (hadError) validate(value)
+    setEditing(true)
+    if (error) validate(value)
   }
 
   return (
@@ -53,7 +52,6 @@ export default ({ value, path, onMessage, theme }) => {
             value={newValue}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
-            onBlur={() => validate(newValue)}
             maxRows={20}
             autoFocus
           />
@@ -61,7 +59,7 @@ export default ({ value, path, onMessage, theme }) => {
         {error && <div className="error-message">Invalid JSON</div>}
       </div>
       <div className="actions">
-        {value !== newValue ? (
+        {editing && (
           <>
             <div className="actionButton">
               <ActionButton
@@ -78,12 +76,6 @@ export default ({ value, path, onMessage, theme }) => {
                 Cancel
               </ActionButton>
             </div>
-          </>
-        ) : (
-          <>
-            <ActionButton onClick={cancel} theme={theme}>
-              Close
-            </ActionButton>
           </>
         )}
       </div>
@@ -124,4 +116,13 @@ export default ({ value, path, onMessage, theme }) => {
       `}</style>
     </div>
   )
+}
+
+CodeView.propTypes = {
+  editMode: PropTypes.oneOf(['string', 'json']).isRequired,
+  value: PropTypes.any.isRequired,
+  state: PropTypes.object.isRequired,
+  path: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onMessage: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired,
 }

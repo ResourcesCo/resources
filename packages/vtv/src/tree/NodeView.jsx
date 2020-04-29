@@ -5,7 +5,7 @@ import getNested from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { getState, getChildState, getNestedState } from '../model/state'
 import {
-  hasChildren,
+  hasChildren as hasChildrenFn,
   detectUrl,
   joinPath,
   isObject,
@@ -24,7 +24,7 @@ function NodeView({
   parentType = null,
   name,
   value,
-  state,
+  state: _state,
   options,
   displayName,
   showOnlyPath = [],
@@ -37,23 +37,20 @@ function NodeView({
 }) {
   const [viewChanged, setViewChanged] = useState(false)
 
+  const state = getState(_state)
   const {
     _expanded: expanded,
     _viewType: viewType,
     _showOnly: showOnly,
     _editingName: editingName,
-    _editingJson: editingJson,
     _attachments: attachments,
     _actions: actions,
     _error: error,
-  } = getState(state)
+  } = state
   const { bubbleMenu, dotMenu } = options
 
   const toggleExpanded = () => {
     setViewChanged(true)
-    if (editingJson) {
-      return
-    }
     onMessage({ path, state: { _expanded: !expanded } })
   }
 
@@ -70,12 +67,12 @@ function NodeView({
         })
       }, 10)
     }
-  }, [expanded, editingJson, viewType])
+  }, [expanded, viewType])
 
-  const _hasChildren = hasChildren(value)
+  const hasChildren = hasChildrenFn(value)
   const nodeType = getNodeType(value)
   let stringType = null
-  let isExpandable = _hasChildren
+  let isExpandable = hasChildren
   if (nodeType === 'string') {
     stringType = getStringType(value)
     isExpandable = stringType !== 'inline'
@@ -219,7 +216,7 @@ function NodeView({
           }
         `}</style>
       </div>
-      {!editingJson && (
+      {viewType !== 'json' && (
         <>
           {expanded &&
             (isObject(value) || Array.isArray(value)) &&
@@ -259,7 +256,7 @@ function NodeView({
           )}
         </>
       )}
-      {editingJson && (
+      {viewType === 'json' && (
         <div
           style={{
             paddingLeft: indent,
@@ -269,9 +266,10 @@ function NodeView({
           }}
         >
           <CodeView
-            open={expanded}
+            editMode="json"
             path={path}
             value={value}
+            state={state}
             onMessage={onMessage}
             theme={theme}
           />

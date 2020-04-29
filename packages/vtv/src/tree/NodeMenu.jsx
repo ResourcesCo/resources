@@ -35,11 +35,6 @@ function NodeMenu({
     })
   }
 
-  const editJson = () => {
-    sendAction('editJson', { editing: true })
-    onViewChanged()
-  }
-
   const edit = () => {
     sendAction('edit', { editing: true })
   }
@@ -124,7 +119,6 @@ function NodeMenu({
       {!showAll && ['object', 'array'].includes(parentType) && (
         <MenuItem onClick={() => sendAction('delete')}>Delete</MenuItem>
       )}
-      {!showAll && <MenuItem onClick={editJson}>Edit JSON</MenuItem>}
       {!showAll && path.length > 0 && (
         <MenuItem onClick={() => sendAction('showOnlyThis')}>
           Show only this

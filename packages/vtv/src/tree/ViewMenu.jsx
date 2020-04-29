@@ -1,7 +1,7 @@
 import Menu, { MenuItem } from '../generic/Menu'
 import { hasChildren } from '../model/analyze'
 
-const labels = { tree: 'Tree', table: 'Table' }
+const labels = { tree: 'Tree', table: 'Table', json: 'JSON' }
 
 export default function InsertMenu({
   path,
@@ -28,7 +28,7 @@ export default function InsertMenu({
       }}
       {...props}
     >
-      {['tree', 'table'].map(key => {
+      {['tree', 'table', 'json'].map(key => {
         if (key === 'table' && !hasChildren(value)) {
           return null
         }
