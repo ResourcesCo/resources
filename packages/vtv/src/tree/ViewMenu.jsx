@@ -1,24 +1,29 @@
 import Menu, { MenuItem } from '../generic/Menu'
 import { hasChildren } from '../model/analyze'
+import defaultView from '../util/defaultView'
 
 const labels = { tree: 'Tree', table: 'Table', json: 'JSON' }
 
-export default function InsertMenu({
+export default function ViewMenu({
   path,
   value,
   state,
+  nodeType,
+  stringType,
+  mediaType,
   onMessage,
   onViewChanged,
   ...props
 }) {
-  const setViewType = viewType => {
+  const setView = view => {
     onMessage({
       path,
-      state: { _viewType: viewType, _expanded: true },
+      action: 'setView',
+      view,
     })
     onViewChanged()
   }
-  const { _viewType: viewType } = state
+  const { _view: view } = state
   return (
     <Menu
       onClose={() => null}
@@ -28,6 +33,9 @@ export default function InsertMenu({
       }}
       {...props}
     >
+      <MenuItem checked={view === null}>
+        Default ({labels[defaultView({ nodeType, stringType, mediaType })]})
+      </MenuItem>
       {['tree', 'table', 'json'].map(key => {
         if (key === 'table' && !hasChildren(value)) {
           return null
@@ -35,8 +43,8 @@ export default function InsertMenu({
         return (
           <MenuItem
             key={key}
-            onClick={() => setViewType(key)}
-            checked={key === viewType}
+            onClick={() => setView(key)}
+            checked={view === key}
           >
             {labels[key]}
           </MenuItem>

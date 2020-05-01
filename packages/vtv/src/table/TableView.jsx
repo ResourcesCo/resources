@@ -1,8 +1,7 @@
 import React from 'react'
 import { getCollectionPaths, joinPath, getAtPath } from '../model/analyze'
 import { getChildState } from '../model'
-import NodeValueView from '../tree/NodeValueView'
-import NodeNameView from '../tree/NodeNameView'
+import InlineContent from '../content/InlineContent'
 
 export default ({
   name,
@@ -29,13 +28,10 @@ export default ({
         <tbody>
           {Object.keys(value).map(key => (
             <tr key={key}>
-              <td>
-                {/*<NodeNameView theme={theme} name={key} />*/}
-                {key}
-              </td>
+              <td>{key}</td>
               {paths.map((columnPath, i) => (
                 <td key={i}>
-                  <NodeValueView
+                  <InlineContent
                     onMessage={onMessage}
                     name={name}
                     value={getAtPath(value[key], columnPath)}

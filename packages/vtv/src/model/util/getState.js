@@ -1,7 +1,7 @@
 export default function getState(state) {
   return {
     _expanded: false,
-    _viewType: 'tree',
+    _view: null, // default
     ...(state || {}),
   }
 }

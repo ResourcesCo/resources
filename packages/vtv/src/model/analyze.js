@@ -31,6 +31,16 @@ export function getStringType(value) {
   }
 }
 
+export function getMediaType(value) {
+  try {
+    const match = /^data:([^,.;]+)[,.;]/.exec(value.substr(0, 60))
+    const result = match[1]
+    return result
+  } catch {
+    return undefined
+  }
+}
+
 export const getPaths = (item, depth = 2) => {
   let result = []
   if (isObject(item)) {

@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import Textarea from '../generic/Textarea'
 import { getNodeType, detectUrl } from '../model/analyze'
 import { getState } from '../model/state'
-import Link from '../value/Link'
-import CollectionSummary from '../value/CollectionSummary'
-import AttachmentView from '../value/AttachmentView'
+import Link from './Link'
+import CollectionSummary from './CollectionSummary'
+import AttachmentView from './AttachmentView'
 
 const inputValue = value => {
   if (value === null) {
@@ -33,7 +33,6 @@ const InlineValue = ({
   onMessage,
   editing,
   editingName,
-  editingJson,
   error,
   autoEdit,
   theme,
@@ -43,7 +42,7 @@ const InlineValue = ({
   const [newInputValue, setNewInputValue] = useState(inputValue(value))
   useEffect(() => {
     setNewInputValue(inputValue(value))
-  }, [editingJson, editing])
+  }, [editing])
 
   useEffect(() => {
     if (!editingName && editing && inputRef.current) {
@@ -133,10 +132,8 @@ const InlineValue = ({
       return 'full-width'
     }
   }
-  const showStringExcerpt =
-    typeof value === 'string' && !editingJson && value.length > 500
-  const useTextArea =
-    !editingJson && !showStringExcerpt && (autoEdit || editing)
+  const showStringExcerpt = typeof value === 'string' && value.length > 500
+  const useTextArea = !showStringExcerpt && (autoEdit || editing)
   return (
     <div
       className={`${typeClass} ${error ? 'has-error' : ''} ${
@@ -233,7 +230,6 @@ function NodeValueView({
   const {
     _editingName: editingName,
     _editing: editing,
-    _editingJson: editingJson,
     _attachments: attachments,
     _error: error,
   } = getState(state)
@@ -257,7 +253,6 @@ function NodeValueView({
         onMessage={onMessage}
         editing={editing}
         editingName={editingName}
-        editingJson={editingJson}
         error={error}
         autoEdit={autoEdit}
         theme={theme}
@@ -298,7 +293,6 @@ function NodeValueView({
           onMessage={onMessage}
           editing={editing}
           editingName={editingName}
-          editingJson={editingJson}
           error={error}
           autoEdit={autoEdit}
           theme={theme}

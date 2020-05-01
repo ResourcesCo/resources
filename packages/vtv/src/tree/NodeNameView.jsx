@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Manager, Reference, Popper } from 'react-popper'
 import Textarea from '../generic/Textarea'
-import StringView from '../value/StringView'
+import StringView from '../content/StringView'
 import NodeMenu from '../tree/NodeMenu'
 import setCaretAtEnd from '../util/setCaretAtEnd'
 import escapeHtml from '../util/escapeHtml'

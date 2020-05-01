@@ -11,14 +11,18 @@ import {
   isObject,
   getNodeType,
   getStringType,
+  getMediaType,
 } from '../model/analyze'
 import ExpandButton from './ExpandButton'
 import NodeNameView from './NodeNameView'
-import NodeValueView from './NodeValueView'
+import InlineContent from '../content/InlineContent'
 import NodeMenuButton from './NodeMenuButton'
 import TableView from '../table/TableView'
-import CodeView from '../value/CodeView'
+import BlockContent from '../content/BlockContent'
 import ActionButton from '../generic/ActionButton'
+import defaultView from '../util/defaultView'
+
+const expandWidth = 30
 
 function NodeView({
   parentType = null,
@@ -40,14 +44,11 @@ function NodeView({
   const state = getState(_state)
   const {
     _expanded: expanded,
-    _viewType: viewType,
     _showOnly: showOnly,
     _editingName: editingName,
-    _attachments: attachments,
     _actions: actions,
-    _error: error,
   } = state
-  const { bubbleMenu, dotMenu } = options
+  const { dotMenu } = options
 
   const toggleExpanded = () => {
     setViewChanged(true)
@@ -55,7 +56,6 @@ function NodeView({
   }
 
   const scrollRef = useRef(null)
-  const anchorRef = useRef(null)
 
   useEffect(() => {
     if (viewChanged && expanded && scrollRef.current) {
@@ -67,16 +67,21 @@ function NodeView({
         })
       }, 10)
     }
-  }, [expanded, viewType])
+  }, [expanded, view])
 
   const hasChildren = hasChildrenFn(value)
+  let isExpandable = hasChildren
   const nodeType = getNodeType(value)
   let stringType = null
-  let isExpandable = hasChildren
+  let mediaType = null
   if (nodeType === 'string') {
     stringType = getStringType(value)
     isExpandable = stringType !== 'inline'
+    if (stringType !== 'inline') {
+      mediaType = getMediaType(value)
+    }
   }
+  const view = state._view || defaultView({ nodeType, stringType, mediaType })
 
   if (showOnly) {
     const showOnlyParent = showOnly.slice(0, showOnly.length - 1)
@@ -165,7 +170,7 @@ function NodeView({
         )}
 
         <div className="node-content">
-          <NodeValueView
+          <InlineContent
             name={name}
             value={value}
             state={state}
@@ -216,11 +221,11 @@ function NodeView({
           }
         `}</style>
       </div>
-      {viewType !== 'json' && (
+      {view !== 'json' && (
         <>
           {expanded &&
             (isObject(value) || Array.isArray(value)) &&
-            viewType === 'tree' && (
+            view === 'tree' && (
               <div className="children">
                 {Object.keys(value).map(key => (
                   <NodeView
@@ -240,7 +245,7 @@ function NodeView({
                 ))}
               </div>
             )}
-          {expanded && viewType === 'table' && (
+          {expanded && view === 'table' && (
             <div style={{ paddingLeft: indent }}>
               <TableView
                 name={name}
@@ -256,20 +261,23 @@ function NodeView({
           )}
         </>
       )}
-      {viewType === 'json' && (
+      {expanded && ['json', 'text', 'image'].includes(view) && (
         <div
           style={{
-            paddingLeft: indent,
+            paddingLeft: indent + expandWidth,
             paddingTop: 5,
             paddingBottom: 5,
             marginRight: 15,
           }}
         >
-          <CodeView
-            editMode="json"
+          <BlockContent
+            view={view}
             path={path}
             value={value}
             state={state}
+            nodeType={nodeType}
+            stringType={stringType}
+            mediaType={mediaType}
             onMessage={onMessage}
             theme={theme}
           />

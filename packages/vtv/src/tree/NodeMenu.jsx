@@ -10,6 +10,8 @@ function NodeMenu({
   onPickId,
   parentType,
   nodeType,
+  stringType,
+  mediaType,
   name,
   value,
   path,
@@ -61,6 +63,9 @@ function NodeMenu({
             path={path}
             value={value}
             state={state}
+            nodeType={nodeType}
+            stringType={stringType}
+            mediaType={mediaType}
             onMessage={onMessage}
             onViewChanged={onViewChanged}
             onClose={onClose}

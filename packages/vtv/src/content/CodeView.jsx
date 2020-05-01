@@ -103,7 +103,6 @@ export default function CodeView({ editMode, value, path, onMessage, theme }) {
         }
         div.outer {
           outline: none;
-          padding-left: 30px;
           border: 0;
         }
         div.actions {
