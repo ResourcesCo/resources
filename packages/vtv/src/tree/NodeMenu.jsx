@@ -6,6 +6,28 @@ import ViewMenu from './ViewMenu'
 import ClipboardMenu from './ClipboardMenu'
 import Menu, { MenuItem } from '../generic/Menu'
 
+function DeleteMenu({ showAll, nodeType, path, onMessage, ...props }) {
+  return (
+    <Menu
+      onClose={() => null}
+      popperProps={{
+        placement: 'left-start',
+        modifiers: { offset: { offset: '0, -3' } },
+      }}
+      {...props}
+    >
+      {!showAll && (
+        <MenuItem onClick={() => onMessage({ path, action: 'deleteNode' })}>
+          Node
+        </MenuItem>
+      )}
+      <MenuItem onClick={() => onMessage({ path, action: 'deleteValue' })}>
+        {['object', 'array'].includes(nodeType) ? 'Children' : 'Value'}
+      </MenuItem>
+    </Menu>
+  )
+}
+
 function NodeMenu({
   onPickId,
   parentType,
@@ -121,9 +143,6 @@ function NodeMenu({
             Rename
           </MenuItem>
         )}
-      {!showAll && ['object', 'array'].includes(parentType) && (
-        <MenuItem onClick={() => sendAction('delete')}>Delete</MenuItem>
-      )}
       {!showAll && path.length > 0 && (
         <MenuItem onClick={() => sendAction('showOnlyThis')}>
           Show only this
@@ -132,6 +151,20 @@ function NodeMenu({
       {showAll && (
         <MenuItem onClick={() => sendAction('showAll')}>Show all</MenuItem>
       )}
+      <MenuItem
+        submenu={
+          <DeleteMenu
+            showAll={showAll}
+            nodeType={nodeType}
+            path={path}
+            onMessage={onMessage}
+            onClose={onClose}
+            theme={theme}
+          />
+        }
+      >
+        Delete
+      </MenuItem>
       {typeof onPickId === 'function' && (
         <MenuItem onClick={pickId}>Paste into console</MenuItem>
       )}

@@ -1,12 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Manager, Reference, Popper } from 'react-popper'
 import getNested from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { getState, getChildState, getNestedState } from '../model/state'
 import {
   hasChildren as hasChildrenFn,
-  detectUrl,
   joinPath,
   isObject,
   getNodeType,
@@ -115,6 +113,8 @@ function NodeView({
   const nodeMenuProps = {
     parentType,
     nodeType,
+    stringType,
+    mediaType,
     name,
     value,
     state,
