@@ -35,6 +35,7 @@ function NodeView({
   onMessage,
   onPickId,
   clipboard,
+  codeMirrorComponent,
   theme,
 }) {
   const [viewChanged, setViewChanged] = useState(false)
@@ -103,6 +104,7 @@ function NodeView({
         onPickId={onPickId}
         path={showOnly}
         clipboard={clipboard}
+        codeMirrorComponent={codeMirrorComponent}
         theme={theme}
       />
     )
@@ -240,6 +242,7 @@ function NodeView({
                     path={[...path, key]}
                     showOnlyPath={showOnlyPath}
                     clipboard={clipboard}
+                    codeMirrorComponent={codeMirrorComponent}
                     theme={theme}
                   />
                 ))}
@@ -279,6 +282,7 @@ function NodeView({
             stringType={stringType}
             mediaType={mediaType}
             onMessage={onMessage}
+            codeMirrorComponent={codeMirrorComponent}
             theme={theme}
           />
         </div>

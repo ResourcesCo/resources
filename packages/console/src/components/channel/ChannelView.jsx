@@ -23,6 +23,7 @@ class MessageList extends PureComponent {
       onPickId,
       onSubmitForm,
       onMessage,
+      codeMirrorComponent,
       theme,
     } = this.props
 
@@ -49,6 +50,7 @@ class MessageList extends PureComponent {
                 <Message
                   key={i}
                   theme={theme}
+                  codeMirrorComponent={codeMirrorComponent}
                   onPickId={onPickId}
                   onSubmitForm={onSubmitForm}
                   onMessage={onMessage}
@@ -328,7 +330,12 @@ class ChannelView extends PureComponent {
   }
 
   render() {
-    const { onFocusChange, navComponent, theme } = this.props
+    const {
+      onFocusChange,
+      navComponent,
+      codeMirrorComponent,
+      theme,
+    } = this.props
     const Nav = navComponent
     const { text, commandIds, commands, lastCommandId } = this.state
     const scrollRef = this.scrollRef
@@ -348,6 +355,7 @@ class ChannelView extends PureComponent {
           onPickId={this.handlePickId}
           onSubmitForm={this.handleSubmitForm}
           onMessage={this.handleAddMessage}
+          codeMirrorComponent={codeMirrorComponent}
           theme={theme}
         />
         <div className="channel-input-wrapper">

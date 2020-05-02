@@ -11,6 +11,7 @@ export default function BlockContent({
   stringType,
   mediaType,
   onMessage,
+  codeMirrorComponent,
   theme,
 }) {
   if (view === 'json') {
@@ -21,6 +22,7 @@ export default function BlockContent({
         value={value}
         state={state}
         onMessage={onMessage}
+        codeMirrorComponent={codeMirrorComponent}
         theme={theme}
       />
     )

@@ -21,4 +21,5 @@ export default {
   actionTextColor: '#ccc',
   disabledActionColor: '#bbb',
   disabledActionTextColor: '#888',
+  codeTheme: 'eclipse',
 }

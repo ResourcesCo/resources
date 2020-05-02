@@ -1,28 +1,38 @@
 import React, { useState, useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import Textarea from '../generic/Textarea'
 import ActionButton from '../generic/ActionButton'
 
-export default function CodeView({ editMode, value, path, onMessage, theme }) {
+export default function CodeView({
+  editMode,
+  value,
+  path,
+  onMessage,
+  codeMirrorComponent,
+  theme,
+}) {
+  const [editor, setEditor] = useState(null)
   const [editing, setEditing] = useState(false)
-  const [newValue, setNewValue] = useState(JSON.stringify(value, null, 2))
   const [error, setError] = useState(false)
 
+  const CodeMirror = codeMirrorComponent
+
   const save = () => {
-    if (validate(newValue)) {
-      setEditing(false)
-      onMessage({
-        path,
-        action: 'editJson',
-        value: JSON.parse(newValue),
-      })
+    if (editor !== null) {
+      const newValue = editor.getValue()
+      console.log(newValue)
+      if (validate(newValue)) {
+        setEditing(false)
+        onMessage({
+          path,
+          action: 'editJson',
+          value: JSON.parse(newValue),
+        })
+      }
     }
   }
 
   const cancel = () => {
-    setError(false)
-    setEditing(false)
-    setNewValue(JSON.stringify(value, null, 2))
+    onMessage({ path, action: 'setView', view: null })
   }
 
   const validate = value => {
@@ -36,24 +46,24 @@ export default function CodeView({ editMode, value, path, onMessage, theme }) {
     return valid
   }
 
-  const handleKeyDown = ({ target: { value } }) => {}
-
-  const handleChange = ({ target: { value } }) => {
-    setNewValue(value)
-    setEditing(true)
-    if (error) validate(value)
-  }
-
   return (
     <div className="outer">
       <div className={error ? 'error' : ''}>
         <div className="textareaWrapper">
-          <Textarea
-            value={newValue}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
+          <CodeMirror
+            value={JSON.stringify(value, null, 2)}
+            onChange={() => setEditing(true)}
             maxRows={20}
             autoFocus
+            editorDidMount={editor => setEditor(editor)}
+            editorWillUnmount={() => setEditor(null)}
+            options={{
+              mode: {
+                name: 'javascript',
+                json: true,
+              },
+              theme: theme.codeTheme,
+            }}
           />
         </div>
         {error && <div className="error-message">Invalid JSON</div>}
@@ -62,12 +72,7 @@ export default function CodeView({ editMode, value, path, onMessage, theme }) {
         {editing && (
           <>
             <div className="actionButton">
-              <ActionButton
-                onClick={save}
-                disabled={error}
-                primary
-                theme={theme}
-              >
+              <ActionButton onClick={save} primary theme={theme}>
                 Save
               </ActionButton>
             </div>
@@ -80,6 +85,9 @@ export default function CodeView({ editMode, value, path, onMessage, theme }) {
         )}
       </div>
       <style jsx>{`
+        div :global(.CodeMirror) {
+          font-size: 16px;
+        }
         div :global(textarea) {
           background: none;
           margin: 0;
