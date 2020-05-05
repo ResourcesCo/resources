@@ -24,6 +24,7 @@
   "dependencies": {
     "@resources/console": "1.0.0-canary.4",
     "@zeit/next-css": "^1.0.1",
+    "codemirror": "^5.53.2",
     "immer": "^5.3.6",
     "lodash": "^4.17.15",
     "next": "^9.3.2",
@@ -31,6 +32,7 @@
     "prettier": "^1.19.1",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
+    "react-codemirror2": "^7.1.0",
     "react-dom": "^16.12.0",
     "react-loader-spinner": "^3.1.5",
     "vtv": "^1.0.0-canary.15"

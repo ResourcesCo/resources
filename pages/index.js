@@ -1,7 +1,12 @@
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import Nav from '../components/Nav'
 import Head from '../components/Head'
 import { ChannelView, getTheme } from '@resources/console'
+
+const CodeMirror = dynamic(() => import('../components/CodeMirror'), {
+  ssr: false,
+})
 
 export default () => {
   const [themeName, setThemeName] = useState('dark')
@@ -10,6 +15,7 @@ export default () => {
     <>
       <ChannelView
         navComponent={Nav}
+        codeMirrorComponent={CodeMirror}
         storageType="localStorage"
         theme={theme}
         onThemeChange={name => setThemeName(name)}

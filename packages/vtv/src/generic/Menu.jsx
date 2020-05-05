@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { getState } from '../model/state'
-import { hasChildren } from '../model/analyze'
+import clsx from 'clsx'
 import useClickOutside from '../util/useClickOutside'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons'
@@ -8,6 +7,7 @@ import { Popper, Manager, Reference } from 'react-popper'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 export function MenuItem({
+  checked,
   onClick,
   copyToClipboard,
   children,
@@ -16,15 +16,19 @@ export function MenuItem({
 }) {
   const [itemHover, setItemHover] = useState(false)
   const [submenuHover, setSubmenuHover] = useState(false)
+  const setHoverOff = () => {
+    setItemHover(false)
+    setSubmenuHover(false)
+  }
   return submenu ? (
     <Manager>
       <Reference>
         {({ ref }) => (
           <div
+            className={clsx('menu-item', { checked })}
             ref={ref}
-            className="menu-item"
             onMouseEnter={() => setItemHover(true)}
-            onMouseLeave={() => setItemHover(false)}
+            onMouseLeave={() => setHoverOff()}
           >
             <button onClick={onClick}>{children}</button>
             <FontAwesomeIcon icon={faCaretRight} size="sm" />
@@ -52,6 +56,9 @@ export function MenuItem({
               div.menu-item {
                 padding-right: 3px;
               }
+              div.menu-item.checked button {
+                font-weight: bold;
+              }
             `}</style>
           </div>
         )}
@@ -63,7 +70,7 @@ export function MenuItem({
         })}
     </Manager>
   ) : (
-    <div className="menu-item">
+    <div className={clsx('menu-item', { checked })}>
       {copyToClipboard ? (
         <CopyToClipboard text={copyToClipboard} onCopy={onClick}>
           <button>{children}</button>
@@ -94,6 +101,9 @@ export function MenuItem({
         }
         div.menu-item {
           padding-right: 3px;
+        }
+        div.menu-item.checked button {
+          font-weight: bold;
         }
       `}</style>
     </div>
@@ -144,11 +154,17 @@ export default ({
             {sortedMenuItems(placement)}
           </div>
           <style jsx>{`
+            .popper {
+              z-index: 10;
+            }
             .menu {
               background-color: ${theme.menuBackground};
               opacity: 0.95;
               padding: 2px;
               border-radius: 5px;
+              display: flex;
+              flex-direction: column;
+              align-items: stretch;
             }
           `}</style>
         </div>

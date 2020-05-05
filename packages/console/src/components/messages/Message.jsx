@@ -19,6 +19,7 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
       onPickId,
       message,
       onSubmitForm,
+      codeMirrorComponent,
     } = props
 
     const onChange = ({ name, value, state }) => {
@@ -49,6 +50,7 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
           onChange={onChange}
           onAction={m => onSubmitForm({ commandId, message, formData: m })}
           onPickId={handlePickId}
+          codeMirrorComponent={codeMirrorComponent}
         />
         <style jsx>{`
           div {

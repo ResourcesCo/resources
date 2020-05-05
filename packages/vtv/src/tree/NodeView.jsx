@@ -1,30 +1,32 @@
 import React, { useState, useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Manager, Reference, Popper } from 'react-popper'
 import getNested from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { getState, getChildState, getNestedState } from '../model/state'
 import {
-  hasChildren,
-  detectUrl,
+  hasChildren as hasChildrenFn,
   joinPath,
   isObject,
   getNodeType,
+  getStringType,
+  getMediaType,
 } from '../model/analyze'
 import ExpandButton from './ExpandButton'
 import NodeNameView from './NodeNameView'
-import NodeValueView from './NodeValueView'
+import InlineContent from '../content/InlineContent'
 import NodeMenuButton from './NodeMenuButton'
-import NodeMenu from './NodeMenu'
 import TableView from '../table/TableView'
-import CodeView from '../value/CodeView'
+import BlockContent from '../content/BlockContent'
 import ActionButton from '../generic/ActionButton'
+import defaultView from '../util/defaultView'
+
+const expandWidth = 30
 
 function NodeView({
   parentType = null,
   name,
   value,
-  state,
+  state: _state,
   options,
   displayName,
   showOnlyPath = [],
@@ -33,31 +35,26 @@ function NodeView({
   onMessage,
   onPickId,
   clipboard,
+  codeMirrorComponent,
   theme,
 }) {
   const [viewChanged, setViewChanged] = useState(false)
 
+  const state = getState(_state)
   const {
     _expanded: expanded,
-    _viewType: viewType,
     _showOnly: showOnly,
     _editingName: editingName,
-    _editingJson: editingJson,
     _actions: actions,
-    _error: error,
-  } = getState(state)
-  const { bubbleMenu, dotMenu } = options
+  } = state
+  const { dotMenu } = options
 
   const toggleExpanded = () => {
     setViewChanged(true)
-    if (editingJson) {
-      return
-    }
     onMessage({ path, state: { _expanded: !expanded } })
   }
 
   const scrollRef = useRef(null)
-  const anchorRef = useRef(null)
 
   useEffect(() => {
     if (viewChanged && expanded && scrollRef.current) {
@@ -69,10 +66,25 @@ function NodeView({
         })
       }, 10)
     }
-  }, [expanded, editingJson, viewType])
+  }, [expanded, view])
 
-  const _hasChildren = hasChildren(value)
+  const hasChildren = hasChildrenFn(value)
+  let isExpandable = hasChildren
   const nodeType = getNodeType(value)
+  let stringType = null
+  let mediaType = null
+  if (nodeType === 'string') {
+    stringType = getStringType(value)
+    isExpandable =
+      stringType !== 'inline' || ['text', 'code', 'image'].includes(state._view)
+    if (isExpandable) {
+      mediaType =
+        typeof state._mediaType === 'string'
+          ? state._mediaType
+          : getMediaType(value)
+    }
+  }
+  const view = state._view || defaultView({ nodeType, stringType, mediaType })
 
   if (showOnly) {
     const showOnlyParent = showOnly.slice(0, showOnly.length - 1)
@@ -96,6 +108,7 @@ function NodeView({
         onPickId={onPickId}
         path={showOnly}
         clipboard={clipboard}
+        codeMirrorComponent={codeMirrorComponent}
         theme={theme}
       />
     )
@@ -106,6 +119,8 @@ function NodeView({
   const nodeMenuProps = {
     parentType,
     nodeType,
+    stringType,
+    mediaType,
     name,
     value,
     state,
@@ -126,7 +141,7 @@ function NodeView({
         tabIndex={0}
       >
         <ExpandButton
-          hasChildren={_hasChildren}
+          disabled={!isExpandable}
           expanded={expanded}
           onClick={toggleExpanded}
           theme={theme}
@@ -161,13 +176,14 @@ function NodeView({
         )}
 
         <div className="node-content">
-          <NodeValueView
+          <InlineContent
             name={name}
             value={value}
             state={state}
             path={path}
             onMessage={onMessage}
             onPickId={onPickId}
+            clipboard={clipboard}
             theme={theme}
           />
         </div>
@@ -211,11 +227,11 @@ function NodeView({
           }
         `}</style>
       </div>
-      {!editingJson && (
+      {view !== 'json' && (
         <>
           {expanded &&
             (isObject(value) || Array.isArray(value)) &&
-            viewType === 'tree' && (
+            view === 'tree' && (
               <div className="children">
                 {Object.keys(value).map(key => (
                   <NodeView
@@ -230,12 +246,13 @@ function NodeView({
                     path={[...path, key]}
                     showOnlyPath={showOnlyPath}
                     clipboard={clipboard}
+                    codeMirrorComponent={codeMirrorComponent}
                     theme={theme}
                   />
                 ))}
               </div>
             )}
-          {expanded && viewType === 'table' && (
+          {expanded && view === 'table' && (
             <div style={{ paddingLeft: indent }}>
               <TableView
                 name={name}
@@ -244,26 +261,32 @@ function NodeView({
                 state={state}
                 onPickId={onPickId}
                 onMessage={onMessage}
+                clipboard={clipboard}
                 theme={theme}
               />
             </div>
           )}
         </>
       )}
-      {editingJson && (
+      {expanded && ['json', 'text', 'code', 'image'].includes(view) && (
         <div
           style={{
-            paddingLeft: indent,
+            paddingLeft: indent + expandWidth,
             paddingTop: 5,
             paddingBottom: 5,
             marginRight: 15,
           }}
         >
-          <CodeView
-            open={expanded}
+          <BlockContent
+            view={view}
             path={path}
             value={value}
+            state={state}
+            nodeType={nodeType}
+            stringType={stringType}
+            mediaType={mediaType}
             onMessage={onMessage}
+            codeMirrorComponent={codeMirrorComponent}
             theme={theme}
           />
         </div>

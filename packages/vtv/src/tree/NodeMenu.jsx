@@ -1,15 +1,39 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { getState } from '../model/state'
-import { hasChildren, isBasicType } from '../model/analyze'
-import useClickOutside from '../util/useClickOutside'
+import { isBasicType } from '../model/analyze'
+import InsertMenu from './InsertMenu'
+import ViewMenu from './ViewMenu'
 import ClipboardMenu from './ClipboardMenu'
 import Menu, { MenuItem } from '../generic/Menu'
+
+function DeleteMenu({ showAll, nodeType, path, onMessage, ...props }) {
+  return (
+    <Menu
+      onClose={() => null}
+      popperProps={{
+        placement: 'left-start',
+        modifiers: { offset: { offset: '0, -3' } },
+      }}
+      {...props}
+    >
+      {!showAll && (
+        <MenuItem onClick={() => onMessage({ path, action: 'deleteNode' })}>
+          Node
+        </MenuItem>
+      )}
+      <MenuItem onClick={() => onMessage({ path, action: 'deleteValue' })}>
+        {['object', 'array'].includes(nodeType) ? 'Children' : 'Value'}
+      </MenuItem>
+    </Menu>
+  )
+}
 
 function NodeMenu({
   onPickId,
   parentType,
   nodeType,
+  stringType,
+  mediaType,
   name,
   value,
   path,
@@ -26,15 +50,6 @@ function NodeMenu({
   const [action, setAction] = useState(null)
 
   const isArray = Array.isArray(value)
-  const viewType = getState(state)._viewType || 'tree'
-
-  const setViewType = viewType => {
-    onMessage({
-      path,
-      state: { _viewType: viewType, _expanded: true },
-    })
-    onViewChanged()
-  }
 
   const sendAction = (action, data = {}) => {
     onMessage({
@@ -42,11 +57,6 @@ function NodeMenu({
       action,
       ...data,
     })
-  }
-
-  const editJson = () => {
-    sendAction('editJson', { editing: true })
-    onViewChanged()
   }
 
   const edit = () => {
@@ -69,34 +79,39 @@ function NodeMenu({
       {!showAll && isBasicType(value) && (
         <MenuItem onClick={edit}>Edit</MenuItem>
       )}
-      {['tree', 'table'].map(key => {
-        if (key === viewType) {
-          return null
+      <MenuItem
+        submenu={
+          <ViewMenu
+            path={path}
+            value={value}
+            state={state}
+            nodeType={nodeType}
+            stringType={stringType}
+            mediaType={mediaType}
+            onMessage={onMessage}
+            onViewChanged={onViewChanged}
+            onClose={onClose}
+            theme={theme}
+          />
         }
-        if (key === 'table' && !hasChildren(value)) {
-          return null
+      >
+        View
+      </MenuItem>
+      <MenuItem
+        submenu={
+          <InsertMenu
+            showAll={showAll}
+            nodeType={nodeType}
+            parentType={parentType}
+            path={path}
+            onMessage={onMessage}
+            onClose={onClose}
+            theme={theme}
+          />
         }
-        return (
-          <MenuItem key={key} onClick={() => setViewType(key)}>
-            View as {key}
-          </MenuItem>
-        )
-      })}
-      {!showAll && ['object', 'array'].includes(nodeType) && (
-        <MenuItem onClick={() => sendAction('insert', { position: 'append' })}>
-          Append Child
-        </MenuItem>
-      )}
-      {!showAll && ['object', 'array'].includes(parentType) && (
-        <MenuItem onClick={() => sendAction('insert', { position: 'above' })}>
-          Insert Before
-        </MenuItem>
-      )}
-      {!showAll && ['object', 'array'].includes(parentType) && (
-        <MenuItem onClick={() => sendAction('insert', { position: 'below' })}>
-          Insert After
-        </MenuItem>
-      )}
+      >
+        Insert
+      </MenuItem>
       {!showAll && ['object', 'array'].includes(parentType) && (
         <MenuItem
           submenu={
@@ -118,6 +133,9 @@ function NodeMenu({
           Clipboard
         </MenuItem>
       )}
+      {!showAll && ['object', 'array'].includes(parentType) && (
+        <MenuItem onClick={() => sendAction('attach')}>Attach file</MenuItem>
+      )}
       {!nameOptionsFirst &&
         !showAll &&
         ['object', null].includes(parentType) && (
@@ -125,10 +143,6 @@ function NodeMenu({
             Rename
           </MenuItem>
         )}
-      {!showAll && ['object', 'array'].includes(parentType) && (
-        <MenuItem onClick={() => sendAction('delete')}>Delete</MenuItem>
-      )}
-      {!showAll && <MenuItem onClick={editJson}>Edit JSON</MenuItem>}
       {!showAll && path.length > 0 && (
         <MenuItem onClick={() => sendAction('showOnlyThis')}>
           Show only this
@@ -137,6 +151,20 @@ function NodeMenu({
       {showAll && (
         <MenuItem onClick={() => sendAction('showAll')}>Show all</MenuItem>
       )}
+      <MenuItem
+        submenu={
+          <DeleteMenu
+            showAll={showAll}
+            nodeType={nodeType}
+            path={path}
+            onMessage={onMessage}
+            onClose={onClose}
+            theme={theme}
+          />
+        }
+      >
+        Delete
+      </MenuItem>
       {typeof onPickId === 'function' && (
         <MenuItem onClick={pickId}>Paste into console</MenuItem>
       )}

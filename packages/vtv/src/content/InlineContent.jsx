@@ -1,14 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Textarea from '../generic/Textarea'
-import { detectUrl } from '../model/analyze'
+import { getNodeType, detectUrl } from '../model/analyze'
 import { getState } from '../model/state'
-import Link from '../value/Link'
-import StringView from '../value/StringView'
-import CollectionSummary from '../value/CollectionSummary'
+import Link from './Link'
+import CollectionSummary from './CollectionSummary'
+import AttachmentView from './AttachmentView'
 
-const inputValue = (value, isNew = false) => {
-  if (isNew && value === null) {
+const inputValue = value => {
+  if (value === null) {
     return ''
   } else if (typeof value === 'string') {
     if (/^\s*$/.test(value) || /\n|\t/.test(value)) {
@@ -33,18 +33,16 @@ const InlineValue = ({
   onMessage,
   editing,
   editingName,
-  editingJson,
   error,
   autoEdit,
   theme,
 }) => {
   const inputRef = useRef()
-  const [newInputValue, setNewInputValue] = useState(
-    inputValue(value, editing === 'new')
-  )
+  const [focused, setFocused] = useState(false)
+  const [newInputValue, setNewInputValue] = useState(inputValue(value))
   useEffect(() => {
-    setNewInputValue(inputValue(value, editing === 'new'))
-  }, [editingJson, editing])
+    setNewInputValue(inputValue(value))
+  }, [editing])
 
   useEffect(() => {
     if (!editingName && editing && inputRef.current) {
@@ -56,6 +54,7 @@ const InlineValue = ({
     }
   }, [editing, inputRef])
 
+  const { _expanded: expanded } = state
   const sendAction = (data = {}) => {}
   let newValue
   let parsed = false
@@ -94,20 +93,28 @@ const InlineValue = ({
       e.preventDefault()
       save()
     } else if (e.key === 'Esc' || e.key === 'Escape') {
+      e.target.blur()
       e.preventDefault()
       cancel()
     }
   }
 
+  const onFocus = () => {
+    setFocused(true)
+    save()
+  }
+
   const onBlur = () => {
+    setFocused(false)
     setNewInputValue(inputValue(newValue))
     save()
   }
 
   let typeClass
-  if (typeof newValue === 'string') {
+  const nodeType = getNodeType(newValue)
+  if (nodeType === 'string') {
     typeClass = parsed ? 'stringValue' : 'string'
-  } else if (typeof newValue === 'number') {
+  } else if (nodeType === 'number') {
     typeClass = 'number'
   } else {
     typeClass = 'value'
@@ -126,26 +133,38 @@ const InlineValue = ({
       return 'full-width'
     }
   }
-  const useTextArea = !editingJson && (autoEdit || editing)
+  const showStringExcerpt = typeof value === 'string' && value.length > 500
+  const useTextArea = !expanded && !showStringExcerpt && (autoEdit || editing)
   return (
     <div
       className={`${typeClass} ${error ? 'has-error' : ''} ${
         useTextArea ? sizeClass(newInputValue) : ''
       }`}
     >
-      {useTextArea ? (
+      {useTextArea && (
         <Textarea
           ref={inputRef}
-          value={newInputValue}
+          value={
+            focused
+              ? newInputValue
+              : value === null
+              ? editing === 'new'
+                ? ''
+                : 'null'
+              : newInputValue
+          }
           onChange={({ target: { value } }) => setNewInputValue(value)}
           onKeyDown={handleKeyPress}
+          onFocus={onFocus}
           onBlur={onBlur}
           wrap="off"
           tabIndex="-1"
         />
-      ) : (
-        <span>{value}</span>
       )}
+      {showStringExcerpt && (
+        <span>{`${value.substr(0, 50)}… (${value.length} characters)`}</span>
+      )}
+      {!useTextArea && !showStringExcerpt && <span>{value}</span>}
       {error && <span className="error">{error}</span>}
 
       <style jsx>{`
@@ -206,15 +225,26 @@ function NodeValueView({
   onMessage,
   onPickId,
   autoEdit = true,
+  clipboard,
   theme,
 }) {
   const {
     _editingName: editingName,
     _editing: editing,
-    _editingJson: editingJson,
+    _attachments: attachments,
     _error: error,
   } = getState(state)
-  if (editing) {
+  if (attachments) {
+    return (
+      <AttachmentView
+        path={path}
+        onMessage={onMessage}
+        attachments={attachments}
+        clipboard={clipboard}
+        theme={theme}
+      />
+    )
+  } else if (editing) {
     return (
       <InlineValue
         name={name}
@@ -224,7 +254,6 @@ function NodeValueView({
         onMessage={onMessage}
         editing={editing}
         editingName={editingName}
-        editingJson={editingJson}
         error={error}
         autoEdit={autoEdit}
         theme={theme}
@@ -265,7 +294,6 @@ function NodeValueView({
           onMessage={onMessage}
           editing={editing}
           editingName={editingName}
-          editingJson={editingJson}
           error={error}
           autoEdit={autoEdit}
           theme={theme}

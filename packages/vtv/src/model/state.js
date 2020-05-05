@@ -1,10 +1,7 @@
-import getNested from 'lodash/get'
-import produce from 'immer'
 import {
   getStateKey,
   draftValue,
   draftState,
-  clearStateProperty,
   getState,
   getChildState,
   getNestedState,
@@ -15,12 +12,15 @@ import {
   edit,
   editJson,
   insert,
-  del,
+  deleteNode,
+  deleteValue,
   showAll,
   showOnlyThis,
   set,
+  setView,
   setError,
   clearErrors,
+  attach,
 } from './actions'
 
 export {
@@ -98,12 +98,15 @@ const actions = {
   edit,
   editJson,
   insert,
-  delete: del,
+  deleteNode,
+  deleteValue,
   showAll,
   showOnlyThis,
   set,
+  setView,
   setError,
   clearErrors,
+  attach,
 }
 
 export const updateTree = (treeData, treeUpdate) => {

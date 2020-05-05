@@ -5,7 +5,7 @@ import {
   spliceArrayKeysInObject,
 } from '../util'
 
-export default function del(treeData, treeUpdate) {
+export default function deleteNode(treeData, treeUpdate) {
   return produce(treeData, draft => {
     const [parentState, stateKey] = getDraftStateUpdate(draft, treeUpdate.path)
     const [parent, key] = getDraftUpdate(draft, treeUpdate.path)

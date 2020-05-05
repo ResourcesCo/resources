@@ -9,7 +9,7 @@ export const isObject = value => {
   )
 }
 
-export const getNodeType = value => {
+export function getNodeType(value) {
   if (isObject(value)) {
     return 'object'
   } else if (Array.isArray(value)) {
@@ -20,6 +20,24 @@ export const getNodeType = value => {
     return 'number'
   } else {
     return 'value'
+  }
+}
+
+export function getStringType(value) {
+  if (value.length > 120 || value.indexOf('\n') !== -1) {
+    return 'text'
+  } else {
+    return 'inline'
+  }
+}
+
+export function getMediaType(value) {
+  try {
+    const match = /^data:([^,.;]+)[,.;]/.exec(value.substr(0, 60))
+    const result = match[1]
+    return result
+  } catch {
+    return undefined
   }
 }
 

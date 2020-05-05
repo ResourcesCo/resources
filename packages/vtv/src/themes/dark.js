@@ -22,4 +22,5 @@ export default {
   actionTextColor: '#111',
   disabledActionColor: '#575757',
   disabledActionTextColor: '#999',
+  codeTheme: 'material-ocean',
 }

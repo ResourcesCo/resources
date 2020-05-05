@@ -48,12 +48,17 @@ function ClipboardMenu({
       if (clipboardAction === 'cut') {
         onMessage({
           path,
-          action: 'delete',
+          action: 'deleteNode',
         })
       }
     } else if (clipboardAction === 'paste') {
       if (typeof clipboard.value === 'string') {
-        const value = JSON.parse(clipboard.value)
+        let value
+        try {
+          value = JSON.parse(clipboard.value)
+        } catch (err) {
+          value = clipboard.value
+        }
         let state = undefined
         if (typeof clipboard.state === 'string' && clipboard.state.length) {
           try {
