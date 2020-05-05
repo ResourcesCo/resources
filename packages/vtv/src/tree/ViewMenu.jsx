@@ -25,13 +25,12 @@ function getAvailableViews({
   }
   if (
     nodeType === 'string' &&
-    stringType !== 'inline' &&
     (mediaType || '').startsWith('image') &&
     defaultView !== 'image'
   ) {
     result.push('image')
   }
-  if (nodeType === 'string' && stringType !== 'inline') {
+  if (nodeType === 'string') {
     if (defaultView !== 'text') {
       result.push('text')
     }

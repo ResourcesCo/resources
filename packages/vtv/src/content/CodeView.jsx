@@ -6,21 +6,24 @@ import { codeTypes } from '../model/constants'
 function getMode({ editMode, mediaType }) {
   if (editMode === 'json') {
     return {
-      name: 'javascript',
-      json: true,
+      mode: {
+        name: 'javascript',
+        json: true,
+      },
     }
   } else if (mediaType) {
     const codeType = codeTypes.find(
       ({ mediaType: itemMediaType }) => itemMediaType === mediaType
     )
-    console.log({ codeType })
     if (codeType) {
-      return codeType.editorMode
+      return typeof codeType.indentUnit === 'number'
+        ? { mode: codeType.editorMode, indentUnit: codeType.indentUnit }
+        : { mode: codeType.editorMode }
     } else {
-      return null
+      return { mode: null }
     }
   }
-  return null
+  return { mode: null }
 }
 
 export default function CodeView({
@@ -61,7 +64,7 @@ export default function CodeView({
   }
 
   const cancel = () => {
-    onMessage({ path, action: 'setView', view: null })
+    onMessage({ path, state: { _expanded: false } })
   }
 
   const validate = value => {
@@ -91,15 +94,13 @@ export default function CodeView({
           <CodeMirror
             value={initialValue}
             onChange={() => setEditing(true)}
-            maxRows={20}
-            autoFocus
             editorDidMount={editor => setEditor(editor)}
             editorWillUnmount={() => setEditor(null)}
             options={{
               theme: theme.codeTheme,
               lineWrapping: true,
               lineNumbers: true,
-              mode,
+              ...mode,
             }}
           />
         </div>
@@ -124,6 +125,10 @@ export default function CodeView({
       <style jsx>{`
         div :global(.CodeMirror) {
           font-size: 16px;
+          height: auto;
+        }
+        div :global(.CodeMirror-scroll) {
+          max-height: 295px;
         }
         div :global(textarea) {
           background: none;

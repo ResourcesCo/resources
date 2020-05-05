@@ -54,6 +54,7 @@ const InlineValue = ({
     }
   }, [editing, inputRef])
 
+  const { _expanded: expanded } = state
   const sendAction = (data = {}) => {}
   let newValue
   let parsed = false
@@ -133,7 +134,7 @@ const InlineValue = ({
     }
   }
   const showStringExcerpt = typeof value === 'string' && value.length > 500
-  const useTextArea = !showStringExcerpt && (autoEdit || editing)
+  const useTextArea = !expanded && !showStringExcerpt && (autoEdit || editing)
   return (
     <div
       className={`${typeClass} ${error ? 'has-error' : ''} ${

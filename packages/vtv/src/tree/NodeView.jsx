@@ -75,8 +75,9 @@ function NodeView({
   let mediaType = null
   if (nodeType === 'string') {
     stringType = getStringType(value)
-    isExpandable = stringType !== 'inline'
-    if (stringType !== 'inline') {
+    isExpandable =
+      stringType !== 'inline' || ['text', 'code', 'image'].includes(state._view)
+    if (isExpandable) {
       mediaType =
         typeof state._mediaType === 'string'
           ? state._mediaType
