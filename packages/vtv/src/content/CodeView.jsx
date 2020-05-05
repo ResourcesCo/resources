@@ -1,11 +1,33 @@
 import React, { useState, useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import ActionButton from '../generic/ActionButton'
+import { codeTypes } from '../model/constants'
+
+function getMode({ editMode, mediaType }) {
+  if (editMode === 'json') {
+    return {
+      name: 'javascript',
+      json: true,
+    }
+  } else if (mediaType) {
+    const codeType = codeTypes.find(
+      ({ mediaType: itemMediaType }) => itemMediaType === mediaType
+    )
+    console.log({ codeType })
+    if (codeType) {
+      return codeType.editorMode
+    } else {
+      return null
+    }
+  }
+  return null
+}
 
 export default function CodeView({
   editMode,
   value,
   path,
+  mediaType,
   onMessage,
   codeMirrorComponent,
   theme,
@@ -19,14 +41,21 @@ export default function CodeView({
   const save = () => {
     if (editor !== null) {
       const newValue = editor.getValue()
-      console.log(newValue)
       if (validate(newValue)) {
         setEditing(false)
-        onMessage({
-          path,
-          action: 'editJson',
-          value: JSON.parse(newValue),
-        })
+        if (editMode === 'json') {
+          onMessage({
+            path,
+            action: 'editJson',
+            value: JSON.parse(newValue),
+          })
+        } else {
+          onMessage({
+            path,
+            action: 'edit',
+            value: newValue,
+          })
+        }
       }
     }
   }
@@ -36,33 +65,41 @@ export default function CodeView({
   }
 
   const validate = value => {
-    let valid = true
-    try {
-      JSON.parse(value)
-    } catch (err) {
-      valid = false
+    if (editMode === 'json') {
+      let valid = true
+      try {
+        JSON.parse(value)
+      } catch (err) {
+        valid = false
+      }
+      setError(!valid)
+      return valid
+    } else {
+      return true
     }
-    setError(!valid)
-    return valid
   }
+
+  const initialValue =
+    editMode === 'json' ? JSON.stringify(value, null, 2) : value
+
+  const mode = getMode({ editMode, mediaType })
 
   return (
     <div className="outer">
       <div className={error ? 'error' : ''}>
         <div className="textareaWrapper">
           <CodeMirror
-            value={JSON.stringify(value, null, 2)}
+            value={initialValue}
             onChange={() => setEditing(true)}
             maxRows={20}
             autoFocus
             editorDidMount={editor => setEditor(editor)}
             editorWillUnmount={() => setEditor(null)}
             options={{
-              mode: {
-                name: 'javascript',
-                json: true,
-              },
               theme: theme.codeTheme,
+              lineWrapping: true,
+              lineNumbers: true,
+              mode,
             }}
           />
         </div>
@@ -130,6 +167,7 @@ CodeView.propTypes = {
   value: PropTypes.any.isRequired,
   state: PropTypes.object.isRequired,
   path: PropTypes.arrayOf(PropTypes.string).isRequired,
+  mediaType: PropTypes.string,
   onMessage: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
 }

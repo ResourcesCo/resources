@@ -28,6 +28,19 @@ export default function BlockContent({
     )
   } else if (view === 'image') {
     return <ImageView value={value} state={state} theme={theme} />
+  } else if (['text', 'code'].includes(view)) {
+    return (
+      <CodeView
+        editMode="text"
+        path={path}
+        value={value}
+        state={state}
+        mediaType={view === 'code' ? mediaType : null}
+        onMessage={onMessage}
+        codeMirrorComponent={codeMirrorComponent}
+        theme={theme}
+      />
+    )
   } else {
     return null
   }

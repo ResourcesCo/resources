@@ -48,7 +48,7 @@ function ClipboardMenu({
       if (clipboardAction === 'cut') {
         onMessage({
           path,
-          action: 'delete',
+          action: 'deleteNode',
         })
       }
     } else if (clipboardAction === 'paste') {

@@ -25,7 +25,7 @@ export function MenuItem({
       <Reference>
         {({ ref }) => (
           <div
-            className="menu-item"
+            className={clsx('menu-item', { checked })}
             ref={ref}
             onMouseEnter={() => setItemHover(true)}
             onMouseLeave={() => setHoverOff()}
@@ -55,6 +55,9 @@ export function MenuItem({
               }
               div.menu-item {
                 padding-right: 3px;
+              }
+              div.menu-item.checked button {
+                font-weight: bold;
               }
             `}</style>
           </div>
@@ -151,6 +154,9 @@ export default ({
             {sortedMenuItems(placement)}
           </div>
           <style jsx>{`
+            .popper {
+              z-index: 10;
+            }
             .menu {
               background-color: ${theme.menuBackground};
               opacity: 0.95;

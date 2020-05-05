@@ -77,7 +77,10 @@ function NodeView({
     stringType = getStringType(value)
     isExpandable = stringType !== 'inline'
     if (stringType !== 'inline') {
-      mediaType = getMediaType(value)
+      mediaType =
+        typeof state._mediaType === 'string'
+          ? state._mediaType
+          : getMediaType(value)
     }
   }
   const view = state._view || defaultView({ nodeType, stringType, mediaType })
@@ -264,7 +267,7 @@ function NodeView({
           )}
         </>
       )}
-      {expanded && ['json', 'text', 'image'].includes(view) && (
+      {expanded && ['json', 'text', 'code', 'image'].includes(view) && (
         <div
           style={{
             paddingLeft: indent + expandWidth,

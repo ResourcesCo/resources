@@ -1,5 +1,11 @@
 import produce from 'immer'
-import { getStateKey, draftValue, draftState, renameDraftKey } from '../util'
+import {
+  getStateKey,
+  draftValue,
+  draftState,
+  renameDraftKey,
+  getNewKey,
+} from '../util'
 
 export default function rename(treeData, treeUpdate) {
   return produce(treeData, draft => {
@@ -19,11 +25,12 @@ export default function rename(treeData, treeUpdate) {
         const parentPath = treeUpdate.path.slice(0, lastIndex)
         const key = treeUpdate.path[lastIndex]
         const draftParentValue = draftValue(draft, parentPath)
+        const newKey = getNewKey(draftParentValue, treeUpdate.value)
 
-        renameDraftKey(draftParentValue, key, treeUpdate.value)
+        renameDraftKey(draftParentValue, key, newKey)
 
         const draftParentState = draftState(draft, parentPath)
-        draftParentState[getStateKey(treeUpdate.value)] =
+        draftParentState[getStateKey(newKey)] =
           draftParentState[getStateKey(key)]
         delete draftParentState[getStateKey(key)]
       }

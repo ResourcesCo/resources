@@ -6,6 +6,9 @@ export default function setView(treeData, treeUpdate) {
     const { path, view } = treeUpdate
     const state = draftState(draft, path)
     state._view = view
+    if ('mediaType' in treeUpdate) {
+      state._mediaType = treeUpdate.mediaType
+    }
     state._expanded = true
   })
 }
