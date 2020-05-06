@@ -69,12 +69,12 @@ const InlineValue = ({
     }
   }
 
-  const save = () => {
+  const save = (options = {}) => {
     onMessage({
       path,
       action: 'edit',
       value: newValue,
-      editing: false,
+      ...options,
     })
   }
 
@@ -91,7 +91,7 @@ const InlineValue = ({
     if (e.key === 'Enter' && e.shiftKey === false) {
       e.target.blur()
       e.preventDefault()
-      save()
+      save({ editing: false })
     } else if (e.key === 'Esc' || e.key === 'Escape') {
       e.target.blur()
       e.preventDefault()
@@ -107,7 +107,7 @@ const InlineValue = ({
   const onBlur = () => {
     setFocused(false)
     setNewInputValue(inputValue(newValue))
-    save()
+    save({ editing: false })
   }
 
   let typeClass

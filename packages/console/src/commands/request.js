@@ -50,13 +50,23 @@ export default {
               headers: request.headers,
               body: JSON.stringify(request.body),
             })
-            const data = await response.json()
+            let data
+            if (
+              response.headers
+                .get('Content-Type')
+                .startsWith('application/json')
+            ) {
+              data = await response.json()
+            } else {
+              data = await response.text()
+            }
             return {
               type: 'message-command',
               action: 'set',
               path: ['response'],
               value: {
                 headers: jsonHeaders(response.headers),
+                status: response.status,
                 body: data,
               },
             }
