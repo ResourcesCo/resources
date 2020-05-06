@@ -15,6 +15,9 @@ export default function Nav({ onSelectExample, theme }) {
           <option value="request get https://pokeapi.co/api/v2/pokemon/bulbasaur">
             pokeapi.co - bulbasaur
           </option>
+          <option value="request get https://api.github.com/repos/zeit/next.js/commits">
+            github - next.js commits
+          </option>
         </select>
       </div>
       <div className="links">
@@ -66,7 +69,7 @@ export default function Nav({ onSelectExample, theme }) {
           text-decoration: none;
         }
         @media (max-width: 575.98px) {
-          select {
+          .links {
             display: none;
           }
           .divider {
