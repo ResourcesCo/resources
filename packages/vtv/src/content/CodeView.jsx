@@ -168,7 +168,7 @@ export default function CodeView({
 }
 
 CodeView.propTypes = {
-  editMode: PropTypes.oneOf(['string', 'json']).isRequired,
+  editMode: PropTypes.oneOf(['text', 'json']).isRequired,
   value: PropTypes.any.isRequired,
   state: PropTypes.object.isRequired,
   path: PropTypes.arrayOf(PropTypes.string).isRequired,

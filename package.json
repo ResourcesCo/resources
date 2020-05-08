@@ -3,7 +3,7 @@
   "version": "1.0.0-canary.15",
   "license": "Apache-2.0",
   "scripts": {
-    "dev": "next -p 3333",
+    "dev": "next dev -p 3333",
     "build": "next build",
     "start": "next start",
     "export": "next export",

@@ -17,6 +17,15 @@ const jsonHeaders = headers => {
   return result
 }
 
+const contentTypeIsJson = headers => {
+  const contentType = headers.get('Content-Type')
+  if (typeof contentType === 'string' && contentType.length > 0) {
+    return contentType.startsWith('application/json')
+  } else {
+    return false
+  }
+}
+
 export default {
   defaultAction: 'post',
   actions: {
@@ -51,11 +60,7 @@ export default {
               body: JSON.stringify(request.body),
             })
             let data
-            if (
-              response.headers
-                .get('Content-Type')
-                .startsWith('application/json')
-            ) {
+            if (contentTypeIsJson(response.headers)) {
               data = await response.json()
             } else {
               data = await response.text()
@@ -120,7 +125,12 @@ export default {
             const response = await fetch(url, {
               signal: controller.signal,
             })
-            const data = await response.json()
+            let data
+            if (contentTypeIsJson(request.headers)) {
+              data = await response.json()
+            } else {
+              data = await response.text()
+            }
             return {
               type: 'tree',
               name: 'request',
