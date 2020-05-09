@@ -1,5 +1,6 @@
 import ConsoleError from '@resources/console/ConsoleError'
 import ConsoleWorkspace from '@resources/console/services/workspace/ConsoleWorkspace'
+import { isObject } from 'vtv/model/analyze'
 
 export default async (req, res) => {
   const {
@@ -14,9 +15,14 @@ export default async (req, res) => {
     if (req.method === 'GET') {
       responseBody = await channel.files.get({ path })
     } else if (req.method === 'PUT') {
+      if (!(isObject(req.body) && 'value' in req.body)) {
+        throw new ConsoleError('Content must be JSON object with value key', {
+          status: 422,
+        })
+      }
       responseBody = await channel.files.put({ ...req.body, path })
     } else if (req.method === 'DELETE') {
-      responseBody = await channel.files.del(path)
+      responseBody = await channel.files.delete({ path })
     } else {
       throw new ConsoleError('Invalid method for path', { status: 400 })
     }

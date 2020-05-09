@@ -13,14 +13,14 @@ class LocalFileStore {
     if (!absolutePath.startsWith(this.absolutePath)) {
       throw new ConsoleError('Invalid path', { status: 400 })
     }
+    if (!absolutePath.endsWith('.json')) {
+      throw new Error('Unsupported file type', { status: 422 })
+    }
     return absolutePath
   }
 
   async get({ path }) {
     const absolutePath = this.getAbsolutePath(path)
-    if (!absolutePath.endsWith('.json')) {
-      throw new Error('Unsupported file type', { status: 422 })
-    }
     const data = await fsPromises.readFile(absolutePath)
 
     return {
@@ -29,9 +29,17 @@ class LocalFileStore {
     }
   }
 
-  async put(path, value) {}
+  async put({ path, value }) {
+    const absolutePath = this.getAbsolutePath(path)
+    await fsPromises.writeFile(absolutePath, JSON.stringify(value, null, 2))
+    return {}
+  }
 
-  async delete(path) {}
+  async delete({ path }) {
+    const absolutePath = this.getAbsolutePath(path)
+    await fsPromises.unlink(absolutePath)
+    return {}
+  }
 }
 
 export default LocalFileStore
