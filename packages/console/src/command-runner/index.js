@@ -162,6 +162,7 @@ export default async function runCommand({
   parentCommandId,
   parentMessage,
   store,
+  channel,
 }) {
   if (['{', '['].includes(parsed[0].substr(0, 1))) {
     return runCommand({
@@ -174,11 +175,21 @@ export default async function runCommand({
       store,
     })
   }
+
   const resourcePath = splitPath(parsed[0])
   const actionName = parsed.length > 1 ? parsed[1] : '_default'
 
   const command = commands[resourcePath[0]] // TODO: recurse
   const commandId = shortid.generate()
+
+  if (channel) {
+    const channelResult = await channel.runCommand({ message, parsed })
+    if (channelResult) {
+      onMessagesCreated(channelResult)
+      return
+    }
+  }
+
   const setActionLoading = loading => {
     onMessagesCreated([
       {

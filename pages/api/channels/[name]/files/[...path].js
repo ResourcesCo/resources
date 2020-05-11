@@ -9,7 +9,7 @@ export default async (req, res) => {
   const path = pathArray.join('/')
 
   try {
-    const workspace = ConsoleWorkspace.getWorkspace('./')
+    const workspace = ConsoleWorkspace.getWorkspace()
     const channel = await workspace.getChannel(name)
     let responseBody
     if (req.method === 'GET') {

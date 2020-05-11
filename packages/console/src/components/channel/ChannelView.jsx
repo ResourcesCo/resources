@@ -10,6 +10,7 @@ import { parseCommand, updateTree, removeTemporaryState } from 'vtv'
 import { getTheme } from '../../themes'
 import runCommand from '../../command-runner'
 import { MemoryStore, LocalStorageStore } from '../../store'
+import ConsoleWorkspace from '../../services/workspace/ConsoleWorkspace'
 import Message from '../messages/Message'
 import ChannelInput from './ChannelInput'
 
@@ -268,7 +269,7 @@ class ChannelView extends PureComponent {
   }
 
   send = async () => {
-    const { store } = this.props
+    const { channel, store } = this.props
     const { text } = this.state
     const parsed = parseCommand(text)
     if (Array.isArray(parsed) && parsed.length) {
@@ -277,6 +278,7 @@ class ChannelView extends PureComponent {
         message: text,
         parsed,
         onMessagesCreated: this.addMessages,
+        channel,
         store,
       })
     }
@@ -301,7 +303,7 @@ class ChannelView extends PureComponent {
   }
 
   handleSubmitForm = async ({ commandId, formData, message }) => {
-    const { store } = this.props
+    const { channel, store } = this.props
     const { commands } = this.state
     const parentMessage = (
       getNested(commands, [commandId, 'messages']) || []
@@ -314,6 +316,7 @@ class ChannelView extends PureComponent {
       formData,
       parentCommandId: commandId,
       parentMessage,
+      channel,
       store,
     })
   }
@@ -397,6 +400,7 @@ class ChannelView extends PureComponent {
 class ChannelViewWrapper extends PureComponent {
   state = {
     theme: 'dark',
+    channel: null,
   }
 
   handleThemeChange = theme => {
@@ -414,13 +418,37 @@ class ChannelViewWrapper extends PureComponent {
     return this._store
   }
 
+  async loadChannel() {
+    const workspace = ConsoleWorkspace.getWorkspace()
+    const channel = await workspace.getChannel('main')
+    this.setState({ channel })
+  }
+
+  get channel() {
+    if (this.props.channel) {
+      return this.props.channel
+    } else if (this.state.channel) {
+      return this.state.channel
+    } else {
+      this.loadChannel()
+    }
+  }
+
   render() {
-    const { theme, onThemeChange, store, storageType, ...props } = this.props
+    const {
+      theme,
+      onThemeChange,
+      store,
+      channel,
+      storageType,
+      ...props
+    } = this.props
     return (
       <ChannelView
         theme={theme || getTheme(this.state.theme)}
         onThemeChange={onThemeChange || this.handleThemeChange}
         store={store || this.store}
+        channel={channel || this.channel}
         {...props}
       />
     )
