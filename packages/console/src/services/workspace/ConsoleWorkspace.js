@@ -2,21 +2,26 @@ import fetch from 'isomorphic-unfetch'
 const fsPromises = require('fs').promises
 import ConsoleChannel from '../channel/ConsoleChannel'
 import ConsoleError from '../../ConsoleError'
+import produce from 'immer'
 
 class ConsoleWorkspace {
-  constructor({ location, isServer, isClient }) {
+  constructor({ location }) {
     this.location = location
-    this.isServer = isServer
-    this.isClient = isClient
     this.channels = {}
   }
 
   async loadConfig() {
-    if (this.isServer) {
+    if (typeof window === 'undefined') {
       const data = await fsPromises.readFile(this.location + '/workspace.json')
       this.config = JSON.parse(data)
-    } else if (this.isClient) {
-      const response = await fetch(this.location)
+    } else {
+      const response = await fetch(this.location, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ apiBaseUrl: this.location }),
+      })
       const data = await response.json()
       const { workspaceConfig } = data
       this.config = workspaceConfig
@@ -36,11 +41,16 @@ class ConsoleWorkspace {
     return this.channels[name]
   }
 
-  async getClientConfig() {
+  async getClientConfig(params) {
     if (!this.config) {
       await this.loadConfig()
     }
-    return this.config
+    const clientConfig = { channels: {} }
+    for (const channelName of Object.keys(this.config.channels)) {
+      const channel = await this.getChannel(channelName)
+      clientConfig.channels[channelName] = await channel.getClientConfig(params)
+    }
+    return clientConfig
   }
 }
 
@@ -49,18 +59,14 @@ ConsoleWorkspace.workspaces = {}
 ConsoleWorkspace.getWorkspace = options => {
   const defaultOptions = {
     location: typeof window !== 'undefined' ? '/api' : '.',
-    isClient: typeof window !== 'undefined',
-    isServer: typeof window == 'undefined',
   }
-  const { isServer, isClient, location } = options || defaultOptions
+  const { location } = options || defaultOptions
 
   if (!location) {
     throw new Error('no location')
   }
   if (!(location in ConsoleWorkspace.workspaces)) {
     ConsoleWorkspace.workspaces[location] = new ConsoleWorkspace({
-      isServer: isServer || false,
-      isClient: isClient || false,
       location,
     })
   }

@@ -164,6 +164,17 @@ export default async function runCommand({
   store,
   channel,
 }) {
+  if (channel) {
+    const channelResult = await channel.runCommand({
+      message,
+      parsed,
+      onMessage: onMessagesCreated,
+    })
+    if (channelResult) {
+      return channelResult
+    }
+  }
+
   if (['{', '['].includes(parsed[0].substr(0, 1))) {
     return runCommand({
       message: parsed[0].substr(0, 1) === '{' ? '{json data}' : '[json data]',
@@ -181,14 +192,6 @@ export default async function runCommand({
 
   const command = commands[resourcePath[0]] // TODO: recurse
   const commandId = shortid.generate()
-
-  if (channel) {
-    const channelResult = await channel.runCommand({ message, parsed })
-    if (channelResult) {
-      onMessagesCreated(channelResult)
-      return
-    }
-  }
 
   const setActionLoading = loading => {
     onMessagesCreated([
