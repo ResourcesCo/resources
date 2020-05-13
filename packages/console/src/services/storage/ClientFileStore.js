@@ -1,8 +1,10 @@
 import fetch from 'isomorphic-unfetch'
+import actions from './actions'
 
 class ClientFileStore {
   constructor({ url }) {
     this.url = url
+    this.actions = actions
   }
 
   async get({ path }) {
@@ -22,6 +24,10 @@ class ClientFileStore {
     const absolutePath = this.getAbsolutePath(path)
     await fsPromises.unlink(absolutePath)
     return {}
+  }
+
+  async run({ action, ...params }) {
+    return await this.actions[action]({ ...params, fileStore: this })
   }
 }
 

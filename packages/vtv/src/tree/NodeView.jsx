@@ -17,7 +17,7 @@ import InlineContent from '../content/InlineContent'
 import NodeMenuButton from './NodeMenuButton'
 import TableView from '../table/TableView'
 import BlockContent from '../content/BlockContent'
-import ActionButton from '../generic/ActionButton'
+import InlineActionView from '../content/InlineActionView'
 import defaultView from '../util/defaultView'
 
 const expandWidth = 30
@@ -159,20 +159,11 @@ function NodeView({
           theme={theme}
         />
         {actions && (
-          <div className="actions-content">
-            {actions.map(({ name, title, primary }) => (
-              <ActionButton
-                key={name}
-                primary={primary}
-                onClick={() =>
-                  onMessage({ action: 'runAction', actionName: name })
-                }
-                theme={theme}
-              >
-                {title}
-              </ActionButton>
-            ))}
-          </div>
+          <InlineActionView
+            actions={actions}
+            onMessage={onMessage}
+            theme={theme}
+          />
         )}
 
         <div className="node-content">
@@ -196,9 +187,6 @@ function NodeView({
           .node-content {
             margin-left: 10px;
             flex-grow: 1;
-          }
-          .actions-content {
-            margin-left: 10px;
           }
           .row {
             display: flex;

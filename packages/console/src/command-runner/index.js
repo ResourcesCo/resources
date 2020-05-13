@@ -169,6 +169,9 @@ export default async function runCommand({
       message,
       parsed,
       onMessage: onMessagesCreated,
+      parentMessageId: parentCommandId,
+      parentMessage,
+      formData,
     })
     if (channelResult) {
       return channelResult
