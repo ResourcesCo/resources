@@ -1,68 +1,113 @@
 import shortid from 'shortid'
 import ClientFileStore from '../storage/ClientFileStore'
 import LocalFileStore from '../storage/LocalFileStore'
+import ConsoleError from '../../ConsoleError'
 import { splitPath, joinPath } from 'vtv'
 
 class ConsoleChannel {
   constructor({ name, files }) {
     this.name = name
-    if (typeof window != 'undefined') {
-      this.files = new ClientFileStore(files)
-    } else {
-      this.files = new LocalFileStore(files)
+    if (files) {
+      if (typeof window != 'undefined') {
+        this.files = new ClientFileStore(files)
+      } else {
+        this.files = new LocalFileStore(files)
+      }
     }
     this.messages = {}
     this.messageIds = []
   }
 
-  async runCommand({ message, parsed, onMessage, formData }) {
+  async dispatchCommand(resource, params) {
+    console.log({ resource, params })
+    try {
+      const result = await resource.run(params)
+      console.log({ result })
+      return result
+    } catch (e) {
+      if (e instanceof ConsoleError) {
+        if (e.data && e.data.consoleMessage) {
+          return e.data.consoleMessage
+        } else {
+          return { type: 'error', text: `Error: ${e.message}` }
+        }
+      } else {
+        return { type: 'error', text: 'Error responding to message' }
+      }
+    }
+  }
+
+  async runCommand({
+    message,
+    parsed,
+    onMessage,
+    parentMessage,
+    parentMessageId,
+    formData,
+  }) {
     // TODO: remove once this handles data passed as first parameter
     if (!/^\s*\w/.test(parsed[0].substr(0, 10))) {
       return
     }
 
     const resourcePath = splitPath(parsed[0])
-    if (resourcePath[0] === 'files') {
-      let action = null
-      if (formData && formData.action === 'runAction') {
-        action = formData.actionName
-      }
+    if (resourcePath[0] === 'files' && this.files) {
+      const isBackgroundAction = formData && formData.action === 'runAction'
+      const action = isBackgroundAction
+        ? formData.actionName
+        : parsed.length >= 2
+        ? parsed[1]
+        : 'get'
 
       const messageId = shortid()
-      if (!action) {
+      if (!isBackgroundAction) {
         onMessage({
           type: 'input',
           text: message,
           commandId: messageId,
           loading: true,
         })
+      } else {
+        onMessage({
+          type: 'form-status',
+          commandId: messageId,
+          parentCommandId: parentMessageId,
+          loading: true,
+        })
       }
-      const result = await this.files.run({
-        action: 'get',
+      const result = await this.dispatchCommand(this.files, {
+        action: action || 'get',
         path: resourcePath.slice(1),
-        args: parsed.slice(1),
+        args: parsed.slice(2),
+        parentMessage,
       })
+      console.log({ result })
       onMessage(
         [
-          {
+          result && {
             ...result,
             commandId: messageId,
             message: joinPath(resourcePath),
           },
-          { type: 'loaded', commandId: messageId },
+          {
+            type: 'loaded',
+            commandId: isBackgroundAction ? parentMessageId : messageId,
+          },
         ].filter(value => value)
       )
-      return result
+      return true
     }
   }
 
   async getClientConfig({ apiBaseUrl }) {
-    return {
-      files: {
-        url: `${apiBaseUrl}/channels/${this.name}/files`,
-        path: this.files.path,
-      },
-    }
+    return this.files
+      ? {
+          files: {
+            url: `${apiBaseUrl}/channels/${this.name}/files`,
+            path: this.files.path,
+          },
+        }
+      : {}
   }
 }
 

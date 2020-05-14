@@ -108,7 +108,7 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
                 <Loader
                   type="ThreeDots"
                   color={theme.inputColor}
-                  height={15}
+                  height={12}
                   width={20}
                 />
               </div>
@@ -121,6 +121,7 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
           }
           .input-message {
             margin-left: 5px;
+            line-height: 1.5;
           }
           .input-message:hover .input-link {
             display: inline;

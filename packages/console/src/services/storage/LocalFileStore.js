@@ -31,7 +31,10 @@ class LocalFileStore {
 
   async put({ path, value }) {
     const absolutePath = this.getAbsolutePath(path)
-    await fsPromises.writeFile(absolutePath, JSON.stringify(value, null, 2))
+    await fsPromises.writeFile(
+      absolutePath,
+      JSON.stringify(value, null, 2) + '\n'
+    )
     return {}
   }
 

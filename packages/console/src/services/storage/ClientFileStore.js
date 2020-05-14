@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-unfetch'
 import actions from './actions'
+import ConsoleError from '../../ConsoleError'
 
 class ClientFileStore {
   constructor({ url }) {
@@ -15,8 +16,11 @@ class ClientFileStore {
   }
 
   async put({ path, value }) {
-    const absolutePath = this.getAbsolutePath(path)
-    await fsPromises.writeFile(absolutePath, JSON.stringify(value, null, 2))
+    const response = await fetch(`${this.url}${path}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contentType: 'application/json', value }),
+    })
     return {}
   }
 
@@ -27,7 +31,11 @@ class ClientFileStore {
   }
 
   async run({ action, ...params }) {
-    return await this.actions[action]({ ...params, fileStore: this })
+    if (typeof this.actions[action] === 'function') {
+      return await this.actions[action]({ ...params, fileStore: this })
+    } else {
+      throw new ConsoleError('Unknown action')
+    }
   }
 }
 

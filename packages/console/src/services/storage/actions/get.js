@@ -24,8 +24,8 @@ export default async function get({ fileStore, path, args }) {
         _expanded: true,
         _actions: [
           { name: 'save', title: 'Save', primary: true, show: 'changed' },
-          { name: 'reload', title: 'Reload', show: 'delete' },
-          { name: 'delete', title: 'Delete', show: 'changed' },
+          // { name: 'reload', title: 'Reload', show: 'delete' },
+          // { name: 'delete', title: 'Delete', show: 'changed' },
         ],
       },
     }

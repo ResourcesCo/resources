@@ -2,7 +2,8 @@ import fetch from 'isomorphic-unfetch'
 const fsPromises = require('fs').promises
 import ConsoleChannel from '../channel/ConsoleChannel'
 import ConsoleError from '../../ConsoleError'
-import produce from 'immer'
+
+const defaultConfig = { channels: { main: {} } }
 
 class ConsoleWorkspace {
   constructor({ location }) {
@@ -12,8 +13,14 @@ class ConsoleWorkspace {
 
   async loadConfig() {
     if (typeof window === 'undefined') {
-      const data = await fsPromises.readFile(this.location + '/workspace.json')
-      this.config = JSON.parse(data)
+      try {
+        const data = await fsPromises.readFile(
+          this.location + '/workspace.json'
+        )
+        this.config = JSON.parse(data)
+      } catch (err) {
+        this.config = defaultConfig
+      }
     } else {
       const response = await fetch(this.location, {
         method: 'POST',
