@@ -63,9 +63,13 @@ class ConsoleWorkspace {
 
 ConsoleWorkspace.workspaces = {}
 
+function apiBase() {
+  return process.env.API_BASE || '/api'
+}
+
 ConsoleWorkspace.getWorkspace = options => {
   const defaultOptions = {
-    location: typeof window !== 'undefined' ? '/api' : '.',
+    location: typeof window !== 'undefined' ? apiBase() : '.',
   }
   const { location } = options || defaultOptions
 

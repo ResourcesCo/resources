@@ -24,4 +24,5 @@ module.exports = withCSS({
 
     return config
   },
+  env: { API_BASE: process.env.API_BASE },
 })

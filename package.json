@@ -3,7 +3,8 @@
   "version": "1.0.0-canary.15",
   "license": "Apache-2.0",
   "scripts": {
-    "dev": "next dev -p 3333",
+    "dev": "API_BASE=http://localhost:3334/api next dev -p 3333",
+    "dev:api-proxy": "PORT=3333 API_PORT=3334 node scripts/proxy.js",
     "build": "next build",
     "start": "next start",
     "export": "next export",
@@ -44,6 +45,7 @@
   },
   "devDependencies": {
     "babel-plugin-module-resolver": "^4.0.0",
-    "extra-watch-webpack-plugin": "^1.0.3"
+    "extra-watch-webpack-plugin": "^1.0.3",
+    "http-proxy": "^1.18.1"
   }
 }

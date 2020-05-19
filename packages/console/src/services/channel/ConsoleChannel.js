@@ -19,10 +19,8 @@ class ConsoleChannel {
   }
 
   async dispatchCommand(resource, params) {
-    console.log({ resource, params })
     try {
       const result = await resource.run(params)
-      console.log({ result })
       return result
     } catch (e) {
       if (e instanceof ConsoleError) {
@@ -81,7 +79,6 @@ class ConsoleChannel {
         args: parsed.slice(2),
         parentMessage,
       })
-      console.log({ result })
       onMessage(
         [
           result && {
