@@ -74,7 +74,7 @@ export const getCollectionPaths = collection => {
   return Object.keys(paths).map(path => JSON.parse(path))
 }
 
-export const detectUrl = str => {
+export const isUrl = str => {
   return /^https?:\/\//.test(str)
 }
 
@@ -115,7 +115,10 @@ export const joinPath = path => {
   return result
 }
 
-export const splitPath = str => {
+export function splitPath(str) {
+  if (str.indexOf('://') !== -1) {
+    return
+  }
   if (str[0] === '[') {
     const result = j2ref(`$${str}`)
     if (result && result.keys) {

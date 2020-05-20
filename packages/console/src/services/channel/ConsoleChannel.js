@@ -3,6 +3,7 @@ import ClientFileStore from '../storage/ClientFileStore'
 import LocalFileStore from '../storage/LocalFileStore'
 import ConsoleError from '../../ConsoleError'
 import { splitPath, joinPath } from 'vtv'
+import { isUrl } from 'vtv/src/model/analyze'
 
 import getApiFinder from 'api-finder'
 
@@ -24,7 +25,21 @@ class ConsoleChannel {
   async init() {
     const apiFinder = await getApiFinder()
     this.apps = { apiFinder }
-    console.log({ apps: this.apps })
+    this.providers = {}
+    this.autorun = {}
+    for (const [appName, app] of Object.entries(this.apps)) {
+      for (const [providerName, provider] of Object.entries(app.providers)) {
+        if (providerName in this.providers) {
+          console.warn(`Provider already declared: ${providerName}`)
+        }
+        this.providers[providerName] = { appName, providerName }
+        for (const [actionName, action] of Object.entries(provider.actions)) {
+          if (action.autorun?.type === 'url') {
+            this.autorun['url'] = { appName, providerName, actionName }
+          }
+        }
+      }
+    }
   }
 
   async dispatchCommand(resource, params) {
@@ -44,6 +59,15 @@ class ConsoleChannel {
     }
   }
 
+  async getHandler({ resourcePath, parsed }) {
+    console.log({ resourcePath, parsed })
+    if (resourcePath && resourcePath[0] === 'files' && this.files) {
+      return this.files
+    } else if (!resourcePath && isUrl(parsed[0])) {
+      console.log('url detected', { autorun: this.autorun })
+    }
+  }
+
   async runCommand({
     message,
     parsed,
@@ -58,7 +82,8 @@ class ConsoleChannel {
     }
 
     const resourcePath = splitPath(parsed[0])
-    if (resourcePath[0] === 'files' && this.files) {
+    const handler = await this.getHandler({ resourcePath, parsed })
+    if (handler) {
       const isBackgroundAction = formData && formData.action === 'runAction'
       const action = isBackgroundAction
         ? formData.actionName

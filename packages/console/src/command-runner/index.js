@@ -154,6 +154,13 @@ const runAction = async ({
   return [...convertToArray(beforeResult), ...updatedResult]
 }
 
+function commandNotFound({ message, commandId }) {
+  return [
+    inputMessage(message),
+    { type: 'text', text: 'Command not found.' },
+  ].map(message => ({ ...message, commandId }))
+}
+
 export default async function runCommand({
   message,
   parsed,
@@ -190,11 +197,16 @@ export default async function runCommand({
     })
   }
 
+  const commandId = shortid.generate()
+
   const resourcePath = splitPath(parsed[0])
+  if (!Array.isArray(resourcePath)) {
+    onMessagesCreated(commandNotFound({ message, commandId }))
+    return
+  }
   const actionName = parsed.length > 1 ? parsed[1] : '_default'
 
   const command = commands[resourcePath[0]] // TODO: recurse
-  const commandId = shortid.generate()
 
   const setActionLoading = loading => {
     onMessagesCreated([
@@ -263,11 +275,6 @@ export default async function runCommand({
     handleMessagesCreated(result)
     onMessagesCreated({ type: 'loaded', commandId })
   } else {
-    onMessagesCreated(
-      [
-        inputMessage(message),
-        { type: 'text', text: 'Command not found.' },
-      ].map(message => ({ ...message, commandId }))
-    )
+    onMessagesCreated(commandNotFound({ message, commandId }))
   }
 }

@@ -4,7 +4,7 @@ import InlineValue from './InlineValue'
 import Link from './Link'
 import CollectionSummary from './CollectionSummary'
 import AttachmentView from './AttachmentView'
-import { detectUrl } from '../model/analyze'
+import { isUrl } from '../model/analyze'
 
 function InlineContent({
   name,
@@ -49,7 +49,7 @@ function InlineContent({
       />
     )
   } else {
-    if (typeof value === 'string' && detectUrl(value)) {
+    if (typeof value === 'string' && isUrl(value)) {
       const handleEdit = () => {
         onMessage({
           path,

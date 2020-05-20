@@ -10,7 +10,7 @@ function run({
 
 interface App {
   name: string
-  provides: {
+  providers: {
     [key: string]: {
       path: string[]
       actions: {
@@ -31,7 +31,7 @@ interface App {
 export default async function app(): Promise<App> {
   return {
     name: 'API finder',
-    provides: {
+    providers: {
       apiFinder: {
         path: [],
         actions: {
