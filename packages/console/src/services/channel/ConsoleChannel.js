@@ -4,9 +4,12 @@ import LocalFileStore from '../storage/LocalFileStore'
 import ConsoleError from '../../ConsoleError'
 import { splitPath, joinPath } from 'vtv'
 
+import getApiFinder from 'api-finder'
+
 class ConsoleChannel {
-  constructor({ name, files }) {
+  constructor({ name, apps, files }) {
     this.name = name
+    this.config = { apps }
     if (files) {
       if (typeof window != 'undefined') {
         this.files = new ClientFileStore(files)
@@ -16,6 +19,12 @@ class ConsoleChannel {
     }
     this.messages = {}
     this.messageIds = []
+  }
+
+  async init() {
+    const apiFinder = await getApiFinder()
+    this.apps = { apiFinder }
+    console.log({ apps: this.apps })
   }
 
   async dispatchCommand(resource, params) {

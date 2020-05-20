@@ -3,7 +3,7 @@ const fsPromises = require('fs').promises
 import ConsoleChannel from '../channel/ConsoleChannel'
 import ConsoleError from '../../ConsoleError'
 
-const defaultConfig = { channels: { main: {} } }
+const defaultConfig = { channels: { main: { apps: ['api-finder'] } } }
 
 class ConsoleWorkspace {
   constructor({ location }) {
@@ -43,7 +43,11 @@ class ConsoleWorkspace {
       if (!(name in this.config.channels)) {
         throw new ConsoleError('Not found', { status: 404 })
       }
-      return new ConsoleChannel({ name, ...this.config.channels[name] })
+      this.channels[name] = new ConsoleChannel({
+        name,
+        ...this.config.channels[name],
+      })
+      await this.channels[name].init()
     }
     return this.channels[name]
   }

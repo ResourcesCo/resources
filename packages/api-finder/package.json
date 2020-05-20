@@ -1,5 +1,5 @@
 {
-  "name": "@resources/api-finder",
+  "name": "api-finder",
   "version": "1.0.0-pre.0",
   "devDependencies": {
     "jest": "^26.0.1",
@@ -7,5 +7,6 @@
   },
   "scripts": {
     "build": "tsc"
-  }
+  },
+  "main": "./dist/app.js"
 }
