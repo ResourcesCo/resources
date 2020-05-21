@@ -30,7 +30,7 @@ interface App {
 
 export default async function app(): Promise<App> {
   return {
-    name: 'API finder',
+    name: 'apiFinder',
     providers: {
       apiFinder: {
         path: [],
