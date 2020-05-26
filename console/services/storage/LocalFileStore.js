@@ -45,4 +45,6 @@ class LocalFileStore {
   }
 }
 
+LocalFileStore.readFile = fsPromises.readFile
+
 export default LocalFileStore

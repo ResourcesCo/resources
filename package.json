@@ -8,34 +8,35 @@
     "build": "next build",
     "start": "next start",
     "export": "next export",
-    "reformat": "prettier --write \"**/*.js\"",
-    "postinstall": "yarn vtv:install && yarn console:install && yarn packages:link",
-    "vtv:install": "cd packages/vtv && yarn install --production",
-    "console:install": "cd packages/console && yarn install --production",
-    "publish-vtv-pre": "cd packages/vtv && yarn version --prerelease --pre-id=canary --no-git-tag-version && yarn publish --no-git-tag-version",
-    "publish-console-pre": "cd packages/console && yarn version --prerelease --pre-id=canary --no-git-tag-version && yarn publish --no-git-tag-version",
-    "packages:link": "yarn packages:link:console && yarn packages:link:root",
-    "packages:link:console": "cd packages/console/node_modules && rm -rf vtv && ln -s ../../vtv vtv",
-    "packages:link:root": "cd node_modules && rm -rf vtv && ln -s ../packages/vtv vtv && mkdir -p @resources && cd @resources && rm -rf console && ln -s ../../packages/console console",
-    "packages:link:desktop": "cd packages/desktop-app/node_modules && rm -rf vtv && ln -s ../../vtv vtv && cd @resources && rm -rf console && ln -s ../../../console console",
-    "packages:link:reset": "rm node_modules/vtv node_modules/@resources/console packages/console/node_modules/vtv && yarn install",
-    "packages:copy-all-for-desktop": "rm -rf packages/desktop-app/renderer/packages && mkdir -p packages/desktop-app/renderer/packages && cp -a packages/vtv packages/desktop-app/renderer/packages/vtv && cp -a packages/console packages/desktop-app/renderer/packages/console",
-    "packages:copy-src-for-desktop": "rm -rf packages/desktop-app/renderer/packages/vtv/src && mkdir -p packages/desktop-app/renderer/packages/vtv && cp -r packages/vtv/src packages/desktop-app/renderer/packages/vtv/src && rm -rf packages/desktop-app/renderer/packages/console/src && mkdir -p packages/desktop-app/renderer/packages/console && cp -r packages/console/src packages/desktop-app/renderer/packages/console/src"
+    "format": "prettier --write \"**/*.js\""
   },
   "dependencies": {
-    "@resources/console": "1.0.0-canary.4",
-    "@zeit/next-css": "^1.0.1",
+    "@fortawesome/fontawesome-svg-core": "^1.2.28",
+    "@fortawesome/free-solid-svg-icons": "^5.13.0",
+    "@fortawesome/react-fontawesome": "^0.1.9",
+    "@popperjs/core": "^2.4.0",
+    "api-finder": "^1.0.0-pre.0",
+    "clsx": "^1.1.0",
     "codemirror": "^5.53.2",
-    "immer": "^5.3.6",
+    "immer": "^6.0.8",
+    "insert-text-at-cursor": "^0.3.0",
+    "isomorphic-unfetch": "^3.0.0",
+    "j2ref": "^1.0.0",
     "lodash": "^4.17.15",
     "next": "^9.3.2",
     "next-transpile-modules": "^3.0.2",
     "prettier": "^1.19.1",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
+    "react-autosize-textarea": "^7.0.0",
     "react-codemirror2": "^7.1.0",
+    "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.12.0",
+    "react-is": "^16.13.1",
     "react-loader-spinner": "^3.1.5",
+    "react-popper": "^2.2.3",
+    "scroll-into-view-if-needed": "^2.2.24",
+    "shortid": "^2.2.15",
     "vtv": "^1.0.0-canary.15"
   },
   "prettier": {
@@ -44,8 +45,10 @@
     "trailingComma": "es5"
   },
   "devDependencies": {
+    "@types/node": "^14.0.5",
+    "@types/react": "^16.9.35",
     "babel-plugin-module-resolver": "^4.0.0",
-    "extra-watch-webpack-plugin": "^1.0.3",
-    "http-proxy": "^1.18.1"
+    "http-proxy": "^1.18.1",
+    "typescript": "^3.9.3"
   }
 }

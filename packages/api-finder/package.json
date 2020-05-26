@@ -8,5 +8,6 @@
   "scripts": {
     "build": "tsc"
   },
-  "main": "./dist/app.js"
+  "main": "./dist/app.js",
+  "dependencies": {}
 }

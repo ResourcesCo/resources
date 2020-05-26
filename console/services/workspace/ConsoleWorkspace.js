@@ -1,5 +1,4 @@
 import fetch from 'isomorphic-unfetch'
-const fsPromises = require('fs').promises
 import ConsoleChannel from '../channel/ConsoleChannel'
 import ConsoleError from '../../ConsoleError'
 
@@ -14,7 +13,7 @@ class ConsoleWorkspace {
   async loadConfig() {
     if (typeof window === 'undefined') {
       try {
-        const data = await fsPromises.readFile(
+        const data = await ConsoleWorkspace.LocalFileStore.readFile(
           this.location + '/workspace.json'
         )
         this.config = JSON.parse(data)

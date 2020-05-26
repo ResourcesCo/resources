@@ -1,4 +1,4 @@
-import { ChannelView } from '@resources/console'
+import { ChannelView } from 'console'
 
 export default () => {
   return (

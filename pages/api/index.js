@@ -1,4 +1,9 @@
-import ConsoleWorkspace from '@resources/console/services/workspace/ConsoleWorkspace'
+import ConsoleWorkspace from 'console/services/workspace/ConsoleWorkspace'
+import ConsoleChannel from 'console/services/channel/ConsoleChannel'
+import LocalFileStore from 'console/services/storage/LocalFileStore'
+
+ConsoleWorkspace.LocalFileStore = LocalFileStore
+ConsoleChannel.LocalFileStore = LocalFileStore
 
 export default async function index(req, res) {
   if (req.method === 'GET') {

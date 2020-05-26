@@ -1,30 +1,30 @@
 import shortid from 'shortid'
 import ClientFileStore from '../storage/ClientFileStore'
-import LocalFileStore from '../storage/LocalFileStore'
 import ConsoleError from '../../ConsoleError'
 import { splitPath, joinPath } from 'vtv'
-import { isUrl } from 'vtv/src/model/analyze'
+import { isUrl } from 'vtv/model/analyze'
 import App from '../app/App'
 
-import apiFinder from 'api-finder'
+// import apiFinder from 'api-finder'
 
 class ConsoleChannel {
   constructor({ name, apps, files }) {
     this.name = name
-    this.config = { apps }
-    if (files) {
-      if (typeof window != 'undefined') {
-        this.files = new ClientFileStore(files)
-      } else {
-        this.files = new LocalFileStore(files)
-      }
-    }
+    this.config = { apps, files }
     this.messages = {}
     this.messageIds = []
   }
 
   async init() {
-    this.apps = { apiFinder: await App.get({ app: apiFinder }) }
+    if (this.config.files) {
+      if (typeof window !== 'undefined') {
+        this.files = new ClientFileStore(this.config.files)
+      } else {
+        this.files = new ConsoleChannel.LocalFileStore(this.config.files)
+      }
+    }
+    this.apps = {}
+    // this.apps = { apiFinder: await App.get({ app: apiFinder }) }
     this.providers = {}
     this.autorun = {}
     for (const [appName, app] of Object.entries(this.apps)) {

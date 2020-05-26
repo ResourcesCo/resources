@@ -1,6 +1,11 @@
-import ConsoleError from '@resources/console/ConsoleError'
-import ConsoleWorkspace from '@resources/console/services/workspace/ConsoleWorkspace'
+import ConsoleError from 'console/ConsoleError'
+import ConsoleWorkspace from 'console/services/workspace/ConsoleWorkspace'
+import ConsoleChannel from 'console/services/channel/ConsoleChannel'
+import LocalFileStore from 'console/services/storage/LocalFileStore'
 import { isObject } from 'vtv/model/analyze'
+
+ConsoleWorkspace.LocalFileStore = LocalFileStore
+ConsoleChannel.LocalFileStore = LocalFileStore
 
 export default async (req, res) => {
   const {
