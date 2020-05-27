@@ -36,8 +36,7 @@
     "react-loader-spinner": "^3.1.5",
     "react-popper": "^2.2.3",
     "scroll-into-view-if-needed": "^2.2.24",
-    "shortid": "^2.2.15",
-    "vtv": "^1.0.0-canary.15"
+    "shortid": "^2.2.15"
   },
   "prettier": {
     "semi": false,
