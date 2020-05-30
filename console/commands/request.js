@@ -126,7 +126,7 @@ export default {
               signal: controller.signal,
             })
             let data
-            if (contentTypeIsJson(request.headers)) {
+            if (contentTypeIsJson(response.headers)) {
               data = await response.json()
             } else {
               data = await response.text()
@@ -155,12 +155,13 @@ export default {
               message: message,
             }
           } catch (err) {
-            return {
-              type: 'error',
-              text:
-                err.name === 'AbortError'
-                  ? 'The request timed out.'
-                  : err.toString(),
+            if (err.name === 'AbortError') {
+              return {
+                type: 'error',
+                text: 'The request timed out.',
+              }
+            } else {
+              throw err
             }
           }
         }
