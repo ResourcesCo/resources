@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Head from './Head'
 import Nav from './Nav'
-import { ChannelView, getTheme } from '@resources/console'
+import { ChannelView, getTheme } from 'console'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 
 const infoForDevices = {

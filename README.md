@@ -8,22 +8,3 @@ TODO: intro
 
 It's a Next.js web app. Run `yarn dev` to run the development server or
 `yarn build` to build it.
-
-## vtv
-
-`yarn add vtv`
-
-```jsx
-import React, { useState } from 'react'
-import View from 'vtv'
-
-export default () => {
-  const [value, setValue] = useState({ hello: 'world' })
-  const [state, setState] = useState(null)
-  const onChange = ({ value, state }) => {
-    setValue(value)
-    setState(state)
-  }
-  return <View value={value} state={state} onChange={onChange} theme="dark" />
-}
-```
