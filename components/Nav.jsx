@@ -1,8 +1,14 @@
 export default function Nav({ onSelectExample, theme }) {
   return (
     <div className="nav">
-      <img src="/images/touch-icon.png" className="logo" />
-      <h1>Resources.co</h1>
+      <a href="https://resources.co/" target="_blank">
+        <img src="/images/touch-icon.png" className="logo" />
+      </a>
+      <h1>
+        <a href="https://resources.co/" target="_blank">
+          Resources.co
+        </a>
+      </h1>
       <div className="content">
         <select
           value=""
@@ -19,19 +25,6 @@ export default function Nav({ onSelectExample, theme }) {
             github - next.js commits
           </option>
         </select>
-      </div>
-      <div className="links">
-        <a href="https://github.com/resourcesco/resources" target="_blank">
-          GitHub
-        </a>{' '}
-        <span className="divider">•</span>{' '}
-        <a href="https://instagram.com/resources.co" target="_blank">
-          Instagram
-        </a>{' '}
-        <span className="divider">•</span>{' '}
-        <a href="https://twitter.com/ResourcesCo" target="_blank">
-          Twitter
-        </a>
       </div>
 
       <style jsx>{`
@@ -55,18 +48,15 @@ export default function Nav({ onSelectExample, theme }) {
         div.nav h1 {
           padding-left: 8px;
           font-size: 26px;
+          margin-top: -5px;
+        }
+        div.nav h1 a {
+          text-decoration: none;
         }
         div.nav div.content {
           padding: 5px 10px;
           text-align: right;
           flex-grow: 1;
-        }
-        div.nav div.links {
-          padding-right: 5px;
-        }
-        div.nav a {
-          color: ${theme.linkColor};
-          text-decoration: none;
         }
         @media (max-width: 575.98px) {
           .links {
