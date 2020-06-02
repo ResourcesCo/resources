@@ -5,13 +5,6 @@ import { getTheme } from './themes'
 import NodeView from './tree/NodeView'
 import Clipboard from './util/Clipboard'
 
-const ViewContext = React.createContext({})
-
-const optionDefaults = {
-  bubbleMenu: true,
-  dotMenu: true,
-}
-
 const defaultClipboard = new Clipboard()
 
 export default function View({
@@ -21,7 +14,6 @@ export default function View({
   theme,
   clipboard,
   receiveAllMessages = false,
-  options = {},
   ...props
 }) {
   const clipboardProp = clipboard || defaultClipboard
@@ -46,7 +38,6 @@ export default function View({
     <NodeView
       {...props}
       onMessage={onMessageProp}
-      options={{ ...optionDefaults, ...options }}
       clipboard={clipboardProp}
       theme={getTheme(theme)}
     />

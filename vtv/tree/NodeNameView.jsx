@@ -8,77 +8,6 @@ import escapeHtml from '../util/escapeHtml'
 
 // Node Name Key
 
-const NameEdit = React.forwardRef(
-  ({ name, editingName, path, onMessage, theme }, ref) => {
-    const [newName, setNewName] = useState(editingName === 'new' ? '' : name)
-
-    const sendAction = (data = {}) => {
-      onMessage({
-        path,
-        action: 'rename',
-        editing: false,
-        ...data,
-      })
-    }
-
-    const save = (data = {}) => {
-      let value
-      try {
-        value = JSON.parse(newName)
-      } catch (e) {
-        value = newName
-      }
-      sendAction({
-        value,
-        ...data,
-      })
-    }
-
-    const cancel = () => {
-      sendAction()
-    }
-
-    const handleKeyPress = e => {
-      if ((e.key === 'Enter' && e.shiftKey === false) || e.key === 'Tab') {
-        e.preventDefault()
-        save({ tab: e.key === 'Tab', enter: e.key === 'Enter' })
-      } else if (e.key === 'Esc' || e.key === 'Escape') {
-        e.preventDefault()
-        cancel()
-      }
-    }
-
-    return (
-      <div>
-        <Textarea
-          value={newName}
-          onChange={({ target: { value } }) => setNewName(value)}
-          onKeyDown={handleKeyPress}
-          onBlur={save}
-          autoFocus
-          tabIndex="-1"
-        />
-        <style jsx>{`
-          div :global(textarea) {
-            background: none;
-            border: none;
-            resize: none;
-            outline: none;
-            color: ${theme.foreground};
-          }
-          div {
-            background-color: ${theme.bubble1};
-            border-radius: 12px;
-            outline: none;
-            padding: 4px 7px;
-            border: 0;
-          }
-        `}</style>
-      </div>
-    )
-  }
-)
-
 const NameEditInPlace = React.forwardRef(
   ({ name, editingName, path, onMessage, theme }, ref) => {
     const editableRef = useRef(null)
@@ -192,7 +121,6 @@ export default ({
   displayName,
   editingName,
   theme,
-  options: { bubbleMenu, dotMenu },
   parentType,
   path,
   onMessage,
@@ -215,51 +143,29 @@ export default ({
       />
     )
   } else {
-    if (bubbleMenu) {
-      return (
-        <Manager>
-          <Reference>
-            {({ ref }) => (
-              <div ref={ref}>
-                <NameButton
-                  displayName={displayName}
-                  name={name}
-                  onClick={() => setMenuOpen(true)}
-                  onDoubleClick={rename}
-                  theme={theme}
-                />
-              </div>
-            )}
-          </Reference>
-          {menuOpen && (
-            <NodeMenu
-              {...nodeMenuProps}
-              nameOptionsFirst={true}
-              onClose={() => setMenuOpen(false)}
-            />
+    return (
+      <Manager>
+        <Reference>
+          {({ ref }) => (
+            <div ref={ref}>
+              <NameButton
+                displayName={displayName}
+                name={name}
+                onClick={() => setMenuOpen(true)}
+                onDoubleClick={rename}
+                theme={theme}
+              />
+            </div>
           )}
-        </Manager>
-      )
-    } else {
-      const rename = () => {
-        if (parentType === 'array') {
-          onMessage({
-            path,
-            action: 'rename',
-            editing: true,
-          })
-        }
-      }
-      return (
-        <div>
-          <NameButton
-            displayName={displayName}
-            name={name}
-            onClick={rename}
-            theme={theme}
+        </Reference>
+        {menuOpen && (
+          <NodeMenu
+            {...nodeMenuProps}
+            nameOptionsFirst={true}
+            onClose={() => setMenuOpen(false)}
           />
-        </div>
-      )
-    }
+        )}
+      </Manager>
+    )
   }
 }

@@ -27,7 +27,6 @@ function NodeView({
   name,
   value,
   state: _state,
-  options,
   displayName,
   showOnlyPath = [],
   path = [],
@@ -47,8 +46,6 @@ function NodeView({
     _editingName: editingName,
     _actions: actions,
   } = state
-  const { dotMenu } = options
-
   const toggleExpanded = () => {
     setViewChanged(true)
     onMessage({ path, state: { _expanded: !expanded } })
@@ -100,7 +97,6 @@ function NodeView({
         name={showOnly[showOnly.length - 1]}
         value={getNested(value, showOnly)}
         state={getNestedState(state, showOnly)}
-        options={options}
         displayName={joinPath([name, ...showOnly])}
         showAll={true}
         showOnlyPath={showOnly}
@@ -155,7 +151,6 @@ function NodeView({
           parentType={parentType}
           onMessage={onMessage}
           nodeMenuProps={nodeMenuProps}
-          options={options}
           theme={theme}
         />
         {actions && (
@@ -179,9 +174,7 @@ function NodeView({
           />
         </div>
         <div className="actions-right">
-          {dotMenu && (
-            <NodeMenuButton nodeMenuProps={nodeMenuProps} theme={theme} />
-          )}
+          <NodeMenuButton nodeMenuProps={nodeMenuProps} theme={theme} />
         </div>
         <style jsx>{`
           .node-content {
@@ -228,7 +221,6 @@ function NodeView({
                     name={key}
                     value={value[key]}
                     state={getChildState(state, key)}
-                    options={options}
                     onMessage={onMessage}
                     onPickId={onPickId}
                     path={[...path, key]}
