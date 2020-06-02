@@ -31,13 +31,12 @@ function NodeView({
   showOnlyPath = [],
   path = [],
   showAll,
-  onMessage,
   onPickId,
-  clipboard,
   codeMirrorComponent,
-  theme,
+  context,
 }) {
   const [viewChanged, setViewChanged] = useState(false)
+  const { onMessage, clipboard, theme } = context
 
   const state = getState(_state)
   const {
@@ -103,9 +102,8 @@ function NodeView({
         onMessage={onMessage}
         onPickId={onPickId}
         path={showOnly}
-        clipboard={clipboard}
         codeMirrorComponent={codeMirrorComponent}
-        theme={theme}
+        context={context}
       />
     )
   }
@@ -221,13 +219,11 @@ function NodeView({
                     name={key}
                     value={value[key]}
                     state={getChildState(state, key)}
-                    onMessage={onMessage}
                     onPickId={onPickId}
                     path={[...path, key]}
                     showOnlyPath={showOnlyPath}
-                    clipboard={clipboard}
                     codeMirrorComponent={codeMirrorComponent}
-                    theme={theme}
+                    context={context}
                   />
                 ))}
               </div>

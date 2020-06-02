@@ -14,21 +14,22 @@ export default function View({
   theme,
   clipboard,
   receiveAllMessages = false,
-  ...props
+  name,
+  value,
+  state,
 }) {
-  const clipboardProp = clipboard || defaultClipboard
-  let onMessageProp = onMessage
+  let onMessageHandler = onMessage
   if (typeof onMessageProp !== 'function') {
-    onMessageProp = message => {
+    onMessageHandler = message => {
       if (message.action === 'runAction') {
         if (typeof onAction === 'function') {
           onAction(message)
         }
       } else {
         const treeData = {
-          name: props.name,
-          value: props.value,
-          state: props.state,
+          name,
+          value,
+          state,
         }
         onChange(updateTree(treeData, message))
       }
@@ -36,10 +37,14 @@ export default function View({
   }
   return (
     <NodeView
-      {...props}
-      onMessage={onMessageProp}
-      clipboard={clipboardProp}
-      theme={getTheme(theme)}
+      name={name}
+      value={value}
+      state={state}
+      context={{
+        onMessage: onMessageHandler,
+        clipboard: clipboard || defaultClipboard,
+        theme: getTheme(theme),
+      }}
     />
   )
 }
