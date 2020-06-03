@@ -31,12 +31,10 @@ function NodeView({
   showOnlyPath = [],
   path = [],
   showAll,
-  onPickId,
-  codeMirrorComponent,
   context,
 }) {
   const [viewChanged, setViewChanged] = useState(false)
-  const { onMessage, clipboard, theme } = context
+  const { onMessage, theme } = context
 
   const state = getState(_state)
   const {
@@ -99,10 +97,7 @@ function NodeView({
         displayName={joinPath([name, ...showOnly])}
         showAll={true}
         showOnlyPath={showOnly}
-        onMessage={onMessage}
-        onPickId={onPickId}
         path={showOnly}
-        codeMirrorComponent={codeMirrorComponent}
         context={context}
       />
     )
@@ -120,11 +115,8 @@ function NodeView({
     state,
     path,
     showAll,
-    onMessage,
     onViewChanged: () => setViewChanged(true),
-    onPickId,
-    clipboard,
-    theme,
+    context,
   }
 
   return (
@@ -138,7 +130,7 @@ function NodeView({
           disabled={!isExpandable}
           expanded={expanded}
           onClick={toggleExpanded}
-          theme={theme}
+          context={context}
         />
         <NodeNameView
           editingName={editingName}
@@ -147,17 +139,10 @@ function NodeView({
           path={path}
           value={value}
           parentType={parentType}
-          onMessage={onMessage}
           nodeMenuProps={nodeMenuProps}
-          theme={theme}
+          context={context}
         />
-        {actions && (
-          <InlineActionView
-            actions={actions}
-            onMessage={onMessage}
-            theme={theme}
-          />
-        )}
+        {actions && <InlineActionView actions={actions} context={context} />}
 
         <div className="node-content">
           <InlineContent
@@ -165,14 +150,11 @@ function NodeView({
             value={value}
             state={state}
             path={path}
-            onMessage={onMessage}
-            onPickId={onPickId}
-            clipboard={clipboard}
-            theme={theme}
+            context={context}
           />
         </div>
         <div className="actions-right">
-          <NodeMenuButton nodeMenuProps={nodeMenuProps} theme={theme} />
+          <NodeMenuButton nodeMenuProps={nodeMenuProps} />
         </div>
         <style jsx>{`
           .node-content {
@@ -219,10 +201,8 @@ function NodeView({
                     name={key}
                     value={value[key]}
                     state={getChildState(state, key)}
-                    onPickId={onPickId}
                     path={[...path, key]}
                     showOnlyPath={showOnlyPath}
-                    codeMirrorComponent={codeMirrorComponent}
                     context={context}
                   />
                 ))}
@@ -235,10 +215,7 @@ function NodeView({
                 value={value}
                 path={path}
                 state={state}
-                onPickId={onPickId}
-                onMessage={onMessage}
-                clipboard={clipboard}
-                theme={theme}
+                context={context}
               />
             </div>
           )}
@@ -261,9 +238,7 @@ function NodeView({
             nodeType={nodeType}
             stringType={stringType}
             mediaType={mediaType}
-            onMessage={onMessage}
-            codeMirrorComponent={codeMirrorComponent}
-            theme={theme}
+            context={context}
           />
         </div>
       )}

@@ -31,9 +31,8 @@ export default function CodeView({
   value,
   path,
   mediaType,
-  onMessage,
-  codeMirrorComponent,
-  theme,
+  context: { onMessage, codeMirrorComponent, theme },
+  context,
 }) {
   const [editor, setEditor] = useState(null)
   const [editing, setEditing] = useState(false)
@@ -110,12 +109,12 @@ export default function CodeView({
         {editing && (
           <>
             <div className="actionButton">
-              <ActionButton onClick={save} primary theme={theme}>
+              <ActionButton onClick={save} primary context={context}>
                 Save
               </ActionButton>
             </div>
             <div className="actionButton">
-              <ActionButton onClick={cancel} theme={theme}>
+              <ActionButton onClick={cancel} context={context}>
                 Cancel
               </ActionButton>
             </div>

@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default ({ type, length, theme }) => {
+export default ({ type, length, context: { theme } }) => {
   return (
     <span>
       {type === 'object' ? '{' : '['}

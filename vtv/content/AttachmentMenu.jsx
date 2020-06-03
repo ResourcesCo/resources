@@ -1,7 +1,7 @@
 import React from 'react'
 import Menu, { MenuItem } from '../generic/Menu'
 
-function InsertObjectMenu({ onInsert, theme, ...props }) {
+function InsertObjectMenu({ onInsert, context, ...props }) {
   return (
     <Menu
       onClose={() => null}
@@ -9,7 +9,7 @@ function InsertObjectMenu({ onInsert, theme, ...props }) {
         placement: 'left-start',
         modifiers: { offset: { offset: '0, -3' } },
       }}
-      theme={theme}
+      context={context}
       {...props}
     >
       <MenuItem onClick={() => onInsert('data-url', true)}>Data URL</MenuItem>
@@ -23,7 +23,7 @@ function CopyMetadataMenu({
   fileMetadata: { name, type, size },
   onCopy,
   clipboard,
-  theme,
+  context,
   ...props
 }) {
   return (
@@ -33,7 +33,7 @@ function CopyMetadataMenu({
         placement: 'left-start',
         modifiers: { offset: { offset: '0, -3' } },
       }}
-      theme={theme}
+      context={context}
       {...props}
     >
       <MenuItem
@@ -87,7 +87,7 @@ function getMetadata(file) {
   )
 }
 
-export default ({ path, onMessage, file, onClose, clipboard, theme }) => {
+export default ({ path, onMessage, file, onClose, clipboard, context }) => {
   const handleInsert = async (type, object = false) => {
     let data = await readFile(file, type === 'text' ? 'text' : 'data-url')
     if (type === 'base64') {
@@ -112,7 +112,7 @@ export default ({ path, onMessage, file, onClose, clipboard, theme }) => {
         placement: 'bottom-start',
         modifiers: { offset: { offset: '0, 3' } },
       }}
-      theme={theme}
+      context={context}
       onClose={onClose}
     >
       <MenuItem onClick={() => handleInsert('data-url')}>
@@ -127,7 +127,7 @@ export default ({ path, onMessage, file, onClose, clipboard, theme }) => {
           <InsertObjectMenu
             onInsert={handleInsert}
             onClose={onClose}
-            theme={theme}
+            context={context}
           />
         }
       >
@@ -140,7 +140,7 @@ export default ({ path, onMessage, file, onClose, clipboard, theme }) => {
             fileMetadata={fileMetadata}
             onClose={onClose}
             clipboard={clipboard}
-            theme={theme}
+            context={context}
           />
         }
       >

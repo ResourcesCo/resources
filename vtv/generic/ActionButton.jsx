@@ -2,7 +2,7 @@ import React from 'react'
 import clsx from 'clsx'
 
 export default React.forwardRef(
-  ({ primary = false, children, theme, ...props }, ref) => (
+  ({ primary = false, children, context: { theme }, ...props }, ref) => (
     <button ref={ref} className={clsx({ primary })} {...props}>
       {children}
       <style jsx>{`

@@ -3,16 +3,7 @@ import { getCollectionPaths, joinPath, getAtPath } from '../model/analyze'
 import { getChildState } from '../model'
 import InlineContent from '../content/InlineContent'
 
-export default ({
-  name,
-  value,
-  path,
-  state,
-  onPickId,
-  onMessage,
-  clipboard,
-  theme,
-}) => {
+export default ({ name, value, path, state, context: { theme }, context }) => {
   const paths = getCollectionPaths(value)
   return (
     <div className="table">
@@ -32,13 +23,11 @@ export default ({
               {paths.map((columnPath, i) => (
                 <td key={i}>
                   <InlineContent
-                    onMessage={onMessage}
                     name={name}
                     value={getAtPath(value[key], columnPath)}
                     path={[...path, key, ...columnPath]}
                     state={getChildState(value[key], columnPath)}
-                    onPickId={onPickId}
-                    theme={theme}
+                    context={context}
                   />
                 </td>
               ))}

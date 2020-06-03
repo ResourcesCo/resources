@@ -12,7 +12,7 @@ export function MenuItem({
   copyToClipboard,
   children,
   submenu,
-  theme,
+  context: { theme },
 }) {
   const [itemHover, setItemHover] = useState(false)
   const [submenuHover, setSubmenuHover] = useState(false)
@@ -118,7 +118,8 @@ const defaultPopperProps = {
 export default ({
   onClose,
   popperProps = defaultPopperProps,
-  theme,
+  context: { theme },
+  context,
   children,
   ...props
 }) => {
@@ -132,7 +133,7 @@ export default ({
             child.props.onClick(e)
             onClose()
           },
-          theme,
+          context,
         })
       : child
   })

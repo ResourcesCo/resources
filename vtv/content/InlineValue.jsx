@@ -25,12 +25,11 @@ const InlineValue = ({
   value,
   state,
   path,
-  onMessage,
   editing,
   editingName,
   error,
   autoEdit,
-  theme,
+  context: { onMessage, theme },
 }) => {
   const inputRef = useRef()
   const [focused, setFocused] = useState(false)

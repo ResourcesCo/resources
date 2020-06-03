@@ -9,7 +9,7 @@ import escapeHtml from '../util/escapeHtml'
 // Node Name Key
 
 const NameEditInPlace = React.forwardRef(
-  ({ name, editingName, path, onMessage, theme }, ref) => {
+  ({ name, editingName, path, context: { onMessage, theme } }, ref) => {
     const editableRef = useRef(null)
     const [newName, setNewName] = useState(editingName === 'new' ? '' : name)
 
@@ -91,7 +91,7 @@ const NameEditInPlace = React.forwardRef(
   }
 )
 
-const NameButton = ({ displayName, name, onClick, theme }) => {
+const NameButton = ({ displayName, name, onClick, context: { theme } }) => {
   return (
     <button className="id" onClick={onClick} tabIndex="-1">
       {typeof displayName !== 'undefined' ? (
@@ -120,8 +120,7 @@ export default ({
   name,
   displayName,
   editingName,
-  theme,
-  parentType,
+  context,
   path,
   onMessage,
   nodeMenuProps,
@@ -138,8 +137,7 @@ export default ({
         name={name}
         editingName={editingName}
         path={path}
-        onMessage={onMessage}
-        theme={theme}
+        context={context}
       />
     )
   } else {
@@ -153,7 +151,7 @@ export default ({
                 name={name}
                 onClick={() => setMenuOpen(true)}
                 onDoubleClick={rename}
-                theme={theme}
+                context={context}
               />
             </div>
           )}

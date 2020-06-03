@@ -11,8 +11,10 @@ export default function View({
   onChange,
   onMessage,
   onAction,
+  onPickId,
   theme,
   clipboard,
+  codeMirrorComponent,
   receiveAllMessages = false,
   name,
   value,
@@ -44,6 +46,8 @@ export default function View({
         onMessage: onMessageHandler,
         clipboard: clipboard || defaultClipboard,
         theme: getTheme(theme),
+        onPickId,
+        codeMirrorComponent,
       }}
     />
   )
