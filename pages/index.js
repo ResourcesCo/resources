@@ -31,6 +31,47 @@ export default function Home() {
           height: 100%;
           box-sizing: border-box;
         }
+
+        * {
+          margin: 0;
+          padding: 0;
+          font-family: -apple-system, BlinkMacSystemFont, Avenir Next, Avenir,
+            Helvetica, sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+          box-sizing: border-box;
+        }
+
+        html,
+        body {
+          background-color: ${theme.background};
+        }
+
+        html,
+        body,
+        textarea,
+        svg,
+        button {
+          color: ${theme.foreground};
+        }
+
+        a {
+          color: ${theme.linkColor};
+          text-decoration: none;
+        }
+
+        a:hover {
+          text-decoration: underline;
+        }
+
+        ::selection {
+          color: ${theme.selectionColor};
+          background: ${theme.selectionBackground};
+        }
+
         #__next-prerender-indicator {
           display: none;
         }

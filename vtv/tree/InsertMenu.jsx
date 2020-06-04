@@ -5,7 +5,8 @@ export default function InsertMenu({
   nodeType,
   parentType,
   path,
-  onMessage,
+  context: { onMessage },
+  context,
   ...props
 }) {
   const insert = position => {
@@ -22,6 +23,7 @@ export default function InsertMenu({
         placement: 'left-start',
         modifiers: { offset: { offset: '0, -3' } },
       }}
+      context={context}
       {...props}
     >
       {!showAll && ['object', 'array'].includes(parentType) && (

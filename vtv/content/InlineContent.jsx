@@ -11,9 +11,8 @@ function InlineContent({
   value,
   state,
   path,
-  onMessage,
-  onPickId,
   autoEdit = true,
+  context: { onMessage },
   context,
 }) {
   const {
