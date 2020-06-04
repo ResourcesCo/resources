@@ -21,7 +21,7 @@ export default function InsertMenu({
       onClose={() => null}
       popperProps={{
         placement: 'left-start',
-        modifiers: { offset: { offset: '0, -3' } },
+        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
       }}
       context={context}
       {...props}

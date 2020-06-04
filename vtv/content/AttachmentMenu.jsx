@@ -7,7 +7,7 @@ function InsertObjectMenu({ onInsert, context, ...props }) {
       onClose={() => null}
       popperProps={{
         placement: 'left-start',
-        modifiers: { offset: { offset: '0, -3' } },
+        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
       }}
       context={context}
       {...props}
@@ -31,7 +31,7 @@ function CopyMetadataMenu({
       onClose={() => null}
       popperProps={{
         placement: 'left-start',
-        modifiers: { offset: { offset: '0, -3' } },
+        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
       }}
       context={context}
       {...props}
@@ -110,7 +110,7 @@ export default ({ path, onMessage, file, onClose, clipboard, context }) => {
     <Menu
       popperProps={{
         placement: 'bottom-start',
-        modifiers: { offset: { offset: '0, 3' } },
+        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
       }}
       context={context}
       onClose={onClose}

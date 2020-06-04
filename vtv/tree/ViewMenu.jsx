@@ -53,8 +53,8 @@ function CodeMenu({
     <Menu
       onClose={() => null}
       popperProps={{
-        placement: 'left-start',
-        modifiers: { offset: { offset: '0, -3' } },
+        placement: 'left-end',
+        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
       }}
       context={context}
       {...props}
@@ -113,7 +113,7 @@ export default function ViewMenu({
       onClose={() => null}
       popperProps={{
         placement: 'left-start',
-        modifiers: { offset: { offset: '0, -3' } },
+        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
       }}
       context={context}
       {...props}

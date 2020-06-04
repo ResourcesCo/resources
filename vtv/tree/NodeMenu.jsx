@@ -19,7 +19,7 @@ function DeleteMenu({
       onClose={() => null}
       popperProps={{
         placement: 'left-start',
-        modifiers: { offset: { offset: '0, -3' } },
+        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
       }}
       context={context}
       {...props}
@@ -174,7 +174,6 @@ function NodeMenu({
 }
 
 NodeMenu.propTypes = {
-  clipboard: PropTypes.object.isRequired,
   context: PropTypes.object.isRequired,
 }
 

@@ -112,7 +112,7 @@ export function MenuItem({
 
 const defaultPopperProps = {
   placement: 'bottom-start',
-  modifiers: { offset: { offset: '8, 3' } },
+  modifiers: [{ name: 'offset', options: { offset: [8, 3] } }],
 }
 
 export default ({
@@ -123,6 +123,7 @@ export default ({
   children,
   ...props
 }) => {
+  console.log({ popperProps })
   const ref = useRef(null)
   useClickOutside(ref, onClose)
 

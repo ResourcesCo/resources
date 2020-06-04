@@ -9,7 +9,7 @@ export default function NodeMenuButton({ nodeMenuProps: nodeMenuProps_ }) {
     ...nodeMenuProps_,
     popperProps: {
       placement: 'bottom-end',
-      modifiers: { offset: { offset: '0, 3' } },
+      modifiers: [{ name: 'offset', options: { offset: [0, 3] } }],
     },
   }
   const {

@@ -247,8 +247,7 @@ function NodeView({
 }
 
 NodeView.propTypes = {
-  clipboard: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
+  context: PropTypes.object.isRequired,
 }
 
 export default NodeView
