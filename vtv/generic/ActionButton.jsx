@@ -12,7 +12,8 @@ export default React.forwardRef(
           background-color: ${theme.actionColor};
           border-radius: 9999px;
           outline: none;
-          padding: 4px 7px;
+          padding: 3px 7px;
+          font-size: inherit;
           border: 0;
         }
 
