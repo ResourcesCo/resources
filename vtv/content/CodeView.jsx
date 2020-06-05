@@ -172,6 +172,5 @@ CodeView.propTypes = {
   state: PropTypes.object.isRequired,
   path: PropTypes.arrayOf(PropTypes.string).isRequired,
   mediaType: PropTypes.string,
-  onMessage: PropTypes.func.isRequired,
-  theme: PropTypes.object.isRequired,
+  context: PropTypes.object.isRequired,
 }

@@ -121,9 +121,9 @@ export default ({
   context: { theme },
   context,
   children,
-  ...props
+  onMouseEnter,
+  onMouseLeave,
 }) => {
-  console.log({ popperProps })
   const ref = useRef(null)
   useClickOutside(ref, onClose)
 
@@ -141,7 +141,6 @@ export default ({
 
   const sortedMenuItems = placement =>
     (placement || '').startsWith('top-') ? [...menuItems].reverse() : menuItems
-
   return (
     <Popper {...popperProps}>
       {({ ref: popperRef, style, placement }) => (
@@ -150,7 +149,8 @@ export default ({
           ref={popperRef}
           style={style}
           data-placement={placement}
-          {...props}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
         >
           <div className="menu" ref={ref}>
             {sortedMenuItems(placement)}

@@ -4,7 +4,7 @@ import { getChildState } from '../model'
 import InlineContent from '../content/InlineContent'
 
 export default ({ name, value, path, state, context: { theme }, context }) => {
-  const paths = getCollectionPaths(value)
+  const paths = getCollectionPaths(value).slice(0, 15) // TODO: support customizing displayed columns
   return (
     <div className="table">
       <table>
