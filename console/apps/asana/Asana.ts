@@ -8,7 +8,7 @@ export default async function app(): Promise<AppSpec> {
   return {
     name: 'Asana',
     providers: {
-      apiFinder: {
+      asana: {
         path: [],
         actions: {
           all: {
