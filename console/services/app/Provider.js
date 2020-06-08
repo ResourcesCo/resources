@@ -15,7 +15,7 @@ export default class Provider {
     }
   }
 
-  run(params) {
-    this.app.run({ ...params, provider: this })
+  async run(params) {
+    return await this.app.run({ ...params, provider: this })
   }
 }

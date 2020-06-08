@@ -1,11 +1,5 @@
-function run({
-  action,
-  params: { url },
-}: {
-  action: string
-  params: { url: string }
-}) {
-  return {}
+function run({ url }) {
+  return { type: 'text', text: `docs for ${url}` }
 }
 
 interface App {
@@ -16,7 +10,7 @@ interface App {
       actions: {
         [key: string]: {
           args: string[]
-          autorun: {
+          match: {
             type: string
             host: string
             path: string
@@ -25,7 +19,10 @@ interface App {
       }
     }
   }
-  run(this: App, props: { action: string; params: object }): object
+  run(
+    this: App,
+    props: { path?: string[]; url?: string; action?: string; params?: object }
+  ): object
 }
 
 export default async function app(): Promise<App> {
@@ -36,8 +33,8 @@ export default async function app(): Promise<App> {
         path: [],
         actions: {
           lookup: {
-            args: ['url'],
-            autorun: {
+            args: [],
+            match: {
               type: 'url',
               host: '*',
               path: '*',

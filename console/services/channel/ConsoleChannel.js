@@ -5,7 +5,7 @@ import { splitPath, joinPath } from 'vtv'
 import { isUrl } from 'vtv/model/analyze'
 import App from '../app/App'
 
-// import apiFinder from 'api-finder'
+import apiFinder from '../../apps/api-finder/ApiFinder'
 
 class ConsoleChannel {
   constructor({ name, apps, files }) {
@@ -23,10 +23,9 @@ class ConsoleChannel {
         this.files = new ConsoleChannel.LocalFileStore(this.config.files)
       }
     }
-    this.apps = {}
-    // this.apps = { apiFinder: await App.get({ app: apiFinder }) }
+    this.apps = { apiFinder: await App.get({ app: apiFinder }) }
     this.providers = {}
-    this.autorun = {}
+    this.matchers = {}
     for (const [appName, app] of Object.entries(this.apps)) {
       for (const [providerName, provider] of Object.entries(app.providers)) {
         if (providerName in this.providers) {
@@ -34,15 +33,15 @@ class ConsoleChannel {
         }
         this.providers[providerName] = { app, name: providerName, actions: {} }
         for (const [actionName, action] of Object.entries(provider.actions)) {
-          if (action.autorun?.type === 'url') {
-            this.autorun.url = action
+          if (action.match?.type === 'url') {
+            this.matchers.url = action
           }
         }
       }
     }
   }
 
-  async dispatchCommand(resource, params) {
+  async dispatchAction(resource, params) {
     try {
       const result = await resource.run(params)
       return result
@@ -54,7 +53,7 @@ class ConsoleChannel {
           return { type: 'error', text: `Error: ${e.message}` }
         }
       } else {
-        return { type: 'error', text: 'Error responding to message' }
+        throw e
       }
     }
   }
@@ -63,8 +62,8 @@ class ConsoleChannel {
     if (resourcePath && resourcePath[0] === 'files' && this.files) {
       return this.files
     } else if (!resourcePath && isUrl(parsed[0])) {
-      if (this.autorun.url) {
-        this.autorun.url.run(parsed[0])
+      if (this.matchers.url) {
+        return this.matchers.url
       }
     }
   }
@@ -108,9 +107,10 @@ class ConsoleChannel {
           loading: true,
         })
       }
-      const result = await this.dispatchCommand(this.files, {
+      const result = await this.dispatchAction(handler, {
         action: action || 'get',
-        path: resourcePath.slice(1),
+        path: Array.isArray(resourcePath) ? resourcePath.slice(1) : undefined,
+        url: Array.isArray(resourcePath) ? undefined : parsed[0],
         args: parsed.slice(2),
         parentMessage,
       })
@@ -119,7 +119,7 @@ class ConsoleChannel {
           result && {
             ...result,
             commandId: messageId,
-            message: joinPath(resourcePath),
+            message: parsed[0],
           },
           {
             type: 'loaded',
