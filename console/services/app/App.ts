@@ -1,7 +1,36 @@
 import Provider from './Provider'
 
+export interface AppSpec {
+  name: string
+  providers: {
+    [key: string]: {
+      path: string[]
+      actions: {
+        [key: string]: {
+          args: string[]
+          match: {
+            type: string
+            host: string
+            path: string
+          }
+        }
+      }
+    }
+  }
+  run(props: {
+    path?: string[]
+    url?: string
+    action?: string
+    params?: object
+  }): object
+}
+
 export default class App {
-  constructor({ name, providers, run }) {
+  name: string
+  providers: { [key: string]: Provider }
+  onRun: Function
+
+  constructor({ name, providers, run }: AppSpec) {
     this.name = name
     this.providers = {}
     this.onRun = run
