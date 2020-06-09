@@ -1,7 +1,6 @@
 import shortid from 'shortid'
 import ClientFileStore from '../storage/ClientFileStore'
 import ConsoleError from '../../ConsoleError'
-import { splitPath, joinPath } from 'vtv'
 import { isUrl } from 'vtv/model/analyze'
 import App from '../app/App'
 
@@ -77,11 +76,13 @@ class ConsoleChannel {
     formData,
   }) {
     // TODO: remove once this handles data passed as first parameter
-    if (!/^\s*\w/.test(parsed[0].substr(0, 10))) {
+    if (!/^[\w\/]/.test(parsed[0].substr(0, 10))) {
       return
     }
+    const resourcePath = parsed[0].startsWith('/')
+      ? parsed[0].split('/').slice(1)
+      : parsed[0]
 
-    const resourcePath = splitPath(parsed[0])
     const handler = await this.getHandler({ resourcePath, parsed })
     if (handler) {
       const isBackgroundAction = formData && formData.action === 'runAction'

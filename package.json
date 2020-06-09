@@ -18,6 +18,8 @@
     "api-finder": "^1.0.0-pre.0",
     "clsx": "^1.1.0",
     "codemirror": "^5.53.2",
+    "iframe-resizer": "^4.2.11",
+    "iframe-resizer-react": "^1.0.4",
     "immer": "^6.0.8",
     "insert-text-at-cursor": "^0.3.0",
     "isomorphic-unfetch": "^3.0.0",
@@ -35,6 +37,7 @@
     "react-is": "^16.13.1",
     "react-loader-spinner": "^3.1.5",
     "react-popper": "^2.2.3",
+    "react-router": "^5.2.0",
     "scroll-into-view-if-needed": "^2.2.24",
     "shortid": "^2.2.15"
   },
