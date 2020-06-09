@@ -7,11 +7,13 @@ import { AppSpec } from '../../services/app/App'
 export default async function app(): Promise<AppSpec> {
   return {
     name: 'Asana',
+    defaultProvider: 'asana',
     providers: {
       asana: {
         path: [],
+        defaultAction: 'info',
         actions: {
-          all: {
+          auth: {
             args: [],
             match: {
               type: 'url',

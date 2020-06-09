@@ -6,12 +6,14 @@ import { AppSpec } from '../../services/app/App'
 
 export default async function app(): Promise<AppSpec> {
   return {
-    name: 'apiFinder',
+    name: 'api-finder',
+    defaultProvider: 'api-finder',
     providers: {
-      apiFinder: {
-        path: [],
+      'api-finder': {
+        path: ['*'],
+        defaultAction: 'info',
         actions: {
-          lookup: {
+          info: {
             args: [],
             match: {
               type: 'url',

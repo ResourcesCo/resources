@@ -9,9 +9,11 @@ import Provider from './Provider'
 
 export interface AppSpec {
   name: string
+  defaultProvider?: string
   providers: {
     [key: string]: {
       path: string[]
+      defaultAction?: string
       actions: {
         [key: string]: {
           args: string[]
