@@ -5,6 +5,7 @@ import { isUrl } from 'vtv/model/analyze'
 import App from '../app/App'
 
 import apiFinder from '../../apps/api-finder/ApiFinder'
+import asana from '../../apps/asana/Asana'
 
 class ConsoleChannel {
   constructor({ name, apps, files }) {
@@ -22,20 +23,14 @@ class ConsoleChannel {
         this.files = new ConsoleChannel.LocalFileStore(this.config.files)
       }
     }
-    this.apps = { apiFinder: await App.get({ app: apiFinder }) }
-    this.providers = {}
-    this.matchers = {}
+    this.apps = {
+      //apiFinder: await App.get({ app: apiFinder }),
+      asana: await App.get({ app: asana }),
+    }
+    this.routes = []
     for (const [appName, app] of Object.entries(this.apps)) {
-      for (const [providerName, provider] of Object.entries(app.providers)) {
-        if (providerName in this.providers) {
-          console.warn(`Provider already declared: ${providerName}`)
-        }
-        this.providers[providerName] = { app, name: providerName, actions: {} }
-        for (const [actionName, action] of Object.entries(provider.actions)) {
-          if (action.match?.type === 'url') {
-            this.matchers.url = action
-          }
-        }
+      for (const route of app.routes) {
+        this.routes.push({ app: appName, route: route })
       }
     }
   }
@@ -60,10 +55,8 @@ class ConsoleChannel {
   async getHandler({ resourcePath, parsed }) {
     if (resourcePath && resourcePath[0] === 'files' && this.files) {
       return this.files
-    } else if (!resourcePath && isUrl(parsed[0])) {
-      if (this.matchers.url) {
-        return this.matchers.url
-      }
+    } else {
+      // find route
     }
   }
 

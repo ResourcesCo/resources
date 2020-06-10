@@ -1,27 +1,18 @@
-import Provider from './Provider'
+export interface Route {
+  host?: string
+  path: string
+  action: string | string[]
+  params: string[]
+  name?: string
+  doc?: string
+}
 
 export interface AppSpec {
   name: string
-  defaultProvider?: string
-  providers: {
-    [key: string]: {
-      path: string[]
-      defaultAction?: string
-      actions: {
-        [key: string]: {
-          args: string[]
-          match: {
-            type: string
-            host: string
-            path: string
-          }
-        }
-      }
-    }
-  }
+  routes: Route[]
   run(props: {
-    path?: string[]
-    url?: string
+    host?: string
+    path?: string
     action?: string
     params?: object
   }): object
@@ -29,24 +20,17 @@ export interface AppSpec {
 
 export default class App {
   name: string
-  providers: { [key: string]: Provider }
+  routes: Route[]
   onRun: Function
 
-  constructor({ name, providers, run }: AppSpec) {
+  constructor({ name, routes, run }: AppSpec) {
     this.name = name
-    this.providers = {}
+    this.routes = routes
     this.onRun = run
-    for (const [providerName, provider] of Object.entries(providers)) {
-      this.providers[providerName] = new Provider({
-        ...provider,
-        name: providerName,
-        app: this,
-      })
-    }
   }
 
-  async run({ provider, action, ...params }) {
-    return await this.onRun({ action: action.name, ...params })
+  async run({ provider, action, params }) {
+    return await this.onRun({ action, params })
   }
 
   static async get({ app: appBuilder }) {
