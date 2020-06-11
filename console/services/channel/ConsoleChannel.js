@@ -12,6 +12,7 @@ class ConsoleChannel {
     this.config = { apps, files }
     this.messages = {}
     this.messageIds = []
+    this.environments = { default: {} }
   }
 
   async init() {
@@ -63,7 +64,6 @@ class ConsoleChannel {
             if (route.action === action) {
               const { any: discard, ...actionParams } = match.params
               if (route.params.length === params.length) {
-                const actionParams = {}
                 let i = 0
                 for (const name of route.params) {
                   actionParams[name] = params[i]
