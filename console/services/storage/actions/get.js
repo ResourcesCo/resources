@@ -1,4 +1,5 @@
-export default async function get({ fileStore, path, args }) {
+export default async function get({ fileStore, url, args }) {
+  const path = url.split('/').slice(1)
   if (path.length === 0) {
     return {
       type: 'text',

@@ -1,5 +1,5 @@
-function run({ host }) {
-  return { type: 'text', text: `docs for ${host}` }
+function run(args) {
+  console.log({ args })
 }
 
 import { AppSpec } from '../../services/app/App'

@@ -31,8 +31,8 @@ class ClientFileStore {
   }
 
   async run({ action, ...params }) {
-    if (typeof this.actions[action] === 'function') {
-      return await this.actions[action]({ ...params, fileStore: this })
+    if (typeof this.actions[action || 'get'] === 'function') {
+      return await this.actions[action || 'get']({ ...params, fileStore: this })
     } else {
       throw new ConsoleError('Unknown action')
     }

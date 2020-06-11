@@ -1,4 +1,6 @@
-export interface Route {
+import { match } from 'path-to-regexp'
+
+export interface RouteSpec {
   host?: string
   path: string
   action: string | string[]
@@ -7,9 +9,14 @@ export interface Route {
   doc?: string
 }
 
+export interface Route extends RouteSpec {
+  match
+  app
+}
+
 export interface AppSpec {
   name: string
-  routes: Route[]
+  routes: RouteSpec[]
   run(props: {
     host?: string
     path?: string
@@ -25,7 +32,11 @@ export default class App {
 
   constructor({ name, routes, run }: AppSpec) {
     this.name = name
-    this.routes = routes
+    this.routes = routes.map(route => ({
+      ...route,
+      app: this,
+      match: match(route.path),
+    }))
     this.onRun = run
   }
 

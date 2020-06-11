@@ -3,7 +3,9 @@ class ConsoleError extends Error {
     super(message, ...args)
     const { status } = data || {}
     this.data = { error: message, ...data, status: status || 500 }
-    Error.captureStackTrace(this, ConsoleError)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ConsoleError)
+    }
   }
 }
 

@@ -16,7 +16,8 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
       onMessage,
       commandId,
       onPickId,
-      onChange,
+      message,
+      onSubmitForm,
       codeMirrorComponent,
     } = props
     return (
@@ -27,7 +28,8 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
         onMessage={onMessage}
         commandId={commandId}
         onPickId={onPickId}
-        onChange={onChange}
+        message={message}
+        onSubmitForm={onSubmitForm}
         codeMirrorComponent={codeMirrorComponent}
         theme={theme}
       />

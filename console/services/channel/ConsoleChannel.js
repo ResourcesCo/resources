@@ -1,10 +1,9 @@
 import shortid from 'shortid'
 import ClientFileStore from '../storage/ClientFileStore'
 import ConsoleError from '../../ConsoleError'
-import { isUrl } from 'vtv/model/analyze'
 import App from '../app/App'
-
-import apiFinder from '../../apps/api-finder/ApiFinder'
+import parseArgs from '../app/parseArgs'
+import parseUrl from '../app/parseUrl'
 import asana from '../../apps/asana/Asana'
 
 class ConsoleChannel {
@@ -30,14 +29,14 @@ class ConsoleChannel {
     this.routes = []
     for (const [appName, app] of Object.entries(this.apps)) {
       for (const route of app.routes) {
-        this.routes.push({ app: appName, route: route })
+        this.routes.push(route)
       }
     }
   }
 
-  async dispatchAction(resource, params) {
+  async dispatchAction(handler, params) {
     try {
-      const result = await resource.run(params)
+      const result = await handler.run(params)
       return result
     } catch (e) {
       if (e instanceof ConsoleError) {
@@ -52,11 +51,36 @@ class ConsoleChannel {
     }
   }
 
-  async getHandler({ resourcePath, parsed }) {
-    if (resourcePath && resourcePath[0] === 'files' && this.files) {
-      return this.files
-    } else {
-      // find route
+  async route({ url, action, params }) {
+    if (/^\/files(\/|$)/.test(url) && this.files) {
+      return { handler: this.files, url: url.substr('/files'.length) }
+    } else if (url) {
+      const { host, path } = parseUrl(url)
+      for (const route of this.routes) {
+        if (!host === !route.host || host === route.host) {
+          const match = route.match(path)
+          if (match) {
+            if (route.action === action) {
+              const { any: discard, ...actionParams } = match.params
+              if (route.params.length === params.length) {
+                const actionParams = {}
+                let i = 0
+                for (const name of route.params) {
+                  actionParams[name] = params[i]
+                  i++
+                }
+                return { handler: route.app, params: actionParams }
+              } else {
+                return {
+                  error: `Expected ${route.params.length} parameter${
+                    route.params.length === 1 ? '' : 's'
+                  }, got ${params.length}`,
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -68,22 +92,25 @@ class ConsoleChannel {
     parentMessageId,
     formData,
   }) {
-    // TODO: remove once this handles data passed as first parameter
-    if (!/^[\w\/]/.test(parsed[0].substr(0, 10))) {
-      return
-    }
-    const resourcePath = parsed[0].startsWith('/')
-      ? parsed[0].split('/').slice(1)
-      : parsed[0]
+    const { url, action, params } = parseArgs(parsed)
 
-    const handler = await this.getHandler({ resourcePath, parsed })
-    if (handler) {
+    const routeMatch = await this.route({ url, action, params })
+    if (routeMatch && typeof routeMatch.error === 'string') {
+      const messageId = shortid()
+      onMessage({
+        type: 'input',
+        text: message,
+        commandId: messageId,
+      })
+      onMessage({
+        type: 'error',
+        text: routeMatch.error,
+        commandId: messageId,
+      })
+      return true
+    } else if (routeMatch) {
+      const { handler, url: actionUrl, params: actionParams } = routeMatch
       const isBackgroundAction = formData && formData.action === 'runAction'
-      const action = isBackgroundAction
-        ? formData.actionName
-        : parsed.length >= 2
-        ? parsed[1]
-        : 'get'
 
       const messageId = shortid()
       if (!isBackgroundAction) {
@@ -102,10 +129,9 @@ class ConsoleChannel {
         })
       }
       const result = await this.dispatchAction(handler, {
-        action: action || 'get',
-        path: Array.isArray(resourcePath) ? resourcePath.slice(1) : undefined,
-        url: Array.isArray(resourcePath) ? undefined : parsed[0],
-        args: parsed.slice(2),
+        url: actionUrl,
+        action: isBackgroundAction ? formData.actionName : action,
+        params: actionParams,
         parentMessage,
       })
       onMessage(

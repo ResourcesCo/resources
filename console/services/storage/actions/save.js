@@ -1,11 +1,11 @@
 export default async function save({
   fileStore,
-  path,
+  url,
   parentMessage: { value },
 }) {
-  let result
+  const path = url.split('/').slice(1)
   try {
-    result = await fileStore.put({
+    return await fileStore.put({
       path: '/' + path.map(s => encodeURIComponent(s)).join('/'),
       value,
     })
