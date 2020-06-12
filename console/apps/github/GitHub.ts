@@ -72,49 +72,35 @@ import { AppSpec } from '../../services/app/App'
 
 export default async function app(): Promise<AppSpec> {
   return {
-    name: 'Asana',
+    name: 'GitHub',
     environmentVariables: {
-      ASANA_TOKEN: {
+      GITHUB_TOKEN: {
         doc: `
-          An Asana personal access token, from the
-          [Asana developer console](https://app.asana.com/0/developer-console)'
+          A GitHub personal access token, from the
+          [GitHub Developer Settings](https://github.com/settings/tokens)'
         `,
       },
     },
-    resourceTypes: {
-      auth: {
-        routes: [
-          {
-            host: 'app.asana.com',
-            path: '/:any*',
-          },
-          { path: '/asana' },
-        ],
-        actions: {
-          auth: { params: ['apiToken'] },
-          clearAuth: {
-            params: [],
-          },
-        },
+    routes: [
+      {
+        host: 'github.com',
+        path: '/:any*',
+        actions: ['auth', 'auth/clear'],
+        params: ['apiToken'],
       },
-      tasks: {
-        routes: [
-          {
-            host: 'app.asana.com',
-            path: '/0/:projectId/:id{/f}?',
-          },
-          { path: '/asana/tasks/:id' },
-        ],
-        actions: {
-          comment: {
-            params: ['comment'],
-          },
-          complete: {
-            params: [],
-          },
-        },
+      { path: '/github', actions: ['auth', 'auth/clear'], params: [] },
+      {
+        host: 'github.com',
+        path: '/:owner/:repo/issues/:issueNumber',
+        actions: ['close', 'comment'],
+        params: [],
       },
-    },
+      {
+        path: '/issues/:owner/:repo/:issueNumber',
+        actions: ['close', 'comment'],
+        params: [],
+      },
+    ],
     run,
   }
 }

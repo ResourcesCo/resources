@@ -15,20 +15,39 @@ export type MessageReturnValue = Promise<MessageValue> | MessageValue
 export interface RouteSpec {
   host?: string
   path: string
-  action: string | string[]
-  params: string[]
+}
+
+export interface ActionSpec {
   name?: string
   doc?: string
+  params: string[]
+}
+
+export interface ResourceTypeSpec {
+  name?: string
+  doc?: string
+  routes: RouteSpec[]
+  actions: { [key: string]: ActionSpec }
 }
 
 export interface Route extends RouteSpec {
   match
-  app
+  resourceType
+}
+
+export interface Action extends ActionSpec {
+  name: string
+}
+
+export interface ResourceType extends ResourceTypeSpec {
+  name: string
+  routes: Route[]
+  actions: {}
 }
 
 export interface AppSpec {
   name: string
-  routes: RouteSpec[]
+  resourceTypes: { [key: string]: ResourceTypeSpec }
   environmentVariables: {
     [key: string]: {
       doc: string
@@ -43,15 +62,25 @@ export interface AppSpec {
   }): MessageReturnValue
 }
 
+function buildResourceTypes(appSpec: AppSpec): { [key: string]: ResourceType } {
+  const resourceTypes = {}
+  for (const name of Object.keys(appSpec.resourceTypes)) {
+    resourceTypes[name] = {
+      name,
+      ...appSpec.resourceTypes[name],
+    }
+  }
+}
+
 export default class App {
   name: string
-  routes: Route[]
+  resourceTypes: { [key: string]: ResourceType }
   onRun: Function
   env: { [key: string]: string }
 
-  constructor({ name, routes, run }: AppSpec) {
+  constructor({ name, resourceTypes, run }: AppSpec) {
     this.name = name
-    this.routes = routes.map(route => ({
+    this.resourceTypes = resourceTypes.map(route => ({
       ...route,
       app: this,
       match: match(route.path),

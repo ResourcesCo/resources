@@ -4,6 +4,7 @@ import ConsoleError from '../../ConsoleError'
 import App from '../app/App'
 import parseArgs from '../app/parseArgs'
 import parseUrl from '../app/parseUrl'
+import toArray from '../app/toArray'
 import asana from '../../apps/asana/Asana'
 
 class ConsoleChannel {
@@ -61,7 +62,7 @@ class ConsoleChannel {
         if (!host === !route.host || host === route.host) {
           const match = route.match(path)
           if (match) {
-            if (route.action === action) {
+            if (toArray(route.actions).includes(action)) {
               const { any: discard, ...actionParams } = match.params
               if (route.params.length === params.length) {
                 let i = 0
