@@ -996,6 +996,11 @@
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
 
+"@types/lodash@^4.14.155":
+  version "4.14.155"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.155.tgz#e2b4514f46a261fd11542e47519c20ebce7bc23a"
+  integrity sha512-vEcX7S7aPhsBCivxMwAANQburHBtfN9RdyXFk84IJmu2Z4Hkg1tOFgaslRiEqqvoLtbCBi6ika1EMspE+NZ9Lg==
+
 "@types/node@^14.0.5":
   version "14.0.5"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.5.tgz#3d03acd3b3414cf67faf999aed11682ed121f22b"
@@ -1281,11 +1286,6 @@ anymatch@~3.1.1:
   dependencies:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
-
-api-finder@^1.0.0-pre.0:
-  version "1.0.0-pre.0"
-  resolved "https://registry.yarnpkg.com/api-finder/-/api-finder-1.0.0-pre.0.tgz#ebc25cebadebc234a0a8eda76c05aab436f0f159"
-  integrity sha512-FwJyyVSt0HrvB/QddXtuOX+ezcdT983ekksTnpThmVv3S+cL3L/H6hl6BUgFtIu9QM/AoR2fmrfQhSoVoQbE1A==
 
 aproba@^1.1.1:
   version "1.2.0"

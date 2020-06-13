@@ -4,8 +4,8 @@ import ConsoleError from '../../ConsoleError'
 import App from '../app/App'
 import parseArgs from '../app/parseArgs'
 import parseUrl from '../app/parseUrl'
-import toArray from '../app/toArray'
-import asana from '../../apps/asana/Asana'
+import Asana from '../../apps/asana/Asana'
+import GitHub from '../../apps/github/GitHub'
 
 class ConsoleChannel {
   constructor({ name, apps, files }) {
@@ -26,13 +26,8 @@ class ConsoleChannel {
     }
     this.apps = {
       //apiFinder: await App.get({ app: apiFinder }),
-      asana: await App.get({ app: asana }),
-    }
-    this.routes = []
-    for (const [appName, app] of Object.entries(this.apps)) {
-      for (const route of app.routes) {
-        this.routes.push(route)
-      }
+      asana: await App.get({ app: Asana }),
+      github: await App.get({ app: GitHub }),
     }
   }
 
@@ -58,27 +53,13 @@ class ConsoleChannel {
       return { handler: this.files, url: url.substr('/files'.length) }
     } else if (url) {
       const { host, path } = parseUrl(url)
-      for (const route of this.routes) {
-        if (!host === !route.host || host === route.host) {
-          const match = route.match(path)
-          if (match) {
-            if (toArray(route.actions).includes(action)) {
-              const { any: discard, ...actionParams } = match.params
-              if (route.params.length === params.length) {
-                let i = 0
-                for (const name of route.params) {
-                  actionParams[name] = params[i]
-                  i++
-                }
-                return { handler: route.app, params: actionParams }
-              } else {
-                return {
-                  error: `Expected ${route.params.length} parameter${
-                    route.params.length === 1 ? '' : 's'
-                  }, got ${params.length}`,
-                }
-              }
-            }
+      for (const app of Object.values(this.apps)) {
+        const result = await app.route({ host, path, action, params })
+        if (result) {
+          if (result.error) {
+            return result
+          } else {
+            return { handler: app, url, ...result }
           }
         }
       }

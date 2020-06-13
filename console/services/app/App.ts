@@ -1,4 +1,6 @@
 import { match } from 'path-to-regexp'
+import mapValues from 'lodash/mapValues'
+import { route } from 'next/dist/next-server/server/router'
 
 export interface Message {
   type: string
@@ -32,7 +34,6 @@ export interface ResourceTypeSpec {
 
 export interface Route extends RouteSpec {
   match
-  resourceType
 }
 
 export interface Action extends ActionSpec {
@@ -42,7 +43,7 @@ export interface Action extends ActionSpec {
 export interface ResourceType extends ResourceTypeSpec {
   name: string
   routes: Route[]
-  actions: {}
+  actions: { [key: string]: Action }
 }
 
 export interface AppSpec {
@@ -62,29 +63,25 @@ export interface AppSpec {
   }): MessageReturnValue
 }
 
-function buildResourceTypes(appSpec: AppSpec): { [key: string]: ResourceType } {
-  const resourceTypes = {}
-  for (const name of Object.keys(appSpec.resourceTypes)) {
-    resourceTypes[name] = {
-      name,
-      ...appSpec.resourceTypes[name],
-    }
-  }
-}
-
 export default class App {
   name: string
   resourceTypes: { [key: string]: ResourceType }
   onRun: Function
   env: { [key: string]: string }
 
-  constructor({ name, resourceTypes, run }: AppSpec) {
+  constructor(appSpec: AppSpec) {
+    const { name, resourceTypes, run } = appSpec
     this.name = name
-    this.resourceTypes = resourceTypes.map(route => ({
-      ...route,
-      app: this,
-      match: match(route.path),
-    }))
+    this.resourceTypes = mapValues(
+      resourceTypes,
+      ({ routes, actions, ...props }, name) => ({
+        name,
+        ...props,
+        routes: routes.map(route => ({ ...route, match: match(route.path) })),
+        actions: mapValues(actions, (action, name) => ({ name, ...action })),
+      })
+    )
+
     this.onRun = run
     this.env = {}
   }
@@ -99,7 +96,48 @@ export default class App {
     }
   }
 
-  async run({ provider, action, params }) {
+  async route({ host, path, action: actionName, params }) {
+    for (const resourceType of Object.values(this.resourceTypes)) {
+      for (const route of resourceType.routes) {
+        if (!host === !route.host || host === route.host) {
+          const match = route.match(path)
+          if (match) {
+            const action = Object.values(resourceType.actions).find(
+              ({ name }) => name === actionName
+            )
+            if (action) {
+              const result = this.checkParams({ match, action, params })
+              if (result.error) {
+                return result
+              } else if (result.params) {
+                return { params: result.params }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  checkParams({ match, action, params }) {
+    const { any: discard, ...actionParams } = match.params
+    if (action.params.length === params.length) {
+      let i = 0
+      for (const name of action.params) {
+        actionParams[name] = params[i]
+        i++
+      }
+      return { params: actionParams }
+    } else {
+      return {
+        error: `Expected ${action.params.length} parameter${
+          action.params.length === 1 ? '' : 's'
+        }, got ${params.length}`,
+      }
+    }
+  }
+
+  async run({ action, params }) {
     const result = await this.onRun({ action, params, env: this.env })
     return this.prepareMessage(result)
   }

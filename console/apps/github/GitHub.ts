@@ -2,46 +2,46 @@ import fetch from 'isomorphic-unfetch'
 
 function getHeaders(apiToken, post = false) {
   return {
-    Authorization: `Bearer ${apiToken}`,
+    Authorization: `token ${apiToken}`,
     ...(post ? { 'Content-Type': 'application/json' } : {}),
   }
 }
 
 function auth({ env, params: { apiToken } }) {
-  env.ASANA_TOKEN = apiToken
+  env.GITHUB_TOKEN = apiToken
   return 'API key saved to session.'
 }
 
 function authClear({ env }) {
-  delete env.ASANA_TOKEN
+  delete env.GITHUB_TOKEN
   return 'API key cleared.'
 }
 
-async function complete({ env: { ASANA_TOKEN: apiToken }, params: { id } }) {
-  const headers = getHeaders(apiToken, true)
-  const url = `https://app.asana.com/api/1.0/tasks/${id}`
-  const res = await fetch(url, {
-    method: 'PUT',
-    headers,
-    body: JSON.stringify({ data: { completed: true } }),
+function issueApiUrl({ owner, repo, number }: any) {
+  return `https://api.github.com/repos/${owner}/${repo}/issues/${number}`
+}
+
+async function close({ env: { GITHUB_TOKEN: apiToken }, params }) {
+  const res = await fetch(issueApiUrl(params), {
+    method: 'PATCH',
+    headers: getHeaders(apiToken, true),
+    body: JSON.stringify({ state: 'closed' }),
   })
   if (res.ok) {
-    return { type: 'text', text: `Task marked complete` }
+    return { type: 'text', text: `Issue closed` }
   } else {
-    return { type: 'text', text: `Error marking task complete` }
+    return { type: 'text', text: `Error closing issue` }
   }
 }
 
 async function comment({
-  env: { ASANA_TOKEN: apiToken },
-  params: { id, comment },
+  env: { GITHUB_TOKEN: apiToken },
+  params: { comment, ...params },
 }) {
-  const headers = getHeaders(apiToken, true)
-  const url = `https://app.asana.com/api/1.0/tasks/${id}/stories`
-  const res = await fetch(url, {
+  const res = await fetch(`${issueApiUrl(params)}/comments`, {
     method: 'POST',
-    headers,
-    body: JSON.stringify({ data: { text: comment } }),
+    headers: getHeaders(apiToken, true),
+    body: JSON.stringify({ body: comment }),
   })
   if (res.ok) {
     return { type: 'text', text: 'Comment added.' }
@@ -56,14 +56,17 @@ async function run({ action, env, params }) {
   } else if (action === 'auth/clear') {
     return authClear({ env })
   } else {
-    if (env.ASANA_TOKEN) {
-      if (action === 'complete') {
-        return await complete({ env, params })
+    if (env.GITHUB_TOKEN) {
+      if (action === 'close') {
+        return await close({ env, params })
       } else if (action === 'comment') {
         return await comment({ env, params })
       }
     } else {
-      return { type: 'error', text: 'An Asana token is required.' }
+      return {
+        type: 'error',
+        text: 'A GitHub personal access token is required.',
+      }
     }
   }
 }
@@ -81,26 +84,40 @@ export default async function app(): Promise<AppSpec> {
         `,
       },
     },
-    routes: [
-      {
-        host: 'github.com',
-        path: '/:any*',
-        actions: ['auth', 'auth/clear'],
-        params: ['apiToken'],
+    resourceTypes: {
+      auth: {
+        routes: [
+          {
+            host: 'github.com',
+            path: '/:any*',
+          },
+          { path: '/github' },
+        ],
+        actions: {
+          auth: { params: ['apiToken'] },
+          clearAuth: {
+            params: [],
+          },
+        },
       },
-      { path: '/github', actions: ['auth', 'auth/clear'], params: [] },
-      {
-        host: 'github.com',
-        path: '/:owner/:repo/issues/:issueNumber',
-        actions: ['close', 'comment'],
-        params: [],
+      issues: {
+        routes: [
+          {
+            host: 'github.com',
+            path: '/:owner/:repo/issues/:number',
+          },
+          { path: '/github/:issues/:owner/:repo/:number' },
+        ],
+        actions: {
+          comment: {
+            params: ['comment'],
+          },
+          close: {
+            params: [],
+          },
+        },
       },
-      {
-        path: '/issues/:owner/:repo/:issueNumber',
-        actions: ['close', 'comment'],
-        params: [],
-      },
-    ],
+    },
     run,
   }
 }
