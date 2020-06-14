@@ -6,6 +6,7 @@ import parseArgs from '../app/parseArgs'
 import parseUrl from '../app/parseUrl'
 import Asana from '../../apps/asana/Asana'
 import GitHub from '../../apps/github/GitHub'
+import env from './env'
 
 class ConsoleChannel {
   constructor({ name, apps, files }) {
@@ -13,7 +14,14 @@ class ConsoleChannel {
     this.config = { apps, files }
     this.messages = {}
     this.messageIds = []
-    this.environments = { default: {} }
+    this.env = {
+      asana: env({}, this.updateEnv),
+      github: env({}, this.updateEnv),
+    }
+  }
+
+  updateEnv = () => {
+    console.log('update env')
   }
 
   async init() {
@@ -26,8 +34,8 @@ class ConsoleChannel {
     }
     this.apps = {
       //apiFinder: await App.get({ app: apiFinder }),
-      asana: await App.get({ app: Asana }),
-      github: await App.get({ app: GitHub }),
+      asana: await App.get({ app: Asana, env: this.env.asana }),
+      github: await App.get({ app: GitHub, env: this.env.github }),
     }
   }
 

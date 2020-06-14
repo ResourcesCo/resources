@@ -69,7 +69,13 @@ export default class App {
   onRun: Function
   env: { [key: string]: string }
 
-  constructor(appSpec: AppSpec) {
+  constructor({
+    appSpec,
+    env,
+  }: {
+    appSpec: AppSpec
+    env: { [key: string]: string }
+  }) {
     const { name, resourceTypes, run } = appSpec
     this.name = name
     this.resourceTypes = mapValues(
@@ -81,9 +87,8 @@ export default class App {
         actions: mapValues(actions, (action, name) => ({ name, ...action })),
       })
     )
-
+    this.env = env
     this.onRun = run
-    this.env = {}
   }
 
   prepareMessage(result: MessageValue) {
@@ -142,8 +147,14 @@ export default class App {
     return this.prepareMessage(result)
   }
 
-  static async get({ app: appBuilder }) {
-    const appSpec = await appBuilder()
-    return new App(appSpec)
+  static async get({
+    app,
+    env,
+  }: {
+    app(): Promise<AppSpec>
+    env: { [key: string]: string }
+  }) {
+    const appSpec = await app()
+    return new App({ appSpec, env })
   }
 }
