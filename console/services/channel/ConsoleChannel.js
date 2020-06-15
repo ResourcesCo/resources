@@ -8,20 +8,17 @@ import Asana from '../../apps/asana/Asana'
 import GitHub from '../../apps/github/GitHub'
 import env from './env'
 
+const apps = {
+  asana: Asana,
+  github: GitHub,
+}
+
 class ConsoleChannel {
   constructor({ name, apps, files }) {
     this.name = name
     this.config = { apps, files }
     this.messages = {}
     this.messageIds = []
-    this.env = {
-      asana: env({}, this.updateEnv),
-      github: env({}, this.updateEnv),
-    }
-  }
-
-  updateEnv = () => {
-    console.log('update env')
   }
 
   async init() {
@@ -32,10 +29,44 @@ class ConsoleChannel {
         this.files = new ConsoleChannel.LocalFileStore(this.config.files)
       }
     }
-    this.apps = {
-      //apiFinder: await App.get({ app: apiFinder }),
-      asana: await App.get({ app: Asana, env: this.env.asana }),
-      github: await App.get({ app: GitHub, env: this.env.github }),
+    await this.loadEnv()
+    await this.loadApps()
+  }
+
+  async loadEnv() {
+    let envData = {}
+    if (typeof window !== 'undefined') {
+      const item = window.localStorage.getItem(`channels/${this.name}/env`)
+      if (typeof item === 'string' && item.length > 0) {
+        envData = JSON.parse(item)
+      }
+    }
+    this.env = {}
+    for (const appName of Object.keys(apps)) {
+      envData[appName] = envData[appName] || {}
+      this.env[appName] = env(envData[appName], this.saveEnv)
+    }
+  }
+
+  saveEnv = async () => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(
+        `channels/${this.name}/env`,
+        JSON.stringify(this.env, null, 2)
+      )
+    }
+  }
+
+  async loadApps() {
+    this.apps = {}
+    const appNames = Object.keys(apps)
+    const loadedApps = await Promise.all(
+      appNames.map(appName =>
+        App.get({ app: apps[appName], env: this.env[appName] })
+      )
+    )
+    for (let i = 0; i < loadedApps.length; i++) {
+      this.apps[appNames[i]] = loadedApps[i]
     }
   }
 
