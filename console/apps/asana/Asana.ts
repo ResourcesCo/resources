@@ -1,3 +1,4 @@
+import { AppSpec } from '../../services/app/App'
 import fetch from 'isomorphic-unfetch'
 
 function getHeaders(apiToken, post = false) {
@@ -67,8 +68,6 @@ async function run({ action, env, params }) {
     }
   }
 }
-
-import { AppSpec } from '../../services/app/App'
 
 export default async function app(): Promise<AppSpec> {
   return {

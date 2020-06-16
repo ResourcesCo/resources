@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Tree from './Tree'
+import Embed from './Embed'
 import Help from './Help'
 import Data from './Data'
 import Form from './Form'
@@ -9,31 +10,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default ({ type, code, text, url, content, theme, ...props }) => {
   if (type === 'tree') {
-    const {
-      name,
-      value,
-      state,
-      onMessage,
-      commandId,
-      onPickId,
-      message,
-      onSubmitForm,
-      codeMirrorComponent,
-    } = props
-    return (
-      <Tree
-        name={name}
-        value={value}
-        state={state}
-        onMessage={onMessage}
-        commandId={commandId}
-        onPickId={onPickId}
-        message={message}
-        onSubmitForm={onSubmitForm}
-        codeMirrorComponent={codeMirrorComponent}
-        theme={theme}
-      />
-    )
+    return <Tree {...props} theme={theme} />
+  } else if (type === 'embed') {
+    return <Embed {...props} theme={theme} />
   } else if (type === 'help') {
     const { help } = props
     return <Help theme={theme} help={help} />

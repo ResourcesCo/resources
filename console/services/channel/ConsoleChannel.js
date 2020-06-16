@@ -6,11 +6,13 @@ import parseArgs from '../app/parseArgs'
 import parseUrl from '../app/parseUrl'
 import Asana from '../../apps/asana/Asana'
 import GitHub from '../../apps/github/GitHub'
+import Test from '../../apps/test/Test'
 import env from './env'
 
 const apps = {
   asana: Asana,
   github: GitHub,
+  test: Test,
 }
 
 class ConsoleChannel {
