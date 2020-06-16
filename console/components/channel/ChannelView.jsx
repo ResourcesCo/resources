@@ -13,6 +13,8 @@ import { MemoryStore, LocalStorageStore } from '../../store'
 import ConsoleWorkspace from '../../services/workspace/ConsoleWorkspace'
 import Message from '../messages/Message'
 import ChannelInput from './ChannelInput'
+import Nav from '../Nav'
+import Head from '../Head'
 
 class MessageList extends PureComponent {
   render() {
@@ -116,7 +118,6 @@ class ChannelView extends PureComponent {
   async componentDidMount() {
     const loadMessages = async () => {
       const { store } = this.props
-      await store.load()
       const commands = { ...store.commands }
       for (let key of Object.keys(commands)) {
         commands[key] = this.setCommandLoading(commands[key], false)
@@ -130,7 +131,6 @@ class ChannelView extends PureComponent {
       //   commands: {},
       //   commandIds: [],
       // })
-      this.props.onThemeChange(store.theme)
     }
     await loadMessages()
     if (this.scrollRef.current) {
@@ -163,8 +163,8 @@ class ChannelView extends PureComponent {
       } else if (message.type === 'set-theme') {
         this.setState({ theme: message.theme })
         store.theme = message.theme
-        store.save()
         this.props.onThemeChange(message.theme)
+        store.save()
       } else if (['tree-update', 'message-command'].includes(message.type)) {
         scrollToBottom = false
         const treeCommand = commands[message.parentCommandId]
@@ -333,13 +333,7 @@ class ChannelView extends PureComponent {
   }
 
   render() {
-    const {
-      onFocusChange,
-      navComponent,
-      codeMirrorComponent,
-      theme,
-    } = this.props
-    const Nav = navComponent
+    const { onFocusChange, codeMirrorComponent, theme } = this.props
     const { text, commandIds, commands, lastCommandId } = this.state
     const scrollRef = this.scrollRef
 
@@ -399,22 +393,22 @@ class ChannelView extends PureComponent {
 
 class ChannelViewWrapper extends PureComponent {
   state = {
-    theme: 'dark',
     channel: null,
+    theme: null,
   }
 
-  handleThemeChange = theme => {
-    this.setState({ theme })
+  constructor(props) {
+    super(props)
+    if (this.props.storageType === 'localStorage') {
+      this._store = new LocalStorageStore()
+    } else {
+      this._store = new MemoryStore()
+    }
+    this._store.load()
+    this.state.theme = this._store.theme
   }
 
   get store() {
-    if (!this._store) {
-      if (this.props.storageType === 'localStorage') {
-        this._store = new LocalStorageStore()
-      } else {
-        this._store = new MemoryStore()
-      }
-    }
     return this._store
   }
 
@@ -435,22 +429,74 @@ class ChannelViewWrapper extends PureComponent {
   }
 
   render() {
-    const {
-      theme,
-      onThemeChange,
-      store,
-      channel,
-      storageType,
-      ...props
-    } = this.props
+    const { onThemeChange, store, channel, storageType, ...props } = this.props
+    const themeName = this.state.theme
+    const theme = getTheme(themeName)
     return (
-      <ChannelView
-        theme={theme || getTheme(this.state.theme)}
-        onThemeChange={onThemeChange || this.handleThemeChange}
-        store={store || this.store}
-        channel={channel || this.channel}
-        {...props}
-      />
+      <>
+        <ChannelView
+          theme={theme}
+          store={store || this.store}
+          channel={channel || this.channel}
+          onThemeChange={theme => this.setState({ theme })}
+          {...props}
+        />
+        <Head title="Resources.co" theme={theme} />
+        <style jsx global>{`
+          html,
+          body,
+          body > div {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            box-sizing: border-box;
+          }
+
+          * {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, Avenir Next, Avenir,
+              Helvetica, sans-serif;
+          }
+
+          *,
+          *::before,
+          *::after {
+            box-sizing: border-box;
+          }
+
+          html,
+          body {
+            background-color: ${theme.background};
+          }
+
+          html,
+          body,
+          textarea,
+          svg,
+          button {
+            color: ${theme.foreground};
+          }
+
+          a {
+            color: ${theme.linkColor};
+            text-decoration: none;
+          }
+
+          a:hover {
+            text-decoration: underline;
+          }
+
+          ::selection {
+            color: ${theme.selectionColor};
+            background: ${theme.selectionBackground};
+          }
+
+          #__next-prerender-indicator {
+            display: none;
+          }
+        `}</style>
+      </>
     )
   }
 }

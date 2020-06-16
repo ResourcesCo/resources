@@ -6,7 +6,7 @@ const defaultDescription = ''
 const defaultOGURL = ''
 const defaultOGImage = ''
 
-const Head = props => (
+const Head = ({ theme, ...props }) => (
   <NextHead>
     <meta charSet="UTF-8" />
     <title>{props.title || ''}</title>
