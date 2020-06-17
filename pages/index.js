@@ -1,13 +1,17 @@
 import dynamic from 'next/dynamic'
-import ChannelView from 'console/components/channel/ChannelView'
+import ChannelViewPage from 'console/components/channel/ChannelViewPage'
 
-const CodeMirror = dynamic(() => import('../components/CodeMirror'), {
+const CodeMirror = dynamic(() => import('components/CodeMirror'), {
   ssr: false,
 })
 
 function Home() {
   return (
-    <ChannelView codeMirrorComponent={CodeMirror} storageType="localStorage" />
+    <ChannelViewPage
+      page="channel"
+      codeMirrorComponent={CodeMirror}
+      storageType="localStorage"
+    />
   )
 }
 
