@@ -9,6 +9,17 @@ import asanaTest from 'console/apps/test/tests/asana'
 function Test({}) {
   const [result, setResult] = useState('not completed')
   useEffect(() => {
+    window.addEventListener(
+      'message',
+      ({ origin, data: { source, payload } = {} }) => {
+        if (source.startsWith('/messages/')) {
+          window.parent.postMessage(
+            { source: `${source}/reply`, payload: { echo: payload } },
+            origin
+          )
+        }
+      }
+    )
     asanaTest().then(result => {
       setResult(JSON.stringify(result))
     })
