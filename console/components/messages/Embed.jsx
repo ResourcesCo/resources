@@ -2,8 +2,7 @@ import { useRef, useEffect, useCallback } from 'react'
 
 export default function Embed({ path, commandId, theme }) {
   const embedBaseUrl =
-    process.env.NEXT_PUBLIC_EMBED_BASE_URL ||
-    process.env.NEXT_PUBLIC_EMBED_BASE_URL_DEFAULT
+    process.env.NEXT_PUBLIC_EMBED_BASE_URL || process.env.EMBED_BASE_URL_DEFAULT
   const ref = useRef()
   const handleMessage = useCallback(({ data: { source, payload } }) => {
     if (source === `/messages/${commandId}/reply`) {
@@ -28,8 +27,8 @@ export default function Embed({ path, commandId, theme }) {
       }
     }
   }, [])
-  return window.location.href.startsWith(embedBaseUrl) ? null : (
-    <div>
+  return (
+    /*window.location.href.startsWith(embedBaseUrl) ? null :*/ <div>
       <iframe
         ref={ref}
         sandbox="allow-scripts allow-same-origin"
