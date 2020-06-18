@@ -1,6 +1,9 @@
 import { useRef, useEffect, useCallback } from 'react'
 
 export default function Embed({ path, commandId, theme }) {
+  const embedBaseUrl =
+    process.env.NEXT_PUBLIC_EMBED_BASE_URL ||
+    process.env.NEXT_PUBLIC_EMBED_BASE_URL_DEFAULT
   const ref = useRef()
   const handleMessage = useCallback(({ data: { source, payload } }) => {
     if (source === `/messages/${commandId}/reply`) {
@@ -11,25 +14,26 @@ export default function Embed({ path, commandId, theme }) {
     if (ref.current) {
       ref.current.contentWindow.postMessage(
         { source: `/messages/${commandId}`, payload: { path } },
-        process.env.NEXT_PUBLIC_EMBED_BASE_URL ||
-          process.env.NEXT_PUBLIC_EMBED_BASE_URL_DEFAULT
+        embedBaseUrl
       )
     }
   })
   useEffect(() => {
-    window.addEventListener('message', handleMessage)
-    ref.current.addEventListener('load', handleFrameLoaded)
-    return () => {
-      window.removeEventListener('message', handleMessage)
-      ref.current.removeEventListener('load', handleFrameLoaded)
+    if (ref.current) {
+      window.addEventListener('message', handleMessage)
+      ref.current.addEventListener('load', handleFrameLoaded)
+      return () => {
+        window.removeEventListener('message', handleMessage)
+        ref.current.removeEventListener('load', handleFrameLoaded)
+      }
     }
   }, [])
-  return (
+  return window.location.href.startsWith(embedBaseUrl) ? null : (
     <div>
       <iframe
         ref={ref}
         sandbox="allow-scripts allow-same-origin"
-        src={`${process.env.NEXT_PUBLIC_EMBED_BASE_URL}/embed${path}`}
+        src={`${embedBaseUrl}/embed${path}`}
       />
       <style jsx>{`
         iframe {
