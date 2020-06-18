@@ -7,7 +7,7 @@
     "dev:app": "API_BASE=http://localhost:3334/api next dev -p 3333",
     "dev:api-proxy": "PORT=3333 PROXY_PORT=3334 node scripts/proxy.js",
     "dev:embed-proxy": "PORT=3333 PROXY_PORT=3335 node scripts/proxy.js",
-    "build": "next build",
+    "build": "NEXT_PUBLIC_EMBED_BASE_URL_DEFAULT=$VERCEL_URL next build",
     "start": "next start",
     "export": "next export",
     "format": "prettier --write \"**/*.js\""
