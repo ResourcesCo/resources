@@ -1,8 +1,20 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, useState, useEffect } from 'react'
 import { getTheme } from '../../themes'
 import { MemoryStore, LocalStorageStore } from '../../store'
 import ConsoleWorkspace from '../../services/workspace/ConsoleWorkspace'
 import Head from '../Head'
+
+import asanaTest from 'console/apps/test/tests/asana'
+
+function Test({}) {
+  const [result, setResult] = useState('not completed')
+  useEffect(() => {
+    asanaTest().then(result => {
+      setResult(JSON.stringify(result))
+    })
+  }, [])
+  return <div>{result}</div>
+}
 
 export default class EmbedPage extends PureComponent {
   state = {
@@ -55,7 +67,7 @@ export default class EmbedPage extends PureComponent {
     return (
       <>
         <Head title="Resources.co" theme={theme} />
-        <p>The path is {path}</p>
+        <Test />
         <style jsx global>{`
           html,
           body,

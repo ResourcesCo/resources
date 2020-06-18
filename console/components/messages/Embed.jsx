@@ -1,7 +1,10 @@
 export default function Embed({ path, theme }) {
   return (
     <div>
-      <iframe src={`/embed${path}`} />
+      <iframe
+        sandbox="allow-scripts allow-same-origin"
+        src={`${process.env.NEXT_PUBLIC_EMBED_BASE_URL}/embed${path}`}
+      />
       <style jsx>{`
         iframe {
           border: 0;

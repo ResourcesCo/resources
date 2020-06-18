@@ -1,7 +1,7 @@
 import { AppSpec } from '../../services/app/App'
 
-async function run({ action, env, params }) {
-  return { type: 'embed', path: '/tests/${}' }
+async function run({ action, env, params: { path } }) {
+  return { type: 'embed', path: `/tests/${path}` }
 }
 
 export default async function app(): Promise<AppSpec> {
