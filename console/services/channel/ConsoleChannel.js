@@ -115,9 +115,13 @@ class ConsoleChannel {
     parentMessageId,
     formData,
   }) {
-    const { url, action: actionArg, params } = parseArgs(parsed)
+    const { url: urlArg, action: actionArg, params } = parseArgs(parsed)
 
-    const routeMatch = await this.route({ url, action: actionArg, params })
+    const routeMatch = await this.route({
+      url: urlArg,
+      action: actionArg,
+      params,
+    })
     if (routeMatch && typeof routeMatch.error === 'string') {
       const messageId = shortid()
       onMessage({
@@ -134,7 +138,8 @@ class ConsoleChannel {
     } else if (routeMatch) {
       const {
         handler,
-        url: actionUrl,
+        url,
+        resourceType,
         action,
         params: actionParams,
       } = routeMatch
@@ -157,7 +162,8 @@ class ConsoleChannel {
         })
       }
       const result = await this.dispatchAction(handler, {
-        url: actionUrl,
+        url,
+        resourceType,
         action: isBackgroundAction ? formData.actionName : action,
         params: actionParams,
         parentMessage,

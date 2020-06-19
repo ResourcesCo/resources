@@ -83,6 +83,31 @@ export default async function app(): Promise<AppSpec> {
       },
     },
     resourceTypes: {
+      tasks: {
+        routes: [
+          {
+            host: 'app.asana.com',
+            path: '/0/:projectId/:id{/f}?',
+          },
+          { path: '/asana/tasks/:id' },
+        ],
+        actions: {
+          get: {
+            params: [],
+            request: {
+              method: 'GET',
+              url: '/tasks/:id',
+            },
+            docUrl: 'https://developers.asana.com/docs/get-a-task',
+          },
+          comment: {
+            params: ['comment'],
+          },
+          complete: {
+            params: [],
+          },
+        },
+      },
       auth: {
         routes: [
           {
@@ -94,23 +119,6 @@ export default async function app(): Promise<AppSpec> {
         actions: {
           auth: { params: ['apiToken'] },
           clearAuth: {
-            params: [],
-          },
-        },
-      },
-      tasks: {
-        routes: [
-          {
-            host: 'app.asana.com',
-            path: '/0/:projectId/:id{/f}?',
-          },
-          { path: '/asana/tasks/:id' },
-        ],
-        actions: {
-          comment: {
-            params: ['comment'],
-          },
-          complete: {
             params: [],
           },
         },

@@ -19,9 +19,16 @@ export interface RouteSpec {
   path: string
 }
 
+export interface RequestSpec {
+  method: string
+  url: string
+}
+
 export interface ActionSpec {
   name?: string
   doc?: string
+  docUrl?: string
+  request?: RequestSpec
   params: string[]
 }
 
@@ -133,7 +140,11 @@ export default class App {
               if (result.error) {
                 return result
               } else if (result.params) {
-                return { action: resolvedActionName, params: result.params }
+                return {
+                  resourceType: resourceType.name,
+                  action: resolvedActionName,
+                  params: result.params,
+                }
               }
             }
           }
@@ -160,13 +171,18 @@ export default class App {
     }
   }
 
-  async help() {
-    return { type: 'text', text: 'Help here' }
+  help = async ({ resourceType }) => {
+    return {
+      type: 'tree',
+      name: `${this.name} ${resourceType}`,
+      value: this.resourceTypes[resourceType],
+    }
   }
 
-  async run({ action, params }) {
+  async run({ resourceType, action, params }) {
     const handler = action === 'help' ? this.help : this.onRun
     const result = await handler({
+      resourceType,
       action,
       params,
       env: this.env,
