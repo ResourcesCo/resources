@@ -12,9 +12,8 @@ function ClipboardMenu({
   nodeType,
   parentType,
   showAll,
-  onMessage,
-  clipboard,
-  theme,
+  context: { onMessage, clipboard },
+  context,
   ...props
 }) {
   const hasPasteData = true
@@ -84,9 +83,9 @@ function ClipboardMenu({
       onClose={() => null}
       popperProps={{
         placement: 'left-start',
-        modifiers: { offset: { offset: '0, -3' } },
+        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
       }}
-      theme={theme}
+      context={context}
       {...props}
     >
       <MenuItem
@@ -127,8 +126,7 @@ function ClipboardMenu({
 }
 
 ClipboardMenu.propTypes = {
-  clipboard: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
+  context: PropTypes.object.isRequired,
 }
 
 export default ClipboardMenu

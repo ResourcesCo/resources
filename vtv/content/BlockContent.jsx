@@ -10,9 +10,7 @@ export default function BlockContent({
   nodeType,
   stringType,
   mediaType,
-  onMessage,
-  codeMirrorComponent,
-  theme,
+  context,
 }) {
   if (view === 'json') {
     return (
@@ -21,9 +19,7 @@ export default function BlockContent({
         path={path}
         value={value}
         state={state}
-        onMessage={onMessage}
-        codeMirrorComponent={codeMirrorComponent}
-        theme={theme}
+        context={context}
       />
     )
   } else if (view === 'image') {
@@ -36,9 +32,7 @@ export default function BlockContent({
         value={value}
         state={state}
         mediaType={view === 'code' ? mediaType : null}
-        onMessage={onMessage}
-        codeMirrorComponent={codeMirrorComponent}
-        theme={theme}
+        context={context}
       />
     )
   } else {

@@ -1,64 +1,18 @@
 import React, { useState } from 'react'
+import Tree from './Tree'
+import Embed from './Embed'
 import Help from './Help'
 import Data from './Data'
-import DataTree from './DataTree'
 import Form from './Form'
-import View, { joinPath } from 'vtv'
 import Loader from 'react-loader-spinner'
 import { faLink } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default ({ type, code, text, url, content, theme, ...props }) => {
   if (type === 'tree') {
-    const {
-      name,
-      value,
-      state = { _expanded: true },
-      onMessage,
-      commandId,
-      onPickId,
-      message,
-      onSubmitForm,
-      codeMirrorComponent,
-    } = props
-
-    const onChange = ({ name, value, state }) => {
-      onMessage({
-        type: 'tree-update',
-        name,
-        value,
-        state,
-        parentCommandId: commandId,
-      })
-    }
-
-    const handlePickId = pathOrString => {
-      if (typeof pathOrString === 'string') {
-        onPickId(pathOrString)
-      } else {
-        onPickId(joinPath(['messages', commandId, ...pathOrString]))
-      }
-    }
-
-    return (
-      <div>
-        <View
-          name={name}
-          value={value}
-          state={state}
-          theme={theme}
-          onChange={onChange}
-          onAction={m => onSubmitForm({ commandId, message, formData: m })}
-          onPickId={handlePickId}
-          codeMirrorComponent={codeMirrorComponent}
-        />
-        <style jsx>{`
-          div {
-            margin: 5px 0;
-          }
-        `}</style>
-      </div>
-    )
+    return <Tree {...props} theme={theme} />
+  } else if (type === 'embed') {
+    return <Embed {...props} theme={theme} />
   } else if (type === 'help') {
     const { help } = props
     return <Help theme={theme} help={help} />

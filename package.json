@@ -3,9 +3,11 @@
   "version": "1.0.0-canary.15",
   "license": "Apache-2.0",
   "scripts": {
-    "dev": "API_BASE=http://localhost:3334/api next dev -p 3333",
-    "dev:api-proxy": "PORT=3333 API_PORT=3334 node scripts/proxy.js",
-    "build": "next build",
+    "dev": "concurrently -k -n app,api,embed yarn:dev:app yarn:dev:api-proxy yarn:dev:embed-proxy",
+    "dev:app": "API_BASE=http://localhost:3334/api next dev -p 3333",
+    "dev:api-proxy": "PORT=3333 PROXY_PORT=3334 node scripts/proxy.js",
+    "dev:embed-proxy": "PORT=3333 PROXY_PORT=3335 node scripts/proxy.js",
+    "build": "cross-env \"NEXT_PUBLIC_EMBED_BASE_URL_DEFAULT=https://$VERCEL_URL\" next build",
     "start": "next start",
     "export": "next export",
     "format": "prettier --write \"**/*.js\""
@@ -15,9 +17,11 @@
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fortawesome/react-fontawesome": "^0.1.9",
     "@popperjs/core": "^2.4.0",
-    "api-finder": "^1.0.0-pre.0",
     "clsx": "^1.1.0",
     "codemirror": "^5.53.2",
+    "cross-env": "^7.0.2",
+    "iframe-resizer": "^4.2.11",
+    "iframe-resizer-react": "^1.0.4",
     "immer": "^6.0.8",
     "insert-text-at-cursor": "^0.3.0",
     "isomorphic-unfetch": "^3.0.0",
@@ -25,6 +29,7 @@
     "lodash": "^4.17.15",
     "next": "^9.3.2",
     "next-transpile-modules": "^3.0.2",
+    "path-to-regexp": "^6.1.0",
     "prettier": "^1.19.1",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
@@ -35,6 +40,7 @@
     "react-is": "^16.13.1",
     "react-loader-spinner": "^3.1.5",
     "react-popper": "^2.2.3",
+    "react-router": "^5.2.0",
     "scroll-into-view-if-needed": "^2.2.24",
     "shortid": "^2.2.15"
   },
@@ -44,9 +50,11 @@
     "trailingComma": "es5"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.155",
     "@types/node": "^14.0.5",
     "@types/react": "^16.9.35",
     "babel-plugin-module-resolver": "^4.0.0",
+    "concurrently": "^5.2.0",
     "http-proxy": "^1.18.1",
     "typescript": "^3.9.3"
   }

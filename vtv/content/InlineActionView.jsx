@@ -1,6 +1,6 @@
 import ActionButton from '../generic/ActionButton'
 
-function InlineActionView({ actions, onMessage, theme }) {
+function InlineActionView({ actions, context: { onMessage }, context }) {
   return (
     <div className="actions-content">
       {actions.map(({ name, title, primary }) => (
@@ -8,7 +8,7 @@ function InlineActionView({ actions, onMessage, theme }) {
           key={name}
           primary={primary}
           onClick={() => onMessage({ action: 'runAction', actionName: name })}
-          theme={theme}
+          context={context}
         >
           {title}
         </ActionButton>

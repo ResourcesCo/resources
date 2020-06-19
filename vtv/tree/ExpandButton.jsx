@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretRight, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 import clsx from 'clsx'
 
-export default ({ onClick, expanded, disabled, theme }) => (
+export default ({ onClick, expanded, disabled, context: { theme } }) => (
   <div className={expanded ? 'expanded' : ''}>
     <button
       onClick={onClick}

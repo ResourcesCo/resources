@@ -1,6 +1,6 @@
 # resources.co - a web console
 
-TODO: intro
+TODO: write intro
 
 ![brief screencast](https://gh-media.resources.co/resourcesco-butterfly-demo-2.gif)
 

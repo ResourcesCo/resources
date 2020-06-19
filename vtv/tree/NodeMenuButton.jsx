@@ -4,17 +4,17 @@ import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
 import NodeMenu from './NodeMenu'
 import { Manager, Reference } from 'react-popper'
 
-export default function NodeMenuButton({
-  nodeMenuProps: nodeMenuProps_,
-  theme,
-}) {
+export default function NodeMenuButton({ nodeMenuProps: nodeMenuProps_ }) {
   const nodeMenuProps = {
     ...nodeMenuProps_,
     popperProps: {
       placement: 'bottom-end',
-      modifiers: { offset: { offset: '0, 3' } },
+      modifiers: [{ name: 'offset', options: { offset: [0, 3] } }],
     },
   }
+  const {
+    context: { theme },
+  } = nodeMenuProps
   const [menuOpen, setMenuOpen] = useState(false)
   return (
     <Manager>

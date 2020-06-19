@@ -1,18 +1,14 @@
 import React, { PureComponent } from 'react'
 import insertTextAtCursor from 'insert-text-at-cursor'
-import { Manager } from 'react-popper'
 import pick from 'lodash/pick'
 import pickBy from 'lodash/pickBy'
 import identity from 'lodash/identity'
 import getNested from 'lodash/get'
-import produce from 'immer'
 import { parseCommand, updateTree, removeTemporaryState } from 'vtv'
-import { getTheme } from '../../themes'
 import runCommand from '../../command-runner'
-import { MemoryStore, LocalStorageStore } from '../../store'
-import ConsoleWorkspace from '../../services/workspace/ConsoleWorkspace'
 import Message from '../messages/Message'
 import ChannelInput from './ChannelInput'
+import Nav from '../Nav'
 
 class MessageList extends PureComponent {
   render() {
@@ -84,7 +80,7 @@ class MessageList extends PureComponent {
   }
 }
 
-class ChannelView extends PureComponent {
+export default class ChannelView extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
@@ -116,7 +112,6 @@ class ChannelView extends PureComponent {
   async componentDidMount() {
     const loadMessages = async () => {
       const { store } = this.props
-      await store.load()
       const commands = { ...store.commands }
       for (let key of Object.keys(commands)) {
         commands[key] = this.setCommandLoading(commands[key], false)
@@ -130,7 +125,6 @@ class ChannelView extends PureComponent {
       //   commands: {},
       //   commandIds: [],
       // })
-      this.props.onThemeChange(store.theme)
     }
     await loadMessages()
     if (this.scrollRef.current) {
@@ -163,8 +157,8 @@ class ChannelView extends PureComponent {
       } else if (message.type === 'set-theme') {
         this.setState({ theme: message.theme })
         store.theme = message.theme
-        store.save()
         this.props.onThemeChange(message.theme)
+        store.save()
       } else if (['tree-update', 'message-command'].includes(message.type)) {
         scrollToBottom = false
         const treeCommand = commands[message.parentCommandId]
@@ -333,13 +327,7 @@ class ChannelView extends PureComponent {
   }
 
   render() {
-    const {
-      onFocusChange,
-      navComponent,
-      codeMirrorComponent,
-      theme,
-    } = this.props
-    const Nav = navComponent
+    const { onFocusChange, codeMirrorComponent, theme } = this.props
     const { text, commandIds, commands, lastCommandId } = this.state
     const scrollRef = this.scrollRef
 
@@ -396,63 +384,3 @@ class ChannelView extends PureComponent {
     )
   }
 }
-
-class ChannelViewWrapper extends PureComponent {
-  state = {
-    theme: 'dark',
-    channel: null,
-  }
-
-  handleThemeChange = theme => {
-    this.setState({ theme })
-  }
-
-  get store() {
-    if (!this._store) {
-      if (this.props.storageType === 'localStorage') {
-        this._store = new LocalStorageStore()
-      } else {
-        this._store = new MemoryStore()
-      }
-    }
-    return this._store
-  }
-
-  async loadChannel() {
-    const workspace = ConsoleWorkspace.getWorkspace()
-    const channel = await workspace.getChannel('main')
-    this.setState({ channel })
-  }
-
-  get channel() {
-    if (this.props.channel) {
-      return this.props.channel
-    } else if (this.state.channel) {
-      return this.state.channel
-    } else {
-      this.loadChannel()
-    }
-  }
-
-  render() {
-    const {
-      theme,
-      onThemeChange,
-      store,
-      channel,
-      storageType,
-      ...props
-    } = this.props
-    return (
-      <ChannelView
-        theme={theme || getTheme(this.state.theme)}
-        onThemeChange={onThemeChange || this.handleThemeChange}
-        store={store || this.store}
-        channel={channel || this.channel}
-        {...props}
-      />
-    )
-  }
-}
-
-export default ChannelViewWrapper

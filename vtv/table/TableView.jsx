@@ -3,17 +3,8 @@ import { getCollectionPaths, joinPath, getAtPath } from '../model/analyze'
 import { getChildState } from '../model'
 import InlineContent from '../content/InlineContent'
 
-export default ({
-  name,
-  value,
-  path,
-  state,
-  onPickId,
-  onMessage,
-  clipboard,
-  theme,
-}) => {
-  const paths = getCollectionPaths(value)
+export default ({ name, value, path, state, context: { theme }, context }) => {
+  const paths = getCollectionPaths(value).slice(0, 15) // TODO: support customizing displayed columns
   return (
     <div className="table">
       <table>
@@ -32,13 +23,11 @@ export default ({
               {paths.map((columnPath, i) => (
                 <td key={i}>
                   <InlineContent
-                    onMessage={onMessage}
                     name={name}
                     value={getAtPath(value[key], columnPath)}
                     path={[...path, key, ...columnPath]}
                     state={getChildState(value[key], columnPath)}
-                    onPickId={onPickId}
-                    theme={theme}
+                    context={context}
                   />
                 </td>
               ))}

@@ -1,11 +1,19 @@
 import shortid from 'shortid'
 import ClientFileStore from '../storage/ClientFileStore'
 import ConsoleError from '../../ConsoleError'
-import { splitPath, joinPath } from 'vtv'
-import { isUrl } from 'vtv/model/analyze'
 import App from '../app/App'
+import parseArgs from '../app/parseArgs'
+import parseUrl from '../app/parseUrl'
+import Asana from '../../apps/asana/Asana'
+import GitHub from '../../apps/github/GitHub'
+import Test from '../../apps/test/Test'
+import env from './env'
 
-// import apiFinder from 'api-finder'
+const apps = {
+  asana: Asana,
+  github: GitHub,
+  test: Test,
+}
 
 class ConsoleChannel {
   constructor({ name, apps, files }) {
@@ -23,28 +31,50 @@ class ConsoleChannel {
         this.files = new ConsoleChannel.LocalFileStore(this.config.files)
       }
     }
-    this.apps = {}
-    // this.apps = { apiFinder: await App.get({ app: apiFinder }) }
-    this.providers = {}
-    this.autorun = {}
-    for (const [appName, app] of Object.entries(this.apps)) {
-      for (const [providerName, provider] of Object.entries(app.providers)) {
-        if (providerName in this.providers) {
-          console.warn(`Provider already declared: ${providerName}`)
-        }
-        this.providers[providerName] = { app, name: providerName, actions: {} }
-        for (const [actionName, action] of Object.entries(provider.actions)) {
-          if (action.autorun?.type === 'url') {
-            this.autorun.url = action
-          }
-        }
+    await this.loadEnv()
+    await this.loadApps()
+  }
+
+  async loadEnv() {
+    let envData = {}
+    if (typeof window !== 'undefined') {
+      const item = window.localStorage.getItem(`channels/${this.name}/env`)
+      if (typeof item === 'string' && item.length > 0) {
+        envData = JSON.parse(item)
       }
+    }
+    this.env = {}
+    for (const appName of Object.keys(apps)) {
+      envData[appName] = envData[appName] || {}
+      this.env[appName] = env(envData[appName], this.saveEnv)
     }
   }
 
-  async dispatchCommand(resource, params) {
+  saveEnv = async () => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(
+        `channels/${this.name}/env`,
+        JSON.stringify(this.env, null, 2)
+      )
+    }
+  }
+
+  async loadApps() {
+    this.apps = {}
+    const appNames = Object.keys(apps)
+    const loadedApps = await Promise.all(
+      appNames.map(appName =>
+        App.get({ app: apps[appName], env: this.env[appName] })
+      )
+    )
+    for (let i = 0; i < loadedApps.length; i++) {
+      this.apps[appNames[i]] = loadedApps[i]
+    }
+  }
+
+  async dispatchAction(handler, params) {
     try {
-      const result = await resource.run(params)
+      const result = await handler.run(params)
       return result
     } catch (e) {
       if (e instanceof ConsoleError) {
@@ -54,17 +84,25 @@ class ConsoleChannel {
           return { type: 'error', text: `Error: ${e.message}` }
         }
       } else {
-        return { type: 'error', text: 'Error responding to message' }
+        throw e
       }
     }
   }
 
-  async getHandler({ resourcePath, parsed }) {
-    if (resourcePath && resourcePath[0] === 'files' && this.files) {
-      return this.files
-    } else if (!resourcePath && isUrl(parsed[0])) {
-      if (this.autorun.url) {
-        this.autorun.url.run(parsed[0])
+  async route({ url, action, params }) {
+    if (/^\/files(\/|$)/.test(url) && this.files) {
+      return { handler: this.files, url: url.substr('/files'.length) }
+    } else if (url) {
+      const { host, path } = parseUrl(url)
+      for (const app of Object.values(this.apps)) {
+        const result = await app.route({ host, path, action, params })
+        if (result) {
+          if (result.error) {
+            return result
+          } else {
+            return { handler: app, url, ...result }
+          }
+        }
       }
     }
   }
@@ -77,20 +115,25 @@ class ConsoleChannel {
     parentMessageId,
     formData,
   }) {
-    // TODO: remove once this handles data passed as first parameter
-    if (!/^\s*\w/.test(parsed[0].substr(0, 10))) {
-      return
-    }
+    const { url, action, params } = parseArgs(parsed)
 
-    const resourcePath = splitPath(parsed[0])
-    const handler = await this.getHandler({ resourcePath, parsed })
-    if (handler) {
+    const routeMatch = await this.route({ url, action, params })
+    if (routeMatch && typeof routeMatch.error === 'string') {
+      const messageId = shortid()
+      onMessage({
+        type: 'input',
+        text: message,
+        commandId: messageId,
+      })
+      onMessage({
+        type: 'error',
+        text: routeMatch.error,
+        commandId: messageId,
+      })
+      return true
+    } else if (routeMatch) {
+      const { handler, url: actionUrl, params: actionParams } = routeMatch
       const isBackgroundAction = formData && formData.action === 'runAction'
-      const action = isBackgroundAction
-        ? formData.actionName
-        : parsed.length >= 2
-        ? parsed[1]
-        : 'get'
 
       const messageId = shortid()
       if (!isBackgroundAction) {
@@ -108,10 +151,10 @@ class ConsoleChannel {
           loading: true,
         })
       }
-      const result = await this.dispatchCommand(this.files, {
-        action: action || 'get',
-        path: resourcePath.slice(1),
-        args: parsed.slice(2),
+      const result = await this.dispatchAction(handler, {
+        url: actionUrl,
+        action: isBackgroundAction ? formData.actionName : action,
+        params: actionParams,
         parentMessage,
       })
       onMessage(
@@ -119,7 +162,7 @@ class ConsoleChannel {
           result && {
             ...result,
             commandId: messageId,
-            message: joinPath(resourcePath),
+            message: parsed[0],
           },
           {
             type: 'loaded',

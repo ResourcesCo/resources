@@ -42,14 +42,21 @@ function getAvailableViews({
   return result
 }
 
-function CodeMenu({ path, mediaType, onMessage, ...props }) {
+function CodeMenu({
+  path,
+  mediaType,
+  context: { onMessage },
+  context,
+  ...props
+}) {
   return (
     <Menu
       onClose={() => null}
       popperProps={{
-        placement: 'left-start',
-        modifiers: { offset: { offset: '0, -3' } },
+        placement: 'left-end',
+        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
       }}
+      context={context}
       {...props}
     >
       {codeTypes.map(({ name, mediaType: itemMediaType }) => (
@@ -78,8 +85,9 @@ export default function ViewMenu({
   nodeType,
   stringType,
   mediaType,
-  onMessage,
   onViewChanged,
+  context: { onMessage },
+  context,
   ...props
 }) {
   const setView = view => {
@@ -105,8 +113,9 @@ export default function ViewMenu({
       onClose={() => null}
       popperProps={{
         placement: 'left-start',
-        modifiers: { offset: { offset: '0, -3' } },
+        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
       }}
+      context={context}
       {...props}
     >
       <MenuItem onClick={() => setView(null)} checked={view === null}>
@@ -125,6 +134,7 @@ export default function ViewMenu({
                   mediaType={mediaType}
                   path={path}
                   onMessage={onMessage}
+                  context={context}
                   {...props}
                 />
               }

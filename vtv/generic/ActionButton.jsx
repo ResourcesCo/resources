@@ -2,7 +2,7 @@ import React from 'react'
 import clsx from 'clsx'
 
 export default React.forwardRef(
-  ({ primary = false, children, theme, ...props }, ref) => (
+  ({ primary = false, children, context: { theme }, ...props }, ref) => (
     <button ref={ref} className={clsx({ primary })} {...props}>
       {children}
       <style jsx>{`
@@ -12,7 +12,8 @@ export default React.forwardRef(
           background-color: ${theme.actionColor};
           border-radius: 9999px;
           outline: none;
-          padding: 4px 7px;
+          padding: 3px 7px;
+          font-size: inherit;
           border: 0;
         }
 

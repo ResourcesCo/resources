@@ -1,5 +1,5 @@
 const httpProxy = require('http-proxy')
-const proxyPort = process.env.API_PORT
+const proxyPort = process.env.PROXY_PORT
 const targetPort = process.env.PORT
 const proxy = httpProxy.createProxyServer({
   target: `http://localhost:${targetPort}`,

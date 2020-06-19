@@ -11,11 +11,9 @@ function InlineContent({
   value,
   state,
   path,
-  onMessage,
-  onPickId,
   autoEdit = true,
-  clipboard,
-  theme,
+  context: { onMessage },
+  context,
 }) {
   const {
     _editingName: editingName,
@@ -25,13 +23,7 @@ function InlineContent({
   } = getState(state)
   if (attachments) {
     return (
-      <AttachmentView
-        path={path}
-        onMessage={onMessage}
-        attachments={attachments}
-        clipboard={clipboard}
-        theme={theme}
-      />
+      <AttachmentView path={path} attachments={attachments} context={context} />
     )
   } else if (editing) {
     return (
@@ -40,12 +32,11 @@ function InlineContent({
         value={value}
         state={state}
         path={path}
-        onMessage={onMessage}
         editing={editing}
         editingName={editingName}
         error={error}
         autoEdit={autoEdit}
-        theme={theme}
+        context={context}
       />
     )
   } else {
@@ -57,20 +48,13 @@ function InlineContent({
           editing: true,
         })
       }
-      return (
-        <Link
-          url={value}
-          onEdit={handleEdit}
-          onPickId={onPickId}
-          theme={theme}
-        />
-      )
+      return <Link url={value} onEdit={handleEdit} context={context} />
     } else if (typeof value === 'object' && value !== null) {
       return (
         <CollectionSummary
           type={Array.isArray(value) ? 'array' : 'object'}
           length={Object.keys(value).length}
-          theme={theme}
+          context={context}
         />
       )
     } else {
@@ -80,12 +64,11 @@ function InlineContent({
           value={value}
           state={state}
           path={path}
-          onMessage={onMessage}
           editing={editing}
           editingName={editingName}
           error={error}
           autoEdit={autoEdit}
-          theme={theme}
+          context={context}
         />
       )
     }

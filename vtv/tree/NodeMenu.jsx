@@ -6,14 +6,22 @@ import ViewMenu from './ViewMenu'
 import ClipboardMenu from './ClipboardMenu'
 import Menu, { MenuItem } from '../generic/Menu'
 
-function DeleteMenu({ showAll, nodeType, path, onMessage, ...props }) {
+function DeleteMenu({
+  showAll,
+  nodeType,
+  path,
+  context: { onMessage },
+  context,
+  ...props
+}) {
   return (
     <Menu
       onClose={() => null}
       popperProps={{
         placement: 'left-start',
-        modifiers: { offset: { offset: '0, -3' } },
+        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
       }}
+      context={context}
       {...props}
     >
       {!showAll && (
@@ -29,7 +37,6 @@ function DeleteMenu({ showAll, nodeType, path, onMessage, ...props }) {
 }
 
 function NodeMenu({
-  onPickId,
   parentType,
   nodeType,
   stringType,
@@ -39,13 +46,12 @@ function NodeMenu({
   path,
   state,
   showAll,
-  onMessage,
   onClose,
   onViewChanged,
   nameOptionsFirst = false,
   popperProps,
-  clipboard,
-  theme,
+  context: { onMessage, onPickId },
+  context,
 }) {
   const [action, setAction] = useState(null)
 
@@ -68,7 +74,7 @@ function NodeMenu({
   }
 
   return (
-    <Menu onClose={onClose} popperProps={popperProps} theme={theme}>
+    <Menu onClose={onClose} popperProps={popperProps} context={context}>
       {nameOptionsFirst &&
         !showAll &&
         ['object', null].includes(parentType) && (
@@ -88,10 +94,9 @@ function NodeMenu({
             nodeType={nodeType}
             stringType={stringType}
             mediaType={mediaType}
-            onMessage={onMessage}
             onViewChanged={onViewChanged}
             onClose={onClose}
-            theme={theme}
+            context={context}
           />
         }
       >
@@ -104,9 +109,8 @@ function NodeMenu({
             nodeType={nodeType}
             parentType={parentType}
             path={path}
-            onMessage={onMessage}
             onClose={onClose}
-            theme={theme}
+            context={context}
           />
         }
       >
@@ -123,10 +127,8 @@ function NodeMenu({
               showAll={showAll}
               nodeType={nodeType}
               parentType={parentType}
-              onMessage={onMessage}
               onClose={onClose}
-              clipboard={clipboard}
-              theme={theme}
+              context={context}
             />
           }
         >
@@ -157,9 +159,8 @@ function NodeMenu({
             showAll={showAll}
             nodeType={nodeType}
             path={path}
-            onMessage={onMessage}
             onClose={onClose}
-            theme={theme}
+            context={context}
           />
         }
       >
@@ -173,8 +174,7 @@ function NodeMenu({
 }
 
 NodeMenu.propTypes = {
-  clipboard: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
+  context: PropTypes.object.isRequired,
 }
 
 export default NodeMenu

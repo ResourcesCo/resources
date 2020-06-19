@@ -5,60 +5,50 @@ import { getTheme } from './themes'
 import NodeView from './tree/NodeView'
 import Clipboard from './util/Clipboard'
 
-const optionDefaults = {
-  bubbleMenu: true,
-  dotMenu: true,
-}
-
 const defaultClipboard = new Clipboard()
 
 export default function View({
   onChange,
   onMessage,
   onAction,
+  onPickId,
   theme,
   clipboard,
+  codeMirrorComponent,
   receiveAllMessages = false,
-  options = {},
-  ...props
+  name,
+  value,
+  state,
 }) {
-  const clipboardProp = clipboard || defaultClipboard
-  if (typeof onMessage === 'function') {
-    return (
-      <NodeView
-        {...props}
-        onMessage={onMessage}
-        clipboard={clipboardProp}
-        theme={getTheme(theme)}
-      />
-    )
-  } else {
-    let themeProp = theme
-    let onMessageProp = onMessage
-    if (typeof onMessageProp !== 'function') {
-      onMessageProp = message => {
-        if (message.action === 'runAction') {
-          if (typeof onAction === 'function') {
-            onAction(message)
-          }
-        } else {
-          const treeData = {
-            name: props.name,
-            value: props.value,
-            state: props.state,
-          }
-          onChange(updateTree(treeData, message))
+  let onMessageHandler = onMessage
+  if (typeof onMessageProp !== 'function') {
+    onMessageHandler = message => {
+      if (message.action === 'runAction') {
+        if (typeof onAction === 'function') {
+          onAction(message)
         }
+      } else {
+        const treeData = {
+          name,
+          value,
+          state,
+        }
+        onChange(updateTree(treeData, message))
       }
     }
-    return (
-      <NodeView
-        {...props}
-        onMessage={onMessageProp}
-        options={{ ...optionDefaults, ...options }}
-        clipboard={clipboardProp}
-        theme={getTheme(theme)}
-      />
-    )
   }
+  return (
+    <NodeView
+      name={name}
+      value={value}
+      state={state}
+      context={{
+        onMessage: onMessageHandler,
+        clipboard: clipboard || defaultClipboard,
+        theme: getTheme(theme),
+        onPickId,
+        codeMirrorComponent,
+      }}
+    />
+  )
 }

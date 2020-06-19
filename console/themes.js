@@ -11,7 +11,7 @@ export const dark = {
   background: '#14191e',
   backgroundHover: '#33383d',
   inputBorder: 'rgb(140, 140, 140)',
-  selectionBackground: '#c0c0c0',
+  selectionBackground: 'rgb(68, 68, 153, 0.99)',
   selectionColor: '#eee',
   summaryColor: '#aaa',
   linkColor: '#6fd7d7',
