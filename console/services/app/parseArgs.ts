@@ -17,7 +17,9 @@ export default function parseArgs(
       params = args.slice(1)
     }
   } else if (args[0].startsWith(':') && isUrlArg(args[1])) {
+    action = args[0].substr(1)
     url = args[1]
+    params = args.slice(2)
   }
 
   return { url, action, params }

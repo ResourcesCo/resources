@@ -115,9 +115,9 @@ class ConsoleChannel {
     parentMessageId,
     formData,
   }) {
-    const { url, action, params } = parseArgs(parsed)
+    const { url, action: actionArg, params } = parseArgs(parsed)
 
-    const routeMatch = await this.route({ url, action, params })
+    const routeMatch = await this.route({ url, action: actionArg, params })
     if (routeMatch && typeof routeMatch.error === 'string') {
       const messageId = shortid()
       onMessage({
@@ -132,7 +132,12 @@ class ConsoleChannel {
       })
       return true
     } else if (routeMatch) {
-      const { handler, url: actionUrl, params: actionParams } = routeMatch
+      const {
+        handler,
+        url: actionUrl,
+        action,
+        params: actionParams,
+      } = routeMatch
       const isBackgroundAction = formData && formData.action === 'runAction'
 
       const messageId = shortid()

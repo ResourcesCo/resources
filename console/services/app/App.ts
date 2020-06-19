@@ -29,6 +29,7 @@ export interface ResourceTypeSpec {
   name?: string
   doc?: string
   routes: RouteSpec[]
+  defaultAction?: string
   actions: { [key: string]: ActionSpec }
 }
 
@@ -62,6 +63,15 @@ export interface AppSpec {
     env?: object
     request?: Function
   }): MessageReturnValue
+}
+
+function defaultAction(actionName) {
+  if (actionName === 'help') {
+    return {
+      name: 'help',
+      params: [],
+    }
+  }
 }
 
 export default class App {
@@ -112,15 +122,18 @@ export default class App {
         if (!host === !route.host || host === route.host) {
           const match = route.match(path)
           if (match) {
-            const action = Object.values(resourceType.actions).find(
-              ({ name }) => name === actionName
-            )
+            const resolvedActionName =
+              actionName || resourceType.defaultAction || 'help'
+            const action =
+              Object.values(resourceType.actions).find(
+                ({ name }) => name === resolvedActionName
+              ) || defaultAction(resolvedActionName)
             if (action) {
               const result = this.checkParams({ match, action, params })
               if (result.error) {
                 return result
               } else if (result.params) {
-                return { params: result.params }
+                return { action: resolvedActionName, params: result.params }
               }
             }
           }
@@ -147,8 +160,13 @@ export default class App {
     }
   }
 
+  async help() {
+    return { type: 'text', text: 'Help here' }
+  }
+
   async run({ action, params }) {
-    const result = await this.onRun({
+    const handler = action === 'help' ? this.help : this.onRun
+    const result = await handler({
       action,
       params,
       env: this.env,
