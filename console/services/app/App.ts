@@ -1,6 +1,6 @@
 import { match } from 'path-to-regexp'
 import mapValues from 'lodash/mapValues'
-import { route } from 'next/dist/next-server/server/router'
+import request from './request'
 
 export interface Message {
   type: string
@@ -60,6 +60,7 @@ export interface AppSpec {
     action?: string
     params?: object
     env?: object
+    request?: Function
   }): MessageReturnValue
 }
 
@@ -68,13 +69,16 @@ export default class App {
   resourceTypes: { [key: string]: ResourceType }
   onRun: Function
   env: { [key: string]: string }
+  request: Function
 
   constructor({
     appSpec,
     env,
+    request: requestParam,
   }: {
     appSpec: AppSpec
     env: { [key: string]: string }
+    request?: Function
   }) {
     const { name, resourceTypes, run } = appSpec
     this.name = name
@@ -89,6 +93,7 @@ export default class App {
     )
     this.env = env
     this.onRun = run
+    this.request = requestParam || request
   }
 
   prepareMessage(result: MessageValue) {
@@ -143,7 +148,12 @@ export default class App {
   }
 
   async run({ action, params }) {
-    const result = await this.onRun({ action, params, env: this.env })
+    const result = await this.onRun({
+      action,
+      params,
+      env: this.env,
+      request: this.request,
+    })
     return this.prepareMessage(result)
   }
 

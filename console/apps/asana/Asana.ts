@@ -1,5 +1,4 @@
 import { AppSpec } from '../../services/app/App'
-import fetch from 'isomorphic-unfetch'
 
 function getHeaders(apiToken, post = false) {
   return {
@@ -18,15 +17,18 @@ function authClear({ env }) {
   return 'API key cleared.'
 }
 
-async function complete({ env: { ASANA_TOKEN: apiToken }, params: { id } }) {
-  const headers = getHeaders(apiToken, true)
-  const url = `https://app.asana.com/api/1.0/tasks/${id}`
-  const res = await fetch(url, {
+async function complete({
+  env: { ASANA_TOKEN: apiToken },
+  params: { id },
+  request,
+}) {
+  const response = await request({
+    headers: getHeaders(apiToken, true),
+    url: `https://app.asana.com/api/1.0/tasks/${id}`,
     method: 'PUT',
-    headers,
-    body: JSON.stringify({ data: { completed: true } }),
+    body: { data: { completed: true } },
   })
-  if (res.ok) {
+  if (response.ok) {
     return { type: 'text', text: `Task marked complete` }
   } else {
     return { type: 'text', text: `Error marking task complete` }
@@ -36,22 +38,22 @@ async function complete({ env: { ASANA_TOKEN: apiToken }, params: { id } }) {
 async function comment({
   env: { ASANA_TOKEN: apiToken },
   params: { id, comment },
+  request,
 }) {
-  const headers = getHeaders(apiToken, true)
-  const url = `https://app.asana.com/api/1.0/tasks/${id}/stories`
-  const res = await fetch(url, {
+  const response = await request({
+    headers: getHeaders(apiToken, true),
+    url: `https://app.asana.com/api/1.0/tasks/${id}/stories`,
     method: 'POST',
-    headers,
-    body: JSON.stringify({ data: { text: comment } }),
+    body: { data: { text: comment } },
   })
-  if (res.ok) {
+  if (response.ok) {
     return { type: 'text', text: 'Comment added.' }
   } else {
     return { type: 'text', text: 'Error adding comment.' }
   }
 }
 
-async function run({ action, env, params }) {
+async function run({ action, env, params, request }) {
   if (action === 'auth') {
     return auth({ env, params })
   } else if (action === 'auth/clear') {
@@ -59,9 +61,9 @@ async function run({ action, env, params }) {
   } else {
     if (env.ASANA_TOKEN) {
       if (action === 'complete') {
-        return await complete({ env, params })
+        return await complete({ env, params, request })
       } else if (action === 'comment') {
-        return await comment({ env, params })
+        return await comment({ env, params, request })
       }
     } else {
       return { type: 'error', text: 'An Asana token is required.' }
