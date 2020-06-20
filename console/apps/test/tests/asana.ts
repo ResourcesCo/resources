@@ -10,28 +10,24 @@ export default async function asana() {
     receivedRequest = request
     return { ok: true }
   }
-  const message1 = 'https://asana.com/ :auth apiKey'
-  const message2 =
-    'https://app.asana.com/0/1180016330032425/1180016330032432 :complete'
   const receivedMessages = []
   const onMessage = message => {
     receivedMessages.push(message)
   }
-  const result1 = await channel.runCommand({
-    message: message1,
-    parsed: parseCommand(message1),
-    onMessage,
-  })
-  const result2 = await channel.runCommand({
-    message: message2,
-    parsed: parseCommand(message2),
-    onMessage,
-  })
-  if (
-    result1 === true &&
-    result2 === true &&
-    receivedRequest.method === 'PUT'
-  ) {
+  const messages = [
+    'https://asana.com/ :auth apiKey',
+    'https://app.asana.com/0/1180016330032425/1180016330032432 :complete',
+  ]
+  const results = []
+  for (const message of messages) {
+    const result = await channel.runCommand({
+      message,
+      parsed: parseCommand(message),
+      onMessage,
+    })
+    results.push(result)
+  }
+  if (results.every(a => !!a) && receivedRequest.method === 'PUT') {
     return '1 test passed'
   } else {
     return '(error)'

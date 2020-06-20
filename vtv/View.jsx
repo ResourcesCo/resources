@@ -1,5 +1,4 @@
 import React from 'react'
-import { isObject } from './model/analyze'
 import { updateTree } from './model/state'
 import { getTheme } from './themes'
 import NodeView from './tree/NodeView'
@@ -9,32 +8,27 @@ const defaultClipboard = new Clipboard()
 
 export default function View({
   onChange,
-  onMessage,
   onAction,
   onPickId,
   theme,
   clipboard,
   codeMirrorComponent,
-  receiveAllMessages = false,
   name,
   value,
   state,
 }) {
-  let onMessageHandler = onMessage
-  if (typeof onMessageProp !== 'function') {
-    onMessageHandler = message => {
-      if (message.action === 'runAction') {
-        if (typeof onAction === 'function') {
-          onAction(message)
-        }
-      } else {
-        const treeData = {
-          name,
-          value,
-          state,
-        }
-        onChange(updateTree(treeData, message))
+  const onMessage = message => {
+    if (message.action === 'runAction') {
+      if (typeof onAction === 'function') {
+        onAction(message)
       }
+    } else {
+      const treeData = {
+        name,
+        value,
+        state,
+      }
+      onChange(updateTree(treeData, message))
     }
   }
   return (
@@ -43,7 +37,7 @@ export default function View({
       value={value}
       state={state}
       context={{
-        onMessage: onMessageHandler,
+        onMessage: onMessage,
         clipboard: clipboard || defaultClipboard,
         theme: getTheme(theme),
         onPickId,
