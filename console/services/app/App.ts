@@ -123,37 +123,50 @@ export default class App {
     }
   }
 
-  async route({ host, path, action: actionName, params }) {
+  async route({ host, path, action, params }) {
     for (const resourceType of Object.values(this.resourceTypes)) {
       for (const route of resourceType.routes) {
         if (!host === !route.host || host === route.host) {
-          const match = route.match(path)
-          if (match) {
-            const resolvedActionName =
-              actionName || resourceType.defaultAction || 'help'
-            const action =
-              Object.values(resourceType.actions).find(
-                ({ name }) => name === resolvedActionName
-              ) || defaultAction(resolvedActionName)
-            if (action) {
-              const result = this.checkParams({ match, action, params })
-              if (result.error) {
-                return result
-              } else if (result.params) {
-                return {
-                  resourceType: resourceType.name,
-                  action: resolvedActionName,
-                  params: result.params,
-                }
-              }
-            }
+          const result = this.matchRoute({
+            resourceType,
+            route,
+            path,
+            action,
+            params,
+          })
+          if (result) {
+            return result
           }
         }
       }
     }
   }
 
-  checkParams({ match, action, params }) {
+  matchRoute({ resourceType, route, path, action: actionName, params }) {
+    const match = route.match(path)
+    if (match) {
+      const resolvedActionName =
+        actionName || resourceType.defaultAction || 'help'
+      const action =
+        Object.values(resourceType.actions).find(
+          ({ name }) => name === resolvedActionName
+        ) || defaultAction(resolvedActionName)
+      if (action) {
+        const result = this.matchParams({ match, action, params })
+        if (result.error) {
+          return result
+        } else if (result.params) {
+          return {
+            resourceType: resourceType.name,
+            action: resolvedActionName,
+            params: result.params,
+          }
+        }
+      }
+    }
+  }
+
+  matchParams({ match, action, params }) {
     const { any: discard, ...actionParams } = match.params
     if (action.params.length === params.length) {
       let i = 0
