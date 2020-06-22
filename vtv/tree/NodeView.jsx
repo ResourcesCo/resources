@@ -42,6 +42,7 @@ function NodeView({
     _showOnly: showOnly,
     _editingName: editingName,
     _actions: actions,
+    _hidden: hidden,
   } = state
   const toggleExpanded = () => {
     setViewChanged(true)
@@ -80,7 +81,9 @@ function NodeView({
   }
   const view = state._view || defaultView({ nodeType, stringType, mediaType })
 
-  if (showOnly) {
+  if (hidden) {
+    return null
+  } else if (showOnly) {
     const showOnlyParent = showOnly.slice(0, showOnly.length - 1)
     const showOnlyParentType =
       showOnlyParent.length > 0

@@ -94,6 +94,8 @@ function NodeMenu({
             nodeType={nodeType}
             stringType={stringType}
             mediaType={mediaType}
+            parentType={parentType}
+            showAll={showAll}
             onViewChanged={onViewChanged}
             onClose={onClose}
             context={context}
@@ -145,14 +147,6 @@ function NodeMenu({
             Rename
           </MenuItem>
         )}
-      {!showAll && path.length > 0 && (
-        <MenuItem onClick={() => sendAction('showOnlyThis')}>
-          Show only this
-        </MenuItem>
-      )}
-      {showAll && (
-        <MenuItem onClick={() => sendAction('showAll')}>Show all</MenuItem>
-      )}
       <MenuItem
         submenu={
           <DeleteMenu

@@ -1,6 +1,7 @@
 import { match } from 'path-to-regexp'
 import mapValues from 'lodash/mapValues'
 import request from './request'
+import helpMessage from './helpMessage'
 
 export interface Message {
   type: string
@@ -185,11 +186,7 @@ export default class App {
   }
 
   help = async ({ resourceType }) => {
-    return {
-      type: 'tree',
-      name: `${this.name} ${resourceType}`,
-      value: this.resourceTypes[resourceType],
-    }
+    return helpMessage({ resourceType: this.resourceTypes[resourceType] })
   }
 
   async run({ resourceType, action, params }) {
