@@ -10,7 +10,9 @@
     "build": "cross-env \"NEXT_PUBLIC_EMBED_BASE_URL_DEFAULT=https://$VERCEL_URL\" next build",
     "start": "next start",
     "export": "next export",
-    "format": "prettier --write \"**/*.js\""
+    "format": "prettier --write \"**/*.js\"",
+    "electron:build": "next build",
+    "electron:export": "next export -o renderer"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
