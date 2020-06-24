@@ -3,6 +3,11 @@ const pathPosix = require('path').posix
 import ConsoleError from '../ConsoleError'
 
 class LocalFileStore {
+  path?: string
+  absolutePath?: string
+
+  static readFile = fsPromises.readFile
+
   constructor({ path }) {
     this.path = path
     this.absolutePath = pathPosix.resolve(path)
@@ -14,7 +19,7 @@ class LocalFileStore {
       throw new ConsoleError('Invalid path', { status: 400 })
     }
     if (!absolutePath.endsWith('.json')) {
-      throw new Error('Unsupported file type', { status: 422 })
+      throw new ConsoleError('Unsupported file type', { status: 422 })
     }
     return absolutePath
   }
@@ -44,7 +49,5 @@ class LocalFileStore {
     return {}
   }
 }
-
-LocalFileStore.readFile = fsPromises.readFile
 
 export default LocalFileStore

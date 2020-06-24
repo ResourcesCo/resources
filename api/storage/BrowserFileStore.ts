@@ -1,14 +1,17 @@
-import ConsoleError from '../../ConsoleError'
+import ConsoleError from '../ConsoleError'
 
 class BrowserFileStore {
+  localStorage: any
+  prefix: string
+
   constructor({ prefix }) {
-    this.localStorage = window.LocalStorage
+    this.localStorage = window.localStorage
     this.prefix = prefix
   }
 
   getItemName(path) {
     if (path.endsWith('.json')) {
-      return `${prefix}${path}`
+      return `${this.prefix}${path}`
     } else {
       throw new ConsoleError('unsupported file type')
     }

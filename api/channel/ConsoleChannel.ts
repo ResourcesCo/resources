@@ -16,6 +16,16 @@ const apps = {
 }
 
 class ConsoleChannel {
+  name: string
+  config: { apps: any; files: any }
+  messages: any
+  messageIds: any[]
+  files: any
+  env: { [key: string]: any }
+  apps: { [key: string]: App }
+
+  static LocalFileStore: any
+
   constructor({ name, apps, files }) {
     this.name = name
     this.config = { apps, files }
@@ -97,7 +107,7 @@ class ConsoleChannel {
       for (const app of Object.values(this.apps)) {
         const result = await app.route({ host, path, action, params })
         if (result) {
-          if (result.error) {
+          if ('error' in result) {
             return result
           } else {
             return { handler: app, url, ...result }
@@ -122,7 +132,7 @@ class ConsoleChannel {
       action: actionArg,
       params,
     })
-    if (routeMatch && typeof routeMatch.error === 'string') {
+    if (routeMatch && 'error' in routeMatch) {
       const messageId = shortid()
       onMessage({
         type: 'input',
@@ -136,13 +146,7 @@ class ConsoleChannel {
       })
       return true
     } else if (routeMatch) {
-      const {
-        handler,
-        url,
-        resourceType,
-        action,
-        params: actionParams,
-      } = routeMatch
+      const {} = routeMatch
       const isBackgroundAction = formData && formData.action === 'runAction'
 
       const messageId = shortid()
@@ -161,27 +165,35 @@ class ConsoleChannel {
           loading: true,
         })
       }
-      const result = await this.dispatchAction(handler, {
-        url,
-        resourceType,
-        action: isBackgroundAction ? formData.actionName : action,
-        params: actionParams,
-        parentMessage,
-      })
-      onMessage(
-        [
-          result && {
-            ...result,
-            commandId: messageId,
-            message: parsed[0],
-          },
-          {
-            type: 'loaded',
-            commandId: isBackgroundAction ? parentMessageId : messageId,
-          },
-        ].filter(value => value)
-      )
-      return true
+      if ('handler' in routeMatch) {
+        const result = await this.dispatchAction(routeMatch.handler, {
+          url: routeMatch.url,
+          action: isBackgroundAction
+            ? formData.actionName
+            : 'action' in routeMatch
+            ? routeMatch.action
+            : undefined,
+          params: 'params' in routeMatch ? routeMatch.params : {},
+          parentMessage,
+        })
+        if ('resourceType' in routeMatch) {
+          result.resourceType = routeMatch.resourceType
+        }
+        onMessage(
+          [
+            result && {
+              ...result,
+              commandId: messageId,
+              message: parsed[0],
+            },
+            {
+              type: 'loaded',
+              commandId: isBackgroundAction ? parentMessageId : messageId,
+            },
+          ].filter(value => value)
+        )
+        return true
+      }
     }
   }
 

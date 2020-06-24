@@ -6,5 +6,8 @@
   "repository": "https://github.com/ResourcesCo/resources.git",
   "author": "Resources.co <support@resources.co> (https://resources.co)",
   "license": "Apache-2",
-  "private": false
+  "scripts": {
+    "build:copy": "rm -r ./src && cp -r ../../api src",
+    "build": "yarn build:copy && tsc"
+  }
 }

@@ -60,6 +60,6 @@
     "babel-plugin-module-resolver": "^4.0.0",
     "concurrently": "^5.2.0",
     "http-proxy": "^1.18.1",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.5"
   }
 }

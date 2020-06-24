@@ -3,6 +3,9 @@ import actions from './actions'
 import ConsoleError from '../ConsoleError'
 
 class ClientFileStore {
+  url: string
+  actions: { [key: string]: Function }
+
   constructor({ url }) {
     this.url = url
     this.actions = actions
@@ -25,8 +28,10 @@ class ClientFileStore {
   }
 
   async delete({ path }) {
-    const absolutePath = this.getAbsolutePath(path)
-    await fsPromises.unlink(absolutePath)
+    const response = await fetch(`${this.url}${path}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+    })
     return {}
   }
 

@@ -4,7 +4,7 @@ import { MemoryStore, LocalStorageStore } from '../../store'
 import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
 import Head from '../Head'
 
-import asanaTest from 'console/apps/test/tests/asana'
+import asanaTest from 'api/apps/test/tests/asana'
 
 function Test({}) {
   const [result, setResult] = useState('not completed')

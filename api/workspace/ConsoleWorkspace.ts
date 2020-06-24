@@ -5,6 +5,14 @@ import ConsoleError from '../ConsoleError'
 const defaultConfig = { channels: { main: { apps: ['api-finder'] } } }
 
 class ConsoleWorkspace {
+  location: any
+  channels: any
+  config: any
+
+  static LocalFileStore: any
+
+  static workspaces = {}
+
   constructor({ location }) {
     this.location = location
     this.channels = {}
@@ -62,31 +70,29 @@ class ConsoleWorkspace {
     }
     return clientConfig
   }
-}
 
-ConsoleWorkspace.workspaces = {}
+  static getWorkspace(optionsArg = {}) {
+    const defaultOptions = {
+      location: typeof window !== 'undefined' ? apiBase() : '.',
+    }
+    const options = { ...defaultOptions, ...optionsArg }
+    const { location } = options
+
+    if (!location) {
+      throw new Error('no location')
+    }
+    if (!(location in ConsoleWorkspace.workspaces)) {
+      ConsoleWorkspace.workspaces[location] = new ConsoleWorkspace({
+        ...options,
+        location,
+      })
+    }
+    return ConsoleWorkspace.workspaces[location]
+  }
+}
 
 function apiBase() {
   return process.env.API_BASE || '/api'
-}
-
-ConsoleWorkspace.getWorkspace = (optionsArg = {}) => {
-  const defaultOptions = {
-    location: typeof window !== 'undefined' ? apiBase() : '.',
-  }
-  const options = { ...defaultOptions, ...optionsArg }
-  const { location } = options
-
-  if (!location) {
-    throw new Error('no location')
-  }
-  if (!(location in ConsoleWorkspace.workspaces)) {
-    ConsoleWorkspace.workspaces[location] = new ConsoleWorkspace({
-      ...options,
-      location,
-    })
-  }
-  return ConsoleWorkspace.workspaces[location]
 }
 
 export default ConsoleWorkspace
