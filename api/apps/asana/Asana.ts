@@ -1,4 +1,4 @@
-import { AppSpec } from '../../services/app/App'
+import { AppSpec } from '../../app-base/App'
 
 function getHeaders(apiToken, post = false) {
   return {

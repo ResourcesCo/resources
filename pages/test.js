@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import ConsoleWorkspace from '../console/services/workspace/ConsoleWorkspace'
+import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
 import { parseCommand } from 'vtv'
 
 async function runTests() {

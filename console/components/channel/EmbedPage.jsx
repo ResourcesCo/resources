@@ -1,7 +1,7 @@
 import React, { PureComponent, useState, useEffect } from 'react'
 import { getTheme } from '../../themes'
 import { MemoryStore, LocalStorageStore } from '../../store'
-import ConsoleWorkspace from '../../services/workspace/ConsoleWorkspace'
+import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
 import Head from '../Head'
 
 import asanaTest from 'console/apps/test/tests/asana'

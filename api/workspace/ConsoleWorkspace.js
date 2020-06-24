@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-unfetch'
 import ConsoleChannel from '../channel/ConsoleChannel'
-import ConsoleError from '../../ConsoleError'
+import ConsoleError from '../ConsoleError'
 
 const defaultConfig = { channels: { main: { apps: ['api-finder'] } } }
 

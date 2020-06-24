@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-unfetch'
 import actions from './actions'
-import ConsoleError from '../../ConsoleError'
+import ConsoleError from '../ConsoleError'
 
 class ClientFileStore {
   constructor({ url }) {

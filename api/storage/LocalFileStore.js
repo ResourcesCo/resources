@@ -1,6 +1,6 @@
 const fsPromises = require('fs').promises
 const pathPosix = require('path').posix
-import ConsoleError from '../../ConsoleError'
+import ConsoleError from '../ConsoleError'
 
 class LocalFileStore {
   constructor({ path }) {

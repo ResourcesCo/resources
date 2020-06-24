@@ -1,4 +1,4 @@
-import ConsoleWorkspace from 'console/services/workspace/ConsoleWorkspace'
+import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
 import { parseCommand } from 'vtv'
 
 export default async function asana() {

@@ -1,6 +1,6 @@
-import ConsoleWorkspace from 'console/services/workspace/ConsoleWorkspace'
-import ConsoleChannel from 'console/services/channel/ConsoleChannel'
-import LocalFileStore from 'console/services/storage/LocalFileStore'
+import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
+import ConsoleChannel from 'api/channel/ConsoleChannel'
+import LocalFileStore from 'api/storage/LocalFileStore'
 
 ConsoleWorkspace.LocalFileStore = LocalFileStore
 ConsoleChannel.LocalFileStore = LocalFileStore

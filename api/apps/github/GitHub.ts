@@ -1,4 +1,4 @@
-import { AppSpec } from '../../services/app/App'
+import { AppSpec } from '../../app-base/App'
 import fetch from 'isomorphic-unfetch'
 
 function getHeaders(apiToken, post = false) {
