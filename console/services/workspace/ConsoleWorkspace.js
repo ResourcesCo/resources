@@ -70,17 +70,19 @@ function apiBase() {
   return process.env.API_BASE || '/api'
 }
 
-ConsoleWorkspace.getWorkspace = options => {
+ConsoleWorkspace.getWorkspace = (optionsArg = {}) => {
   const defaultOptions = {
     location: typeof window !== 'undefined' ? apiBase() : '.',
   }
-  const { location } = options || defaultOptions
+  const options = { ...defaultOptions, ...optionsArg }
+  const { location } = options
 
   if (!location) {
     throw new Error('no location')
   }
   if (!(location in ConsoleWorkspace.workspaces)) {
     ConsoleWorkspace.workspaces[location] = new ConsoleWorkspace({
+      ...options,
       location,
     })
   }

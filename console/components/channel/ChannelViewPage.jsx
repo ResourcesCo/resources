@@ -13,7 +13,10 @@ export default class ChannelViewPage extends PureComponent {
 
   constructor(props) {
     super(props)
-    if (this.props.storageType === 'localStorage') {
+    if (
+      typeof window !== 'undefined' &&
+      this.props.storageType === 'localStorage'
+    ) {
       this._store = new LocalStorageStore()
     } else {
       this._store = new MemoryStore()

@@ -20,7 +20,7 @@ export default function Embed({ path, commandId, theme }) {
     }
   })
   useEffect(() => {
-    if (ref.current) {
+    if (typeof window !== 'undefined' && ref.current) {
       window.addEventListener('message', handleMessage)
       ref.current.addEventListener('load', handleFrameLoaded)
       return () => {
@@ -29,7 +29,10 @@ export default function Embed({ path, commandId, theme }) {
       }
     }
   }, [])
-  return window.location.href.startsWith(embedBaseUrl) ? null : (
+  const isDifferentHost =
+    typeof window !== 'undefined' &&
+    window.location.href.startsWith(embedBaseUrl)
+  return isDifferentHost ? null : (
     <div>
       <iframe
         ref={ref}
