@@ -1,4 +1,5 @@
 import shortid from 'shortid'
+import Client from '../client/Client'
 import ClientFileStore from '../storage/ClientFileStore'
 import ConsoleError from '../ConsoleError'
 import App from '../app-base/App'
@@ -23,6 +24,7 @@ class ConsoleChannel {
   files: any
   env: { [key: string]: any }
   apps: { [key: string]: App }
+  client: Client
 
   static LocalFileStore: any
 
@@ -34,6 +36,10 @@ class ConsoleChannel {
   }
 
   async init() {
+    this.client = new Client({
+      adapter: 'fetch',
+      baseUrl: '',
+    })
     if (this.config.files) {
       if (typeof window !== 'undefined') {
         this.files = new ClientFileStore(this.config.files)

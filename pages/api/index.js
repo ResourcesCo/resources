@@ -9,10 +9,8 @@ export default async function index(req, res) {
   if (req.method === 'GET') {
     return res.status(200).send({})
   } else {
-    const workspace = ConsoleWorkspace.getWorkspace()
-    const workspaceConfig = await workspace.getClientConfig({
-      apiBaseUrl: req.body.apiBaseUrl,
-    })
+    const workspace = ConsoleWorkspace.getWorkspace(req.body)
+    const workspaceConfig = await workspace.getClientConfig(req.body)
     return res.status(200).send({
       workspaceConfig,
     })

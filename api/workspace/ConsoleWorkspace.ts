@@ -1,43 +1,65 @@
 import fetch from 'isomorphic-unfetch'
 import ConsoleChannel from '../channel/ConsoleChannel'
 import ConsoleError from '../ConsoleError'
+import Client from '../client/Client'
 
 const defaultConfig = { channels: { main: { apps: ['api-finder'] } } }
 
-class ConsoleWorkspace {
-  location: any
+interface WorkspaceConfig {
+  name: string
+  localPath: string
+  apiBaseUrl: string
+  adapter: 'fetch' | 'ipc'
+}
+
+class ConsoleWorkspace implements WorkspaceConfig {
+  name: string
+  localPath: string
+  apiBaseUrl: string
+  adapter: 'fetch' | 'ipc'
+
   channels: any
   config: any
+  client: Client
 
   static LocalFileStore: any
 
   static workspaces = {}
 
-  constructor({ location }) {
-    this.location = location
+  constructor({ name, localPath, apiBaseUrl, adapter }: WorkspaceConfig) {
+    this.name = name
+    this.localPath = localPath
+    this.apiBaseUrl = apiBaseUrl
+    this.adapter = adapter
     this.channels = {}
+    this.client = new Client({
+      adapter: this.adapter,
+      baseUrl: this.apiBaseUrl,
+    })
   }
 
   async loadConfig() {
     if (typeof window === 'undefined') {
       try {
         const data = await ConsoleWorkspace.LocalFileStore.readFile(
-          this.location + '/workspace.json'
+          this.localPath + '/workspace.json'
         )
         this.config = JSON.parse(data)
       } catch (err) {
         this.config = defaultConfig
       }
     } else {
-      const response = await fetch(this.location, {
+      const response = await this.client.request({
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+        url: '',
+        body: {
+          name: name,
+          localPath: this.localPath,
+          apiBaseUrl: this.apiBaseUrl,
+          adapter: this.adapter,
         },
-        body: JSON.stringify({ apiBaseUrl: this.location }),
       })
-      const data = await response.json()
-      const { workspaceConfig } = data
+      const { workspaceConfig } = response.body
       this.config = workspaceConfig
     }
   }
@@ -71,28 +93,26 @@ class ConsoleWorkspace {
     return clientConfig
   }
 
-  static getWorkspace(optionsArg = {}) {
-    const defaultOptions = {
-      location: typeof window !== 'undefined' ? apiBase() : '.',
+  static getDefaultConfig(): WorkspaceConfig {
+    const useIpc = typeof window !== 'undefined' ? 'rco' in window : false
+    const adapter = useIpc ? 'ipc' : 'fetch'
+    const apiBaseUrl = useIpc ? '' : process.env.API_BASE || '/api'
+    return {
+      name: 'main',
+      adapter,
+      apiBaseUrl,
+      localPath: '.',
     }
-    const options = { ...defaultOptions, ...optionsArg }
-    const { location } = options
-
-    if (!location) {
-      throw new Error('no location')
-    }
-    if (!(location in ConsoleWorkspace.workspaces)) {
-      ConsoleWorkspace.workspaces[location] = new ConsoleWorkspace({
-        ...options,
-        location,
-      })
-    }
-    return ConsoleWorkspace.workspaces[location]
   }
-}
 
-function apiBase() {
-  return process.env.API_BASE || '/api'
+  static getWorkspace(config?: WorkspaceConfig) {
+    const configValue = config || this.getDefaultConfig()
+    const { name } = configValue
+    if (!(name in ConsoleWorkspace.workspaces)) {
+      ConsoleWorkspace.workspaces[name] = new ConsoleWorkspace(configValue)
+    }
+    return ConsoleWorkspace.workspaces[name]
+  }
 }
 
 export default ConsoleWorkspace

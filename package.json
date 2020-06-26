@@ -11,8 +11,8 @@
     "start": "next start",
     "export": "next export",
     "format": "prettier --write \"**/*.js\"",
-    "electron:build": "next build",
-    "electron:export": "next export -o renderer"
+    "electron:build": "NEXT_PUBLIC_ELECTRON=true next build",
+    "electron:export": "NEXT_PUBLIC_ELECTRON=true next export -o renderer"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.28",

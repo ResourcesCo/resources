@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    rco: any
+  }
+}
+
 export interface ClientInfo {
   adapter: 'fetch' | 'ipc'
   baseUrl: string
@@ -31,7 +37,10 @@ export default class Client {
     this.adapter = adapter
   }
 
-  request = async ({ url, ...params }: RequestInfo): Promise<ResponseInfo> => {
+  requestWithFetch = async ({
+    url,
+    ...params
+  }: RequestInfo): Promise<ResponseInfo> => {
     let fetchInfo: any = {}
     if ('method' in params) {
       fetchInfo.method = params.method
@@ -58,6 +67,24 @@ export default class Client {
       status: response.status,
       headers,
       body,
+    }
+  }
+
+  requestWithIpc = async (params: RequestInfo): Promise<ResponseInfo> => {
+    if (typeof window !== 'undefined' && 'rco' in window) {
+      const response = await window.rco.request(params)
+      console.log({ request: params, response })
+      return response
+    } else {
+      throw new Error('adapter set to ipc but missing ipc function')
+    }
+  }
+
+  request = async (params: RequestInfo): Promise<ResponseInfo> => {
+    if (this.adapter === 'fetch') {
+      return await this.requestWithFetch(params)
+    } else if (this.adapter === 'ipc') {
+      return await this.requestWithIpc(params)
     }
   }
 }
