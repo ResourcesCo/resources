@@ -1,14 +1,13 @@
 const fsPromises = require('fs').promises
 const pathPosix = require('path').posix
+import { FileStore, FileStoreResponse } from './FileStore'
 import ConsoleError from '../ConsoleError'
 
-class LocalFileStore {
-  path?: string
-  absolutePath?: string
+class LocalFileStore implements FileStore {
+  path: string
+  absolutePath: string
 
-  static readFile = fsPromises.readFile
-
-  constructor({ path }) {
+  constructor({ path }: { path: string }) {
     this.path = path
     this.absolutePath = pathPosix.resolve(path)
   }
@@ -29,6 +28,7 @@ class LocalFileStore {
     const data = await fsPromises.readFile(absolutePath)
 
     return {
+      ok: true,
       contentType: 'application/json',
       body: JSON.parse(data),
     }
@@ -40,13 +40,13 @@ class LocalFileStore {
       absolutePath,
       JSON.stringify(value, null, 2) + '\n'
     )
-    return {}
+    return { ok: true }
   }
 
   async delete({ path }) {
     const absolutePath = this.getAbsolutePath(path)
     await fsPromises.unlink(absolutePath)
-    return {}
+    return { ok: true }
   }
 }
 

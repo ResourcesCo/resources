@@ -1,13 +1,13 @@
 import fetch from 'isomorphic-unfetch'
 import actions from './actions'
+import { FileStore, FileStoreResponse } from './FileStore'
 import ConsoleError from '../ConsoleError'
 
-class ClientFileStore {
+class ClientFileStore implements FileStore {
   url: string
   actions: { [key: string]: Function }
 
-  constructor({ url }) {
-    this.url = url
+  constructor({ path }: { path: string }) {
     this.actions = actions
   }
 
@@ -24,7 +24,9 @@ class ClientFileStore {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contentType: 'application/json', value }),
     })
-    return {}
+    return {
+      ok: true,
+    }
   }
 
   async delete({ path }) {
@@ -32,7 +34,7 @@ class ClientFileStore {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
     })
-    return {}
+    return { ok: true }
   }
 
   async run({ action, ...params }) {

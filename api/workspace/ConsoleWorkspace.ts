@@ -2,6 +2,8 @@ import fetch from 'isomorphic-unfetch'
 import ConsoleChannel from '../channel/ConsoleChannel'
 import ConsoleError from '../ConsoleError'
 import Client from '../client/Client'
+import ClientFileStore from '../storage/ClientFileStore'
+import { FileStore, FileStoreConstructor } from '../storage/FileStore'
 
 const defaultConfig = { channels: { main: { apps: ['api-finder'] } } }
 
@@ -21,8 +23,9 @@ class ConsoleWorkspace implements WorkspaceConfig {
   channels: any
   config: any
   client: Client
+  fileStore: FileStore
 
-  static LocalFileStore: any
+  static LocalFileStore: FileStoreConstructor | null = null
 
   static workspaces = {}
 
@@ -36,16 +39,30 @@ class ConsoleWorkspace implements WorkspaceConfig {
       adapter: this.adapter,
       baseUrl: this.apiBaseUrl,
     })
+    this.fileStore = this.getFileStore()
+  }
+
+  getFileStore() {
+    const klass = this.getFileStoreClass()
+    return new klass({ path: this.localPath })
+  }
+
+  getFileStoreClass() {
+    if (ConsoleWorkspace.LocalFileStore !== null) {
+      return ConsoleWorkspace.LocalFileStore
+    } else {
+      return ClientFileStore
+    }
   }
 
   async loadConfig() {
     if (typeof window === 'undefined') {
       try {
-        const data = await ConsoleWorkspace.LocalFileStore.readFile(
-          this.localPath + '/workspace.json'
-        )
-        this.config = JSON.parse(data)
+        const file = await this.fileStore.get({ path: 'workspace.json' })
+        console.log(file.body)
+        this.config = file.body
       } catch (err) {
+        console.log('Error loading workspace', err)
         this.config = defaultConfig
       }
     } else {
@@ -98,15 +115,15 @@ class ConsoleWorkspace implements WorkspaceConfig {
     const adapter = useIpc ? 'ipc' : 'fetch'
     const apiBaseUrl = useIpc ? '' : process.env.API_BASE || '/api'
     return {
-      name: 'main',
+      name: 'workspace',
       adapter,
       apiBaseUrl,
-      localPath: '.',
+      localPath: './workspace',
     }
   }
 
   static getWorkspace(config?: WorkspaceConfig) {
-    const configValue = config || this.getDefaultConfig()
+    const configValue = { ...this.getDefaultConfig(), ...config }
     const { name } = configValue
     if (!(name in ConsoleWorkspace.workspaces)) {
       ConsoleWorkspace.workspaces[name] = new ConsoleWorkspace(configValue)

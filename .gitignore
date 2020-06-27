@@ -34,7 +34,7 @@ yarn-error.log*
 
 /packages/desktop-app/renderer/packages
 
-/workspace.json
-
 # secrets here; defaults in .env.development, .env.production
 /.env.local
+
+/workspace

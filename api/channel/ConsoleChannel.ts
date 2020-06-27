@@ -42,9 +42,9 @@ class ConsoleChannel {
     })
     if (this.config.files) {
       if (typeof window !== 'undefined') {
-        this.files = new ClientFileStore(this.config.files)
+        // this.files = new ClientFileStore(this.config.files)
       } else {
-        this.files = new ConsoleChannel.LocalFileStore(this.config.files)
+        // this.files = new ConsoleChannel.LocalFileStore(this.config.files)
       }
     }
     await this.loadEnv()
