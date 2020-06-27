@@ -8,11 +8,23 @@ class ClientFileStore implements FileStore {
   actions: { [key: string]: Function }
 
   constructor({ path }: { path: string }) {
+    this.url = path
     this.actions = actions
   }
 
+  getAbsoluteUrl(path) {
+    const baseUrl = new URL(this.url).href
+    const url = new URL(baseUrl + '/' + path).href
+    if (url.startsWith(baseUrl)) {
+      return url
+    } else {
+      throw new ConsoleError('Invalid path')
+    }
+  }
+
   async get({ path }) {
-    const response = await fetch(`${this.url}${path}`)
+    // TODO: use client
+    const response = await fetch(this.getAbsoluteUrl(path))
     const data = await response.json()
 
     return data
@@ -43,6 +55,10 @@ class ClientFileStore implements FileStore {
     } else {
       throw new ConsoleError('Unknown action')
     }
+  }
+
+  constrain(subpath) {
+    return new ClientFileStore({ path: this.getAbsoluteUrl(subpath) })
   }
 }
 

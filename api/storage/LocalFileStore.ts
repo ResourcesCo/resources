@@ -4,16 +4,14 @@ import { FileStore, FileStoreResponse } from './FileStore'
 import ConsoleError from '../ConsoleError'
 
 class LocalFileStore implements FileStore {
-  path: string
   absolutePath: string
 
   constructor({ path }: { path: string }) {
-    this.path = path
     this.absolutePath = pathPosix.resolve(path)
   }
 
   getAbsolutePath(path) {
-    const absolutePath = pathPosix.resolve(this.path, path)
+    const absolutePath = pathPosix.resolve(this.absolutePath, path)
     if (!absolutePath.startsWith(this.absolutePath)) {
       throw new ConsoleError('Invalid path', { status: 400 })
     }
@@ -47,6 +45,10 @@ class LocalFileStore implements FileStore {
     const absolutePath = this.getAbsolutePath(path)
     await fsPromises.unlink(absolutePath)
     return { ok: true }
+  }
+
+  constrain(subpath) {
+    return new LocalFileStore(this.getAbsolutePath(subpath))
   }
 }
 

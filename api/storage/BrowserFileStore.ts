@@ -1,28 +1,34 @@
 import ConsoleError from '../ConsoleError'
+import { FileStore } from './FileStore'
 
-class BrowserFileStore {
+class BrowserFileStore implements FileStore {
   localStorage: any
-  prefix: string
+  path: string
 
-  constructor({ prefix }) {
+  constructor({ path }) {
     this.localStorage = window.localStorage
-    this.prefix = prefix
+    this.path = path
   }
 
   getItemName(path) {
     if (path.endsWith('.json')) {
-      return `${this.prefix}${path}`
+      return `${this.path}${path}`
     } else {
       throw new ConsoleError('unsupported file type')
     }
   }
 
   async get({ path }) {
-    const data = this.localStorage.getItem(this.getItemName(path))
+    let data = this.localStorage.getItem(this.getItemName(path))
     try {
-      return JSON.parse(data)
+      data = JSON.parse(data)
     } catch (e) {
       throw new ConsoleError('error parsing JSON')
+    }
+    return {
+      ok: true,
+      contentType: 'application/json',
+      body: data,
     }
   }
 
@@ -31,10 +37,12 @@ class BrowserFileStore {
       this.getItemName(path),
       JSON.stringify(value, null, 2)
     )
+    return { ok: true }
   }
 
   async delete({ path }) {
     this.localStorage.removeItem(this.getItemName(path))
+    return { ok: true }
   }
 }
 

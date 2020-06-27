@@ -1,7 +1,8 @@
 import shortid from 'shortid'
 import Client from '../client/Client'
-import ClientFileStore from '../storage/ClientFileStore'
 import ConsoleError from '../ConsoleError'
+import ClientFileStore from '../storage/ClientFileStore'
+import { FileStore, FileStoreConstructor } from '../storage/FileStore'
 import App from '../app-base/App'
 import parseArgs from '../app-base/parseArgs'
 import parseUrl from '../app-base/parseUrl'
@@ -26,7 +27,7 @@ class ConsoleChannel {
   apps: { [key: string]: App }
   client: Client
 
-  static LocalFileStore: any
+  static LocalFileStore: FileStoreConstructor | null = null
 
   constructor({ name, apps, files }) {
     this.name = name
