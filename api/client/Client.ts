@@ -1,3 +1,5 @@
+import ConsoleError from '../ConsoleError'
+
 declare global {
   interface Window {
     rco: any
@@ -33,28 +35,37 @@ export default class Client {
   env?: { [key: string]: string }
 
   constructor({ baseUrl, adapter = 'fetch' }: ClientInfo) {
-    this.baseUrl = baseUrl
+    console.log('Client baseUrl', baseUrl)
+    this.baseUrl = new URL(baseUrl).href
     this.adapter = adapter
   }
 
-  requestWithFetch = async ({
-    url,
-    ...params
-  }: RequestInfo): Promise<ResponseInfo> => {
-    let fetchInfo: any = {}
-    if ('method' in params) {
-      fetchInfo.method = params.method
+  getUrl(url) {
+    const resolvedUrl = new URL(url, this.baseUrl).href
+    if (resolvedUrl.startsWith(this.baseUrl)) {
+      return resolvedUrl
+    } else {
+      throw new Error('invalid relative URL')
     }
-    if (this.headers || 'headers' in params) {
+  }
+
+  protected requestWithFetch = async (
+    request: RequestInfo
+  ): Promise<ResponseInfo> => {
+    let fetchInfo: any = {}
+    if ('method' in request) {
+      fetchInfo.method = request.method
+    }
+    if (this.headers || 'headers' in request) {
       fetchInfo.headers = { ...this.headers }
-      if ('headers' in params) {
-        fetchInfo.headers = { ...fetchInfo.headers, ...params.headers }
+      if ('headers' in request) {
+        fetchInfo.headers = { ...fetchInfo.headers, ...request.headers }
       }
     }
-    if ('body' in params) {
-      fetchInfo.body = params.body
+    if ('body' in request) {
+      fetchInfo.body = request.body
     }
-    const response = await fetch(`${this.baseUrl}${url}`, fetchInfo)
+    const response = await fetch(request.url, fetchInfo)
     const body = await response.json()
     const headers = {}
     for (const [key, value] of response.headers.entries()) {
@@ -70,7 +81,10 @@ export default class Client {
     }
   }
 
-  requestWithIpc = async (params: RequestInfo): Promise<ResponseInfo> => {
+  protected requestWithIpc = async ({
+    url,
+    ...params
+  }): Promise<ResponseInfo> => {
     if (typeof window !== 'undefined' && 'rco' in window) {
       const response = await window.rco.request(params)
       console.log({ request: params, response })
@@ -80,11 +94,11 @@ export default class Client {
     }
   }
 
-  request = async (params: RequestInfo): Promise<ResponseInfo> => {
+  request = async ({ url, ...params }: RequestInfo): Promise<ResponseInfo> => {
     if (this.adapter === 'fetch') {
-      return await this.requestWithFetch(params)
+      return await this.requestWithFetch({ ...params, url: this.getUrl(url) })
     } else if (this.adapter === 'ipc') {
-      return await this.requestWithIpc(params)
+      return await this.requestWithIpc({ ...params, url: this.getUrl(url) })
     }
   }
 }

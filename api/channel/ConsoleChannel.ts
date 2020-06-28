@@ -27,8 +27,6 @@ class ConsoleChannel {
   apps: { [key: string]: App }
   client: Client
 
-  static LocalFileStore: FileStoreConstructor | null = null
-
   constructor({ name, apps, files }) {
     this.name = name
     this.config = { apps, files }
@@ -37,10 +35,10 @@ class ConsoleChannel {
   }
 
   async init() {
-    this.client = new Client({
-      adapter: 'fetch',
-      baseUrl: '',
-    })
+    // this.client = new Client({
+    //   adapter: 'fetch',
+    //   baseUrl: '',
+    // })
     if (this.config.files) {
       if (typeof window !== 'undefined') {
         // this.files = new ClientFileStore(this.config.files)

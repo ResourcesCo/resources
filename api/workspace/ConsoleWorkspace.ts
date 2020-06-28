@@ -1,4 +1,3 @@
-import fetch from 'isomorphic-unfetch'
 import ConsoleChannel from '../channel/ConsoleChannel'
 import ConsoleError from '../ConsoleError'
 import Client from '../client/Client'
@@ -12,6 +11,7 @@ interface WorkspaceConfig {
   localPath: string
   apiBaseUrl: string
   adapter: 'fetch' | 'ipc'
+  fileStoreClass?: FileStoreConstructor
 }
 
 class ConsoleWorkspace implements WorkspaceConfig {
@@ -25,35 +25,42 @@ class ConsoleWorkspace implements WorkspaceConfig {
   client: Client
   fileStore: FileStore
 
-  static LocalFileStore: FileStoreConstructor | null = null
+  fileStoreClass: FileStoreConstructor | null = null
 
   static workspaces = {}
 
-  constructor({ name, localPath, apiBaseUrl, adapter }: WorkspaceConfig) {
+  constructor({
+    name,
+    localPath,
+    apiBaseUrl,
+    adapter,
+    fileStoreClass,
+  }: WorkspaceConfig) {
     this.name = name
     this.localPath = localPath
     this.apiBaseUrl = apiBaseUrl
     this.adapter = adapter
     this.channels = {}
+    console.log('apiBaseUrl', apiBaseUrl)
     this.client = new Client({
       adapter: this.adapter,
       baseUrl: this.apiBaseUrl,
     })
+    if (fileStoreClass) {
+      this.fileStoreClass = fileStoreClass
+    }
     this.fileStore = this.getFileStore()
   }
 
   getFileStore() {
-    const klass = this.getFileStoreClass()
-    return new klass({ path: this.localPath })
-  }
-
-  getFileStoreClass() {
-    if (ConsoleWorkspace.LocalFileStore !== null) {
-      return ConsoleWorkspace.LocalFileStore
+    if (this.fileStoreClass !== null) {
+      return new this.fileStoreClass({ path: this.localPath })
     } else {
-      return ClientFileStore
+      return new ClientFileStore({ path: this.localPath, client: this.client })
     }
   }
+
+  getFileStoreClass() {}
 
   async loadConfig() {
     if (typeof window === 'undefined') {
@@ -113,7 +120,10 @@ class ConsoleWorkspace implements WorkspaceConfig {
   static getDefaultConfig(): WorkspaceConfig {
     const useIpc = typeof window !== 'undefined' ? 'rco' in window : false
     const adapter = useIpc ? 'ipc' : 'fetch'
-    const apiBaseUrl = useIpc ? '' : process.env.API_BASE || '/api'
+    const apiBaseUrl = useIpc
+      ? ''
+      : process.env.NEXT_PUBLIC_API_BASE ||
+        new URL('/api', new URL('/', window.location.href).href).href
     return {
       name: 'workspace',
       adapter,
