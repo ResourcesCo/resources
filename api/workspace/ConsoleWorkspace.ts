@@ -4,8 +4,6 @@ import Client from '../client/Client'
 import ClientFileStore from '../storage/ClientFileStore'
 import { FileStore, FileStoreConstructor } from '../storage/FileStore'
 
-const defaultConfig = { channels: { main: { apps: ['api-finder'] } } }
-
 interface WorkspaceConfig {
   name: string
   localPath: string
@@ -41,7 +39,6 @@ class ConsoleWorkspace implements WorkspaceConfig {
     this.apiBaseUrl = apiBaseUrl
     this.adapter = adapter
     this.channels = {}
-    console.log('apiBaseUrl', apiBaseUrl)
     this.client = new Client({
       adapter: this.adapter,
       baseUrl: this.apiBaseUrl,
@@ -56,35 +53,20 @@ class ConsoleWorkspace implements WorkspaceConfig {
     if (this.fileStoreClass !== null) {
       return new this.fileStoreClass({ path: this.localPath })
     } else {
-      return new ClientFileStore({ path: this.localPath, client: this.client })
+      return new ClientFileStore({
+        path: this.localPath,
+        client: this.client.constrain('files'),
+      })
     }
   }
 
-  getFileStoreClass() {}
-
   async loadConfig() {
-    if (typeof window === 'undefined') {
-      try {
-        const file = await this.fileStore.get({ path: 'workspace.json' })
-        console.log(file.body)
-        this.config = file.body
-      } catch (err) {
-        console.log('Error loading workspace', err)
-        this.config = defaultConfig
-      }
+    const resp = await this.fileStore.get({ path: 'workspace.json' })
+    if (resp.ok) {
+      this.config = resp.body
     } else {
-      const response = await this.client.request({
-        method: 'POST',
-        url: '',
-        body: {
-          name: name,
-          localPath: this.localPath,
-          apiBaseUrl: this.apiBaseUrl,
-          adapter: this.adapter,
-        },
-      })
-      const { workspaceConfig } = response.body
-      this.config = workspaceConfig
+      this.config = defaultConfig
+      await this.fileStore.put({ path: 'workspace.json', value: this.config })
     }
   }
 
@@ -117,7 +99,13 @@ class ConsoleWorkspace implements WorkspaceConfig {
     return clientConfig
   }
 
-  static getDefaultConfig(): WorkspaceConfig {
+  static getDefaultConfig() {
+    return {
+      name: 'workspace',
+    }
+  }
+
+  static getClientConfig() {
     const useIpc = typeof window !== 'undefined' ? 'rco' in window : false
     const adapter = useIpc ? 'ipc' : 'fetch'
     const apiBaseUrl = useIpc
@@ -125,7 +113,6 @@ class ConsoleWorkspace implements WorkspaceConfig {
       : process.env.NEXT_PUBLIC_API_BASE ||
         new URL('/api', new URL('/', window.location.href).href).href
     return {
-      name: 'workspace',
       adapter,
       apiBaseUrl,
       localPath: './workspace',
@@ -133,7 +120,12 @@ class ConsoleWorkspace implements WorkspaceConfig {
   }
 
   static getWorkspace(config?: WorkspaceConfig) {
-    const configValue = { ...this.getDefaultConfig(), ...config }
+    const configValue = {
+      ...this.getDefaultConfig(),
+      ...config,
+      ...this.getClientConfig(),
+    }
+    console.log({ configValue })
     const { name } = configValue
     if (!(name in ConsoleWorkspace.workspaces)) {
       ConsoleWorkspace.workspaces[name] = new ConsoleWorkspace(configValue)

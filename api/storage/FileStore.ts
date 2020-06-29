@@ -1,7 +1,9 @@
+import { ErrorInfo } from '../client/Client'
+
 export interface FileStoreResponse {
   ok: boolean
   contentType?: string
-  error?: any
+  error?: ErrorInfo
   body?: any
 }
 

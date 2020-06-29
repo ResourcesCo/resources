@@ -20,12 +20,17 @@ export interface RequestInfo {
   body?: any
 }
 
+export interface ErrorInfo {
+  message: string
+  code?: string
+}
+
 export interface ResponseInfo {
   ok: boolean
   body?: any
   status?: number
   headers?: { [key: string]: string }
-  error?: any
+  error?: ErrorInfo | string
 }
 
 export default class Client {
@@ -35,12 +40,12 @@ export default class Client {
   env?: { [key: string]: string }
 
   constructor({ baseUrl, adapter = 'fetch' }: ClientInfo) {
-    console.log('Client baseUrl', baseUrl)
-    this.baseUrl = new URL(baseUrl).href
+    this.baseUrl = new URL(baseUrl + '/').href
     this.adapter = adapter
   }
 
   getUrl(url) {
+    console.log([url, this.baseUrl])
     const resolvedUrl = new URL(url, this.baseUrl).href
     if (resolvedUrl.startsWith(this.baseUrl)) {
       return resolvedUrl
@@ -100,5 +105,14 @@ export default class Client {
     } else if (this.adapter === 'ipc') {
       return await this.requestWithIpc({ ...params, url: this.getUrl(url) })
     }
+  }
+
+  constrain(subpath) {
+    return new Client({
+      adapter: this.adapter,
+      baseUrl: this.getUrl(subpath),
+      headers: this.headers,
+      env: this.env,
+    })
   }
 }

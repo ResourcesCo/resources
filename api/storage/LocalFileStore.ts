@@ -23,7 +23,27 @@ class LocalFileStore implements FileStore {
 
   async get({ path }) {
     const absolutePath = this.getAbsolutePath(path)
-    const data = await fsPromises.readFile(absolutePath)
+    let data
+    try {
+      data = await fsPromises.readFile(absolutePath)
+    } catch (err) {
+      if (err.code === 'ENOENT') {
+        return {
+          ok: false,
+          error: {
+            message: 'File not found',
+            code: 'not_found',
+          },
+        }
+      } else {
+        return {
+          ok: false,
+          error: {
+            message: 'Unknown error',
+          },
+        }
+      }
+    }
 
     return {
       ok: true,

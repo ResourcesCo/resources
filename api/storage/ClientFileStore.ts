@@ -27,9 +27,7 @@ class ClientFileStore implements FileStore {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contentType: 'application/json', value }),
     })
-    return {
-      ok: true,
-    }
+    return response.body
   }
 
   async delete({ path }) {
@@ -38,7 +36,7 @@ class ClientFileStore implements FileStore {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
     })
-    return { ok: true }
+    return response.body
   }
 
   async run({ action, ...params }) {
@@ -50,7 +48,10 @@ class ClientFileStore implements FileStore {
   }
 
   constrain(subpath) {
-    return new ClientFileStore({ path: this.getAbsoluteUrl(subpath) })
+    return new ClientFileStore({
+      path: this.path + (this.path.endsWith('/') ? '' : '/') + subpath,
+      client: this.client.constrain(subpath),
+    })
   }
 }
 
