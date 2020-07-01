@@ -11,7 +11,7 @@ export default async (req, res) => {
   const path = pathArray.join('/')
 
   try {
-    const workspace = ConsoleWorkspace.getWorkspace({
+    const workspace = await ConsoleWorkspace.getWorkspace({
       fileStoreClass: LocalFileStore,
     })
     let responseBody

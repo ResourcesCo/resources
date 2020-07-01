@@ -1,10 +1,23 @@
-import ConsoleChannel from '../channel/ConsoleChannel'
+import ConsoleChannel, { ChannelClientConfig } from '../channel/ConsoleChannel'
 import ConsoleError from '../ConsoleError'
 import Client from '../client/Client'
 import ClientFileStore from '../storage/ClientFileStore'
 import { FileStore, FileStoreConstructor } from '../storage/FileStore'
 
+interface ChannelConfig extends ChannelClientConfig {
+  name: string
+  admin: boolean
+}
+
 interface WorkspaceConfig {
+  name: string
+  displayName?: string
+  channels: {
+    [key: string]: ChannelConfig
+  }
+}
+
+interface WorkspaceClientConfig {
   name: string
   localPath: string
   apiBaseUrl: string
@@ -12,52 +25,59 @@ interface WorkspaceConfig {
   fileStoreClass?: FileStoreConstructor
 }
 
-class ConsoleWorkspace implements WorkspaceConfig {
-  name: string
-  localPath: string
-  apiBaseUrl: string
-  adapter: 'fetch' | 'ipc'
+const defaultChannels = {
+  general: {
+    name: 'general',
+    displayName: 'general',
+    admin: false,
+  },
+  admin: {
+    name: 'admin',
+    displayName: 'admin',
+    admin: true,
+  },
+}
+
+class ConsoleWorkspace {
+  clientConfig: WorkspaceClientConfig
+  config?: WorkspaceConfig
 
   channels: any
-  config: any
   client: Client
   fileStore: FileStore
 
-  fileStoreClass: FileStoreConstructor | null = null
-
   static workspaces = {}
 
-  constructor({
-    name,
-    localPath,
-    apiBaseUrl,
-    adapter,
-    fileStoreClass,
-  }: WorkspaceConfig) {
-    this.name = name
-    this.localPath = localPath
-    this.apiBaseUrl = apiBaseUrl
-    this.adapter = adapter
+  constructor(clientConfig: WorkspaceClientConfig) {
+    this.clientConfig = clientConfig
+
     this.channels = {}
-    this.client = new Client({
-      adapter: this.adapter,
-      baseUrl: this.apiBaseUrl,
-    })
-    if (fileStoreClass) {
-      this.fileStoreClass = fileStoreClass
-    }
+    this.client = this.getClient()
     this.fileStore = this.getFileStore()
   }
 
+  getClient() {
+    return new Client({
+      adapter: this.clientConfig.adapter,
+      baseUrl: this.clientConfig.apiBaseUrl,
+    })
+  }
+
   getFileStore() {
-    if (this.fileStoreClass !== null) {
-      return new this.fileStoreClass({ path: this.localPath })
+    if (this.clientConfig.fileStoreClass) {
+      return new this.clientConfig.fileStoreClass({
+        path: this.clientConfig.localPath,
+      })
     } else {
       return new ClientFileStore({
-        path: this.localPath,
+        path: this.clientConfig.localPath,
         client: this.client.constrain('files'),
       })
     }
+  }
+
+  async init() {
+    await this.loadConfig()
   }
 
   async loadConfig() {
@@ -65,22 +85,21 @@ class ConsoleWorkspace implements WorkspaceConfig {
     if (resp.ok) {
       this.config = resp.body
     } else {
-      this.config = defaultConfig
+      this.config = { name: this.clientConfig.name, channels: defaultChannels }
       await this.fileStore.put({ path: 'workspace.json', value: this.config })
     }
   }
 
   async getChannel(name) {
-    if (!this.config) {
-      await this.loadConfig()
-    }
     if (!(name in this.channels)) {
       if (!(name in this.config.channels)) {
         throw new ConsoleError('Not found', { status: 404 })
       }
       this.channels[name] = new ConsoleChannel({
         name,
-        ...this.config.channels[name],
+        admin: this.config.channels[name].admin,
+        client: this.client.constrain(`channels/${name}`),
+        fileStore: this.fileStore.constrain(`channels/${name}`),
       })
       await this.channels[name].init()
     }
@@ -99,13 +118,7 @@ class ConsoleWorkspace implements WorkspaceConfig {
     return clientConfig
   }
 
-  static getDefaultConfig() {
-    return {
-      name: 'workspace',
-    }
-  }
-
-  static getClientConfig() {
+  static getClientConfig(): WorkspaceClientConfig {
     const useIpc = typeof window !== 'undefined' ? 'rco' in window : false
     const adapter = useIpc ? 'ipc' : 'fetch'
     const apiBaseUrl = useIpc
@@ -116,19 +129,19 @@ class ConsoleWorkspace implements WorkspaceConfig {
       adapter,
       apiBaseUrl,
       localPath: './workspace',
+      name: 'workspace',
     }
   }
 
-  static getWorkspace(config?: WorkspaceConfig) {
+  static async getWorkspace(config?: WorkspaceClientConfig) {
     const configValue = {
-      ...this.getDefaultConfig(),
-      ...config,
       ...this.getClientConfig(),
+      ...config,
     }
-    console.log({ configValue })
     const { name } = configValue
     if (!(name in ConsoleWorkspace.workspaces)) {
       ConsoleWorkspace.workspaces[name] = new ConsoleWorkspace(configValue)
+      await ConsoleWorkspace.workspaces[name].init()
     }
     return ConsoleWorkspace.workspaces[name]
   }

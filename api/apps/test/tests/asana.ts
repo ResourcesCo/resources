@@ -2,8 +2,8 @@ import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
 import parseCommand from 'api/channel/parseCommand'
 
 export default async function asana() {
-  const workspace = ConsoleWorkspace.getWorkspace()
-  const channel = await workspace.getChannel('main')
+  const workspace = await ConsoleWorkspace.getWorkspace()
+  const channel = await workspace.getChannel('general')
   let receivedRequest
   // mock the request
   channel.apps.asana.request = async request => {

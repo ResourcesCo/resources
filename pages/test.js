@@ -3,8 +3,8 @@ import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
 import { parseCommand } from 'vtv'
 
 async function runTests() {
-  const workspace = ConsoleWorkspace.getWorkspace()
-  const channel = await workspace.getChannel('main')
+  const workspace = await ConsoleWorkspace.getWorkspace()
+  const channel = await workspace.getChannel('general')
   const message = 'https://example.com/'
   const receivedMessages = []
   const onMessage = message => {

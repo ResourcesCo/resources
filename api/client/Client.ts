@@ -45,7 +45,6 @@ export default class Client {
   }
 
   getUrl(url) {
-    console.log([url, this.baseUrl])
     const resolvedUrl = new URL(url, this.baseUrl).href
     if (resolvedUrl.startsWith(this.baseUrl)) {
       return resolvedUrl

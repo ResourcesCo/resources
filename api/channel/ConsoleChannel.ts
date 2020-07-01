@@ -1,8 +1,7 @@
 import shortid from 'shortid'
 import Client from '../client/Client'
 import ConsoleError from '../ConsoleError'
-import ClientFileStore from '../storage/ClientFileStore'
-import { FileStore, FileStoreConstructor } from '../storage/FileStore'
+import { FileStore } from '../storage/FileStore'
 import App from '../app-base/App'
 import parseArgs from '../app-base/parseArgs'
 import parseUrl from '../app-base/parseUrl'
@@ -17,9 +16,20 @@ const apps = {
   test: Test,
 }
 
-class ConsoleChannel {
+export interface ChannelClientConfig {
+  client: Client
+  fileStore: FileStore
+}
+
+export interface ChannelProps extends ChannelClientConfig {
   name: string
-  config: { apps: any; files: any }
+  admin: boolean
+}
+
+class ConsoleChannel {
+  clientConfig: ChannelClientConfig
+  config?: { name?: string; displayName?: string; apps?: any; files?: any } = {}
+  admin: boolean
   messages: any
   messageIds: any[]
   files: any
@@ -27,9 +37,10 @@ class ConsoleChannel {
   apps: { [key: string]: App }
   client: Client
 
-  constructor({ name, apps, files }) {
-    this.name = name
-    this.config = { apps, files }
+  constructor({ name, admin, ...clientConfig }: ChannelProps) {
+    this.config.name = name
+    this.admin = admin
+    this.clientConfig = clientConfig
     this.messages = {}
     this.messageIds = []
   }
@@ -53,7 +64,9 @@ class ConsoleChannel {
   async loadEnv() {
     let envData = {}
     if (typeof window !== 'undefined') {
-      const item = window.localStorage.getItem(`channels/${this.name}/env`)
+      const item = window.localStorage.getItem(
+        `channels/${this.config.name}/env`
+      )
       if (typeof item === 'string' && item.length > 0) {
         envData = JSON.parse(item)
       }
@@ -68,7 +81,7 @@ class ConsoleChannel {
   saveEnv = async () => {
     if (typeof window !== 'undefined') {
       window.localStorage.setItem(
-        `channels/${this.name}/env`,
+        `channels/${this.config.name}/env`,
         JSON.stringify(this.env, null, 2)
       )
     }
@@ -206,7 +219,7 @@ class ConsoleChannel {
     return this.files
       ? {
           files: {
-            url: `${apiBaseUrl}/channels/${this.name}/files`,
+            url: `${apiBaseUrl}/channels/${this.config.name}/files`,
             path: this.files.path,
           },
         }

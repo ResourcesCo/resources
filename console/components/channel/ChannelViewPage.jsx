@@ -30,8 +30,8 @@ export default class ChannelViewPage extends PureComponent {
   }
 
   async loadChannel() {
-    const workspace = ConsoleWorkspace.getWorkspace()
-    const channel = await workspace.getChannel('main')
+    const workspace = await ConsoleWorkspace.getWorkspace()
+    const channel = await workspace.getChannel('general')
     this.setState({ channel })
   }
 
