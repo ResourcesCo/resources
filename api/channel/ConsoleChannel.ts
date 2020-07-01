@@ -2,6 +2,7 @@ import shortid from 'shortid'
 import Client from '../client/Client'
 import ConsoleError from '../ConsoleError'
 import { FileStore } from '../storage/FileStore'
+import ClientFileStore from '../storage/ClientFileStore'
 import App from '../app-base/App'
 import parseArgs from '../app-base/parseArgs'
 import parseUrl from '../app-base/parseUrl'
@@ -46,19 +47,26 @@ class ConsoleChannel {
   }
 
   async init() {
-    // this.client = new Client({
-    //   adapter: 'fetch',
-    //   baseUrl: '',
-    // })
-    if (this.config.files) {
-      if (typeof window !== 'undefined') {
-        // this.files = new ClientFileStore(this.config.files)
-      } else {
-        // this.files = new ConsoleChannel.LocalFileStore(this.config.files)
-      }
+    if (typeof window !== 'undefined') {
+      this.files = this.clientConfig.fileStore
     }
+    await this.loadConfig()
     await this.loadEnv()
     await this.loadApps()
+  }
+
+  get fileStore() {
+    return this.clientConfig.fileStore
+  }
+
+  async loadConfig() {
+    const resp = await this.fileStore.get({ path: 'channel.json' })
+    if (resp.ok) {
+      this.config = resp.body
+    } else {
+      this.config.apps = { asana: {}, github: {} }
+      await this.fileStore.put({ path: 'channel.json', value: this.config })
+    }
   }
 
   async loadEnv() {

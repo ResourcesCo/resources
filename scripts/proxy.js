@@ -7,8 +7,12 @@ const proxy = httpProxy.createProxyServer({
 
 proxy.on('proxyRes', function(proxyRes, req, res) {
   if (req.headers.origin === `http://localhost:${targetPort}`) {
-    proxyRes.headers['access-control-allow-origin'] = '*'
-    proxyRes.headers['access-control-allow-methods'] = '*'
+    proxyRes.headers[
+      'access-control-allow-origin'
+    ] = `http://localhost:${targetPort}`
+    proxyRes.headers['access-control-allow-methods'] =
+      'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+    proxyRes.headers['access-control-allow-headers'] = 'Content-Type'
   }
 })
 

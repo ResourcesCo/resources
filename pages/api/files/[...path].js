@@ -10,6 +10,11 @@ export default async (req, res) => {
   } = req
   const path = pathArray.join('/')
 
+  if (req.method === 'OPTIONS') {
+    res.status(204).end()
+    return
+  }
+
   try {
     const workspace = await ConsoleWorkspace.getWorkspace({
       fileStoreClass: LocalFileStore,

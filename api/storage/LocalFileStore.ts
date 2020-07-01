@@ -2,6 +2,8 @@ const fsPromises = require('fs').promises
 const pathPosix = require('path').posix
 import { FileStore, FileStoreResponse } from './FileStore'
 import ConsoleError from '../ConsoleError'
+import mkdirp from 'mkdirp'
+import { dirname } from 'path'
 
 class LocalFileStore implements FileStore {
   absolutePath: string
@@ -54,10 +56,22 @@ class LocalFileStore implements FileStore {
 
   async put({ path, value }) {
     const absolutePath = this.getAbsolutePath(path)
-    await fsPromises.writeFile(
-      absolutePath,
-      JSON.stringify(value, null, 2) + '\n'
-    )
+    try {
+      await fsPromises.writeFile(
+        absolutePath,
+        JSON.stringify(value, null, 2) + '\n'
+      )
+    } catch (err) {
+      if (err.code === 'ENOENT') {
+        await mkdirp(dirname(absolutePath))
+        await fsPromises.writeFile(
+          absolutePath,
+          JSON.stringify(value, null, 2) + '\n'
+        )
+      } else {
+        throw err
+      }
+    }
     return { ok: true }
   }
 
