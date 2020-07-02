@@ -1,19 +1,14 @@
-import ConsoleChannel, { ChannelClientConfig } from '../channel/ConsoleChannel'
+import ConsoleChannel, { ChannelProps } from '../channel/ConsoleChannel'
 import ConsoleError from '../ConsoleError'
 import Client from '../client/Client'
 import ClientFileStore from '../storage/ClientFileStore'
 import { FileStore, FileStoreConstructor } from '../storage/FileStore'
 
-interface ChannelConfig extends ChannelClientConfig {
-  name: string
-  admin: boolean
-}
-
 interface WorkspaceConfig {
   name: string
   displayName?: string
   channels: {
-    [key: string]: ChannelConfig
+    [key: string]: ChannelProps
   }
 }
 
@@ -28,12 +23,10 @@ interface WorkspaceClientConfig {
 const defaultChannels = {
   general: {
     name: 'general',
-    displayName: 'general',
     admin: false,
   },
   admin: {
     name: 'admin',
-    displayName: 'admin',
     admin: true,
   },
 }

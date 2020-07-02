@@ -2,7 +2,6 @@ import shortid from 'shortid'
 import Client from '../client/Client'
 import ConsoleError from '../ConsoleError'
 import { FileStore } from '../storage/FileStore'
-import ClientFileStore from '../storage/ClientFileStore'
 import App from '../app-base/App'
 import parseArgs from '../app-base/parseArgs'
 import parseUrl from '../app-base/parseUrl'
@@ -17,20 +16,21 @@ const apps = {
   test: Test,
 }
 
-export interface ChannelClientConfig {
-  client: Client
-  fileStore: FileStore
-}
-
-export interface ChannelProps extends ChannelClientConfig {
+// Properties stored and managed by the workspace (a channel cannot set itself to be admin)
+export interface ChannelProps {
   name: string
   admin: boolean
+}
+
+// Configuration from the workspace
+export interface ChannelClientConfig extends ChannelProps {
+  client: Client
+  fileStore: FileStore
 }
 
 class ConsoleChannel {
   clientConfig: ChannelClientConfig
   config?: { name?: string; displayName?: string; apps?: any; files?: any } = {}
-  admin: boolean
   messages: any
   messageIds: any[]
   files: any
@@ -38,9 +38,7 @@ class ConsoleChannel {
   apps: { [key: string]: App }
   client: Client
 
-  constructor({ name, admin, ...clientConfig }: ChannelProps) {
-    this.config.name = name
-    this.admin = admin
+  constructor(clientConfig: ChannelClientConfig) {
     this.clientConfig = clientConfig
     this.messages = {}
     this.messageIds = []
@@ -57,6 +55,10 @@ class ConsoleChannel {
 
   get fileStore() {
     return this.clientConfig.fileStore
+  }
+
+  get admin() {
+    return this.clientConfig.admin
   }
 
   async loadConfig() {
