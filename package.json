@@ -4,6 +4,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "dev": "concurrently -k -n app,api,embed yarn:dev:app yarn:dev:api-proxy yarn:dev:embed-proxy",
+    "dev:browser": "NEXT_PUBLIC_BROWSER_STORAGE=true concurrently -k -n app,api,embed yarn:dev:app yarn:dev:api-proxy yarn:dev:embed-proxy",
     "dev:app": "NEXT_PUBLIC_API_BASE=http://localhost:3334/api next dev -p 3333",
     "dev:api-proxy": "PORT=3333 PROXY_PORT=3334 node scripts/proxy.js",
     "dev:embed-proxy": "PORT=3333 PROXY_PORT=3335 node scripts/proxy.js",

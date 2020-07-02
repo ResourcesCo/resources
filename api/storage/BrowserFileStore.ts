@@ -7,19 +7,16 @@ class BrowserFileStore implements FileStore {
 
   constructor({ path }) {
     this.localStorage = window.localStorage
-    this.path = path
+    this.path = new URL(path + '/', 'file:///').href.replace(/^file:\/\//, '')
   }
 
-  getItemName(path) {
-    if (path.endsWith('.json')) {
-      return `${this.path}${path}`
-    } else {
-      throw new ConsoleError('unsupported file type')
-    }
+  getPath(path) {
+    const basePath = new URL('file:///' + this.path).href
+    return new URL(path, basePath).href.replace(/^file:\/\//, '')
   }
 
   async get({ path }) {
-    let data = this.localStorage.getItem(this.getItemName(path))
+    let data = this.localStorage.getItem(this.getPath(path))
     try {
       data = JSON.parse(data)
     } catch (e) {
@@ -34,15 +31,19 @@ class BrowserFileStore implements FileStore {
 
   async put({ path, value }) {
     this.localStorage.setItem(
-      this.getItemName(path),
+      this.getPath(path),
       JSON.stringify(value, null, 2)
     )
     return { ok: true }
   }
 
   async delete({ path }) {
-    this.localStorage.removeItem(this.getItemName(path))
+    this.localStorage.removeItem(this.getPath(path))
     return { ok: true }
+  }
+
+  constrain(subpath) {
+    return new BrowserFileStore({ path: this.getPath(subpath) })
   }
 }
 

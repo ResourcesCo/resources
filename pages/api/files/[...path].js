@@ -30,7 +30,7 @@ export default async (req, res) => {
       }
       responseBody = await workspace.fileStore.put({ ...req.body, path })
     } else if (req.method === 'DELETE') {
-      responseBody = await workspece.fileStore.delete({ path })
+      responseBody = await workspace.fileStore.delete({ path })
     } else {
       throw new ConsoleError('Invalid method for path', { status: 400 })
     }

@@ -12,7 +12,7 @@ class LocalFileStore implements FileStore {
     this.absolutePath = pathPosix.resolve(path)
   }
 
-  getAbsolutePath(path) {
+  getPath(path) {
     const absolutePath = pathPosix.resolve(this.absolutePath, path)
     if (!absolutePath.startsWith(this.absolutePath)) {
       throw new ConsoleError('Invalid path', { status: 400 })
@@ -24,7 +24,7 @@ class LocalFileStore implements FileStore {
   }
 
   async get({ path }) {
-    const absolutePath = this.getAbsolutePath(path)
+    const absolutePath = this.getPath(path)
     let data
     try {
       data = await fsPromises.readFile(absolutePath)
@@ -55,7 +55,7 @@ class LocalFileStore implements FileStore {
   }
 
   async put({ path, value }) {
-    const absolutePath = this.getAbsolutePath(path)
+    const absolutePath = this.getPath(path)
     try {
       await fsPromises.writeFile(
         absolutePath,
@@ -76,13 +76,13 @@ class LocalFileStore implements FileStore {
   }
 
   async delete({ path }) {
-    const absolutePath = this.getAbsolutePath(path)
+    const absolutePath = this.getPath(path)
     await fsPromises.unlink(absolutePath)
     return { ok: true }
   }
 
   constrain(subpath) {
-    return new LocalFileStore(this.getAbsolutePath(subpath))
+    return new LocalFileStore(this.getPath(subpath))
   }
 }
 

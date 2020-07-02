@@ -3,6 +3,7 @@ import ConsoleError from '../ConsoleError'
 import Client from '../client/Client'
 import ClientFileStore from '../storage/ClientFileStore'
 import { FileStore, FileStoreConstructor } from '../storage/FileStore'
+import BrowserFileStore from 'api/storage/BrowserFileStore'
 
 interface WorkspaceConfig {
   name: string
@@ -61,6 +62,11 @@ class ConsoleWorkspace {
       return new this.clientConfig.fileStoreClass({
         path: this.clientConfig.localPath,
       })
+    } else if (
+      typeof window !== 'undefined' &&
+      process.env.NEXT_PUBLIC_BROWSER_STORAGE === 'true'
+    ) {
+      return new BrowserFileStore({ path: '/' })
     } else {
       return new ClientFileStore({
         path: this.clientConfig.localPath,
@@ -126,7 +132,9 @@ class ConsoleWorkspace {
     }
   }
 
-  static async getWorkspace(config?: WorkspaceClientConfig) {
+  static async getWorkspace(
+    config?: WorkspaceClientConfig | { fileStoreClass: FileStoreConstructor }
+  ) {
     const configValue = {
       ...this.getClientConfig(),
       ...config,
