@@ -3,7 +3,7 @@ import ConsoleError from '../ConsoleError'
 import Client from '../client/Client'
 import ClientFileStore from '../storage/ClientFileStore'
 import { FileStore, FileStoreConstructor } from '../storage/FileStore'
-import BrowserFileStore from 'api/storage/BrowserFileStore'
+import BrowserFileStore from '../storage/BrowserFileStore'
 
 interface WorkspaceConfig {
   name: string
