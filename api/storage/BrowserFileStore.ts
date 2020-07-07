@@ -20,12 +20,22 @@ class BrowserFileStore implements FileStore {
     try {
       data = JSON.parse(data)
     } catch (e) {
-      throw new ConsoleError('error parsing JSON')
+      data = undefined
     }
-    return {
-      ok: true,
-      contentType: 'application/json',
-      body: data,
+    if (data) {
+      return {
+        ok: true,
+        contentType: 'application/json',
+        body: data,
+      }
+    } else {
+      return {
+        ok: false,
+        error: {
+          message: 'File not found',
+          code: 'not_found',
+        },
+      }
     }
   }
 

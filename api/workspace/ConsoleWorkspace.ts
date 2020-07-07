@@ -81,6 +81,7 @@ class ConsoleWorkspace {
 
   async loadConfig() {
     const resp = await this.fileStore.get({ path: 'workspace.json' })
+    console.log({ resp })
     if (resp.ok) {
       this.config = resp.body
     } else {
