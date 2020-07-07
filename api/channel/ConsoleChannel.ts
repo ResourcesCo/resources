@@ -73,13 +73,9 @@ class ConsoleChannel {
 
   async loadEnv() {
     let envData = {}
-    if (typeof window !== 'undefined') {
-      const item = window.localStorage.getItem(
-        `channels/${this.config.name}/env`
-      )
-      if (typeof item === 'string' && item.length > 0) {
-        envData = JSON.parse(item)
-      }
+    const resp = await this.fileStore.get({ path: 'env.json' })
+    if (resp.ok) {
+      envData = resp.body
     }
     this.env = {}
     for (const appName of Object.keys(apps)) {
@@ -89,12 +85,7 @@ class ConsoleChannel {
   }
 
   saveEnv = async () => {
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem(
-        `channels/${this.config.name}/env`,
-        JSON.stringify(this.env, null, 2)
-      )
-    }
+    await this.fileStore.put({ path: 'env.json', value: this.env })
   }
 
   async loadApps() {

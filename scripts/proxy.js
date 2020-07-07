@@ -17,5 +17,5 @@ proxy.on('proxyRes', function(proxyRes, req, res) {
 })
 
 proxy.listen(proxyPort, () => {
-  console.log(`Proxying port ${proxyPort} to ${targetPort}...`)
+  console.debug(`Proxying port ${proxyPort} to ${targetPort}...`)
 })

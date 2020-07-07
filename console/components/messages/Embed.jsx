@@ -8,7 +8,7 @@ export default function Embed({ path, commandId, theme }) {
   const ref = useRef()
   const handleMessage = useCallback(({ data: { source, payload } }) => {
     if (source === `/messages/${commandId}/reply`) {
-      console.log('received response back', payload)
+      console.debug('received response back', payload)
     }
   })
   const handleFrameLoaded = useCallback(() => {

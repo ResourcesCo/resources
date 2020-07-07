@@ -91,7 +91,6 @@ export default class Client {
   }): Promise<ResponseInfo> => {
     if (typeof window !== 'undefined' && 'rco' in window) {
       const response = await window.rco.request(params)
-      console.log({ request: params, response })
       return response
     } else {
       throw new Error('adapter set to ipc but missing ipc function')
