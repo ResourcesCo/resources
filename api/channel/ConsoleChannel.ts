@@ -9,6 +9,7 @@ import Asana from '../apps/asana/Asana'
 import GitHub from '../apps/github/GitHub'
 import Test from '../apps/test/Test'
 import env from './env'
+import { createNanoEvents, Emitter } from 'nanoevents'
 
 const apps = {
   asana: Asana,
@@ -37,11 +38,13 @@ class ConsoleChannel {
   env: { [key: string]: any }
   apps: { [key: string]: App }
   client: Client
+  emitter: Emitter
 
   constructor(clientConfig: ChannelClientConfig) {
     this.clientConfig = clientConfig
     this.messages = {}
     this.messageIds = []
+    this.emitter = createNanoEvents()
   }
 
   async init() {
@@ -51,6 +54,7 @@ class ConsoleChannel {
     await this.loadConfig()
     await this.loadEnv()
     await this.loadApps()
+    await this.loadMessages()
   }
 
   get fileStore() {
@@ -86,6 +90,25 @@ class ConsoleChannel {
 
   saveEnv = async () => {
     await this.fileStore.put({ path: 'env.json', value: this.env })
+  }
+
+  async loadMessages() {
+    let envData = {}
+    const resp = await this.fileStore.get({ path: 'messages.json' })
+    if (resp.ok) {
+      this.messages = resp.body.messages
+      this.messageIds = resp.body.messageIds
+    } else {
+      this.messages = {}
+      this.messageIds = []
+    }
+  }
+
+  saveMessages = async () => {
+    await this.fileStore.put({
+      path: 'messages.json',
+      value: { messageIds: this.messageIds, messages: this.messages },
+    })
   }
 
   async loadApps() {

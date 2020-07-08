@@ -7,7 +7,7 @@ import ChannelView from './ChannelView'
 
 export default class ChannelViewPage extends PureComponent {
   state = {
-    channel: null,
+    loaded: false,
     theme: null,
   }
 
@@ -22,7 +22,13 @@ export default class ChannelViewPage extends PureComponent {
       this._store = new MemoryStore()
     }
     this._store.load()
-    this.state.theme = this._store.theme
+    this.state.theme = this.getCachedTheme()
+  }
+
+  componentDidMount() {
+    if (!this.workspace) {
+      this.loadChannel()
+    }
   }
 
   get store() {
@@ -30,35 +36,51 @@ export default class ChannelViewPage extends PureComponent {
   }
 
   async loadChannel() {
-    const workspace = await ConsoleWorkspace.getWorkspace()
-    const channel = await workspace.getChannel('general')
-    this.setState({ channel })
+    this.workspace = await ConsoleWorkspace.getWorkspace()
+    this.setState({ theme: this.workspace.theme })
+    this.setCachedTheme(this.workspace.theme)
+    this.channel = await this.workspace.getChannel('general')
+    this.setState({ loaded: true })
   }
 
-  get channel() {
-    if (this.props.channel) {
-      return this.props.channel
-    } else if (this.state.channel) {
-      return this.state.channel
-    } else {
-      this.loadChannel()
+  handleThemeChange = async theme => {
+    this.setState({ theme })
+    this.workspace.theme = theme
+    this.setCachedTheme(theme)
+    await this.workspace.saveConfig()
+  }
+
+  getCachedTheme() {
+    let result
+    if (typeof window !== 'undefined') {
+      result = window.localStorage.getItem('rco-theme')
+    }
+    return result || 'dark'
+  }
+
+  setCachedTheme(theme) {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('rco-theme', this.workspace.theme)
     }
   }
 
   render() {
-    const { onThemeChange, store, channel, storageType, ...props } = this.props
+    const { store, storageType, ...props } = this.props
     const themeName = this.state.theme
     const theme = getTheme(themeName)
+    console.log({ theme, themeName })
     return (
       <>
         <Head title="Resources.co" theme={theme} />
-        <ChannelView
-          theme={theme}
-          store={store || this.store}
-          channel={channel || this.channel}
-          onThemeChange={theme => this.setState({ theme })}
-          {...props}
-        />
+        {this.state.loaded && (
+          <ChannelView
+            theme={theme}
+            store={store || this.store}
+            channel={this.channel}
+            onThemeChange={this.handleThemeChange}
+            {...props}
+          />
+        )}
         <style jsx global>{`
           html,
           body,

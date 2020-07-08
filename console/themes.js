@@ -34,7 +34,7 @@ export const light = {
   base: 'light',
   foreground: '#111',
   lightTextColor: '#444',
-  background: '#e7e7e7',
+  background: '#f7f7f7',
   backgroundHover: '#d7d7d7',
   inputBorder: 'rgb(140, 140, 140)',
   selectionBackground: '#7ec0ee',

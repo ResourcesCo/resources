@@ -155,10 +155,7 @@ export default class ChannelView extends PureComponent {
       } else if (message.type === 'clear') {
         clear = true
       } else if (message.type === 'set-theme') {
-        this.setState({ theme: message.theme })
-        store.theme = message.theme
         this.props.onThemeChange(message.theme)
-        store.save()
       } else if (['tree-update', 'message-command'].includes(message.type)) {
         scrollToBottom = false
         const treeCommand = commands[message.parentCommandId]

@@ -1,7 +1,7 @@
 export default {
   foreground: '#111',
   lightTextColor: '#444',
-  background: '#e7e7e7',
+  background: '#f7f7f7',
   backgroundHover: '#d7d7d7',
   backgroundActive: '#ddd',
   inputBorder: 'rgb(140, 140, 140)',

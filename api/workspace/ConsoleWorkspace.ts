@@ -4,6 +4,7 @@ import Client from '../client/Client'
 import ClientFileStore from '../storage/ClientFileStore'
 import { FileStore, FileStoreConstructor } from '../storage/FileStore'
 import BrowserFileStore from '../storage/BrowserFileStore'
+import { createNanoEvents, Emitter } from 'nanoevents'
 
 interface WorkspaceConfig {
   name: string
@@ -11,6 +12,7 @@ interface WorkspaceConfig {
   channels: {
     [key: string]: ChannelProps
   }
+  theme: string
 }
 
 interface WorkspaceClientConfig {
@@ -48,6 +50,7 @@ class ConsoleWorkspace {
     this.channels = {}
     this.client = this.getClient()
     this.fileStore = this.getFileStore()
+    this.emitter = createNanoEvents()
   }
 
   getClient() {
@@ -83,10 +86,22 @@ class ConsoleWorkspace {
     const resp = await this.fileStore.get({ path: 'workspace.json' })
     if (resp.ok) {
       this.config = resp.body
+      if (!this.config.theme) {
+        this.config.theme = 'dark'
+        await this.saveConfig()
+      }
     } else {
-      this.config = { name: this.clientConfig.name, channels: defaultChannels }
-      await this.fileStore.put({ path: 'workspace.json', value: this.config })
+      this.config = {
+        name: this.clientConfig.name,
+        channels: defaultChannels,
+        theme: 'dark',
+      }
+      await this.saveConfig()
     }
+  }
+
+  async saveConfig() {
+    await this.fileStore.put({ path: 'workspace.json', value: this.config })
   }
 
   async getChannel(name) {
@@ -103,6 +118,14 @@ class ConsoleWorkspace {
       await this.channels[name].init()
     }
     return this.channels[name]
+  }
+
+  get theme() {
+    return this.config.theme
+  }
+
+  set theme(value) {
+    this.config.theme = value
   }
 
   async getClientConfig(params) {
