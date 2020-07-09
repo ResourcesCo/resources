@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
-import { parseCommand } from 'vtv'
+import { parseCommand } from '../vtv-model'
 
 async function runTests() {
   const workspace = await ConsoleWorkspace.getWorkspace()

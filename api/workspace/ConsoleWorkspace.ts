@@ -42,6 +42,8 @@ class ConsoleWorkspace {
   client: Client
   fileStore: FileStore
 
+  emitter: Emitter
+
   static workspaces = {}
 
   constructor(clientConfig: WorkspaceClientConfig) {
@@ -141,12 +143,16 @@ class ConsoleWorkspace {
   }
 
   static getClientConfig(): WorkspaceClientConfig {
-    const useIpc = typeof window !== 'undefined' ? 'rco' in window : false
+    const useIpc = process.env.NEXT_PUBLIC_ELECTRON === 'true'
     const adapter = useIpc ? 'ipc' : 'fetch'
+    const currentUrl =
+      typeof window !== 'undefined'
+        ? window.location.href
+        : 'https://workspace.local/'
     const apiBaseUrl = useIpc
-      ? ''
+      ? 'https://workspace.local/api'
       : process.env.NEXT_PUBLIC_API_BASE ||
-        new URL('/api', new URL('/', window.location.href).href).href
+        new URL('/api', new URL('/', currentUrl).href).href
     return {
       adapter,
       apiBaseUrl,

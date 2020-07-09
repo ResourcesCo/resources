@@ -4,7 +4,11 @@ import pick from 'lodash/pick'
 import pickBy from 'lodash/pickBy'
 import identity from 'lodash/identity'
 import getNested from 'lodash/get'
-import { parseCommand, updateTree, removeTemporaryState } from 'vtv'
+import {
+  parseCommand,
+  updateTree,
+  removeTemporaryState,
+} from '../../../vtv-model'
 import runCommand from '../../command-runner'
 import Message from '../messages/Message'
 import ChannelInput from './ChannelInput'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { updateTree } from './model/state'
+import { updateTree } from '../vtv-model/state'
 import { getTheme } from './themes'
 import NodeView from './tree/NodeView'
 import Clipboard from './util/Clipboard'

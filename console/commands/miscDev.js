@@ -1,4 +1,4 @@
-import { getPaths, splitPath, joinPath, parseCommand } from 'vtv'
+import { getPaths, splitPath, joinPath, parseCommand } from '../../vtv-model'
 
 export default {
   actions: {

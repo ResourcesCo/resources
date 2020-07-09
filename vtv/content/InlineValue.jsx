@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 import Textarea from '../generic/Textarea'
-import { getNodeType } from '../model/analyze'
+import { getNodeType } from '../../vtv-model/analyze'
 
 const inputValue = value => {
   if (value === null) {

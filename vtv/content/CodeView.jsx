@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import ActionButton from '../generic/ActionButton'
-import { codeTypes } from '../model/constants'
+import { codeTypes } from '../../vtv-model/constants'
 
 function getMode({ editMode, mediaType }) {
   if (editMode === 'json') {

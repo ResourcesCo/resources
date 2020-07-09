@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Menu, { MenuItem } from '../generic/Menu'
 
-import { getStateKey } from '../model/util'
+import { getStateKey } from '../../vtv-model/util'
 
 function ClipboardMenu({
   name,

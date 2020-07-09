@@ -1,8 +1,7 @@
-import ConsoleError from 'api/ConsoleError'
-import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
-import ConsoleChannel from 'api/channel/ConsoleChannel'
-import LocalFileStore from 'api/storage/LocalFileStore'
-import { isObject } from 'vtv/model/analyze'
+import ConsoleError from '../../../api/ConsoleError'
+import ConsoleWorkspace from '../../../api/workspace/ConsoleWorkspace'
+import LocalFileStore from '../../../api/storage/LocalFileStore'
+import { isObject } from '../../../vtv-model/analyze'
 
 export default async (req, res) => {
   const {

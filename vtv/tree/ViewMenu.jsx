@@ -1,7 +1,7 @@
 import Menu, { MenuItem, Separator } from '../generic/Menu'
-import { hasChildren as hasChildrenFn } from '../model/analyze'
+import { hasChildren as hasChildrenFn } from '../../vtv-model/analyze'
 import defaultViewFn from '../util/defaultView'
-import { codeTypes } from '../model/constants'
+import { codeTypes } from '../../vtv-model/constants'
 
 const labels = {
   tree: 'Tree',

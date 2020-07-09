@@ -1,4 +1,5 @@
-import View, { joinPath } from 'vtv'
+import View from '../../../vtv'
+import { joinPath } from '../../../vtv-model'
 
 export default function Tree({
   name,

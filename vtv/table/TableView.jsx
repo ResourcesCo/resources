@@ -1,6 +1,10 @@
 import React from 'react'
-import { getCollectionPaths, joinPath, getAtPath } from '../model/analyze'
-import { getChildState } from '../model'
+import {
+  getCollectionPaths,
+  joinPath,
+  getAtPath,
+} from '../../vtv-model/analyze'
+import { getChildState } from '../../vtv-model'
 import InlineContent from '../content/InlineContent'
 
 export default ({ name, value, path, state, context: { theme }, context }) => {

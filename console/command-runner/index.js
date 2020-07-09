@@ -1,5 +1,5 @@
 import shortid from 'shortid'
-import { splitPath, joinPath } from 'vtv'
+import { splitPath, joinPath } from '../../vtv-model'
 import commands from '../commands'
 
 const inputMessage = message => ({
