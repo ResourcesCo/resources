@@ -5,16 +5,18 @@ import { FileStore } from '../storage/FileStore'
 import App from '../app-base/App'
 import parseArgs from '../app-base/parseArgs'
 import parseUrl from '../app-base/parseUrl'
-import Asana from '../apps/asana/Asana'
-import GitHub from '../apps/github/GitHub'
-import Test from '../apps/test/Test'
+import asana from '../apps/asana/asana'
+import github from '../apps/github/github'
+import test from '../apps/test/test'
+import random from '../apps/random/random'
 import env from './env'
 import { createNanoEvents, Emitter } from 'nanoevents'
 
 const apps = {
-  asana: Asana,
-  github: GitHub,
-  test: Test,
+  asana,
+  github,
+  test,
+  random,
 }
 
 // Properties stored and managed by the workspace (a channel cannot set itself to be admin)

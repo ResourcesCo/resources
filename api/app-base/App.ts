@@ -186,7 +186,14 @@ export default class App {
   }
 
   help = async ({ resourceType }) => {
-    return helpMessage({ resourceType: this.resourceTypes[resourceType] })
+    if (resourceType) {
+      return helpMessage({ resourceType: this.resourceTypes[resourceType] })
+    } else {
+      return {
+        type: 'error',
+        text: 'Command not found.',
+      }
+    }
   }
 
   async run({ resourceType, action, params }) {
