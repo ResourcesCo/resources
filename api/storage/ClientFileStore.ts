@@ -25,7 +25,7 @@ class ClientFileStore implements FileStore {
       url: path,
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contentType: 'application/json', value }),
+      body: { contentType: 'application/json', value },
     })
     return response.body
   }

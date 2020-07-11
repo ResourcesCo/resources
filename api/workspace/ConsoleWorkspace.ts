@@ -162,7 +162,9 @@ class ConsoleWorkspace {
   }
 
   static async getWorkspace(
-    config?: WorkspaceClientConfig | { fileStoreClass: FileStoreConstructor }
+    config?:
+      | WorkspaceClientConfig
+      | { fileStoreClass: FileStoreConstructor; localPath?: string }
   ) {
     const configValue = {
       ...this.getClientConfig(),

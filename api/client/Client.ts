@@ -67,7 +67,7 @@ export default class Client {
       }
     }
     if ('body' in request) {
-      fetchInfo.body = request.body
+      fetchInfo.body = JSON.stringify(request.body)
     }
     const response = await fetch(request.url, fetchInfo)
     const body = await response.json()

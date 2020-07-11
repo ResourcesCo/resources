@@ -13,7 +13,7 @@ class LocalFileStore implements FileStore {
   }
 
   getPath(path) {
-    const absolutePath = pathPosix.resolve(this.absolutePath, path)
+    const absolutePath = pathPosix.resolve(this.absolutePath, '.' + path)
     if (!absolutePath.startsWith(this.absolutePath)) {
       throw new ConsoleError('Invalid path', { status: 400 })
     }

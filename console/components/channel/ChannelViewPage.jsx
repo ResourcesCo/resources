@@ -68,7 +68,6 @@ export default class ChannelViewPage extends PureComponent {
     const { store, storageType, ...props } = this.props
     const themeName = this.state.theme
     const theme = getTheme(themeName)
-    console.log({ theme, themeName })
     return (
       <>
         <Head title="Resources.co" theme={theme} />
