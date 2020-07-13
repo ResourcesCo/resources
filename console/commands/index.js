@@ -7,7 +7,6 @@ import docs from './docs'
 import note from './note'
 import clear from './clear'
 import help from './help'
-import roll from './roll'
 import request from './request'
 import miscDev from './miscDev'
 
@@ -22,7 +21,6 @@ export default {
   miscDev,
   note,
   clear,
-  roll,
   request,
   darkMode: {
     run() {

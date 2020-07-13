@@ -10,14 +10,6 @@ async function run({}) {
 export default async function app(): Promise<AppSpec> {
   return {
     name: 'Asana',
-    environmentVariables: {
-      ASANA_TOKEN: {
-        doc: `
-          An Asana personal access token, from the
-          [Asana developer console](https://app.asana.com/0/developer-console)'
-        `,
-      },
-    },
     resourceTypes: {
       tasks: {
         routes: [{ path: '/random' }],

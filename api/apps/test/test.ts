@@ -7,7 +7,6 @@ async function run({ action, env, params: { path } }) {
 export default async function app(): Promise<AppSpec> {
   return {
     name: 'Test',
-    environmentVariables: {},
     resourceTypes: {
       tests: {
         routes: [{ path: '/tests/:path*' }],

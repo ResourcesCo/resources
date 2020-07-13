@@ -58,7 +58,7 @@ export interface ResourceType extends ResourceTypeSpec {
 export interface AppSpec {
   name: string
   resourceTypes: { [key: string]: ResourceTypeSpec }
-  environmentVariables: {
+  environmentVariables?: {
     [key: string]: {
       doc: string
     }

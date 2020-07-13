@@ -9,6 +9,7 @@ import asana from '../apps/asana/asana'
 import github from '../apps/github/github'
 import test from '../apps/test/test'
 import random from '../apps/random/random'
+import requests from '../apps/requests/requests'
 import env from './env'
 import { createNanoEvents, Emitter } from 'nanoevents'
 
@@ -17,6 +18,7 @@ const apps = {
   github,
   test,
   random,
+  requests,
 }
 
 // Properties stored and managed by the workspace (a channel cannot set itself to be admin)
