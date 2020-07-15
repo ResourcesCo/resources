@@ -1,5 +1,5 @@
 import { AppSpec } from '../../app-base/App'
-import fetch from 'isomorphic-unfetch'
+import { ok } from '../../app-base/request'
 
 function getHeaders(apiToken, post = false) {
   return {
@@ -22,13 +22,14 @@ function issueApiUrl({ owner, repo, number }: any) {
   return `https://api.github.com/repos/${owner}/${repo}/issues/${number}`
 }
 
-async function close({ env: { GITHUB_TOKEN: apiToken }, params }) {
-  const res = await fetch(issueApiUrl(params), {
+async function close({ env: { GITHUB_TOKEN: apiToken }, params, request }) {
+  const response = await request({
+    url: issueApiUrl(params),
     method: 'PATCH',
     headers: getHeaders(apiToken, true),
     body: JSON.stringify({ state: 'closed' }),
   })
-  if (res.ok) {
+  if (ok(response)) {
     return { type: 'text', text: `Issue closed` }
   } else {
     return { type: 'text', text: `Error closing issue` }
@@ -38,20 +39,22 @@ async function close({ env: { GITHUB_TOKEN: apiToken }, params }) {
 async function comment({
   env: { GITHUB_TOKEN: apiToken },
   params: { comment, ...params },
+  request,
 }) {
-  const res = await fetch(`${issueApiUrl(params)}/comments`, {
+  const response = await request({
+    url: `${issueApiUrl(params)}/comments`,
     method: 'POST',
     headers: getHeaders(apiToken, true),
     body: JSON.stringify({ body: comment }),
   })
-  if (res.ok) {
+  if (ok(response)) {
     return { type: 'text', text: 'Comment added.' }
   } else {
     return { type: 'text', text: 'Error adding comment.' }
   }
 }
 
-async function run({ action, env, params }) {
+async function run({ action, env, params, request }) {
   if (action === 'auth') {
     return auth({ env, params })
   } else if (action === 'auth/clear') {
@@ -59,9 +62,9 @@ async function run({ action, env, params }) {
   } else {
     if (env.GITHUB_TOKEN) {
       if (action === 'close') {
-        return await close({ env, params })
+        return await close({ env, params, request })
       } else if (action === 'comment') {
-        return await comment({ env, params })
+        return await comment({ env, params, request })
       }
     } else {
       return {

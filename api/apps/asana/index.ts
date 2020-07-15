@@ -1,4 +1,5 @@
 import { AppSpec } from '../../app-base/App'
+import { ok } from '../../app-base/request'
 
 function getHeaders(apiToken, post = false) {
   return {
@@ -23,12 +24,12 @@ async function complete({
   request,
 }) {
   const response = await request({
-    headers: getHeaders(apiToken, true),
     url: `https://app.asana.com/api/1.0/tasks/${id}`,
     method: 'PUT',
+    headers: getHeaders(apiToken, true),
     body: { data: { completed: true } },
   })
-  if (response.ok) {
+  if (ok(response)) {
     return { type: 'text', text: `Task marked complete` }
   } else {
     return { type: 'text', text: `Error marking task complete` }
@@ -46,7 +47,7 @@ async function comment({
     method: 'POST',
     body: { data: { text: comment } },
   })
-  if (response.ok) {
+  if (ok(response)) {
     return { type: 'text', text: 'Comment added.' }
   } else {
     return { type: 'text', text: 'Error adding comment.' }
