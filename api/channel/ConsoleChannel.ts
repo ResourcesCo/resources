@@ -5,21 +5,9 @@ import { FileStore } from '../storage/FileStore'
 import App from '../app-base/App'
 import parseArgs from '../app-base/parseArgs'
 import parseUrl from '../app-base/parseUrl'
-import asana from '../apps/asana'
-import github from '../apps/github'
-import test from '../apps/test'
-import random from '../apps/random'
-import requests from '../apps/requests'
+import apps from '../apps'
 import env from './env'
 import { createNanoEvents, Emitter } from 'nanoevents'
-
-const apps = {
-  asana,
-  github,
-  test,
-  random,
-  requests,
-}
 
 // Properties stored and managed by the workspace (a channel cannot set itself to be admin)
 export interface ChannelProps {
@@ -221,6 +209,7 @@ class ConsoleChannel {
         }
         const result = await this.dispatchAction(routeMatch.handler, {
           url: routeMatch.url,
+          resourceType: 'resourceType' in routeMatch && routeMatch.resourceType,
           action:
             isBackgroundAction && routeMatch.handler === this.files
               ? formData.actionName
@@ -232,10 +221,10 @@ class ConsoleChannel {
           formData,
           onMessage: handleMessage,
         })
-        if ('resourceType' in routeMatch) {
-          result.resourceType = routeMatch.resourceType
-        }
         if (result) {
+          if ('resourceType' in routeMatch) {
+            result.resourceType = routeMatch.resourceType
+          }
           result.commandId = messageId
           if (result.type === 'message-command') {
             result.parentCommandId = parentMessageId

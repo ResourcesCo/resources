@@ -14,6 +14,11 @@ async function get({ params: { url }, request }) {
     state: ok(response)
       ? {
           _showOnly: ['response', 'body'],
+          response: {
+            body: {
+              _expanded: true,
+            },
+          },
         }
       : {},
   }
@@ -99,10 +104,10 @@ async function run({
 
 export default async function app(): Promise<AppSpec> {
   return {
-    name: 'requests',
+    name: 'request',
     resourceTypes: {
-      requests: {
-        routes: [{ path: '/requests' }],
+      request: {
+        routes: [{ path: '/request' }],
         actions: {
           get: {
             params: ['url'],

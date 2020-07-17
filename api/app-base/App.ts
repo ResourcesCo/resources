@@ -207,7 +207,10 @@ export default class App {
     parentMessage,
     onMessage,
   }) {
-    const handler = action === 'help' ? this.help : this.onRun
+    const handler =
+      action === 'help' && !this.resourceTypes[resourceType]?.actions?.help
+        ? this.help
+        : this.onRun
     const result = await handler({
       resourceType,
       action,

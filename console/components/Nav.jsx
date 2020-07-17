@@ -18,10 +18,10 @@ export default function Nav({ onSelectExample, theme }) {
         >
           <option value="">Examples</option>
           <option value="help">help</option>
-          <option value="request get https://pokeapi.co/api/v2/pokemon/bulbasaur">
+          <option value="/request :get https://pokeapi.co/api/v2/pokemon/bulbasaur">
             pokeapi.co - bulbasaur
           </option>
-          <option value="request get https://api.github.com/repos/zeit/next.js/commits">
+          <option value="/request :get https://api.github.com/repos/zeit/next.js/commits">
             github - next.js commits
           </option>
         </select>
