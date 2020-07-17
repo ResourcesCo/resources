@@ -35,8 +35,55 @@ async function makeNew({ action, params: { url }, request }) {
   }
 }
 
-async function run({ action, params, request }) {
-  if (action === 'get') {
+async function send({
+  action,
+  params,
+  request,
+  formData,
+  parentMessage,
+  onMessage,
+}) {
+  onMessage({
+    type: 'message-command',
+    action: 'clearErrors',
+  })
+  const req = parentMessage.value
+  if (typeof req.url === 'string' && req.url.length > 0) {
+    const response = await request(req)
+    return {
+      type: 'message-command',
+      action: 'set',
+      path: ['response'],
+      value: response,
+    }
+  } else {
+    return {
+      type: 'message-command',
+      action: 'setError',
+      path: ['url'],
+      error: 'Invalid URL',
+    }
+  }
+}
+
+async function run({
+  action,
+  params,
+  request,
+  formData,
+  parentMessage,
+  onMessage,
+}) {
+  if (formData) {
+    return await send({
+      action,
+      params,
+      request,
+      formData,
+      parentMessage,
+      onMessage,
+    })
+  } else if (action === 'get') {
     return await get({ params, request })
   } else {
     return await makeNew({ action, params, request })

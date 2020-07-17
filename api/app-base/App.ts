@@ -69,6 +69,9 @@ export interface AppSpec {
     action?: string
     params?: object
     env?: object
+    formData?: object
+    parentMessage?: object
+    onMessage?: Function
     request?: Function
   }): MessageReturnValue
 }
@@ -196,12 +199,22 @@ export default class App {
     }
   }
 
-  async run({ resourceType, action, params }) {
+  async run({
+    resourceType,
+    action,
+    params,
+    formData,
+    parentMessage,
+    onMessage,
+  }) {
     const handler = action === 'help' ? this.help : this.onRun
     const result = await handler({
       resourceType,
       action,
       params,
+      formData,
+      parentMessage,
+      onMessage,
       env: this.env,
       request: this.request,
     })

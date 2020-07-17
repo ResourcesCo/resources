@@ -212,6 +212,13 @@ class ConsoleChannel {
         })
       }
       if ('handler' in routeMatch) {
+        const handleMessage = message => {
+          onMessage({
+            ...message,
+            commandId: messageId,
+            parentCommandId: parentMessageId,
+          })
+        }
         const result = await this.dispatchAction(routeMatch.handler, {
           url: routeMatch.url,
           action:
@@ -222,17 +229,22 @@ class ConsoleChannel {
               : undefined,
           params: 'params' in routeMatch ? routeMatch.params : {},
           parentMessage,
+          formData,
+          onMessage: handleMessage,
         })
         if ('resourceType' in routeMatch) {
           result.resourceType = routeMatch.resourceType
         }
+        if (result) {
+          result.commandId = messageId
+          if (result.type === 'message-command') {
+            result.parentCommandId = parentMessageId
+          }
+          result.message = message
+        }
         onMessage(
           [
-            result && {
-              ...result,
-              commandId: messageId,
-              message,
-            },
+            result,
             {
               type: 'loaded',
               commandId: isBackgroundAction ? parentMessageId : messageId,
