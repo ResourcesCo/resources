@@ -214,11 +214,12 @@ class ConsoleChannel {
       if ('handler' in routeMatch) {
         const result = await this.dispatchAction(routeMatch.handler, {
           url: routeMatch.url,
-          action: isBackgroundAction
-            ? formData.actionName
-            : 'action' in routeMatch
-            ? routeMatch.action
-            : undefined,
+          action:
+            isBackgroundAction && routeMatch.handler === this.files
+              ? formData.actionName
+              : 'action' in routeMatch
+              ? routeMatch.action
+              : undefined,
           params: 'params' in routeMatch ? routeMatch.params : {},
           parentMessage,
         })
@@ -230,7 +231,7 @@ class ConsoleChannel {
             result && {
               ...result,
               commandId: messageId,
-              message: parsed[0],
+              message,
             },
             {
               type: 'loaded',

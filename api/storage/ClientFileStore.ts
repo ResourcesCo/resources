@@ -15,14 +15,18 @@ class ClientFileStore implements FileStore {
     this.actions = actions
   }
 
+  relativePath(path) {
+    return path.startsWith('/') ? `.${path}` : path
+  }
+
   async get({ path }) {
-    const response = await this.client.request({ url: path })
+    const response = await this.client.request({ url: this.relativePath(path) })
     return response.body
   }
 
   async put({ path, value }) {
     const response = await this.client.request({
-      url: path,
+      url: this.relativePath(path),
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: { contentType: 'application/json', value },
@@ -32,7 +36,7 @@ class ClientFileStore implements FileStore {
 
   async delete({ path }) {
     const response = await this.client.request({
-      url: path,
+      url: this.relativePath(path),
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
     })
