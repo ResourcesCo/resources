@@ -26,6 +26,7 @@ async function makeNew({ action, params: { url }, request }) {
     value: {
       method: action === 'new' ? 'POST' : action.toUpperCase(),
       url,
+      headers: {},
       ...(action !== 'delete' && { body: {} }),
     },
     state: {
@@ -47,7 +48,13 @@ async function send({
     type: 'message-command',
     action: 'clearErrors',
   })
-  const req = parentMessage.value
+  const v = parentMessage.value
+  const req = {
+    url: v.url,
+    method: v.method,
+    headers: v.headers,
+    body: v.body,
+  }
   if (typeof req.url === 'string' && req.url.length > 0) {
     const response = await request(req)
     return {
