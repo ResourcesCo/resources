@@ -61,6 +61,7 @@ function CodeMenu({
     >
       {codeTypes.map(({ name, mediaType: itemMediaType }) => (
         <MenuItem
+          key={itemMediaType}
           onClick={() =>
             onMessage({
               action: 'setView',

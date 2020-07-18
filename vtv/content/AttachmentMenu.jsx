@@ -22,7 +22,7 @@ function InsertObjectMenu({ onInsert, context, ...props }) {
 function CopyMetadataMenu({
   fileMetadata: { name, type, size },
   onCopy,
-  clipboard,
+  context: { clipboard },
   context,
   ...props
 }) {
@@ -87,7 +87,13 @@ function getMetadata(file) {
   )
 }
 
-export default ({ path, onMessage, file, onClose, clipboard, context }) => {
+export default ({
+  path,
+  file,
+  onClose,
+  context: { onMessage, clipboard },
+  context,
+}) => {
   const handleInsert = async (type, object = false) => {
     let data = await readFile(file, type === 'text' ? 'text' : 'data-url')
     if (type === 'base64') {

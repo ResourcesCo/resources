@@ -11,8 +11,8 @@ export default function AttachmentView({
   attachments,
   path,
   onMessage,
-  clipboard,
-  theme,
+  context: { theme, clipboard },
+  context,
 }) {
   const [files, setFiles] = useState(null)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -31,7 +31,7 @@ export default function AttachmentView({
                 ref={ref}
                 primary
                 onClick={() => setMenuOpen(true)}
-                theme={theme}
+                context={context}
               >
                 {files[0].name} <FontAwesomeIcon icon={faCaretDown} size="sm" />
               </ActionButton>
@@ -44,7 +44,7 @@ export default function AttachmentView({
               path={path}
               onMessage={onMessage}
               clipboard={clipboard}
-              theme={theme}
+              context={context}
             />
           )}
         </Manager>

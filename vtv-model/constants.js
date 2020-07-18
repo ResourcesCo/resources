@@ -21,12 +21,12 @@ export const codeTypes = [
   {
     name: 'JSON',
     editorMode: { mode: 'javascript', json: true },
-    mediaType: 'text/x-swift',
+    mediaType: 'application/json',
   },
   {
     name: 'YAML',
     editorMode: { mode: 'yaml', json: true },
-    mediaType: 'text/x-swift',
+    mediaType: 'text/x-yaml',
   },
   {
     name: 'CSV',
