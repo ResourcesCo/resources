@@ -6,6 +6,8 @@ import {
 } from '../../vtv-model/analyze'
 import { getChildState } from '../../vtv-model'
 import InlineContent from '../content/InlineContent'
+import RowHeaderView from './RowHeaderView'
+import ColumnHeaderView from './ColumnHeaderView'
 
 export default ({ name, value, path, state, context: { theme }, context }) => {
   const paths = getCollectionPaths(value).slice(0, 15) // TODO: support customizing displayed columns
@@ -14,16 +16,26 @@ export default ({ name, value, path, state, context: { theme }, context }) => {
       <table>
         <thead>
           <tr>
-            <th>key</th>
+            <th>
+              <ColumnHeaderView context={context}>
+                <em>key</em>
+              </ColumnHeaderView>
+            </th>
             {paths.map((path, i) => (
-              <th key={i}>{joinPath(path)}</th>
+              <th key={i}>
+                <ColumnHeaderView context={context}>
+                  {path.length === 0 ? <em>value</em> : joinPath(path)}
+                </ColumnHeaderView>
+              </th>
             ))}
           </tr>
         </thead>
         <tbody>
           {Object.keys(value).map(key => (
             <tr key={key}>
-              <td>{key}</td>
+              <td>
+                <RowHeaderView context={context}>{key}</RowHeaderView>
+              </td>
               {paths.map((columnPath, i) => (
                 <td key={i}>
                   <InlineContent
@@ -49,8 +61,8 @@ export default ({ name, value, path, state, context: { theme }, context }) => {
         }
         table th,
         table td {
-          border: 1px solid ${theme.bubble1};
-          padding: 3px;
+          padding: 3px 10px;
+          text-align: left;
         }
       `}</style>
     </div>

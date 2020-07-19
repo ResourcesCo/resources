@@ -55,6 +55,8 @@ export const getPaths = (item, depth = 2) => {
         result.push([key])
       }
     }
+  } else {
+    result.push([])
   }
   return result
 }

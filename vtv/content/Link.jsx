@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import LinkMenu from './LinkMenu'
-import StringView from './StringView'
+import StringView from '../generic/StringView'
 import { Manager, Reference } from 'react-popper'
 
 export default ({ url, onEdit, context: { onPickId, theme }, context }) => {
