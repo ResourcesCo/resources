@@ -25,6 +25,7 @@ function InlineActionView({
       <style jsx>{`
         .actions-content {
           margin-left: 10px;
+          margin-right: 10px;
         }
         .actions-content :global(button) {
           margin-right: 5px;

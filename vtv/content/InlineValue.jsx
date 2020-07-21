@@ -114,22 +114,10 @@ const InlineValue = ({
     typeClass = 'value'
   }
 
-  let sizeClass = 'full-width'
-  let customWidth = 200
-  if (typeof newInputValue === 'string' && newInputValue.length <= 80) {
-    sizeClass = 'custom-width'
-    customWidth = (newInputValue.length + 2) * 6
-  } else {
-    sizeClass = 'full-width'
-  }
   const showStringExcerpt = typeof value === 'string' && value.length > 500
   const useTextArea = !expanded && !showStringExcerpt && (autoEdit || editing)
   return (
-    <div
-      className={`${typeClass} ${error ? 'has-error' : ''} ${
-        useTextArea ? sizeClass : ''
-      }`}
-    >
+    <div className={`${typeClass} ${error ? 'has-error' : ''}`}>
       {useTextArea && (
         <Textarea
           ref={inputRef}
@@ -159,6 +147,8 @@ const InlineValue = ({
       <style jsx>{`
         div {
           display: flex;
+          width: 100%;
+          flex-grow: 1;
         }
         div :global(textarea) {
           background: none;
@@ -169,20 +159,10 @@ const InlineValue = ({
           color: ${theme.foreground};
           margin: 0;
           padding: 0;
+          flex-grow: 1;
         }
         div.has-error :global(textarea) {
           border-bottom: 1px solid red;
-        }
-        div.custom-width :global(textarea) {
-          width: ${customWidth}px;
-          flex-grow: 1;
-        }
-        div.full-width {
-          width: 100%;
-          flex-grow: 1;
-        }
-        div.full-width :global(textarea) {
-          flex-grow: 1;
         }
         div.number span,
         div.number :global(textarea) {
