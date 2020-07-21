@@ -105,6 +105,7 @@ async function run({
 export default async function app(): Promise<AppSpec> {
   return {
     name: 'request',
+    description: 'make API requests',
     resourceTypes: {
       request: {
         routes: [{ path: '/request' }],

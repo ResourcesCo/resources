@@ -8,6 +8,7 @@ import parseUrl from '../app-base/parseUrl'
 import apps from '../apps'
 import env from './env'
 import { createNanoEvents, Emitter } from 'nanoevents'
+import app from 'api/apps/channel'
 
 // Properties stored and managed by the workspace (a channel cannot set itself to be admin)
 export interface ChannelProps {
@@ -103,13 +104,19 @@ class ConsoleChannel {
     })
   }
 
+  async loadApp(appName) {
+    return await App.get({
+      app: apps[appName],
+      env: this.env[appName],
+      ...(appName === 'channel' && { channel: this }),
+    })
+  }
+
   async loadApps() {
     this.apps = {}
     const appNames = Object.keys(apps)
     const loadedApps = await Promise.all(
-      appNames.map(appName =>
-        App.get({ app: apps[appName], env: this.env[appName] })
-      )
+      appNames.map(appName => this.loadApp(appName))
     )
     for (let i = 0; i < loadedApps.length; i++) {
       this.apps[appNames[i]] = loadedApps[i]

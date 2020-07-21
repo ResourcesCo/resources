@@ -1,4 +1,4 @@
-import channel, { channelData } from './channel'
+import channel from './channel'
 import asana from './asana'
 import github from './github'
 import test from './test'
@@ -13,7 +13,5 @@ const apps = {
   random,
   request,
 }
-
-channelData.apps = apps
 
 export default apps

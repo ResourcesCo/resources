@@ -83,6 +83,7 @@ export default async function app(): Promise<AppSpec> {
         `,
       },
     },
+    description: 'Manage tasks on Asana',
     resourceTypes: {
       tasks: {
         routes: [

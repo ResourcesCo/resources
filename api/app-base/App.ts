@@ -2,6 +2,7 @@ import { match } from 'path-to-regexp'
 import mapValues from 'lodash/mapValues'
 import request from './request'
 import helpMessage from './helpMessage'
+import ConsoleChannel from 'api/channel/ConsoleChannel'
 
 export interface Message {
   type: string
@@ -57,6 +58,7 @@ export interface ResourceType extends ResourceTypeSpec {
 
 export interface AppSpec {
   name: string
+  description: string
   resourceTypes: { [key: string]: ResourceTypeSpec }
   environmentVariables?: {
     [key: string]: {
@@ -87,22 +89,27 @@ function defaultAction(actionName) {
 
 export default class App {
   name: string
+  description: string
   resourceTypes: { [key: string]: ResourceType }
   onRun: Function
   env: { [key: string]: string }
   request: Function
+  channel?: ConsoleChannel
 
   constructor({
     appSpec,
     env,
     request: requestParam,
+    channel,
   }: {
     appSpec: AppSpec
     env: { [key: string]: string }
     request?: Function
+    channel: ConsoleChannel
   }) {
-    const { name, resourceTypes, run } = appSpec
+    const { name, resourceTypes, run, description } = appSpec
     this.name = name
+    this.description = description
     this.resourceTypes = mapValues(
       resourceTypes,
       ({ routes, actions, ...props }, name) => ({
@@ -115,6 +122,7 @@ export default class App {
     this.env = env
     this.onRun = run
     this.request = requestParam || request
+    this.channel = channel
   }
 
   prepareMessage(result: MessageValue) {
@@ -220,6 +228,7 @@ export default class App {
       onMessage,
       env: this.env,
       request: this.request,
+      channel: this.channel,
     })
     return this.prepareMessage(result)
   }
@@ -227,11 +236,13 @@ export default class App {
   static async get({
     app,
     env,
+    channel,
   }: {
     app(): Promise<AppSpec>
     env: { [key: string]: string }
+    channel?: ConsoleChannel
   }) {
     const appSpec = await app()
-    return new App({ appSpec, env })
+    return new App({ appSpec, env, channel })
   }
 }
