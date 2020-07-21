@@ -7,11 +7,25 @@ const actions = {
     }
   },
   async help({ channel }) {
-    const apps = {}
+    const apps = {},
+      appsState = { _expanded: true }
     for (const appName of Object.keys(channel.apps)) {
       apps[appName] = {
         description: channel.apps[appName].description,
         more: `:help /${appName}`,
+      }
+      appsState[appName] = {
+        more: {
+          _actions: [
+            {
+              name: 'go',
+              title: 'Go',
+              primary: true,
+              action: 'pasteIntoConsole',
+            },
+          ],
+        },
+        _expanded: true,
       }
     }
     return {
@@ -36,6 +50,11 @@ const actions = {
           `,
         ].map(s => s.replace(/\s+/g, ' ').trim()),
         apps,
+      },
+      state: {
+        intro: { _expanded: true },
+        apps: appsState,
+        _expanded: true,
       },
     }
   },

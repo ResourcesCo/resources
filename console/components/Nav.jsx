@@ -24,6 +24,9 @@ export default function Nav({ onSelectExample, theme }) {
           <option value="/request :get https://api.github.com/repos/zeit/next.js/commits">
             github - next.js commits
           </option>
+          <option value="/request :post https://httpbin.org/post">
+            post to httpbin
+          </option>
         </select>
       </div>
 

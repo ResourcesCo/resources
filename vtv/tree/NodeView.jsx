@@ -145,7 +145,6 @@ function NodeView({
           nodeMenuProps={nodeMenuProps}
           context={context}
         />
-        {actions && <InlineActionView actions={actions} context={context} />}
 
         <div className="node-content">
           <InlineContent
@@ -155,6 +154,13 @@ function NodeView({
             path={path}
             context={context}
           />
+          {actions && (
+            <InlineActionView
+              value={value}
+              actions={actions}
+              context={context}
+            />
+          )}
         </div>
         <div className="actions-right">
           <NodeMenuButton nodeMenuProps={nodeMenuProps} />
@@ -162,7 +168,11 @@ function NodeView({
         <style jsx>{`
           .node-content {
             margin-left: 10px;
+            margin-right: 10px;
             flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
           }
           .row {
             display: flex;

@@ -114,25 +114,20 @@ const InlineValue = ({
     typeClass = 'value'
   }
 
-  const sizeClass = value => {
-    if (typeof value !== 'string') {
-      return 'full-width'
-    } else if (value.length <= 10) {
-      return 'small'
-    } else if (value.length <= 20) {
-      return 'medium'
-    } else if (value.length <= 30) {
-      return 'large'
-    } else {
-      return 'full-width'
-    }
+  let sizeClass = 'full-width'
+  let customWidth = 200
+  if (typeof newInputValue === 'string' && newInputValue.length <= 80) {
+    sizeClass = 'custom-width'
+    customWidth = (newInputValue.length + 2) * 6
+  } else {
+    sizeClass = 'full-width'
   }
   const showStringExcerpt = typeof value === 'string' && value.length > 500
   const useTextArea = !expanded && !showStringExcerpt && (autoEdit || editing)
   return (
     <div
       className={`${typeClass} ${error ? 'has-error' : ''} ${
-        useTextArea ? sizeClass(newInputValue) : ''
+        useTextArea ? sizeClass : ''
       }`}
     >
       {useTextArea && (
@@ -163,7 +158,6 @@ const InlineValue = ({
 
       <style jsx>{`
         div {
-          width: 100%;
           display: flex;
         }
         div :global(textarea) {
@@ -179,16 +173,12 @@ const InlineValue = ({
         div.has-error :global(textarea) {
           border-bottom: 1px solid red;
         }
-        div.small :global(textarea) {
-          max-width: 80px;
+        div.custom-width :global(textarea) {
+          width: ${customWidth}px;
           flex-grow: 1;
         }
-        div.medium :global(textarea) {
-          max-width: 180px;
-          flex-grow: 1;
-        }
-        div.large :global(textarea) {
-          max-width: 250px;
+        div.full-width {
+          width: 100%;
           flex-grow: 1;
         }
         div.full-width :global(textarea) {
