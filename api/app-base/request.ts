@@ -1,12 +1,8 @@
 import fetch from 'isomorphic-unfetch'
-import { array } from 'prop-types'
+import headerCase from './util/string/headerCase'
 
 export function ok(response) {
   return response.status >= 200 && response.status < 300
-}
-
-function headerCase(str) {
-  return str.toLowerCase().replace(/\b\w/g, s => s.toUpperCase())
 }
 
 function jsonHeaders(headers) {
@@ -29,6 +25,14 @@ function jsonHeaders(headers) {
     sortedResult[key] = result[key]
   }
   return sortedResult
+}
+
+function titleCaseHeaders(headers) {
+  const result = {}
+  for (let key of Object.keys(headers)) {
+    result[headerCase(key)] = headers[key]
+  }
+  return result
 }
 
 async function jsonBody(res) {
@@ -65,7 +69,11 @@ export default async function request({
     fetchData.method = method
   }
   if (headers) {
-    fetchData.headers = headers
+    fetchData.headers = {
+      ...(body &&
+        typeof body !== 'string' && { 'Content-Type': 'application/json' }),
+      ...(headers && titleCaseHeaders(headers)),
+    }
   }
   if (body) {
     fetchData.body = typeof body === 'string' ? body : JSON.stringify(body)

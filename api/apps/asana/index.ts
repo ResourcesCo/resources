@@ -1,14 +1,6 @@
 import { AppSpec } from '../../app-base/App'
 import { ok } from '../../app-base/request'
 import camelCase from '../../app-base/util/string/camelCase'
-import { get } from 'http'
-
-function getHeaders(apiToken, post = false) {
-  return {
-    Authorization: `Bearer ${apiToken}`,
-    ...(post ? { 'Content-Type': 'application/json' } : {}),
-  }
-}
 
 const actions = {
   auth: {
@@ -21,9 +13,45 @@ const actions = {
       return 'API key cleared.'
     },
   },
-  // TODO: add workspaces
+  workspaces: {
+    async get({ env: { ASANA_TOKEN: apiToken }, request }) {
+      const req = {
+        url: 'https://app.asana.com/api/1.0/workspaces',
+        method: 'GET',
+        headers: { Authorization: `Bearer ${apiToken}` },
+      }
+      const response = await request(req)
+      if (ok(response)) {
+        return {
+          type: 'tree',
+          name: 'request',
+          value: { ...req, response },
+          state: { _showOnly: ['response', 'body', 'data'] },
+        }
+      } else {
+        return { type: 'text', text: `Error getting task` }
+      }
+    },
+  },
   tasks: {
-    // TODO: add get
+    async get({ env: { ASANA_TOKEN: apiToken }, params: { id }, request }) {
+      const req = {
+        url: `https://app.asana.com/api/1.0/tasks/${id}`,
+        method: 'GET',
+        headers: { Authorization: `Bearer ${apiToken}` },
+      }
+      const response = await request(req)
+      if (ok(response)) {
+        return {
+          type: 'tree',
+          name: 'request',
+          value: { ...req, response },
+          state: { _showOnly: ['response', 'body', 'data'] },
+        }
+      } else {
+        return { type: 'text', text: `Error getting task` }
+      }
+    },
     async complete({
       env: { ASANA_TOKEN: apiToken },
       params: { id },
@@ -32,7 +60,7 @@ const actions = {
       const response = await request({
         url: `https://app.asana.com/api/1.0/tasks/${id}`,
         method: 'PUT',
-        headers: getHeaders(apiToken, true),
+        headers: { Authorization: `Bearer ${apiToken}` },
         body: { data: { completed: true } },
       })
       if (ok(response)) {
@@ -47,7 +75,7 @@ const actions = {
       request,
     }) {
       const response = await request({
-        headers: getHeaders(apiToken, true),
+        headers: { Authorization: `Bearer ${apiToken}` },
         url: `https://app.asana.com/api/1.0/tasks/${id}/stories`,
         method: 'POST',
         body: { data: { text: comment } },
