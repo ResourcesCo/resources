@@ -26,7 +26,23 @@ const actions = {
           type: 'tree',
           name: 'request',
           value: { ...req, response },
-          state: { _showOnly: ['response', 'body', 'data'] },
+          state: {
+            _showOnly: ['response', 'body', 'data'],
+          },
+          rules: {
+            workspace: {
+              route: '/response/body/data/:index',
+              summary: [
+                'name',
+                {
+                  name: 'projects',
+                  params: { id: '0/id' },
+                  path: '/asana/workspaces/:id/projects',
+                  action: 'get',
+                },
+              ],
+            },
+          },
         }
       } else {
         return { type: 'text', text: `Error getting task` }
