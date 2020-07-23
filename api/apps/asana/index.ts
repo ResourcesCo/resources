@@ -31,7 +31,7 @@ const actions = {
           },
           rules: {
             workspace: {
-              route: '/response/body/data/:index',
+              selector: '/response/body/data/:index',
               summary: [
                 'name',
                 {

@@ -5,6 +5,7 @@ export default function Tree({
   name,
   value,
   state = { _expanded: true },
+  rules,
   onMessage,
   commandId,
   onPickId,
@@ -37,6 +38,7 @@ export default function Tree({
         name={name}
         value={value}
         state={state}
+        rules={rules}
         theme={theme}
         onChange={onChange}
         onAction={m => onSubmitForm({ commandId, message, formData: m })}

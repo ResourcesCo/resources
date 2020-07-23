@@ -29,7 +29,7 @@ function NodeView({
   state: _state,
   displayName,
   showOnlyPath = [],
-  path = [],
+  path,
   showAll,
   context,
 }) {

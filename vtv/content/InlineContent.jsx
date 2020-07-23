@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { getState } from '../../vtv-model/state'
 import InlineValue from './InlineValue'
@@ -12,7 +13,7 @@ function InlineContent({
   state,
   path,
   autoEdit = true,
-  context: { onMessage },
+  context: { onMessage, rules },
   context,
 }) {
   const {
@@ -21,12 +22,17 @@ function InlineContent({
     _attachments: attachments,
     _error: error,
   } = getState(state)
+
+  const matchingRules = useMemo(() => rules && rules.match(path))
+
+  let valueContent
+
   if (attachments) {
-    return (
+    valueContent = (
       <AttachmentView path={path} attachments={attachments} context={context} />
     )
   } else if (editing) {
-    return (
+    valueContent = (
       <InlineValue
         name={name}
         value={value}
@@ -48,9 +54,9 @@ function InlineContent({
           editing: true,
         })
       }
-      return <Link url={value} onEdit={handleEdit} context={context} />
+      valueContent = <Link url={value} onEdit={handleEdit} context={context} />
     } else if (typeof value === 'object' && value !== null) {
-      return (
+      valueContent = (
         <CollectionSummary
           type={Array.isArray(value) ? 'array' : 'object'}
           length={Object.keys(value).length}
@@ -58,7 +64,7 @@ function InlineContent({
         />
       )
     } else {
-      return (
+      valueContent = (
         <InlineValue
           name={name}
           value={value}
@@ -73,6 +79,12 @@ function InlineContent({
       )
     }
   }
+  return (
+    <>
+      {matchingRules && '✅'}
+      {valueContent}
+    </>
+  )
 }
 
 InlineContent.propTypes = {
