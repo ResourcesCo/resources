@@ -86,11 +86,16 @@ export default class Client {
   }
 
   protected requestWithIpc = async ({
+    method = 'GET',
     url,
     ...params
   }): Promise<ResponseInfo> => {
     if (typeof window !== 'undefined' && 'rco' in window) {
-      const response = await window.rco.request(params)
+      const response = await window.rco.request({
+        method: method.toUpperCase(),
+        url,
+        ...params,
+      })
       return response
     } else {
       throw new Error('adapter set to ipc but missing ipc function')

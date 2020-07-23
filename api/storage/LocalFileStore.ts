@@ -1,9 +1,11 @@
-const fsPromises = require('fs').promises
-const pathPosix = require('path').posix
+import fs from 'fs'
+import path from 'path'
 import { FileStore, FileStoreResponse } from './FileStore'
 import ConsoleError from '../ConsoleError'
-import mkdirp from 'mkdirp'
 import { dirname } from 'path'
+
+const fsPromises = fs.promises
+const pathPosix = path.posix
 
 class LocalFileStore implements FileStore {
   absolutePath: string
@@ -12,10 +14,10 @@ class LocalFileStore implements FileStore {
     this.absolutePath = pathPosix.resolve(path)
   }
 
-  getPath(path) {
+  getPath(path: string): string {
     const absolutePath = pathPosix.resolve(
       this.absolutePath,
-      path.startsWith('/') ? +'.' + path : path
+      path.startsWith('/') ? `.${path}` : path
     )
     if (!absolutePath.startsWith(this.absolutePath)) {
       throw new ConsoleError('Invalid path', { status: 400 })
@@ -66,13 +68,37 @@ class LocalFileStore implements FileStore {
       )
     } catch (err) {
       if (err.code === 'ENOENT') {
-        await mkdirp(dirname(absolutePath))
-        await fsPromises.writeFile(
-          absolutePath,
-          JSON.stringify(value, null, 2) + '\n'
-        )
+        try {
+          const dir = dirname(absolutePath)
+          await fsPromises.mkdir(dir, { recursive: true })
+        } catch (err) {
+          return {
+            ok: false,
+            error: {
+              message: 'Error creating directory',
+            },
+          }
+        }
+        try {
+          await fsPromises.writeFile(
+            absolutePath,
+            JSON.stringify(value, null, 2) + '\n'
+          )
+        } catch (err) {
+          return {
+            ok: false,
+            error: {
+              message: 'Error writing file after creating directory',
+            },
+          }
+        }
       } else {
-        throw err
+        return {
+          ok: false,
+          error: {
+            message: 'Unknown error',
+          },
+        }
       }
     }
     return { ok: true }
@@ -85,7 +111,7 @@ class LocalFileStore implements FileStore {
   }
 
   constrain(subpath) {
-    return new LocalFileStore(this.getPath(subpath))
+    return new LocalFileStore({ path: this.getPath(subpath) })
   }
 }
 

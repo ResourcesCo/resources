@@ -103,7 +103,13 @@ class ConsoleWorkspace {
   }
 
   async saveConfig() {
-    await this.fileStore.put({ path: 'workspace.json', value: this.config })
+    const res = await this.fileStore.put({
+      path: 'workspace.json',
+      value: this.config,
+    })
+    if (!res.ok) {
+      console.error('error saving workspace config', res.error)
+    }
   }
 
   async getChannel(name) {

@@ -33,7 +33,7 @@ const actions = {
       }
     },
   },
-  tasks: {
+  task: {
     async get({ env: { ASANA_TOKEN: apiToken }, params: { id }, request }) {
       const req = {
         url: `https://app.asana.com/api/1.0/tasks/${id}`,
@@ -122,7 +122,7 @@ export default async function app(): Promise<AppSpec> {
           },
         },
       },
-      tasks: {
+      task: {
         routes: [
           {
             host: 'app.asana.com',
