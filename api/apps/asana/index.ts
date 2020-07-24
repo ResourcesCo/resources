@@ -33,8 +33,13 @@ const actions = {
             workspace: {
               selector: '/response/body/data/:index',
               summary: [
-                'name',
                 {
+                  type: 'node',
+                  path: ['name'],
+                  id: true,
+                },
+                {
+                  type: 'action',
                   name: 'projects',
                   params: { id: '0/id' },
                   path: '/asana/workspaces/:id/projects',

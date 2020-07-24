@@ -14,14 +14,21 @@ import { match, MatchFunction } from 'path-to-regexp'
 //   ],
 // }
 
+export interface NodeView {
+  type: 'node'
+  path: string[]
+  showLabel: boolean
+}
+
 export interface ActionLink {
+  type: 'action'
   name: string
   params: { [key: string]: string }
   path: string
   action: string
 }
 
-export type SummaryItem = string | ActionLink
+export type SummaryItem = NodeView | ActionLink
 
 export type SummarySpec = SummaryItem[]
 

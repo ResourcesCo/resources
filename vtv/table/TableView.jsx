@@ -5,7 +5,7 @@ import {
   getAtPath,
 } from '../../vtv-model/analyze'
 import { getChildState } from '../../vtv-model'
-import InlineContent from '../content/InlineContent'
+import ValueInlineContent from '../content/ValueInlineContent'
 import RowHeaderView from './RowHeaderView'
 import ColumnHeaderView from './ColumnHeaderView'
 
@@ -38,7 +38,7 @@ export default ({ name, value, path, state, context: { theme }, context }) => {
               </td>
               {paths.map((columnPath, i) => (
                 <td key={i}>
-                  <InlineContent
+                  <ValueInlineContent
                     name={name}
                     value={getAtPath(value[key], columnPath)}
                     path={[...path, key, ...columnPath]}

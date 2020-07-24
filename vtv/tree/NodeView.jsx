@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import getNested from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'
@@ -31,10 +31,10 @@ function NodeView({
   showOnlyPath = [],
   path,
   showAll,
+  context: { ruleList, onMessage, theme },
   context,
 }) {
   const [viewChanged, setViewChanged] = useState(false)
-  const { onMessage, theme } = context
 
   const state = getState(_state)
   const {
@@ -62,6 +62,11 @@ function NodeView({
       }, 10)
     }
   }, [expanded, view])
+
+  const rules = useMemo(() => ruleList && ruleList.match(path), [
+    ruleList,
+    path,
+  ])
 
   const hasChildren = hasChildrenFn(value)
   let isExpandable = hasChildren
@@ -152,6 +157,7 @@ function NodeView({
             value={value}
             state={state}
             path={path}
+            rules={rules}
             context={context}
           />
         </div>

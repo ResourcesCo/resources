@@ -25,14 +25,13 @@ export interface RuleListSpec {
 export default class RuleList {
   rules: { [key: string]: Rule }
 
-  constructor(rules: RuleListSpec) {
+  constructor(rules: RuleListSpec = {}) {
     this.rules = mapValues(rules, (rule, name) => new Rule({ name, ...rule }))
   }
 
   // return matching declarations for a path
   match(path: string[]) {
     const pointer = encodePointer(path)
-    const result = Object.values(this.rules).filter(rule => rule.match(pointer))
-    return result.length > 0 ? result : undefined
+    return Object.values(this.rules).filter(rule => rule.match(pointer))
   }
 }

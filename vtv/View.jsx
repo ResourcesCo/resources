@@ -16,8 +16,8 @@ export default function View({
   codeMirrorComponent,
   name,
   value,
-  state,
-  rules,
+  state = {},
+  rules = {},
 }) {
   const onMessage = message => {
     if (message.action === 'runAction') {
@@ -45,7 +45,7 @@ export default function View({
           value,
           state,
         },
-        rules: rules ? new RuleList(rules) : undefined,
+        ruleList: new RuleList(rules),
         onMessage: onMessage,
         clipboard: clipboard || defaultClipboard,
         theme: getTheme(theme),

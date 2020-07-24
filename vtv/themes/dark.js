@@ -14,6 +14,7 @@ export default {
   numberColor: '#9ce',
   valueColor: '#dd9',
   bubble1: '#696959',
+  bubble2: '#292919',
   menuBackground: '#777',
   menuHighlight: '#878787',
   errorColor: '#c00',
