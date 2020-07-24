@@ -41,7 +41,7 @@ const actions = {
                 {
                   type: 'action',
                   name: 'projects',
-                  params: { id: '0/id' },
+                  params: { id: '0/gid' },
                   path: '/asana/workspaces/:id/projects',
                   action: 'get',
                 },

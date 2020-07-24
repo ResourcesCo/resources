@@ -1,5 +1,6 @@
 import ValueInlineContent from './ValueInlineContent'
 import InlineNodeView from './InlineNodeView'
+import ActionButton from './ActionButton'
 import getNested from 'lodash/get'
 import { getNestedState } from '../../vtv-model/state'
 
@@ -31,6 +32,16 @@ export default function InlineContent({
                 path={[...path, ...summaryItem.path]}
                 showLabel={summaryItem.showLabel}
                 labelPath={summaryItem.path}
+                context={context}
+              />
+            )
+          } else if (summaryItem.type === 'action') {
+            return (
+              <ActionButton
+                value={value}
+                state={state}
+                path={path}
+                actionLink={summaryItem}
                 context={context}
               />
             )

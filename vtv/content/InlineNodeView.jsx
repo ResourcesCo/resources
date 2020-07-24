@@ -5,7 +5,6 @@ export default function InlineNodeView({
   value,
   state,
   path,
-  id,
   showLabel,
   labelPath,
   context: { theme },
