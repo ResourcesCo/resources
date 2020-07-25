@@ -36,13 +36,218 @@ const actions = {
                 {
                   type: 'node',
                   path: ['name'],
-                  id: true,
+                  showLabel: false,
                 },
                 {
                   type: 'action',
                   name: 'projects',
                   params: { id: '0/gid' },
                   path: '/asana/workspaces/:id/projects',
+                  action: 'get',
+                },
+              ],
+            },
+          },
+        }
+      } else {
+        return { type: 'text', text: `Error getting task` }
+      }
+    },
+  },
+  projects: {
+    async get({
+      env: { ASANA_TOKEN: apiToken },
+      params: { workspace },
+      request,
+    }) {
+      const req = {
+        url: `https://app.asana.com/api/1.0/workspaces/${workspace}/projects`,
+        method: 'GET',
+        headers: { Authorization: `Bearer ${apiToken}` },
+      }
+      const response = await request(req)
+      if (ok(response)) {
+        return {
+          type: 'tree',
+          name: 'request',
+          value: { ...req, response },
+          state: {
+            _showOnly: ['response', 'body', 'data'],
+          },
+          rules: {
+            workspace: {
+              selector: '/response/body/data/:index',
+              summary: [
+                {
+                  type: 'node',
+                  path: ['name'],
+                  showLabel: false,
+                },
+                {
+                  type: 'action',
+                  name: 'tasks',
+                  params: { id: '0/gid' },
+                  path: '/asana/projects/:id/tasks',
+                  action: 'get',
+                },
+                {
+                  type: 'action',
+                  name: 'sections',
+                  params: { id: '0/gid' },
+                  path: '/asana/projects/:id/sections',
+                  action: 'get',
+                },
+              ],
+            },
+          },
+        }
+      } else {
+        return { type: 'text', text: `Error getting task` }
+      }
+    },
+  },
+  projectTasks: {
+    async get({
+      env: { ASANA_TOKEN: apiToken },
+      params: { project },
+      request,
+    }) {
+      const req = {
+        url: `https://app.asana.com/api/1.0/tasks?project=${project}&opt_expand=projects.gid&completed_since=now`,
+        method: 'GET',
+        headers: { Authorization: `Bearer ${apiToken}` },
+      }
+      const response = await request(req)
+      if (ok(response)) {
+        return {
+          type: 'tree',
+          name: 'request',
+          value: { ...req, response },
+          state: {
+            _showOnly: ['response', 'body', 'data'],
+          },
+          rules: {
+            workspace: {
+              selector: '/response/body/data/:index',
+              summary: [
+                {
+                  type: 'node',
+                  path: ['name'],
+                  showLabel: false,
+                },
+                {
+                  type: 'action',
+                  name: 'comment',
+                  params: { id: '0/gid' },
+                  path: '/asana/tasks/:id',
+                  action: 'comment',
+                },
+                {
+                  type: 'action',
+                  name: 'complete',
+                  params: { id: '0/gid' },
+                  path: '/asana/tasks/:id',
+                  action: 'complete',
+                },
+              ],
+            },
+          },
+        }
+      } else {
+        return { type: 'text', text: `Error getting task` }
+      }
+    },
+  },
+  sectionTasks: {
+    async get({
+      env: { ASANA_TOKEN: apiToken },
+      params: { section },
+      request,
+    }) {
+      const req = {
+        url: `https://app.asana.com/api/1.0/tasks?section=${section}&opt_expand=memberships&completed_since=now&opt_fields=name,resource_type,completed`,
+        method: 'GET',
+        headers: { Authorization: `Bearer ${apiToken}` },
+      }
+      const response = await request(req)
+      if (ok(response)) {
+        return {
+          type: 'tree',
+          name: 'request',
+          value: { ...req, response },
+          state: {
+            _showOnly: ['response', 'body', 'data'],
+          },
+          rules: {
+            workspace: {
+              selector: '/response/body/data/:index',
+              summary: [
+                {
+                  type: 'node',
+                  path: ['name'],
+                  showLabel: false,
+                },
+                {
+                  type: 'node',
+                  path: ['completed'],
+                },
+                {
+                  type: 'action',
+                  name: 'comment',
+                  params: { id: '0/gid' },
+                  path: '/asana/tasks/:id',
+                  action: 'comment',
+                },
+                {
+                  type: 'action',
+                  name: 'complete',
+                  params: { id: '0/gid' },
+                  path: '/asana/tasks/:id',
+                  action: 'complete',
+                },
+              ],
+            },
+          },
+        }
+      } else {
+        return { type: 'text', text: `Error getting task` }
+      }
+    },
+  },
+  sections: {
+    async get({
+      env: { ASANA_TOKEN: apiToken },
+      params: { project },
+      request,
+    }) {
+      const req = {
+        url: `https://app.asana.com/api/1.0/projects/${project}/sections`,
+        method: 'GET',
+        headers: { Authorization: `Bearer ${apiToken}` },
+      }
+      const response = await request(req)
+      if (ok(response)) {
+        return {
+          type: 'tree',
+          name: 'request',
+          value: { ...req, response },
+          state: {
+            _showOnly: ['response', 'body', 'data'],
+          },
+          rules: {
+            workspace: {
+              selector: '/response/body/data/:index',
+              summary: [
+                {
+                  type: 'node',
+                  path: ['name'],
+                  showLabel: false,
+                },
+                {
+                  type: 'action',
+                  name: 'tasks',
+                  params: { id: '0/gid' },
+                  path: '/asana/sections/:id/tasks',
                   action: 'get',
                 },
               ],
@@ -140,6 +345,38 @@ export default async function app(): Promise<AppSpec> {
               method: 'GET',
               url: 'https://app.asana.com/api/1.0/workspaces',
             },
+          },
+        },
+      },
+      projects: {
+        routes: [{ path: '/asana/workspaces/:workspace/projects' }],
+        actions: {
+          get: {
+            params: [],
+          },
+        },
+      },
+      projectTasks: {
+        routes: [{ path: '/asana/projects/:project/tasks' }],
+        actions: {
+          get: {
+            params: [],
+          },
+        },
+      },
+      sections: {
+        routes: [{ path: '/asana/projects/:project/sections' }],
+        actions: {
+          get: {
+            params: [],
+          },
+        },
+      },
+      sectionTasks: {
+        routes: [{ path: '/asana/sections/:section/tasks' }],
+        actions: {
+          get: {
+            params: [],
           },
         },
       },

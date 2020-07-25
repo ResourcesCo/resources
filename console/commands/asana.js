@@ -100,7 +100,7 @@ export default {
       async run({ params: { project }, env: { api_token } }) {
         return await request({
           api_token,
-          url: `https://app.asana.com/api/1.0/tasks?project=${project}&opt_expand=projects.gid&completed_since=now`,
+          url: `https://app.asana.com/api/1.0/tasks?completed_since=now&project=${project}`,
           resourceType: 'task',
           itemUrl: getTaskUrl,
         })
@@ -112,7 +112,7 @@ export default {
       async run({ params: { section }, env: { api_token } }) {
         return await request({
           api_token,
-          url: `https://app.asana.com/api/1.0/tasks?section=${section}&opt_expand=projects.gid&completed_since=now`,
+          url: `https://app.asana.com/api/1.0/tasks?completed_since=now&section=${section}&opt_expand=memberships`,
           resourceType: 'task',
           itemUrl: getTaskUrl,
         })

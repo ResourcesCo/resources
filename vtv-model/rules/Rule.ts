@@ -103,7 +103,9 @@ export default class RuleSet {
     this.selector = selector
     if (summary) {
       this.summary = summary.map(item =>
-        item.type === 'action' ? new ActionLink(item) : item
+        item.type === 'action'
+          ? new ActionLink(item)
+          : { showLabel: true, ...item }
       )
     }
     this.matcher = match(selector)
