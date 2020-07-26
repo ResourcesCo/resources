@@ -31,8 +31,7 @@ export default function InlineContent({
                 value={getNested(value, summaryItem.path)}
                 state={getNestedState(state, summaryItem.path)}
                 path={[...path, ...summaryItem.path]}
-                showLabel={summaryItem.showLabel}
-                labelPath={summaryItem.path}
+                summaryItem={summaryItem}
                 context={context}
               />
             )

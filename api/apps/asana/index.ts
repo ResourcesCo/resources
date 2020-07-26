@@ -82,6 +82,8 @@ const actions = {
                   type: 'node',
                   path: ['name'],
                   showLabel: false,
+                  params: { id: '0/gid' },
+                  url: 'https://app.asana.com/0/:id',
                 },
                 {
                   type: 'action',
@@ -134,6 +136,8 @@ const actions = {
                   type: 'node',
                   path: ['name'],
                   showLabel: false,
+                  params: { id: '0/gid', projectId: '0/projects/0/gid' },
+                  url: 'https://app.asana.com/0/:projectId/:id',
                 },
                 {
                   type: 'action',
@@ -165,7 +169,7 @@ const actions = {
       request,
     }) {
       const req = {
-        url: `https://app.asana.com/api/1.0/tasks?section=${section}&opt_expand=memberships&completed_since=now&opt_fields=name,resource_type,completed`,
+        url: `https://app.asana.com/api/1.0/tasks?section=${section}&opt_expand=memberships&completed_since=now&opt_fields=name,resource_type,completed,projects.gid`,
         method: 'GET',
         headers: { Authorization: `Bearer ${apiToken}` },
       }
@@ -186,6 +190,8 @@ const actions = {
                   type: 'node',
                   path: ['name'],
                   showLabel: false,
+                  params: { id: '0/gid', projectId: '0/projects/0/gid' },
+                  url: 'https://app.asana.com/0/:projectId/:id',
                 },
                 {
                   type: 'node',

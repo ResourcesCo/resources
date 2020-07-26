@@ -18,10 +18,87 @@ import getNested from 'lodash/get'
 //   ],
 // }
 
-export interface NodeView {
+export class RelativeLink {
+  params: {
+    [key: string]: {
+      up?: number
+      pointer: JsonPointer
+    }
+  }
+  url: string
+  toPath: PathFunction
+
+  constructor({
+    params,
+    url,
+  }: {
+    params: { [key: string]: string }
+    url: string
+  }) {
+    this.params = mapValues(params, value => {
+      const match = /^\d+/.exec(value)
+      return {
+        up: match && Number(match[0]),
+        pointer: JsonPointer.create(
+          match ? value.substr(match[0].length) : value
+        ),
+      }
+    })
+    this.url = url
+    const urlPath = url.startsWith('/') ? url : new URL(url).pathname
+    this.toPath = compile(urlPath, {
+      encode: encodeURIComponent,
+    })
+  }
+
+  getUrl({ value, path }) {
+    const params = mapValues(this.params, ({ up, pointer }) => {
+      const base = getNested(
+        value,
+        typeof up === 'number' ? path.slice(0, path.length - up) : []
+      )
+      return `${pointer.get(base)}`
+    })
+    try {
+      const pathname = this.toPath(params)
+      if (this.url.startsWith('/')) {
+        return pathname
+      } else {
+        const parsedUrl = new URL(this.url)
+        parsedUrl.pathname = pathname
+        return parsedUrl.href
+      }
+    } catch (err) {
+      return
+    }
+  }
+}
+
+export interface NodeViewSpec {
   type: 'node'
   path: string[]
   showLabel: boolean
+  params?: { [key: string]: string }
+  url?: string
+}
+
+class NodeView {
+  type = 'node'
+  path: string[]
+  showLabel: boolean
+  relativeLink?: RelativeLink
+
+  constructor({ path, showLabel, params, url }: Omit<NodeViewSpec, 'type'>) {
+    this.path = path
+    this.showLabel = showLabel
+    if (params && url) {
+      this.relativeLink = new RelativeLink({ params, url })
+    }
+  }
+
+  getUrl({ value, path }) {
+    return this.relativeLink && this.relativeLink.getUrl({ value, path })
+  }
 }
 
 export interface ActionLinkSpec {
@@ -35,49 +112,24 @@ export interface ActionLinkSpec {
 class ActionLink {
   type = 'action'
   name: string
-  params: {
-    [key: string]: {
-      up?: number
-      pointer: JsonPointer
-    }
-  }
-  url: string
   action: string
-
-  toUrl: PathFunction
+  relativeLink: RelativeLink
 
   constructor({ name, params, url, action }: Omit<ActionLinkSpec, 'type'>) {
     this.name = name
-    this.params = mapValues(params, value => {
-      const match = /^\d+/.exec(value)
-      return {
-        up: match && Number(match[0]),
-        pointer: JsonPointer.create(
-          match ? value.substr(match[0].length) : value
-        ),
-      }
-    })
-    this.url = url
     this.action = action
-    this.toUrl = compile(this.url, { encode: encodeURIComponent })
+    this.relativeLink = new RelativeLink({ params, url })
   }
 
-  getAction({ value, path }) {
-    const params = mapValues(this.params, ({ up, pointer }) => {
-      const base = getNested(
-        value,
-        typeof up === 'number' ? path.slice(0, path.length - up) : []
-      )
-      return `${pointer.get(base)}`
-    })
+  getAction({ path, value }) {
     return {
-      url: this.toUrl(params),
+      url: this.relativeLink.getUrl({ path, value }),
       action: this.action,
     }
   }
 }
 
-export type SummaryItemSpec = NodeView | ActionLinkSpec
+export type SummaryItemSpec = NodeViewSpec | ActionLinkSpec
 
 type SummaryItem = NodeView | ActionLink
 
@@ -104,7 +156,7 @@ export default class RuleSet {
       this.summary = summary.map(item =>
         item.type === 'action'
           ? new ActionLink(item)
-          : { showLabel: true, ...item }
+          : new NodeView({ showLabel: true, ...item })
       )
     }
     this.matcher = match(selector)
