@@ -12,7 +12,7 @@ import getNested from 'lodash/get'
 //     {
 //       name: 'projects',
 //       params: { id: '0/id' },
-//       path: '/asana/workspaces/:id/projects',
+//       url: '/asana/workspaces/:id/projects',
 //       action: 'get',
 //     },
 //   ],
@@ -28,7 +28,7 @@ export interface ActionLinkSpec {
   type: 'action'
   name: string
   params: { [key: string]: string }
-  path: string
+  url: string
   action: string
 }
 
@@ -41,12 +41,12 @@ class ActionLink {
       pointer: JsonPointer
     }
   }
-  path: string
+  url: string
   action: string
 
-  toPath: PathFunction
+  toUrl: PathFunction
 
-  constructor({ name, params, path, action }: Omit<ActionLinkSpec, 'type'>) {
+  constructor({ name, params, url, action }: Omit<ActionLinkSpec, 'type'>) {
     this.name = name
     this.params = mapValues(params, value => {
       const match = /^\d+/.exec(value)
@@ -57,9 +57,9 @@ class ActionLink {
         ),
       }
     })
-    this.path = path
+    this.url = url
     this.action = action
-    this.toPath = compile(this.path, { encode: encodeURIComponent })
+    this.toUrl = compile(this.url, { encode: encodeURIComponent })
   }
 
   getAction({ value, path }) {
@@ -68,11 +68,10 @@ class ActionLink {
         value,
         typeof up === 'number' ? path.slice(0, path.length - up) : []
       )
-      console.log({ base })
       return `${pointer.get(base)}`
     })
     return {
-      path: this.toPath(params),
+      url: this.toUrl(params),
       action: this.action,
     }
   }

@@ -8,6 +8,7 @@ import parseUrl from '../app-base/parseUrl'
 import apps from '../apps'
 import env from './env'
 import { createNanoEvents, Emitter } from 'nanoevents'
+import produce from 'immer'
 import app from 'api/apps/channel'
 
 // Properties stored and managed by the workspace (a channel cannot set itself to be admin)
@@ -214,7 +215,7 @@ class ConsoleChannel {
             parentCommandId: parentMessageId,
           })
         }
-        const result = await this.dispatchAction(routeMatch.handler, {
+        let result = await this.dispatchAction(routeMatch.handler, {
           url: routeMatch.url,
           resourceType: 'resourceType' in routeMatch && routeMatch.resourceType,
           action:
@@ -229,14 +230,16 @@ class ConsoleChannel {
           onMessage: handleMessage,
         })
         if (result) {
-          if ('resourceType' in routeMatch) {
-            result.resourceType = routeMatch.resourceType
-          }
-          result.commandId = messageId
-          if (result.type === 'message-command') {
-            result.parentCommandId = parentMessageId
-          }
-          result.message = message
+          result = produce(result, draft => {
+            if ('resourceType' in routeMatch) {
+              draft.resourceType = routeMatch.resourceType
+            }
+            draft.commandId = messageId
+            if (draft.type === 'message-command') {
+              draft.parentCommandId = parentMessageId
+            }
+            draft.message = message
+          })
         }
         onMessage(
           [

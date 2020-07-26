@@ -3,6 +3,7 @@ import mapValues from 'lodash/mapValues'
 import request from './request'
 import helpMessage from './helpMessage'
 import ConsoleChannel from 'api/channel/ConsoleChannel'
+import expandRoot from './util/message/expandRoot'
 
 export interface Message {
   type: string
@@ -125,14 +126,14 @@ export default class App {
     this.channel = channel
   }
 
-  prepareMessage(result: MessageValue) {
-    if (typeof result === 'string') {
-      return { type: 'text', text: result }
-    } else if (typeof result === 'object') {
-      return result
-    } else {
-      return
+  prepareMessage(message: MessageValue) {
+    let result
+    if (typeof message === 'string') {
+      result = { type: 'text', text: message }
+    } else if (typeof message === 'object' && message !== null) {
+      result = expandRoot(message)
     }
+    return result
   }
 
   async route({ host, path, action, params }) {
@@ -158,7 +159,7 @@ export default class App {
     const match = route.match(path)
     if (match) {
       const resolvedActionName =
-        actionName || resourceType.defaultAction || 'help'
+        actionName || resourceType.defaultAction || 'get'
       const action =
         Object.values(resourceType.actions).find(
           ({ name }) => name === resolvedActionName
@@ -219,18 +220,21 @@ export default class App {
       action === 'help' && !this.resourceTypes[resourceType]?.actions?.help
         ? this.help
         : this.onRun
-    const result = await handler({
+    const handleMessage = message => {
+      onMessage(this.prepareMessage(message))
+    }
+    const message = await handler({
       resourceType,
       action,
       params,
       formData,
       parentMessage,
-      onMessage,
+      onMessage: handleMessage,
       env: this.env,
       request: this.request,
       channel: this.channel,
     })
-    return this.prepareMessage(result)
+    return this.prepareMessage(message)
   }
 
   static async get({
