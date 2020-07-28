@@ -1,4 +1,5 @@
 import produce from 'immer'
+import getNested from 'lodash/get'
 import { draftState, getStateKey } from '../../../../vtv-model/util'
 
 export default function expandRoot(message) {
@@ -12,7 +13,14 @@ export default function expandRoot(message) {
         )
         const stateKey = getStateKey(showOnly[showOnly.length - 1])
         if (!(parentState[stateKey] && '_expanded' in parentState[stateKey])) {
-          draftState(message, showOnly)._expanded = true
+          const value = getNested(message.value, showOnly)
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            Object.keys(value).length > 0
+          ) {
+            draftState(message, showOnly)._expanded = true
+          }
         }
       }
       if (!('_expanded' in message.state)) {

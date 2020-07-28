@@ -1,6 +1,7 @@
 import { AppSpec } from '../../app-base/App'
 import { ok } from '../../app-base/request'
 import camelCase from '../../app-base/util/string/camelCase'
+import clone from 'lodash/cloneDeep'
 
 const actions = {
   auth: {
@@ -24,15 +25,14 @@ const actions = {
       if (ok(response)) {
         return {
           type: 'tree',
-          name: 'request',
-          value: { ...req, response },
+          value: { request: req, response, output: clone(response.body.data) },
           state: {
-            _showOnly: ['response', 'body', 'data'],
+            _showOnly: ['output'],
           },
           rules: {
             workspace: {
-              selector: '/response/body/data/:index',
-              summary: [
+              sel: ['/output/:index', '/response/body/data/:index'],
+              inline: [
                 {
                   type: 'node',
                   path: ['name'],
@@ -69,15 +69,14 @@ const actions = {
       if (ok(response)) {
         return {
           type: 'tree',
-          name: 'request',
-          value: { ...req, response },
+          value: { request: req, response, output: clone(response.body.data) },
           state: {
-            _showOnly: ['response', 'body', 'data'],
+            _showOnly: ['output'],
           },
           rules: {
             workspace: {
-              selector: '/response/body/data/:index',
-              summary: [
+              sel: ['/output/:index', '/response/body/data/:index'],
+              inline: [
                 {
                   type: 'node',
                   path: ['name'],
@@ -123,15 +122,14 @@ const actions = {
       if (ok(response)) {
         return {
           type: 'tree',
-          name: 'request',
-          value: { ...req, response },
+          value: { request: req, response, output: clone(response.body.data) },
           state: {
-            _showOnly: ['response', 'body', 'data'],
+            _showOnly: ['output'],
           },
           rules: {
             workspace: {
-              selector: '/response/body/data/:index',
-              summary: [
+              sel: ['/output/:index', '/response/body/data/:index'],
+              inline: [
                 {
                   type: 'node',
                   path: ['name'],
@@ -174,28 +172,24 @@ const actions = {
         headers: { Authorization: `Bearer ${apiToken}` },
       }
       const response = await request(req)
+      const output = response.body.data.filter(task => !task.completed)
       if (ok(response)) {
         return {
           type: 'tree',
-          name: 'request',
-          value: { ...req, response },
+          value: { request: req, response, output },
           state: {
-            _showOnly: ['response', 'body', 'data'],
+            _showOnly: ['output'],
           },
           rules: {
             workspace: {
-              selector: '/response/body/data/:index',
-              summary: [
+              sel: ['/output/:index', '/response/body/data/:index'],
+              inline: [
                 {
                   type: 'node',
                   path: ['name'],
                   showLabel: false,
                   params: { id: '0/gid', projectId: '0/projects/0/gid' },
                   url: 'https://app.asana.com/0/:projectId/:id',
-                },
-                {
-                  type: 'node',
-                  path: ['completed'],
                 },
                 {
                   type: 'action',
@@ -235,15 +229,18 @@ const actions = {
       if (ok(response)) {
         return {
           type: 'tree',
-          name: 'request',
-          value: { ...req, response },
+          value: {
+            request: req,
+            response,
+            output: clone(response.body.data),
+          },
           state: {
-            _showOnly: ['response', 'body', 'data'],
+            _showOnly: ['output'],
           },
           rules: {
             workspace: {
-              selector: '/response/body/data/:index',
-              summary: [
+              sel: ['/output/:index', '/response/body/data/:index'],
+              inline: [
                 {
                   type: 'node',
                   path: ['name'],
@@ -276,9 +273,8 @@ const actions = {
       if (ok(response)) {
         return {
           type: 'tree',
-          name: 'request',
-          value: { ...req, response },
-          state: { _showOnly: ['response', 'body', 'data'] },
+          value: { request: req, response, output: clone(response.body.data) },
+          state: { _showOnly: ['output'] },
         }
       } else {
         return { type: 'text', text: `Error getting task` }
@@ -289,16 +285,20 @@ const actions = {
       params: { id },
       request,
     }) {
-      const response = await request({
+      const req = {
         url: `https://app.asana.com/api/1.0/tasks/${id}`,
         method: 'PUT',
         headers: { Authorization: `Bearer ${apiToken}` },
         body: { data: { completed: true } },
-      })
-      if (ok(response)) {
-        return { type: 'text', text: `Task marked complete` }
-      } else {
-        return { type: 'text', text: `Error marking task complete` }
+      }
+      const response = await request(req)
+      const output = ok(response)
+        ? 'Task marked complete'
+        : 'Error marking task complete'
+      return {
+        type: 'tree',
+        value: { request: req, response, output },
+        state: { _showOnly: ['output'] },
       }
     },
     async comment({
@@ -306,16 +306,18 @@ const actions = {
       params: { id, comment },
       request,
     }) {
-      const response = await request({
+      const req = {
         headers: { Authorization: `Bearer ${apiToken}` },
         url: `https://app.asana.com/api/1.0/tasks/${id}/stories`,
         method: 'POST',
         body: { data: { text: comment } },
-      })
-      if (ok(response)) {
-        return { type: 'text', text: 'Comment added.' }
-      } else {
-        return { type: 'text', text: 'Error adding comment.' }
+      }
+      const response = await request(req)
+      const output = ok(response) ? 'Comment added.' : 'Error adding comment.'
+      return {
+        type: 'tree',
+        value: { request: req, response, output },
+        state: { _showOnly: ['output'] },
       }
     },
   },

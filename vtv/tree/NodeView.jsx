@@ -102,7 +102,7 @@ function NodeView({
         name={showOnly[showOnly.length - 1]}
         value={getNested(value, showOnly)}
         state={getNestedState(state, showOnly)}
-        displayName={joinPath([name, ...showOnly])}
+        displayName={joinPath([...showOnly])}
         showAll={true}
         showOnlyPath={showOnly}
         path={showOnly}

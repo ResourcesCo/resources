@@ -2,7 +2,7 @@
 // rules: {
 //   workspace: {
 //     selector: '/response/body/data/:index',
-//     summary: [
+//     inline: [
 //       'name',
 //       {
 //         name: 'projects',

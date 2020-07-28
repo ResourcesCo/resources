@@ -36,7 +36,7 @@ export default function View({
   return (
     <NodeView
       path={[]}
-      name={name}
+      name={'root'}
       value={value}
       state={state}
       context={{

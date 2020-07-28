@@ -6,8 +6,8 @@ import getNested from 'lodash/get'
 
 // example:
 // {
-//   selector: '/response/body/data/:index',
-//   summary: [
+//   sel: '/response/body/data/:index',
+//   inline: [
 //     'name',
 //     {
 //       name: 'projects',
@@ -129,41 +129,41 @@ class ActionLink {
   }
 }
 
-export type SummaryItemSpec = NodeViewSpec | ActionLinkSpec
+export type inlineItemSpec = NodeViewSpec | ActionLinkSpec
 
-type SummaryItem = NodeView | ActionLink
+type inlineItem = NodeView | ActionLink
 
-export type SummarySpec = SummaryItemSpec[]
+export type inlineSpec = inlineItemSpec[]
 
-type Summary = SummaryItem[]
+type inline = inlineItem[]
 
 export interface RuleSpec {
   name: string
-  selector: string
-  summary?: SummarySpec
+  sel: string | string[]
+  inline?: inlineSpec
 }
 
 export default class RuleSet {
   name: string
-  selector: string
-  summary?: Summary
-  matcher: MatchFunction
+  sel: string | string[]
+  inline?: inline
+  matchers: MatchFunction[]
 
-  constructor({ name, selector, summary }: RuleSpec) {
+  constructor({ name, sel, inline }: RuleSpec) {
     this.name = name
-    this.selector = selector
-    if (summary) {
-      this.summary = summary.map(item =>
+    this.sel = sel
+    if (inline) {
+      this.inline = inline.map(item =>
         item.type === 'action'
           ? new ActionLink(item)
           : new NodeView({ showLabel: true, ...item })
       )
     }
-    this.matcher = match(selector)
+    this.matchers = (Array.isArray(sel) ? sel : [sel]).map(sel => match(sel))
   }
 
   // test if it matches the path
   match(pointer: string) {
-    return !!this.matcher(pointer)
+    return this.matchers.some(matcher => matcher(pointer))
   }
 }

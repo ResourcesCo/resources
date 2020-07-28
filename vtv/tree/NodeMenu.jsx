@@ -82,9 +82,7 @@ function NodeMenu({
             Rename
           </MenuItem>
         )}
-      {!showAll && isBasicType(value) && (
-        <MenuItem onClick={edit}>Edit</MenuItem>
-      )}
+      {isBasicType(value) && <MenuItem onClick={edit}>Edit</MenuItem>}
       <MenuItem
         submenu={
           <ViewMenu
@@ -104,20 +102,22 @@ function NodeMenu({
       >
         View
       </MenuItem>
-      <MenuItem
-        submenu={
-          <InsertMenu
-            showAll={showAll}
-            nodeType={nodeType}
-            parentType={parentType}
-            path={path}
-            onClose={onClose}
-            context={context}
-          />
-        }
-      >
-        Insert
-      </MenuItem>
+      {['object', 'array'].includes(parentType) && (
+        <MenuItem
+          submenu={
+            <InsertMenu
+              showAll={showAll}
+              nodeType={nodeType}
+              parentType={parentType}
+              path={path}
+              onClose={onClose}
+              context={context}
+            />
+          }
+        >
+          Insert
+        </MenuItem>
+      )}
       {!showAll && ['object', 'array'].includes(parentType) && (
         <MenuItem
           submenu={

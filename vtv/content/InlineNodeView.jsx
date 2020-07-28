@@ -1,13 +1,12 @@
 import { getNodeType, joinPath } from '../../vtv-model/analyze'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
-import CollectionSummary from './CollectionSummary'
 
 export default function InlineNodeView({
   value,
   state,
   path,
-  summaryItem,
+  inlineItem,
   context: {
     theme,
     document: { value: docValue },
@@ -15,26 +14,16 @@ export default function InlineNodeView({
 }) {
   const nodeType = getNodeType(value)
   const summaryString = `${value}`.replace(/\n\t/g, '').substr(0, 40)
-  const url = summaryItem.getUrl({
+  const url = inlineItem.getUrl({
     value: docValue,
-    path: path.slice(0, path.length - summaryItem.path.length),
+    path: path.slice(0, path.length - inlineItem.path.length),
   })
   const bubble = (
     <div className="node">
-      {summaryItem.showLabel && (
-        <div className="name">{joinPath(summaryItem.path)}</div>
+      {inlineItem.showLabel && (
+        <div className="name">{joinPath(inlineItem.path)}</div>
       )}
-      <div className="value">
-        {['object', 'array'].includes(nodeType) ? (
-          <CollectionSummary
-            type={nodeType}
-            length={Object.keys(value).length}
-            context={context}
-          />
-        ) : (
-          summaryString
-        )}
-      </div>
+      {summaryString}
       {url && <FontAwesomeIcon icon={faExternalLinkAlt} size="xs" />}
       <style jsx>{`
         div.node {

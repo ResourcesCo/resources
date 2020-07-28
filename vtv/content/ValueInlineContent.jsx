@@ -6,7 +6,7 @@ import CollectionSummary from './CollectionSummary'
 import AttachmentView from './AttachmentView'
 import { isUrl } from '../../vtv-model/analyze'
 
-function InlineContent({
+function ValueInlineContent({
   name,
   value,
   state,
@@ -76,8 +76,8 @@ function InlineContent({
   }
 }
 
-InlineContent.propTypes = {
+ValueInlineContent.propTypes = {
   path: PropTypes.arrayOf(PropTypes.string).isRequired,
 }
 
-export default InlineContent
+export default ValueInlineContent

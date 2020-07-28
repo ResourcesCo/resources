@@ -14,35 +14,35 @@ export default function InlineContent({
   context: { onMessage },
   context,
 }) {
-  let summaryRule
+  let inlineRule
   for (const rule of rules) {
-    if (rule.summary) {
-      summaryRule = rule
+    if (rule.inline) {
+      inlineRule = rule
     }
   }
   return (
     <>
-      {summaryRule &&
-        summaryRule.summary.map((summaryItem, i) => {
-          if (summaryItem.type === 'node') {
+      {inlineRule &&
+        inlineRule.inline.map((inlineItem, i) => {
+          if (inlineItem.type === 'node') {
             return (
               <InlineNodeView
                 key={i}
-                value={getNested(value, summaryItem.path)}
-                state={getNestedState(state, summaryItem.path)}
-                path={[...path, ...summaryItem.path]}
-                summaryItem={summaryItem}
+                value={getNested(value, inlineItem.path)}
+                state={getNestedState(state, inlineItem.path)}
+                path={[...path, ...inlineItem.path]}
+                inlineItem={inlineItem}
                 context={context}
               />
             )
-          } else if (summaryItem.type === 'action') {
+          } else if (inlineItem.type === 'action') {
             return (
               <ActionButton
                 key={i}
                 value={value}
                 state={state}
                 path={path}
-                actionLink={summaryItem}
+                actionLink={inlineItem}
                 context={context}
               />
             )
