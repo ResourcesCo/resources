@@ -51,7 +51,7 @@ const actions = {
                     repo: '/input/params/repo',
                     number: '0/number',
                   },
-                  url: 'https://github.com/0/:owner/:repo/issues/:number',
+                  url: 'https://github.com/:owner/:repo/issues/:number',
                 },
                 {
                   type: 'action',
