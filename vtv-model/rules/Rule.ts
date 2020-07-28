@@ -53,10 +53,9 @@ export class RelativeLink {
 
   getUrl({ value, path }) {
     const params = mapValues(this.params, ({ up, pointer }) => {
-      const base = getNested(
-        value,
+      const basePath =
         typeof up === 'number' ? path.slice(0, path.length - up) : []
-      )
+      const base = basePath.length > 0 ? getNested(value, basePath) : value
       return `${pointer.get(base)}`
     })
     try {

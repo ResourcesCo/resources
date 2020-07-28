@@ -1,7 +1,7 @@
-import { AppSpec } from '../../app-base/App'
-import { ok } from '../../app-base/request'
-import camelCase from '../../app-base/util/string/camelCase'
 import clone from 'lodash/cloneDeep'
+import { AppSpec } from '../../app-base/App'
+import { ok, replaceEnv } from '../../app-base/request'
+import camelCase from '../../app-base/util/string/camelCase'
 
 const actions = {
   auth: {
@@ -15,7 +15,7 @@ const actions = {
     },
   },
   workspaces: {
-    async get({ env: { ASANA_TOKEN: apiToken }, request }) {
+    async get({ env: { ASANA_TOKEN: apiToken }, env, request }) {
       const req = {
         url: 'https://app.asana.com/api/1.0/workspaces',
         method: 'GET',
@@ -25,12 +25,16 @@ const actions = {
       if (ok(response)) {
         return {
           type: 'tree',
-          value: { request: req, response, output: clone(response.body.data) },
+          value: {
+            request: replaceEnv(req, env),
+            response,
+            output: clone(response.body.data),
+          },
           state: {
             _showOnly: ['output'],
           },
           rules: {
-            workspace: {
+            workspaces: {
               sel: ['/output/:index', '/response/body/data/:index'],
               inline: [
                 {
@@ -57,6 +61,7 @@ const actions = {
   projects: {
     async get({
       env: { ASANA_TOKEN: apiToken },
+      env,
       params: { workspace },
       request,
     }) {
@@ -69,12 +74,16 @@ const actions = {
       if (ok(response)) {
         return {
           type: 'tree',
-          value: { request: req, response, output: clone(response.body.data) },
+          value: {
+            request: replaceEnv(req, env),
+            response,
+            output: clone(response.body.data),
+          },
           state: {
             _showOnly: ['output'],
           },
           rules: {
-            workspace: {
+            projects: {
               sel: ['/output/:index', '/response/body/data/:index'],
               inline: [
                 {
@@ -110,6 +119,7 @@ const actions = {
   projectTasks: {
     async get({
       env: { ASANA_TOKEN: apiToken },
+      env,
       params: { project },
       request,
     }) {
@@ -122,12 +132,16 @@ const actions = {
       if (ok(response)) {
         return {
           type: 'tree',
-          value: { request: req, response, output: clone(response.body.data) },
+          value: {
+            request: replaceEnv(req, env),
+            response,
+            output: clone(response.body.data),
+          },
           state: {
             _showOnly: ['output'],
           },
           rules: {
-            workspace: {
+            tasks: {
               sel: ['/output/:index', '/response/body/data/:index'],
               inline: [
                 {
@@ -163,6 +177,7 @@ const actions = {
   sectionTasks: {
     async get({
       env: { ASANA_TOKEN: apiToken },
+      env,
       params: { section },
       request,
     }) {
@@ -176,12 +191,12 @@ const actions = {
       if (ok(response)) {
         return {
           type: 'tree',
-          value: { request: req, response, output },
+          value: { request: replaceEnv(req, env), response, output },
           state: {
             _showOnly: ['output'],
           },
           rules: {
-            workspace: {
+            tasks: {
               sel: ['/output/:index', '/response/body/data/:index'],
               inline: [
                 {
@@ -217,6 +232,7 @@ const actions = {
   sections: {
     async get({
       env: { ASANA_TOKEN: apiToken },
+      env,
       params: { project },
       request,
     }) {
@@ -230,7 +246,7 @@ const actions = {
         return {
           type: 'tree',
           value: {
-            request: req,
+            request: replaceEnv(req, env),
             response,
             output: clone(response.body.data),
           },
@@ -238,7 +254,7 @@ const actions = {
             _showOnly: ['output'],
           },
           rules: {
-            workspace: {
+            sections: {
               sel: ['/output/:index', '/response/body/data/:index'],
               inline: [
                 {
@@ -263,7 +279,12 @@ const actions = {
     },
   },
   task: {
-    async get({ env: { ASANA_TOKEN: apiToken }, params: { id }, request }) {
+    async get({
+      env: { ASANA_TOKEN: apiToken },
+      env,
+      params: { id },
+      request,
+    }) {
       const req = {
         url: `https://app.asana.com/api/1.0/tasks/${id}`,
         method: 'GET',
@@ -273,7 +294,11 @@ const actions = {
       if (ok(response)) {
         return {
           type: 'tree',
-          value: { request: req, response, output: clone(response.body.data) },
+          value: {
+            request: replaceEnv(req, env),
+            response,
+            output: clone(response.body.data),
+          },
           state: { _showOnly: ['output'] },
         }
       } else {
@@ -282,6 +307,7 @@ const actions = {
     },
     async complete({
       env: { ASANA_TOKEN: apiToken },
+      env,
       params: { id },
       request,
     }) {
@@ -297,12 +323,13 @@ const actions = {
         : 'Error marking task complete'
       return {
         type: 'tree',
-        value: { request: req, response, output },
+        value: { request: replaceEnv(req, env), response, output },
         state: { _showOnly: ['output'] },
       }
     },
     async comment({
       env: { ASANA_TOKEN: apiToken },
+      env,
       params: { id, comment },
       request,
     }) {
@@ -316,7 +343,7 @@ const actions = {
       const output = ok(response) ? 'Comment added.' : 'Error adding comment.'
       return {
         type: 'tree',
-        value: { request: req, response, output },
+        value: { request: replaceEnv(req, env), response, output },
         state: { _showOnly: ['output'] },
       }
     },

@@ -1,8 +1,24 @@
 import fetch from 'isomorphic-unfetch'
 import headerCase from './util/string/headerCase'
+import { produce } from 'immer'
+import { joinPath } from '../../vtv-model'
 
 export function ok(response) {
   return response.status >= 200 && response.status < 300
+}
+
+export function replaceEnv(request, env) {
+  return produce(request, draft => {
+    const headers = request.headers
+    for (const key of Object.keys(headers)) {
+      for (const [envKey, value] of Object.entries(env)) {
+        headers[key] = headers[key].replace(
+          value,
+          () => '${ ' + joinPath(['env', envKey]) + ' }'
+        )
+      }
+    }
+  })
 }
 
 function jsonHeaders(headers) {

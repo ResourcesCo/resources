@@ -1,78 +1,169 @@
+import clone from 'lodash/cloneDeep'
 import { AppSpec } from '../../app-base/App'
-import { ok } from '../../app-base/request'
+import { ok, replaceEnv } from '../../app-base/request'
+import camelCase from '../../app-base/util/string/camelCase'
 
-function getHeaders(apiToken, post = false) {
-  return {
-    Authorization: `token ${apiToken}`,
-    ...(post ? { 'Content-Type': 'application/json' } : {}),
-  }
-}
-
-function auth({ env, params: { apiToken } }) {
-  env.GITHUB_TOKEN = apiToken
-  return 'API key saved to session.'
-}
-
-function authClear({ env }) {
-  delete env.GITHUB_TOKEN
-  return 'API key cleared.'
-}
-
-function issueApiUrl({ owner, repo, number }: any) {
-  return `https://api.github.com/repos/${owner}/${repo}/issues/${number}`
-}
-
-async function close({ env: { GITHUB_TOKEN: apiToken }, params, request }) {
-  const response = await request({
-    url: issueApiUrl(params),
-    method: 'PATCH',
-    headers: getHeaders(apiToken, true),
-    body: JSON.stringify({ state: 'closed' }),
-  })
-  if (ok(response)) {
-    return { type: 'text', text: `Issue closed` }
-  } else {
-    return { type: 'text', text: `Error closing issue` }
-  }
-}
-
-async function comment({
-  env: { GITHUB_TOKEN: apiToken },
-  params: { comment, ...params },
-  request,
-}) {
-  const response = await request({
-    url: `${issueApiUrl(params)}/comments`,
-    method: 'POST',
-    headers: getHeaders(apiToken, true),
-    body: JSON.stringify({ body: comment }),
-  })
-  if (ok(response)) {
-    return { type: 'text', text: 'Comment added.' }
-  } else {
-    return { type: 'text', text: 'Error adding comment.' }
-  }
-}
-
-async function run({ action, env, params, request }) {
-  if (action === 'auth') {
-    return auth({ env, params })
-  } else if (action === 'auth/clear') {
-    return authClear({ env })
-  } else {
-    if (env.GITHUB_TOKEN) {
-      if (action === 'close') {
-        return await close({ env, params, request })
-      } else if (action === 'comment') {
-        return await comment({ env, params, request })
+const actions = {
+  auth: {
+    async auth({ env, params: { apiToken } }) {
+      env.GITHUB_TOKEN = apiToken
+      return 'API key saved to session.'
+    },
+    async authClear({ env }) {
+      delete env.GITHUB_TOKEN
+      return 'API key cleared.'
+    },
+  },
+  issues: {
+    async get({
+      env: { GITHUB_TOKEN: apiToken },
+      env,
+      params: { owner, repo },
+      params,
+      request,
+    }) {
+      const req = {
+        url: `https://api.github.com/repos/${owner}/${repo}/issues`,
+        method: 'GET',
+        headers: { Authorization: `token ${apiToken}` },
       }
-    } else {
+      const response = await request(req)
+      if (ok(response)) {
+        return {
+          type: 'tree',
+          value: {
+            input: { params },
+            output: clone(response.body),
+            request: replaceEnv(req, env),
+            response,
+          },
+          state: { _showOnly: ['output'] },
+          rules: {
+            issues: {
+              sel: ['/output/:index', '/response/body/:index'],
+              inline: [
+                {
+                  type: 'node',
+                  path: ['title'],
+                  showLabel: false,
+                  params: {
+                    owner: '/input/params/owner',
+                    repo: '/input/params/repo',
+                    number: '0/number',
+                  },
+                  url: 'https://github.com/0/:owner/:repo/issues/:number',
+                },
+                {
+                  type: 'action',
+                  name: 'comment',
+                  params: {
+                    owner: '/input/params/owner',
+                    repo: '/input/params/repo',
+                    number: '0/number',
+                  },
+                  url: '/github/-/:owner/:repo/issues/:number',
+                  action: 'comment',
+                },
+                {
+                  type: 'action',
+                  name: 'complete',
+                  params: {
+                    owner: '/input/params/owner',
+                    repo: '/input/params/repo',
+                    number: '0/number',
+                  },
+                  url: '/github/-/:owner/:repo/issues/:number',
+                  action: 'complete',
+                },
+              ],
+            },
+          },
+        }
+      } else {
+        return {
+          type: 'tree',
+          value: {
+            request: replaceEnv(req, env),
+            response,
+            error: 'Error getting issues',
+          },
+          state: { _showOnly: ['error'] },
+        }
+      }
+    },
+  },
+  issue: {
+    async close({
+      env: { GITHUB_TOKEN: apiToken },
+      env,
+      params: { owner, repo, number },
+      request,
+    }) {
+      const req = {
+        url: `https://api.github.com/repos/${owner}/${repo}/issues/${number}`,
+        method: 'PATCH',
+        headers: { Authorization: `token ${apiToken}` },
+        body: JSON.stringify({ state: 'closed' }),
+      }
+      const response = await request(req)
+      const output = ok(response) ? 'Issue closed.' : 'Error closing issue.'
       return {
-        type: 'error',
-        text: 'A GitHub personal access token is required.',
+        type: 'tree',
+        value: { request: replaceEnv(req, env), response, output },
+        state: {
+          _showOnly: ['output'],
+        },
       }
+    },
+    async comment({
+      env: { GITHUB_TOKEN: apiToken },
+      env,
+      params: { owner, repo, number, comment },
+      request,
+    }) {
+      const req = {
+        url: `https://api.github.com/repos/${owner}/${repo}/issues/${number}/comments`,
+        method: 'POST',
+        headers: { Authorization: `token ${apiToken}` },
+        body: JSON.stringify({ body: comment }),
+      }
+      const response = await request(req)
+      const output = ok(response) ? 'Comment added.' : 'Error adding comment.'
+      return {
+        type: 'tree',
+        value: { request: replaceEnv(req, env), response, output },
+        state: {
+          _showOnly: ['output'],
+        },
+      }
+    },
+  },
+}
+
+async function run({ resourceType, action, env, params, request }) {
+  if (!['auth', 'auth-clear'].includes(action) && !env.GITHUB_TOKEN) {
+    return {
+      type: 'tree',
+      value: [
+        'A personal access token is required. Add it with:',
+        '/github :auth <token>',
+      ],
+      state: {
+        1: {
+          _actions: [
+            {
+              name: 'go',
+              title: 'Go',
+              primary: true,
+              action: 'pasteIntoConsole',
+            },
+          ],
+        },
+      },
     }
   }
+  const handler = actions[resourceType][camelCase(action)]
+  return await handler({ env, params, request })
 }
 
 export default async function app(): Promise<AppSpec> {
@@ -98,7 +189,7 @@ export default async function app(): Promise<AppSpec> {
         ],
         actions: {
           auth: { params: ['apiToken'] },
-          clearAuth: {
+          'auth-clear': {
             params: [],
           },
         },
@@ -107,9 +198,23 @@ export default async function app(): Promise<AppSpec> {
         routes: [
           {
             host: 'github.com',
+            path: '/:owner/:repo/issues',
+          },
+          { path: '/github/-/:owner/:repo/issues' },
+        ],
+        actions: {
+          get: {
+            params: [],
+          },
+        },
+      },
+      issue: {
+        routes: [
+          {
+            host: 'github.com',
             path: '/:owner/:repo/issues/:number',
           },
-          { path: '/github/:issues/:owner/:repo/:number' },
+          { path: '/github/-/:owner/:repo/issues/:number' },
         ],
         actions: {
           comment: {
