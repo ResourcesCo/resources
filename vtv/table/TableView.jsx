@@ -5,6 +5,7 @@ import {
   getAtPath,
 } from '../../vtv-model/analyze'
 import { getChildState } from '../../vtv-model'
+import { getNodeInfo } from '../../vtv-model/analyze'
 import ValueInlineContent from '../content/ValueInlineContent'
 import RowHeaderView from './RowHeaderView'
 import ColumnHeaderView from './ColumnHeaderView'
@@ -36,17 +37,27 @@ export default ({ name, value, path, state, context: { theme }, context }) => {
               <td>
                 <RowHeaderView context={context}>{key}</RowHeaderView>
               </td>
-              {paths.map((columnPath, i) => (
-                <td key={i}>
-                  <ValueInlineContent
-                    name={name}
-                    value={getAtPath(value[key], columnPath)}
-                    path={[...path, key, ...columnPath]}
-                    state={getChildState(value[key], columnPath)}
-                    context={context}
-                  />
-                </td>
-              ))}
+              {paths.map((columnPath, i) => {
+                const cellValue = getAtPath(value[key], columnPath)
+                const cellState = getChildState(value[key], columnPath)
+                const nodeInfo = getNodeInfo(cellNodeValue)
+                const { nodeType, stringType, mediaType } = getNodeInfo(
+                  cellValue,
+                  cellState
+                )
+                return (
+                  <td key={i}>
+                    <ValueInlineContent
+                      name={name}
+                      value={cellValue}
+                      path={[...path, key, ...columnPath]}
+                      state={cellState}
+                      {...nodeInfo}
+                      context={context}
+                    />
+                  </td>
+                )
+              })}
             </tr>
           ))}
         </tbody>

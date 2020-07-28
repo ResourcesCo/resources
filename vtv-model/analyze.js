@@ -24,7 +24,7 @@ export function getNodeType(value) {
 }
 
 export function getStringType(value) {
-  if (value.length > 120 || value.indexOf('\n') !== -1) {
+  if (value.length >= 256 || value.indexOf('\n') !== -1) {
     return 'text'
   } else {
     return 'inline'
@@ -38,6 +38,30 @@ export function getMediaType(value) {
     return result
   } catch {
     return undefined
+  }
+}
+
+export function getNodeInfo(value, state) {
+  let isExpandable = hasChildren(value)
+  const nodeType = getNodeType(value)
+  let stringType = null
+  let mediaType = null
+  if (nodeType === 'string') {
+    stringType = getStringType(value)
+    isExpandable =
+      stringType !== 'inline' || ['text', 'code', 'image'].includes(state._view)
+    if (isExpandable) {
+      mediaType =
+        typeof state._mediaType === 'string'
+          ? state._mediaType
+          : getMediaType(value)
+    }
+  }
+  return {
+    isExpandable,
+    stringType,
+    nodeType,
+    mediaType,
   }
 }
 

@@ -3,14 +3,7 @@ import PropTypes from 'prop-types'
 import getNested from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { getState, getChildState, getNestedState } from '../../vtv-model/state'
-import {
-  hasChildren as hasChildrenFn,
-  joinPath,
-  isObject,
-  getNodeType,
-  getStringType,
-  getMediaType,
-} from '../../vtv-model/analyze'
+import { joinPath, isObject, getNodeInfo } from '../../vtv-model/analyze'
 import ExpandButton from './ExpandButton'
 import NodeNameView from './NodeNameView'
 import InlineContent from '../content/InlineContent'
@@ -68,22 +61,10 @@ function NodeView({
     path,
   ])
 
-  const hasChildren = hasChildrenFn(value)
-  let isExpandable = hasChildren
-  const nodeType = getNodeType(value)
-  let stringType = null
-  let mediaType = null
-  if (nodeType === 'string') {
-    stringType = getStringType(value)
-    isExpandable =
-      stringType !== 'inline' || ['text', 'code', 'image'].includes(state._view)
-    if (isExpandable) {
-      mediaType =
-        typeof state._mediaType === 'string'
-          ? state._mediaType
-          : getMediaType(value)
-    }
-  }
+  const { isExpandable, nodeType, stringType, mediaType } = getNodeInfo(
+    value,
+    state
+  )
   const view = state._view || defaultView({ nodeType, stringType, mediaType })
 
   if (hidden) {
@@ -156,6 +137,9 @@ function NodeView({
             name={name}
             value={value}
             state={state}
+            nodeType={nodeType}
+            stringType={stringType}
+            mediaType={mediaType}
             path={path}
             rules={rules}
             context={context}

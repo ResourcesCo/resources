@@ -11,7 +11,10 @@ function ValueInlineContent({
   value,
   state,
   path,
-  autoEdit = true,
+  autoEdit: autoEditParam = true,
+  nodeType,
+  mediaType,
+  stringType,
   context: { onMessage, rules },
   context,
 }) {
@@ -21,6 +24,9 @@ function ValueInlineContent({
     _attachments: attachments,
     _error: error,
   } = getState(state)
+
+  const autoEdit =
+    nodeType === 'string' && stringType !== 'inline' ? false : autoEditParam
 
   if (attachments) {
     return (
@@ -37,6 +43,9 @@ function ValueInlineContent({
         editingName={editingName}
         error={error}
         autoEdit={autoEdit}
+        nodeType={nodeType}
+        mediaType={mediaType}
+        stringType={stringType}
         context={context}
       />
     )
@@ -65,6 +74,9 @@ function ValueInlineContent({
           value={value}
           state={state}
           path={path}
+          nodeType={nodeType}
+          mediaType={mediaType}
+          stringType={stringType}
           editing={editing}
           editingName={editingName}
           error={error}

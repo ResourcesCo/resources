@@ -9,6 +9,9 @@ export default function InlineContent({
   value,
   state,
   path,
+  nodeType,
+  stringType,
+  mediaType,
   rules,
   autoEdit = true,
   context: { onMessage },
@@ -55,6 +58,9 @@ export default function InlineContent({
         value={value}
         state={state}
         path={path}
+        nodeType={nodeType}
+        stringType={stringType}
+        mediaType={mediaType}
         autoEdit={autoEdit}
         context={context}
       />

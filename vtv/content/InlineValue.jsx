@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
 import Textarea from '../generic/Textarea'
-import { getNodeType } from '../../vtv-model/analyze'
 
 const inputValue = value => {
   if (value === null) {
@@ -29,6 +28,9 @@ const InlineValue = ({
   editingName,
   error,
   autoEdit,
+  nodeType,
+  stringType,
+  mediaType,
   context: { onMessage, theme },
 }) => {
   const inputRef = useRef()
@@ -104,9 +106,13 @@ const InlineValue = ({
     save({ editing: false })
   }
 
+  const showStringExcerpt =
+    !editing && typeof value === 'string' && value.length > 256
+
   let typeClass
-  const nodeType = getNodeType(newValue)
-  if (nodeType === 'string') {
+  if (showStringExcerpt) {
+    typeClass = 'excerpt'
+  } else if (nodeType === 'string') {
     typeClass = parsed ? 'stringValue' : 'string'
   } else if (nodeType === 'number') {
     typeClass = 'number'
@@ -114,7 +120,6 @@ const InlineValue = ({
     typeClass = 'value'
   }
 
-  const showStringExcerpt = typeof value === 'string' && value.length > 500
   const useTextArea = !expanded && !showStringExcerpt && (autoEdit || editing)
   return (
     <div className={`${typeClass} ${error ? 'has-error' : ''}`}>
@@ -134,12 +139,12 @@ const InlineValue = ({
           onKeyDown={handleKeyPress}
           onFocus={onFocus}
           onBlur={onBlur}
-          wrap="off"
+          wrap="on"
           tabIndex="-1"
         />
       )}
       {showStringExcerpt && (
-        <span>{`${value.substr(0, 50)}… (${value.length} characters)`}</span>
+        <span>{`${value.substr(0, 256)}… (${value.length} characters)`}</span>
       )}
       {!useTextArea && !showStringExcerpt && <span>{value}</span>}
       {error && <span className="error">{error}</span>}
@@ -171,6 +176,10 @@ const InlineValue = ({
         div.value span,
         div.value :global(textarea) {
           color: ${theme.valueColor};
+        }
+        div.excerpt span,
+        div.exceprt :global(textarea) {
+          color: ${theme.lighterTextColor};
         }
         div.has-error .error {
           color: red;
