@@ -1,6 +1,7 @@
 import { getNodeType, joinPath } from '../../vtv-model/analyze'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
+import { sanitizeUrl } from '@braintree/sanitize-url'
 
 export default function InlineNodeView({
   value,
@@ -46,7 +47,7 @@ export default function InlineNodeView({
     </div>
   )
   return url ? (
-    <a href={url} target="_blank">
+    <a href={sanitizeUrl(url) || '#'} target="_blank">
       {bubble}
       <style jsx>{`
         a:hover {
