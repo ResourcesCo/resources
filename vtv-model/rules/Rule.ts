@@ -26,7 +26,7 @@ export class RelativeLink {
     }
   }
   url: string
-  toPath: PathFunction
+  toPath?: PathFunction
 
   constructor({
     params,
@@ -45,30 +45,40 @@ export class RelativeLink {
       }
     })
     this.url = url
-    const urlPath = url.startsWith('/') ? url : new URL(url).pathname
-    this.toPath = compile(urlPath, {
-      encode: encodeURIComponent,
-    })
+    if (!url.startsWith('${')) {
+      const urlPath = url.startsWith('/') ? url : new URL(url).pathname
+      this.toPath = compile(urlPath, {
+        encode: encodeURIComponent,
+      })
+    }
   }
 
-  getUrl({ value, path }) {
-    const params = mapValues(this.params, ({ up, pointer }) => {
+  getParams({ value, path }) {
+    return mapValues(this.params, ({ up, pointer }) => {
       const basePath =
         typeof up === 'number' ? path.slice(0, path.length - up) : []
       const base = basePath.length > 0 ? getNested(value, basePath) : value
       return `${pointer.get(base)}`
     })
-    try {
-      const pathname = this.toPath(params)
-      if (this.url.startsWith('/')) {
-        return pathname
-      } else {
-        const parsedUrl = new URL(this.url)
-        parsedUrl.pathname = pathname
-        return parsedUrl.href
+  }
+
+  getUrl({ value, path }) {
+    const params = this.getParams({ value, path })
+    if (this.toPath) {
+      try {
+        const pathname = this.toPath(params)
+        if (this.url.startsWith('/')) {
+          return pathname
+        } else {
+          const parsedUrl = new URL(this.url)
+          parsedUrl.pathname = pathname
+          return parsedUrl.href
+        }
+      } catch (err) {
+        return
       }
-    } catch (err) {
-      return
+    } else {
+      return this.url.replace(/\$\{\s*(\w+)\s*\}/, (s, param) => params[param])
     }
   }
 }
@@ -106,24 +116,46 @@ export interface ActionLinkSpec {
   params: { [key: string]: string }
   url: string
   action: string
+  args?: string
 }
 
 class ActionLink {
   type = 'action'
   name: string
   action: string
+  args?: string
   relativeLink: RelativeLink
 
-  constructor({ name, params, url, action }: Omit<ActionLinkSpec, 'type'>) {
+  constructor({
+    name,
+    params,
+    args,
+    url,
+    action,
+  }: Omit<ActionLinkSpec, 'type'>) {
     this.name = name
     this.action = action
+    this.args = args
     this.relativeLink = new RelativeLink({ params, url })
+  }
+
+  getActionName({ path, value }) {
+    if (/\$\{\s*(\w+)\s*\}/.test(this.action)) {
+      const params = this.relativeLink.getParams({ path, value })
+      return this.action.replace(
+        /\$\{\s*(\w+)\s*\}/,
+        (s, param) => params[param]
+      )
+    } else {
+      return this.action
+    }
   }
 
   getAction({ path, value }) {
     return {
       url: this.relativeLink.getUrl({ path, value }),
-      action: this.action,
+      action: this.getActionName({ path, value }),
+      args: this.args,
     }
   }
 }

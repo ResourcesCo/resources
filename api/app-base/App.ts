@@ -83,7 +83,7 @@ function defaultAction(actionName) {
   if (actionName === 'help') {
     return {
       name: 'help',
-      params: [],
+      params: ['type?'],
     }
   }
 }
@@ -181,31 +181,34 @@ export default class App {
 
   matchParams({ match, action, params }) {
     const { any: discard, ...actionParams } = match.params
-    if (action.params.length === params.length) {
+    const optionalParams = action.params.filter(param => param.endsWith('?'))
+      .length
+    const minParams = action.params.length - optionalParams
+    const maxParams = action.params.length
+    if (params.length >= minParams && params.length <= maxParams) {
       let i = 0
       for (const name of action.params) {
-        actionParams[name] = params[i]
+        if (i + 1 <= params.length) {
+          actionParams[
+            name.endsWith('?') ? name.substr(0, name.length - 1) : name
+          ] = params[i]
+        }
         i++
       }
       return { params: actionParams }
     } else {
       return {
-        error: `Expected ${action.params.length} parameter${
-          action.params.length === 1 ? '' : 's'
-        }, got ${params.length}`,
+        error: `Expected ${
+          minParams === maxParams ? maxParams : `${minParams} to ${maxParams}`
+        } parameter${minParams === 1 && maxParams === 1 ? '' : 's'}, got ${
+          params.length
+        }`,
       }
     }
   }
 
-  help = async ({ resourceType }) => {
-    if (resourceType) {
-      return helpMessage({ resourceType: this.resourceTypes[resourceType] })
-    } else {
-      return {
-        type: 'error',
-        text: 'Command not found.',
-      }
-    }
+  help = async ({ resourceType, params: { type } }) => {
+    return helpMessage({ app: this, resourceType, type })
   }
 
   async run({

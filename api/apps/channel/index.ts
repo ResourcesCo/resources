@@ -66,6 +66,7 @@ const actions = {
               },
               url: '/:name',
               action: 'help',
+              args: 'app',
             },
           ],
         },

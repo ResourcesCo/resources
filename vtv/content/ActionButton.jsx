@@ -15,11 +15,13 @@ export default function ActionButton({
   const nodeType = getNodeType(value)
   const summaryString = `${value}`.replace(/\n\t/g, '').substr(0, 40)
   const runAction = () => {
-    const { url: actionUrl, action } = actionLink.getAction({
+    const { url: actionUrl, action, args } = actionLink.getAction({
       value: docValue,
       path,
     })
-    onPickId(`${actionUrl} :${action}`)
+    onPickId(
+      `${actionUrl} :${action}${typeof args === 'string' ? ` ${args}` : ''}`
+    )
   }
   return (
     <button className="action" onClick={runAction}>
