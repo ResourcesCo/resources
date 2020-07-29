@@ -11,50 +11,64 @@ const actions = {
       appsState = { _expanded: true }
     for (const appName of Object.keys(channel.apps)) {
       apps[appName] = {
+        name: appName,
         description: channel.apps[appName].description,
         more: `:help /${appName}`,
-      }
-      appsState[appName] = {
-        more: {
-          _actions: [
-            {
-              name: 'go',
-              title: 'Go',
-              primary: true,
-              action: 'pasteIntoConsole',
-            },
-          ],
-        },
-        _expanded: true,
       }
     }
     return {
       type: 'tree',
       name: 'apps',
       value: {
-        intro: [
-          `
-            This is a Resources.co channel.
-          `,
-          `
-            To run an action on a resource, compose a message with an action, prefixed with a colon,
-            such as :get, :patch, :complete, and :comment, and an absolute or relative URL.
-          `,
-          `
-            Relative URLs here are relative to this channel, and are defined by apps. For instance,
-            /github/ResourcesCo/resources is defined by the github app.
-          `,
-          `
-            Actions can appear before or after commands. This can be convenient when running actions
-            on the same URL, for instance, a :get followed by a :patch.
-          `,
-        ].map(s => s.replace(/\s+/g, ' ').trim()),
-        apps,
+        output: {
+          intro: [
+            `
+              This is a Resources.co channel.
+            `,
+            `
+              To run an action on a resource, compose a message with an action, prefixed with a colon,
+              such as :get, :patch, :complete, and :comment, and an absolute or relative URL.
+            `,
+            `
+              Relative URLs here are relative to this channel, and are defined by apps. For instance,
+              /github/ResourcesCo/resources is defined by the github app.
+            `,
+            `
+              Actions can appear before or after commands. This can be convenient when running actions
+              on the same URL, for instance, a :get followed by a :patch.
+            `,
+          ].map(s => s.replace(/\s+/g, ' ').trim()),
+          apps,
+        },
       },
       state: {
-        intro: { _expanded: true },
-        apps: appsState,
-        _expanded: true,
+        _showOnly: ['output'],
+        output: {
+          apps: {
+            _expanded: true,
+          },
+        },
+      },
+      rules: {
+        apps: {
+          sel: '/output/apps/:index',
+          inline: [
+            {
+              type: 'node',
+              path: ['description'],
+              showLabel: false,
+            },
+            {
+              type: 'action',
+              name: 'more',
+              params: {
+                name: '0/name',
+              },
+              url: '/:name',
+              action: 'help',
+            },
+          ],
+        },
       },
     }
   },

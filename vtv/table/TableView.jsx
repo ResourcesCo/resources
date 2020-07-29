@@ -1,9 +1,7 @@
 import React from 'react'
-import {
-  getCollectionPaths,
-  joinPath,
-  getAtPath,
-} from '../../vtv-model/analyze'
+import { getCollectionPaths, joinPath } from '../../vtv-model/analyze'
+import { getNestedState } from '../../vtv-model/state'
+import getNested from 'lodash/get'
 import { getChildState } from '../../vtv-model'
 import { getNodeInfo } from '../../vtv-model/analyze'
 import ValueInlineContent from '../content/ValueInlineContent'
@@ -38,9 +36,8 @@ export default ({ name, value, path, state, context: { theme }, context }) => {
                 <RowHeaderView context={context}>{key}</RowHeaderView>
               </td>
               {paths.map((columnPath, i) => {
-                const cellValue = getAtPath(value[key], columnPath)
-                const cellState = getChildState(value[key], columnPath)
-                const nodeInfo = getNodeInfo(cellNodeValue)
+                const cellValue = getNested(value, [key, ...columnPath])
+                const cellState = getNestedState(value, [key, ...columnPath])
                 const { nodeType, stringType, mediaType } = getNodeInfo(
                   cellValue,
                   cellState
@@ -52,7 +49,9 @@ export default ({ name, value, path, state, context: { theme }, context }) => {
                       value={cellValue}
                       path={[...path, key, ...columnPath]}
                       state={cellState}
-                      {...nodeInfo}
+                      nodeType={nodeType}
+                      stringType={stringType}
+                      mediaType={mediaType}
                       context={context}
                     />
                   </td>
