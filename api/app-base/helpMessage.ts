@@ -1,32 +1,65 @@
 import App, { ResourceType } from './App'
-import { produce } from 'immer'
+import produce, { Draft } from 'immer'
+import { parse, compile, Token } from 'path-to-regexp'
+import keyBy from 'lodash/keyBy'
+import mapValues from 'lodash/mapValues'
+import pickBy from 'lodash/pickBy'
 
-function defineDraftRoutes(draft) {
-  const routes = draft.routes
-  draft.routes = {}
+function setPathParams(path: string, params: { [key: string]: string }) {
+  const defaultParams = mapValues(
+    keyBy(
+      parse(path).filter(o => typeof o !== 'string'),
+      'name'
+    ),
+    (_, s) => `___3A${s}`
+  )
+  const toPath = compile(path, {
+    encode: encodeURIComponent,
+  })
+  const inputParams = pickBy(params, v => !/^%3A|:/.test(v))
+  console.log({ defaultParams, inputParams })
+  return toPath({
+    ...defaultParams,
+    ...inputParams,
+  }).replace('___3A', ':')
+}
+
+function defineResourceTypeDraftRoutes(
+  resourceType: Draft<any>,
+  params: { [key: string]: string } = {}
+) {
+  const routes = resourceType.routes
+  resourceType.routes = {}
   const channelRoute = routes.find(route => !('host' in route))
   const webRoute = routes.find(route => 'host' in route)
   if (channelRoute) {
-    draft.routes.channel = channelRoute
+    resourceType.routes.channel = channelRoute
   }
   if (webRoute) {
-    draft.routes.web = webRoute
+    resourceType.routes.web = webRoute
   }
-  draft.urlPattern = channelRoute
-    ? channelRoute.path
+  for (const actionName of Object.keys(resourceType.actions)) {
+    const action = resourceType.actions[actionName]
+    action.exampleParams = (action.params || []).map(s => `<${s}>`).join(' ')
+  }
+  resourceType.url = channelRoute
+    ? setPathParams(channelRoute.path, params)
     : `https://${webRoute.host}${webRoute.path}`
 }
 
-function defineRoutes(resourceType) {
-  return produce(resourceType, draft => {
-    defineDraftRoutes(draft)
+function defineResourceTypeRoutes(
+  resourceType,
+  params: { [key: string]: string }
+) {
+  return produce(resourceType, resourceType => {
+    defineResourceTypeDraftRoutes(resourceType, params)
   })
 }
 
 function defineAppRoutes(resourceTypes) {
-  return produce(resourceTypes, draft => {
-    for (const resourceType of Object.keys(draft)) {
-      defineDraftRoutes(resourceTypes[resourceType])
+  return produce(resourceTypes, resourceTypes => {
+    for (const resourceType of Object.keys(resourceTypes)) {
+      defineResourceTypeDraftRoutes(resourceTypes[resourceType])
     }
   })
 }
@@ -60,11 +93,11 @@ function appHelp({ app }: { app: App }) {
           },
           {
             type: 'action',
-            name: 'more',
+            name: 'help',
             params: {
-              urlPattern: '0/urlPattern',
+              url: '0/url',
             },
-            url: '${ urlPattern }',
+            url: '${ url }',
             action: 'help',
           },
         ],
@@ -76,20 +109,26 @@ function appHelp({ app }: { app: App }) {
 function resourceTypeHelp({
   app,
   resourceType,
+  params,
 }: {
   app: App
   resourceType: ResourceType
+  params: { [key: string]: string }
 }) {
-  const resourceTypeRoutes: any = defineRoutes(resourceType)
+  const resourceTypeOutput: any = defineResourceTypeRoutes(resourceType, params)
   return {
     type: 'tree',
     value: {
       output: {
-        app: app.name,
-        description: app.description,
-        resourceType: resourceType.name,
-        actions: resourceType.actions,
-        urlPattern: resourceTypeRoutes.urlPattern,
+        app: {
+          name: app.name,
+          description: app.description,
+        },
+        resourceType: {
+          name: resourceType.name,
+          url: resourceTypeOutput.url,
+        },
+        actions: resourceTypeOutput.actions,
       },
     },
     state: {
@@ -101,6 +140,32 @@ function resourceTypeHelp({
       },
     },
     rules: {
+      app: {
+        sel: '/output/app',
+        inline: [
+          {
+            type: 'action',
+            name: 'help',
+            params: {
+              name: '0/name',
+              action: '0/name',
+            },
+            url: '/:name',
+            action: 'help',
+            args: 'app',
+          },
+        ],
+      },
+      resourceType: {
+        sel: '/output/resourceType',
+        inline: [
+          {
+            type: 'node',
+            path: ['url'],
+            showLabel: false,
+          },
+        ],
+      },
       actions: {
         sel: '/output/actions/:index',
         inline: [
@@ -108,11 +173,13 @@ function resourceTypeHelp({
             type: 'action',
             name: 'go',
             params: {
-              urlPattern: '/output/urlPattern',
+              url: '/output/resourceType/url',
               action: '0/name',
+              exampleParams: '0/exampleParams',
             },
-            url: '${ urlPattern }',
+            url: '${ url }',
             action: '${ action }',
+            args: '${ exampleParams }',
           },
         ],
       },
@@ -123,18 +190,21 @@ function resourceTypeHelp({
 export default function helpMessage({
   app,
   resourceType,
-  type,
+  helpType,
+  params,
 }: {
   app: App
   resourceType?: string
-  type?: string
+  helpType?: string
+  params: { [key: string]: string }
 }) {
-  if (type === 'app' || !app.resourceTypes[resourceType]) {
+  if (helpType === 'app' || !app.resourceTypes[resourceType]) {
     return appHelp({ app })
   } else {
     return resourceTypeHelp({
       app,
       resourceType: app.resourceTypes[resourceType],
+      params,
     })
   }
 }

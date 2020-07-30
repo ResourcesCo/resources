@@ -6,7 +6,8 @@ async function run({ action, env, params: { path } }) {
 
 export default async function app(): Promise<AppSpec> {
   return {
-    name: 'Test',
+    name: 'test',
+    title: 'Test',
     description: 'Run tests',
     resourceTypes: {
       tests: {

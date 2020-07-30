@@ -139,23 +139,20 @@ class ActionLink {
     this.relativeLink = new RelativeLink({ params, url })
   }
 
-  getActionName({ path, value }) {
-    if (/\$\{\s*(\w+)\s*\}/.test(this.action)) {
+  replaceVars(str, path, value) {
+    if (/\$\{\s*(\w+)\s*\}/.test(str)) {
       const params = this.relativeLink.getParams({ path, value })
-      return this.action.replace(
-        /\$\{\s*(\w+)\s*\}/,
-        (s, param) => params[param]
-      )
+      return str.replace(/\$\{\s*(\w+)\s*\}/, (_, param) => params[param])
     } else {
-      return this.action
+      return str
     }
   }
 
   getAction({ path, value }) {
     return {
       url: this.relativeLink.getUrl({ path, value }),
-      action: this.getActionName({ path, value }),
-      args: this.args,
+      action: this.replaceVars(this.action, path, value),
+      args: this.replaceVars(this.args, path, value),
     }
   }
 }

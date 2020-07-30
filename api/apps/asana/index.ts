@@ -360,7 +360,8 @@ async function run({ resourceType, action, env, params, request }) {
 
 export default async function app(): Promise<AppSpec> {
   return {
-    name: 'Asana',
+    name: 'asana',
+    title: 'Asana',
     environmentVariables: {
       ASANA_TOKEN: {
         doc: `

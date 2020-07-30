@@ -59,6 +59,7 @@ export interface ResourceType extends ResourceTypeSpec {
 
 export interface AppSpec {
   name: string
+  title?: string
   description: string
   resourceTypes: { [key: string]: ResourceTypeSpec }
   environmentVariables?: {
@@ -83,13 +84,14 @@ function defaultAction(actionName) {
   if (actionName === 'help') {
     return {
       name: 'help',
-      params: ['type?'],
+      params: ['helpType?'],
     }
   }
 }
 
 export default class App {
   name: string
+  title?: string
   description: string
   resourceTypes: { [key: string]: ResourceType }
   onRun: Function
@@ -108,8 +110,9 @@ export default class App {
     request?: Function
     channel: ConsoleChannel
   }) {
-    const { name, resourceTypes, run, description } = appSpec
+    const { name, title, resourceTypes, run, description } = appSpec
     this.name = name
+    this.title = title
     this.description = description
     this.resourceTypes = mapValues(
       resourceTypes,
@@ -213,8 +216,8 @@ export default class App {
     }
   }
 
-  help = async ({ resourceType, params: { type } }) => {
-    return helpMessage({ app: this, resourceType, type })
+  help = async ({ resourceType, params: { helpType, ...params } }) => {
+    return helpMessage({ app: this, resourceType, helpType, params })
   }
 
   async run({

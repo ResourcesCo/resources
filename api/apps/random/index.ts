@@ -19,7 +19,8 @@ async function run({ action }) {
 
 export default async function app(): Promise<AppSpec> {
   return {
-    name: 'Random',
+    name: 'random',
+    title: 'Random',
     description: 'Fun with random numbers',
     resourceTypes: {
       tasks: {

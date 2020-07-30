@@ -60,7 +60,8 @@ async function run({ resourceType, action, env, params, request }) {
 
 export default async function app(): Promise<AppSpec> {
   return {
-    name: 'GIPHY',
+    name: 'giphy',
+    title: 'GIPHY',
     description: 'Search for GIFs',
     environmentVariables: {
       GITHUB_TOKEN: {

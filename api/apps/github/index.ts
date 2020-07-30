@@ -168,7 +168,8 @@ async function run({ resourceType, action, env, params, request }) {
 
 export default async function app(): Promise<AppSpec> {
   return {
-    name: 'GitHub',
+    name: 'github',
+    title: 'GitHub',
     description: 'Collaborate on GitHub',
     environmentVariables: {
       GITHUB_TOKEN: {

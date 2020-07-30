@@ -81,7 +81,7 @@ async function run({ action, channel }) {
 
 export default async function app(): Promise<AppSpec> {
   return {
-    name: 'request',
+    name: 'channel',
     description: 'Manage this channel',
     resourceTypes: {
       root: {

@@ -19,9 +19,7 @@ export default function ActionButton({
       value: docValue,
       path,
     })
-    onPickId(
-      `${actionUrl} :${action}${typeof args === 'string' ? ` ${args}` : ''}`
-    )
+    onPickId(`${actionUrl} :${action} ${args || ''}`.trim())
   }
   return (
     <button className="action" onClick={runAction}>
