@@ -130,8 +130,14 @@ export default class App {
     let result
     if (typeof message === 'string') {
       result = { type: 'text', text: message }
-    } else if (typeof message === 'object' && message !== null) {
-      result = expandRoot(message)
+    } else if (
+      typeof message === 'object' &&
+      message !== null &&
+      message.type === 'tree'
+    ) {
+      result = expandRoot({ state: {}, ...message })
+    } else {
+      result = message
     }
     return result
   }

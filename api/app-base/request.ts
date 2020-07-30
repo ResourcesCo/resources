@@ -7,15 +7,24 @@ export function ok(response) {
   return response.status >= 200 && response.status < 300
 }
 
+function replaceEnvInString(str, env) {
+  let result = str
+  for (const [envKey, value] of Object.entries(env)) {
+    result = result.replace(
+      value,
+      () => '${ ' + joinPath(['env', envKey]) + ' }'
+    )
+  }
+  return result
+}
+
 export function replaceEnv(request, env) {
-  return produce(request, draft => {
+  return produce(request, request => {
+    request.url = replaceEnvInString(request.url, env)
     const headers = request.headers
-    for (const key of Object.keys(headers)) {
-      for (const [envKey, value] of Object.entries(env)) {
-        headers[key] = headers[key].replace(
-          value,
-          () => '${ ' + joinPath(['env', envKey]) + ' }'
-        )
+    if (headers) {
+      for (const key of Object.keys(headers)) {
+        headers[key] = replaceEnvInString(headers[key], env)
       }
     }
   })

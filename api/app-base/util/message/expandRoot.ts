@@ -3,7 +3,8 @@ import getNested from 'lodash/get'
 import { draftState, getStateKey } from '../../../../vtv-model/util'
 
 export default function expandRoot(message) {
-  return produce(message, draft => {
+  console.log({ message })
+  return produce(message, message => {
     if (message.type === 'tree') {
       const showOnly = (message.state || {})._showOnly
       if (Array.isArray(showOnly) && showOnly.length > 0) {
@@ -23,7 +24,8 @@ export default function expandRoot(message) {
           }
         }
       }
-      if (!('_expanded' in message.state)) {
+      console.log({ message })
+      if (!(message.state && '_expanded' in message.state)) {
         const rootState = draftState(message, [])
         rootState._expanded = true
       }

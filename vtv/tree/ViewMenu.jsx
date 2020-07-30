@@ -1,5 +1,5 @@
 import Menu, { MenuItem, Separator } from '../generic/Menu'
-import { hasChildren as hasChildrenFn } from '../../vtv-model/analyze'
+import { hasChildren as hasChildrenFn, isUrl } from '../../vtv-model/analyze'
 import defaultViewFn from '../util/defaultView'
 import { codeTypes } from '../../vtv-model/constants'
 
@@ -18,14 +18,16 @@ function getAvailableViews({
   stringType,
   mediaType,
   hasChildren,
+  value,
 }) {
   const result = [defaultView]
+  const valueIsUrl = isUrl(value)
   if (['object', 'array'].includes(nodeType) && hasChildren) {
     result.push('table')
   }
   if (
     nodeType === 'string' &&
-    (mediaType || '').startsWith('image') &&
+    ((mediaType || '').startsWith('image') || valueIsUrl) &&
     defaultView !== 'image'
   ) {
     result.push('image')
@@ -158,6 +160,7 @@ export default function ViewMenu({
     stringType,
     mediaType,
     hasChildren,
+    value,
   })
   const hiddenKeys =
     nodeType === 'object' ? getHiddenKeys(value, state) : undefined
