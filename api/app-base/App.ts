@@ -57,6 +57,20 @@ export interface ResourceType extends ResourceTypeSpec {
   actions: { [key: string]: Action }
 }
 
+export interface RunProps {
+  host?: string
+  path?: string
+  resourceType?: string
+  action?: string
+  params?: object
+  env?: object
+  formData?: object
+  parentMessage?: object
+  onMessage?: Function
+  request?: Function
+  channel?: ConsoleChannel
+}
+
 export interface AppSpec {
   name: string
   title?: string
@@ -67,17 +81,7 @@ export interface AppSpec {
       doc: string
     }
   }
-  run(props: {
-    host?: string
-    path?: string
-    action?: string
-    params?: object
-    env?: object
-    formData?: object
-    parentMessage?: object
-    onMessage?: Function
-    request?: Function
-  }): MessageReturnValue
+  run(props: RunProps): MessageReturnValue
 }
 
 function defaultAction(actionName) {

@@ -121,14 +121,10 @@ export default class ChannelView extends PureComponent {
         commands[key] = this.setCommandLoading(commands[key], false)
         commands[key] = this.removeTemporaryCommandState(commands[key])
       }
-      this.setState({
-        commands,
-        commandIds: store.commandIds || this.state.commandIds,
+      this.setMessageState({
+        messages: commands,
+        messageIds: store.commandIds || this.state.commandIds,
       })
-      // this.setState({
-      //   commands: {},
-      //   commandIds: [],
-      // })
     }
     await loadMessages()
     if (this.scrollRef.current) {
@@ -255,9 +251,18 @@ export default class ChannelView extends PureComponent {
     }
   }
 
+  setMessageState({ messageIds, messages }) {
+    const { channel } = this.props
+    this.setState({ commandIds: messageIds, commands: messages })
+    if (channel) {
+      channel.messageIds = messageIds
+      channel.messages = messages
+    }
+  }
+
   setCommands = (commandIds, commands) => {
     const { store } = this.props
-    this.setState({ commandIds, commands })
+    this.setMessageState({ messageIds: commandIds, messages: commands })
     store.commandIds = commandIds
     store.commands = commands
     store.save()

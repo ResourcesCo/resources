@@ -26,8 +26,8 @@ export interface ChannelClientConfig extends ChannelProps {
 class ConsoleChannel {
   clientConfig: ChannelClientConfig
   config?: { name?: string; displayName?: string; apps?: any; files?: any } = {}
-  messages: any
-  messageIds: any[]
+  messages: { [key: string]: object }
+  messageIds: string[]
   files: any
   env: { [key: string]: any }
   apps: { [key: string]: App }
@@ -48,7 +48,7 @@ class ConsoleChannel {
     await this.loadConfig()
     await this.loadEnv()
     await this.loadApps()
-    await this.loadMessages()
+    // await this.loadMessages()
   }
 
   get fileStore() {
