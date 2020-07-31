@@ -1,9 +1,4 @@
-import { getNodeType, joinPath } from '../../vtv-model/analyze'
-import CollectionSummary from './CollectionSummary'
-
 export default function ActionButton({
-  value,
-  state,
   path,
   actionLink,
   context: {
@@ -12,8 +7,6 @@ export default function ActionButton({
     theme,
   },
 }) {
-  const nodeType = getNodeType(value)
-  const summaryString = `${value}`.replace(/\n\t/g, '').substr(0, 40)
   const runAction = () => {
     const { url: actionUrl, action, args } = actionLink.getAction({
       value: docValue,

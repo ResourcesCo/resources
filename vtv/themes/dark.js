@@ -16,7 +16,6 @@ export default {
   valueColor: '#dd9',
   bubble1: '#6f6f6f',
   bubble2: '#0d3a4c',
-  bubble3: '#034954',
   menuBackground: '#777',
   menuHighlight: '#878787',
   errorColor: '#c00',

@@ -374,6 +374,7 @@ export default async function app(): Promise<AppSpec> {
     resourceTypes: {
       workspaces: {
         routes: [{ path: '/asana/workspaces' }],
+        defaultAction: 'get',
         actions: {
           get: {
             params: [],

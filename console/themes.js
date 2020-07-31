@@ -1,5 +1,5 @@
 import vtvDark from '../vtv/themes/dark'
-import vtvLight from '../vtv/themes/dark'
+import vtvLight from '../vtv/themes/light'
 
 export const shared = {
   fontFamily:

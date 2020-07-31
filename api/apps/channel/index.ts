@@ -13,7 +13,6 @@ const actions = {
       apps[appName] = {
         name: appName,
         description: channel.apps[appName].description,
-        more: `:help /${appName}`,
       }
     }
     return {
@@ -60,7 +59,7 @@ const actions = {
             },
             {
               type: 'action',
-              name: 'more',
+              name: 'help',
               params: {
                 name: '0/name',
               },

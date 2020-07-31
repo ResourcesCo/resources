@@ -168,7 +168,7 @@ export default class App {
     const match = route.match(path)
     if (match) {
       const resolvedActionName =
-        actionName || resourceType.defaultAction || 'get'
+        actionName || resourceType.defaultAction || 'help'
       const action =
         Object.values(resourceType.actions).find(
           ({ name }) => name === resolvedActionName

@@ -5,6 +5,7 @@ import test from './test'
 import random from './random'
 import request from './request'
 import giphy from './giphy'
+import themes from './themes'
 
 const apps = {
   channel,
@@ -14,6 +15,7 @@ const apps = {
   random,
   request,
   giphy,
+  themes,
 }
 
 export default apps
