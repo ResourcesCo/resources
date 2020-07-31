@@ -10,8 +10,8 @@ const actions = {
     const apps = {},
       appsState = { _expanded: true }
     for (const appName of Object.keys(channel.apps)) {
-      apps[appName] = {
-        name: appName,
+      apps[channel.apps[appName].name] = {
+        name: channel.apps[appName].name,
         description: channel.apps[appName].description,
       }
     }

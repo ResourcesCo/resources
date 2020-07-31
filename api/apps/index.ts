@@ -6,6 +6,7 @@ import random from './random'
 import request from './request'
 import giphy from './giphy'
 import themes from './themes'
+import consoleDev from './console-dev'
 
 const apps = {
   channel,
@@ -16,6 +17,7 @@ const apps = {
   request,
   giphy,
   themes,
+  consoleDev,
 }
 
 export default apps
