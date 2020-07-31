@@ -186,7 +186,6 @@ class ConsoleChannel {
         text: routeMatch.error,
         commandId: messageId,
       })
-      return true
     } else if (routeMatch) {
       const {} = routeMatch
       const isBackgroundAction = formData && formData.action === 'runAction'
@@ -250,8 +249,46 @@ class ConsoleChannel {
             },
           ].filter(value => value)
         )
-        return true
       }
+    } else if ([urlArg, actionArg].some(v => v !== null && v !== undefined)) {
+      const messageId = shortid()
+      onMessage({
+        type: 'input',
+        text: message,
+        commandId: messageId,
+      })
+      onMessage({
+        type: 'error',
+        text: 'Command not found.',
+        commandId: messageId,
+      })
+    } else {
+      const messageId = shortid()
+      const input = parsed.map(s => {
+        try {
+          return JSON.parse(s)
+        } catch (e) {
+          return s
+        }
+      })
+      onMessage({
+        type: 'input',
+        text: message.substr(0, 40) + (message.length > 40 ? '…' : ''),
+        commandId: messageId,
+      })
+      onMessage({
+        type: 'tree',
+        value: {
+          input: input.length === 1 ? input[0] : input,
+        },
+        commandId: messageId,
+        state: {
+          _showOnly: ['input'],
+          input: {
+            _expanded: true,
+          },
+        },
+      })
     }
   }
 

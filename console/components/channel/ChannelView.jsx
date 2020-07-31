@@ -9,7 +9,6 @@ import {
   updateTree,
   removeTemporaryState,
 } from '../../../vtv-model'
-import runCommand from '../../command-runner'
 import Message from '../messages/Message'
 import ChannelInput from './ChannelInput'
 import Nav from '../Nav'
@@ -269,17 +268,15 @@ export default class ChannelView extends PureComponent {
   }
 
   send = async () => {
-    const { channel, store } = this.props
-    const { text } = this.state
-    const parsed = parseCommand(text)
+    const { channel } = this.props
+    const { text: message } = this.state
+    const parsed = parseCommand(message)
     if (Array.isArray(parsed) && parsed.length) {
       this.setState({ text: '' })
-      await runCommand({
-        message: text,
+      await channel.runCommand({
+        message,
         parsed,
-        onMessagesCreated: this.addMessages,
-        channel,
-        store,
+        onMessage: this.addMessages,
       })
     }
   }
@@ -309,15 +306,13 @@ export default class ChannelView extends PureComponent {
       getNested(commands, [commandId, 'messages']) || []
     ).filter(message => message.type === 'tree')[0]
     const parsed = parseCommand(message)
-    await runCommand({
+    await channel.runCommand({
       message,
       parsed,
-      onMessagesCreated: this.addMessages,
-      formData,
-      parentCommandId: commandId,
+      onMessage: this.addMessages,
+      parentMessageId: parentCommandId,
       parentMessage,
-      channel,
-      store,
+      formData,
     })
   }
 

@@ -91,6 +91,13 @@ const actions = {
       }
     },
   },
+  channel: {
+    async clear() {
+      return {
+        type: 'clear',
+      }
+    },
+  },
   messages: {
     get({ channel }: { channel: ConsoleChannel }) {
       const { messages, messageIds } = channel
@@ -168,6 +175,9 @@ export default async function app(): Promise<AppSpec> {
       root: {
         routes: [{ path: '/' }],
         actions: {
+          help: {
+            params: [],
+          },
           clear: {
             params: [],
           },
@@ -175,13 +185,20 @@ export default async function app(): Promise<AppSpec> {
       },
       channel: {
         routes: [{ path: '/channel' }],
-        actions: {},
+        actions: {
+          clear: {
+            params: [],
+          },
+        },
       },
       messages: {
         routes: [{ path: '/messages' }],
         defaultAction: 'get',
         actions: {
           get: {
+            params: [],
+          },
+          clear: {
             params: [],
           },
         },
