@@ -1,4 +1,4 @@
-import shortid from 'shortid'
+import createId from './createId'
 import Client from '../client/Client'
 import ConsoleError from '../ConsoleError'
 import { FileStore } from '../storage/FileStore'
@@ -9,7 +9,7 @@ import apps from '../apps'
 import env from './env'
 import { createNanoEvents, Emitter } from 'nanoevents'
 import produce from 'immer'
-import app from 'api/apps/channel'
+import uniq from 'lodash/uniq'
 
 // Properties stored and managed by the workspace (a channel cannot set itself to be admin)
 export interface ChannelProps {
@@ -28,11 +28,13 @@ class ConsoleChannel {
   config?: { name?: string; displayName?: string; apps?: any; files?: any } = {}
   messages: { [key: string]: object }
   messageIds: string[]
+  messagesLoaded: boolean
   files: any
   env: { [key: string]: any }
   apps: { [key: string]: App }
   client: Client
   emitter: Emitter
+  messageSavePromise?: Promise<boolean>
 
   constructor(clientConfig: ChannelClientConfig) {
     this.clientConfig = clientConfig
@@ -48,7 +50,7 @@ class ConsoleChannel {
     await this.loadConfig()
     await this.loadEnv()
     await this.loadApps()
-    // await this.loadMessages()
+    await this.loadMessages()
   }
 
   get fileStore() {
@@ -90,19 +92,48 @@ class ConsoleChannel {
     let envData = {}
     const resp = await this.fileStore.get({ path: 'messages.json' })
     if (resp.ok) {
-      this.messages = resp.body.messages
-      this.messageIds = resp.body.messageIds
-    } else {
-      this.messages = {}
-      this.messageIds = []
+      this.messages = { ...this.messages, ...resp.body.messages }
+      this.messageIds = uniq(resp.body.messageIds.concat(this.messageIds))
+    }
+    if (resp.ok || resp.error?.code === 'not_found') {
+      this.messagesLoaded = true
     }
   }
 
+  saveMessagesToStore = async () => {
+    try {
+      if (this.messagesLoaded) {
+        await this.fileStore.put({
+          path: 'messages.json',
+          value: { messageIds: this.messageIds, messages: this.messages },
+        })
+      }
+      return true
+    } catch (e) {
+      return false
+    }
+  }
+
+  async saveMessagesToStoreAndDelay(duration) {
+    const result = await this.saveMessagesToStore()
+    const delay = new Promise(resolve =>
+      setTimeout(() => resolve(true), duration)
+    )
+    await delay
+    return result
+  }
+
   saveMessages = async () => {
-    await this.fileStore.put({
-      path: 'messages.json',
-      value: { messageIds: this.messageIds, messages: this.messages },
-    })
+    if (this.messageSavePromise) {
+      const promise = this.messageSavePromise
+      await promise
+      // if another call to saveMessages hasn't already called save again
+      if (this.messageSavePromise === promise) {
+        this.messageSavePromise = this.saveMessagesToStoreAndDelay(200)
+      }
+    } else {
+      this.messageSavePromise = this.saveMessagesToStoreAndDelay(200)
+    }
   }
 
   async loadApp(appName) {
@@ -169,13 +200,14 @@ class ConsoleChannel {
   }) {
     const { url: urlArg, action: actionArg, params } = parseArgs(parsed)
 
+    const messageId = createId()
+
     const routeMatch = await this.route({
       url: urlArg,
       action: actionArg,
       params,
     })
     if (routeMatch && 'error' in routeMatch) {
-      const messageId = shortid()
       onMessage({
         type: 'input',
         text: message,
@@ -190,7 +222,6 @@ class ConsoleChannel {
       const {} = routeMatch
       const isBackgroundAction = formData && formData.action === 'runAction'
 
-      const messageId = shortid()
       if (!isBackgroundAction) {
         onMessage({
           type: 'input',
@@ -251,7 +282,6 @@ class ConsoleChannel {
         )
       }
     } else if ([urlArg, actionArg].some(v => v !== null && v !== undefined)) {
-      const messageId = shortid()
       onMessage({
         type: 'input',
         text: message,
@@ -263,7 +293,6 @@ class ConsoleChannel {
         commandId: messageId,
       })
     } else {
-      const messageId = shortid()
       const input = parsed.map(s => {
         try {
           return JSON.parse(s)

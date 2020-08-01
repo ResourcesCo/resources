@@ -11,7 +11,6 @@ import {
 } from '../../../vtv-model'
 import Message from '../messages/Message'
 import ChannelInput from './ChannelInput'
-import Nav from '../Nav'
 
 class MessageList extends PureComponent {
   render() {
@@ -87,8 +86,8 @@ export default class ChannelView extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      commandIds: [],
-      commands: {},
+      commandIds: props.channel.messageIds,
+      commands: props.channel.messages,
       text: '',
       lastCommandId: null,
     }
@@ -113,19 +112,6 @@ export default class ChannelView extends PureComponent {
   }
 
   async componentDidMount() {
-    const loadMessages = async () => {
-      const { store } = this.props
-      const commands = { ...store.commands }
-      for (let key of Object.keys(commands)) {
-        commands[key] = this.setCommandLoading(commands[key], false)
-        commands[key] = this.removeTemporaryCommandState(commands[key])
-      }
-      this.setMessageState({
-        messages: commands,
-        messageIds: store.commandIds || this.state.commandIds,
-      })
-    }
-    await loadMessages()
     if (this.scrollRef.current) {
       this.scrollRef.current.scrollIntoView()
     }
@@ -256,15 +242,12 @@ export default class ChannelView extends PureComponent {
     if (channel) {
       channel.messageIds = messageIds
       channel.messages = messages
+      channel.saveMessages()
     }
   }
 
   setCommands = (commandIds, commands) => {
-    const { store } = this.props
     this.setMessageState({ messageIds: commandIds, messages: commands })
-    store.commandIds = commandIds
-    store.commands = commands
-    store.save()
   }
 
   send = async () => {
@@ -300,7 +283,7 @@ export default class ChannelView extends PureComponent {
   }
 
   handleSubmitForm = async ({ commandId, formData, message }) => {
-    const { channel, store } = this.props
+    const { channel } = this.props
     const { commands } = this.state
     const parentMessage = (
       getNested(commands, [commandId, 'messages']) || []
@@ -316,13 +299,6 @@ export default class ChannelView extends PureComponent {
     })
   }
 
-  handleSelectExample = example => {
-    this.setState({ text: example })
-    if (this.textareaRef.current) {
-      this.textareaRef.current.focus()
-    }
-  }
-
   handleAddMessage = message => {
     this.addMessages([message])
   }
@@ -334,11 +310,6 @@ export default class ChannelView extends PureComponent {
 
     return (
       <div className="chat">
-        <div className="nav">
-          {Nav && (
-            <Nav onSelectExample={this.handleSelectExample} theme={theme} />
-          )}
-        </div>
         <MessageList
           commands={commands}
           commandIds={commandIds}

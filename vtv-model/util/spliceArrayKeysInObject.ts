@@ -1,7 +1,13 @@
-export default function spliceArrayKeysInObject(draft, len, ...args) {
+export default function spliceArrayKeysInObject(
+  draft,
+  len,
+  start,
+  deleteCount,
+  ...args
+) {
   let maxDraftKey = 0
   for (const key of Object.keys(draft)) {
-    if (!isNaN(key)) {
+    if (!isNaN(+key)) {
       maxDraftKey = Math.max(maxDraftKey, +key)
     }
   }
@@ -10,7 +16,7 @@ export default function spliceArrayKeysInObject(draft, len, ...args) {
     tempArray.push(draft[i])
   }
   const originalLength = tempArray.length
-  tempArray.splice(...args)
+  tempArray.splice(start, deleteCount, ...args)
   const newLen = Math.max(originalLength, tempArray.length)
   for (let i = 0; i < newLen; i++) {
     if (typeof tempArray[i] !== 'undefined') {

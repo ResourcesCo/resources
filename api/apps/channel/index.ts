@@ -118,12 +118,17 @@ const actions = {
                 showLabel: false,
               },
               {
+                type: 'node',
+                path: ['id'],
+                showLabel: true,
+              },
+              {
                 type: 'action',
                 name: 'get',
                 params: {
                   id: '0/id',
                 },
-                url: '/messages/:id',
+                url: '/channel/messages/:id',
                 action: 'get',
               },
             ],
@@ -192,7 +197,7 @@ export default async function app(): Promise<AppSpec> {
         },
       },
       messages: {
-        routes: [{ path: '/messages' }],
+        routes: [{ path: '/channel/messages' }],
         defaultAction: 'get',
         actions: {
           get: {
@@ -204,7 +209,7 @@ export default async function app(): Promise<AppSpec> {
         },
       },
       message: {
-        routes: [{ path: '/messages/:id' }],
+        routes: [{ path: '/channel/messages/:id' }],
         defaultAction: 'get',
         actions: {
           get: {

@@ -1,6 +1,6 @@
 import produce from 'immer'
 import getNested from 'lodash/get'
-import { draftState, getStateKey } from '../../../../vtv-model/util'
+import { draftState, getStateKey } from '../../../../vtv-model/state'
 
 export default function expandRoot(message) {
   return produce(message, message => {

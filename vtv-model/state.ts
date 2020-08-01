@@ -34,9 +34,9 @@ export {
   removeTemporaryState,
 }
 
-const updateNestedState = (state, path = [], pathState, options = {}) => {
+const updateNestedState = (state, path = [], pathState, options: any = {}) => {
   if (path.length === 0) {
-    const optionState = {}
+    const optionState: any = {}
     if (options.savePrevExpanded) {
       optionState._prevExpanded = state._expanded
     } else if (options.restoreExpanded) {
