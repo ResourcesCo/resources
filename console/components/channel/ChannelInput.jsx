@@ -30,6 +30,18 @@ export default ({
     }
   }
 
+  const handlePaste = e => {
+    try {
+      const data = e.clipboardData.getData('text/plain')
+      if (data.length > 2000) {
+        e.preventDefault()
+        onSend(data)
+      }
+    } catch (err) {
+      // ignore error
+    }
+  }
+
   return (
     <div className="chat-input">
       <TextareaAutosize
@@ -39,6 +51,7 @@ export default ({
         onKeyDown={handleKeyPress}
         onFocus={() => handleFocusChange(true)}
         onBlur={() => handleFocusChange(false)}
+        onPaste={handlePaste}
         ref={textareaRef}
         maxRows={8}
         autoCorrect="off"

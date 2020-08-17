@@ -250,9 +250,9 @@ export default class ChannelView extends PureComponent {
     this.setMessageState({ messageIds: commandIds, messages: commands })
   }
 
-  send = async () => {
+  send = async bigMessage => {
     const { channel } = this.props
-    const { text: message } = this.state
+    const message = bigMessage ? bigMessage : this.state.text
     const parsed = parseCommand(message)
     if (Array.isArray(parsed) && parsed.length) {
       this.setState({ text: '' })

@@ -5,7 +5,8 @@ const getNextToken = input => {
 
   if (remainingInput[0] === '{' || remainingInput[0] === '[') {
     const matchingBracket = { '{': '}', '[': ']' }[remainingInput[0]]
-    let i = remainingInput.indexOf(matchingBracket)
+    let i = remainingInput.lastIndexOf(matchingBracket)
+    let last = true
     while (i !== -1) {
       const str = remainingInput.substr(0, i + 1)
       let parsed
@@ -14,6 +15,10 @@ const getNextToken = input => {
         return [str, remainingInput.substr(str.length)]
       } catch (e) {
         parsed = null
+      }
+      if (last) {
+        last = false
+        i = 0
       }
       i = remainingInput.indexOf(matchingBracket, i + 1)
     }
