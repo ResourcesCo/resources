@@ -58,6 +58,7 @@
     "trailingComma": "es5"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^9.5.2",
     "@types/chroma-js": "^2.0.0",
     "@types/lodash": "^4.14.155",
     "@types/node": "^14.0.5",

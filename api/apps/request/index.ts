@@ -35,7 +35,7 @@ async function makeNew({ action, params: { url }, request }) {
       ...(action !== 'delete' && { body: {} }),
     },
     state: {
-      _actions: [{ name: 'send', title: 'Send', primary: true }],
+      _actions: [{ name: 'send', title: 'send', primary: true }],
       _expanded: true,
     },
   }

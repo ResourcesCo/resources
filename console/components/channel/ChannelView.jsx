@@ -293,7 +293,7 @@ export default class ChannelView extends PureComponent {
       message,
       parsed,
       onMessage: this.addMessages,
-      parentMessageId: parentCommandId,
+      parentMessageId: commandId,
       parentMessage,
       formData,
     })
