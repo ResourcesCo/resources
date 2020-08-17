@@ -20,6 +20,10 @@ export default function parseArgs(
     action = args[0].substr(1)
     url = args.length >= 2 && isUrlArg(args[1]) ? args[1] : '/'
     params = args.slice(2)
+  } else if (args[0] === 'help' && args.length === 1) {
+    action = 'help'
+    url = '/'
+    params = []
   }
 
   return { url, action, params }

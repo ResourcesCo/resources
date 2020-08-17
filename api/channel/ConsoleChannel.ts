@@ -95,6 +95,21 @@ class ConsoleChannel {
       this.messages = { ...this.messages, ...resp.body.messages }
       this.messageIds = uniq(resp.body.messageIds.concat(this.messageIds))
     }
+    if (resp.error?.code === 'not_found') {
+      const messageId = createId()
+      this.messages = {
+        [messageId]: {
+          messages: [
+            {
+              type: 'text',
+              text:
+                'Welcome to Resouces.co console. Type :help and expand the intro node to get started.',
+            },
+          ],
+        },
+      }
+      this.messageIds = [messageId]
+    }
     if (resp.ok || resp.error?.code === 'not_found') {
       this.messagesLoaded = true
     }
