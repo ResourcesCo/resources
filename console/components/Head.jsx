@@ -33,6 +33,12 @@ const Head = ({ theme, ...props }) => (
     <meta property="og:image" content={props.ogImage || defaultOGImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    {process.env.NEXT_PUBLIC_ELECTRON && (
+      <meta
+        http-equiv="Content-Security-Policy"
+        content="default-src *.local; connect-src *; object-src *; media-src *; font-src *; style-src *"
+      />
+    )}
   </NextHead>
 )
 

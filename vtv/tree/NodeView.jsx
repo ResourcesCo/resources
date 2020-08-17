@@ -1,16 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import getNested from 'lodash/get'
 import scrollIntoView from 'scroll-into-view-if-needed'
-import { getState, getChildState, getNestedState } from '../model/state'
-import {
-  hasChildren as hasChildrenFn,
-  joinPath,
-  isObject,
-  getNodeType,
-  getStringType,
-  getMediaType,
-} from '../model/analyze'
+import { getState, getChildState, getNestedState } from '../../vtv-model/state'
+import { joinPath, isObject, getNodeInfo } from '../../vtv-model/analyze'
 import ExpandButton from './ExpandButton'
 import NodeNameView from './NodeNameView'
 import InlineContent from '../content/InlineContent'
@@ -29,12 +22,12 @@ function NodeView({
   state: _state,
   displayName,
   showOnlyPath = [],
-  path = [],
+  path,
   showAll,
+  context: { ruleList, onMessage, theme },
   context,
 }) {
   const [viewChanged, setViewChanged] = useState(false)
-  const { onMessage, theme } = context
 
   const state = getState(_state)
   const {
@@ -42,6 +35,7 @@ function NodeView({
     _showOnly: showOnly,
     _editingName: editingName,
     _actions: actions,
+    _hidden: hidden,
   } = state
   const toggleExpanded = () => {
     setViewChanged(true)
@@ -62,25 +56,20 @@ function NodeView({
     }
   }, [expanded, view])
 
-  const hasChildren = hasChildrenFn(value)
-  let isExpandable = hasChildren
-  const nodeType = getNodeType(value)
-  let stringType = null
-  let mediaType = null
-  if (nodeType === 'string') {
-    stringType = getStringType(value)
-    isExpandable =
-      stringType !== 'inline' || ['text', 'code', 'image'].includes(state._view)
-    if (isExpandable) {
-      mediaType =
-        typeof state._mediaType === 'string'
-          ? state._mediaType
-          : getMediaType(value)
-    }
-  }
+  const rules = useMemo(() => ruleList && ruleList.match(path), [
+    ruleList,
+    path,
+  ])
+
+  const { isExpandable, nodeType, stringType, mediaType } = getNodeInfo(
+    value,
+    state
+  )
   const view = state._view || defaultView({ nodeType, stringType, mediaType })
 
-  if (showOnly) {
+  if (hidden) {
+    return null
+  } else if (showOnly) {
     const showOnlyParent = showOnly.slice(0, showOnly.length - 1)
     const showOnlyParentType =
       showOnlyParent.length > 0
@@ -94,7 +83,7 @@ function NodeView({
         name={showOnly[showOnly.length - 1]}
         value={getNested(value, showOnly)}
         state={getNestedState(state, showOnly)}
-        displayName={joinPath([name, ...showOnly])}
+        displayName={joinPath([...showOnly])}
         showAll={true}
         showOnlyPath={showOnly}
         path={showOnly}
@@ -142,14 +131,24 @@ function NodeView({
           nodeMenuProps={nodeMenuProps}
           context={context}
         />
-        {actions && <InlineActionView actions={actions} context={context} />}
 
         <div className="node-content">
+          {actions && (
+            <InlineActionView
+              value={value}
+              actions={actions}
+              context={context}
+            />
+          )}
           <InlineContent
             name={name}
             value={value}
             state={state}
+            nodeType={nodeType}
+            stringType={stringType}
+            mediaType={mediaType}
             path={path}
+            rules={rules}
             context={context}
           />
         </div>
@@ -159,7 +158,11 @@ function NodeView({
         <style jsx>{`
           .node-content {
             margin-left: 10px;
+            margin-right: 10px;
             flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
           }
           .row {
             display: flex;
@@ -171,6 +174,9 @@ function NodeView({
           }
           .actions-right {
             visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
             margin-right: 5px;
           }
           .error {

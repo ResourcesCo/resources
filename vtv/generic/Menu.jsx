@@ -5,6 +5,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons'
 import { Popper, Manager, Reference } from 'react-popper'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import chroma from 'chroma-js'
+
+export function Separator({ context: { theme } }) {
+  const color = chroma(theme.foreground)
+    .alpha(0.4)
+    .hex()
+  return (
+    <>
+      <hr />
+      <style jsx>{`
+        hr {
+          border: none;
+          height: 2px;
+          background-color: ${color};
+        }
+      `}</style>
+    </>
+  )
+}
 
 export function MenuItem({
   checked,

@@ -1,7 +1,7 @@
 export default {
   foreground: '#111',
   lightTextColor: '#444',
-  background: '#e7e7e7',
+  background: '#f7f7f7',
   backgroundHover: '#d7d7d7',
   backgroundActive: '#ddd',
   inputBorder: 'rgb(140, 140, 140)',
@@ -13,6 +13,7 @@ export default {
   numberColor: '#407',
   valueColor: '#550',
   bubble1: '#c8c8c8',
+  bubble2: '#89dcdc',
   menuBackground: '#bbb',
   menuHighlight: '#aaa',
   errorColor: '#f00',

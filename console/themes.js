@@ -1,13 +1,18 @@
+import vtvDark from '../vtv/themes/dark'
+import vtvLight from '../vtv/themes/light'
+
 export const shared = {
   fontFamily:
     '-apple-system, BlinkMacSystemFont, Avenir Next, Avenir, Helvetica, sans-serif',
 }
 
+// TODO: remove options not specific to console
 export const dark = {
   ...shared,
   base: 'dark',
   foreground: '#eee',
   lightTextColor: '#ccc',
+  lighterTextColor: '#aaa',
   background: '#14191e',
   backgroundHover: '#33383d',
   inputBorder: 'rgb(140, 140, 140)',
@@ -18,7 +23,6 @@ export const dark = {
   inputColor: '#5ac',
   numberColor: '#9ce',
   valueColor: '#dd9',
-  bubble1: '#596979',
   menuBackground: '#777',
   menuHighlight: '#878787',
   errorColor: '#c00',
@@ -27,6 +31,7 @@ export const dark = {
   actionTextColor: '#111',
   disabledActionColor: '#575757',
   disabledActionTextColor: '#999',
+  ...vtvDark,
 }
 
 export const light = {
@@ -34,7 +39,7 @@ export const light = {
   base: 'light',
   foreground: '#111',
   lightTextColor: '#444',
-  background: '#e7e7e7',
+  background: '#f7f7f7',
   backgroundHover: '#d7d7d7',
   inputBorder: 'rgb(140, 140, 140)',
   selectionBackground: '#7ec0ee',
@@ -45,6 +50,7 @@ export const light = {
   numberColor: '#407',
   valueColor: '#550',
   bubble1: '#c8c8c8',
+  bubble2: '#d9c9e9',
   menuBackground: '#bbb',
   menuHighlight: '#aaa',
   errorColor: '#f00',
@@ -53,6 +59,7 @@ export const light = {
   actionTextColor: '#ccc',
   disabledActionColor: '#bbb',
   disabledActionTextColor: '#888',
+  ...vtvLight,
 }
 
 export const themes = { dark, light }

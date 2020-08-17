@@ -1,7 +1,7 @@
-import Menu, { MenuItem } from '../generic/Menu'
-import { hasChildren as hasChildrenFn } from '../model/analyze'
+import Menu, { MenuItem, Separator } from '../generic/Menu'
+import { hasChildren as hasChildrenFn, isUrl } from '../../vtv-model/analyze'
 import defaultViewFn from '../util/defaultView'
-import { codeTypes } from '../model/constants'
+import { codeTypes } from '../../vtv-model/constants'
 
 const labels = {
   tree: 'Tree',
@@ -18,14 +18,16 @@ function getAvailableViews({
   stringType,
   mediaType,
   hasChildren,
+  value,
 }) {
   const result = [defaultView]
+  const valueIsUrl = isUrl(value)
   if (['object', 'array'].includes(nodeType) && hasChildren) {
     result.push('table')
   }
   if (
     nodeType === 'string' &&
-    (mediaType || '').startsWith('image') &&
+    ((mediaType || '').startsWith('image') || valueIsUrl) &&
     defaultView !== 'image'
   ) {
     result.push('image')
@@ -61,6 +63,7 @@ function CodeMenu({
     >
       {codeTypes.map(({ name, mediaType: itemMediaType }) => (
         <MenuItem
+          key={itemMediaType}
           onClick={() =>
             onMessage({
               action: 'setView',
@@ -78,6 +81,54 @@ function CodeMenu({
   )
 }
 
+function ShowHiddenMenu({
+  path,
+  hiddenKeys,
+  context: { onMessage },
+  context,
+  ...props
+}) {
+  return (
+    <Menu
+      onClose={() => null}
+      popperProps={{
+        placement: 'left-end',
+        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
+      }}
+      context={context}
+      {...props}
+    >
+      {hiddenKeys.map(key => (
+        <MenuItem
+          key={key}
+          onClick={() =>
+            onMessage({
+              action: 'setHidden',
+              path: [...path, key],
+              hidden: false,
+            })
+          }
+        >
+          {key}
+        </MenuItem>
+      ))}
+    </Menu>
+  )
+}
+
+function getHiddenKeys(value, state) {
+  let hiddenKeys
+  for (const key of Object.keys(value)) {
+    if (state[key] && state[key]._hidden === true) {
+      if (!hiddenKeys) {
+        hiddenKeys = []
+      }
+      hiddenKeys.push(key)
+    }
+  }
+  return hiddenKeys
+}
+
 export default function ViewMenu({
   path,
   value,
@@ -85,6 +136,8 @@ export default function ViewMenu({
   nodeType,
   stringType,
   mediaType,
+  parentType,
+  showAll,
   onViewChanged,
   context: { onMessage },
   context,
@@ -107,7 +160,10 @@ export default function ViewMenu({
     stringType,
     mediaType,
     hasChildren,
+    value,
   })
+  const hiddenKeys =
+    nodeType === 'object' ? getHiddenKeys(value, state) : undefined
   return (
     <Menu
       onClose={() => null}
@@ -133,7 +189,6 @@ export default function ViewMenu({
                 <CodeMenu
                   mediaType={mediaType}
                   path={path}
-                  onMessage={onMessage}
                   context={context}
                   {...props}
                 />
@@ -154,6 +209,38 @@ export default function ViewMenu({
           )
         }
       })}
+      <Separator />
+      {!showAll && path.length > 0 && (
+        <MenuItem onClick={() => onMessage({ action: 'showOnlyThis', path })}>
+          Show only this
+        </MenuItem>
+      )}
+      {!showAll && path.length > 0 && parentType === 'object' && (
+        <MenuItem
+          onClick={() => onMessage({ action: 'setHidden', path, hidden: true })}
+        >
+          Hide
+        </MenuItem>
+      )}
+      {hiddenKeys && (
+        <MenuItem
+          submenu={
+            <ShowHiddenMenu
+              path={path}
+              hiddenKeys={hiddenKeys}
+              context={context}
+              {...props}
+            />
+          }
+        >
+          Show hidden
+        </MenuItem>
+      )}
+      {showAll && (
+        <MenuItem onClick={() => onMessage({ action: 'showAll' })}>
+          Show all
+        </MenuItem>
+      )}
     </Menu>
   )
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { isBasicType } from '../model/analyze'
+import { isBasicType } from '../../vtv-model/analyze'
 import InsertMenu from './InsertMenu'
 import ViewMenu from './ViewMenu'
 import ClipboardMenu from './ClipboardMenu'
@@ -82,9 +82,7 @@ function NodeMenu({
             Rename
           </MenuItem>
         )}
-      {!showAll && isBasicType(value) && (
-        <MenuItem onClick={edit}>Edit</MenuItem>
-      )}
+      {isBasicType(value) && <MenuItem onClick={edit}>Edit</MenuItem>}
       <MenuItem
         submenu={
           <ViewMenu
@@ -94,6 +92,8 @@ function NodeMenu({
             nodeType={nodeType}
             stringType={stringType}
             mediaType={mediaType}
+            parentType={parentType}
+            showAll={showAll}
             onViewChanged={onViewChanged}
             onClose={onClose}
             context={context}
@@ -102,20 +102,22 @@ function NodeMenu({
       >
         View
       </MenuItem>
-      <MenuItem
-        submenu={
-          <InsertMenu
-            showAll={showAll}
-            nodeType={nodeType}
-            parentType={parentType}
-            path={path}
-            onClose={onClose}
-            context={context}
-          />
-        }
-      >
-        Insert
-      </MenuItem>
+      {['object', 'array'].includes(parentType) && (
+        <MenuItem
+          submenu={
+            <InsertMenu
+              showAll={showAll}
+              nodeType={nodeType}
+              parentType={parentType}
+              path={path}
+              onClose={onClose}
+              context={context}
+            />
+          }
+        >
+          Insert
+        </MenuItem>
+      )}
       {!showAll && ['object', 'array'].includes(parentType) && (
         <MenuItem
           submenu={
@@ -145,14 +147,6 @@ function NodeMenu({
             Rename
           </MenuItem>
         )}
-      {!showAll && path.length > 0 && (
-        <MenuItem onClick={() => sendAction('showOnlyThis')}>
-          Show only this
-        </MenuItem>
-      )}
-      {showAll && (
-        <MenuItem onClick={() => sendAction('showAll')}>Show all</MenuItem>
-      )}
       <MenuItem
         submenu={
           <DeleteMenu

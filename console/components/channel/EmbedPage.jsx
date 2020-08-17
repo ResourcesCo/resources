@@ -1,28 +1,30 @@
 import React, { PureComponent, useState, useEffect } from 'react'
 import { getTheme } from '../../themes'
 import { MemoryStore, LocalStorageStore } from '../../store'
-import ConsoleWorkspace from '../../services/workspace/ConsoleWorkspace'
+import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
 import Head from '../Head'
 
-import asanaTest from 'console/apps/test/tests/asana'
+import asanaTest from 'api/apps/test/tests/asana'
 
 function Test({}) {
   const [result, setResult] = useState('not completed')
   useEffect(() => {
-    window.addEventListener(
-      'message',
-      ({ origin, data: { source, payload } = {} }) => {
-        if (source.startsWith('/messages/')) {
-          window.parent.postMessage(
-            { source: `${source}/reply`, payload: { echo: payload } },
-            origin
-          )
+    if (typeof window !== 'undefined') {
+      window.addEventListener(
+        'message',
+        ({ origin, data: { source, payload } = {} }) => {
+          if (source.startsWith('/messages/')) {
+            window.parent.postMessage(
+              { source: `${source}/reply`, payload: { echo: payload } },
+              origin
+            )
+          }
         }
-      }
-    )
-    asanaTest().then(result => {
-      setResult(JSON.stringify(result))
-    })
+      )
+      asanaTest().then(result => {
+        setResult(JSON.stringify(result))
+      })
+    }
   }, [])
   return <div>{result}</div>
 }
@@ -35,7 +37,10 @@ export default class EmbedPage extends PureComponent {
 
   constructor(props) {
     super(props)
-    if (this.props.storageType === 'localStorage') {
+    if (
+      typeof window !== 'undefined' &&
+      this.props.storageType === 'localStorage'
+    ) {
       this._store = new LocalStorageStore()
     } else {
       this._store = new MemoryStore()
@@ -49,8 +54,8 @@ export default class EmbedPage extends PureComponent {
   }
 
   async loadChannel() {
-    const workspace = ConsoleWorkspace.getWorkspace()
-    const channel = await workspace.getChannel('main')
+    const workspace = await ConsoleWorkspace.getWorkspace()
+    const channel = await workspace.getChannel('general')
     this.setState({ channel })
   }
 

@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
 import Textarea from '../generic/Textarea'
-import { getNodeType } from '../model/analyze'
 
 const inputValue = value => {
   if (value === null) {
@@ -29,6 +28,9 @@ const InlineValue = ({
   editingName,
   error,
   autoEdit,
+  nodeType,
+  stringType,
+  mediaType,
   context: { onMessage, theme },
 }) => {
   const inputRef = useRef()
@@ -104,9 +106,13 @@ const InlineValue = ({
     save({ editing: false })
   }
 
+  const showStringExcerpt =
+    !editing && typeof value === 'string' && value.length > 256
+
   let typeClass
-  const nodeType = getNodeType(newValue)
-  if (nodeType === 'string') {
+  if (showStringExcerpt) {
+    typeClass = 'excerpt'
+  } else if (nodeType === 'string') {
     typeClass = parsed ? 'stringValue' : 'string'
   } else if (nodeType === 'number') {
     typeClass = 'number'
@@ -114,27 +120,9 @@ const InlineValue = ({
     typeClass = 'value'
   }
 
-  const sizeClass = value => {
-    if (typeof value !== 'string') {
-      return 'full-width'
-    } else if (value.length <= 10) {
-      return 'small'
-    } else if (value.length <= 20) {
-      return 'medium'
-    } else if (value.length <= 30) {
-      return 'large'
-    } else {
-      return 'full-width'
-    }
-  }
-  const showStringExcerpt = typeof value === 'string' && value.length > 500
   const useTextArea = !expanded && !showStringExcerpt && (autoEdit || editing)
   return (
-    <div
-      className={`${typeClass} ${error ? 'has-error' : ''} ${
-        useTextArea ? sizeClass(newInputValue) : ''
-      }`}
-    >
+    <div className={`${typeClass} ${error ? 'has-error' : ''}`}>
       {useTextArea && (
         <Textarea
           ref={inputRef}
@@ -151,20 +139,21 @@ const InlineValue = ({
           onKeyDown={handleKeyPress}
           onFocus={onFocus}
           onBlur={onBlur}
-          wrap="off"
+          wrap="on"
           tabIndex="-1"
         />
       )}
       {showStringExcerpt && (
-        <span>{`${value.substr(0, 50)}… (${value.length} characters)`}</span>
+        <span>{`${value.substr(0, 256)}… (${value.length} characters)`}</span>
       )}
       {!useTextArea && !showStringExcerpt && <span>{value}</span>}
       {error && <span className="error">{error}</span>}
 
       <style jsx>{`
         div {
-          width: 100%;
           display: flex;
+          width: 100%;
+          flex-grow: 1;
         }
         div :global(textarea) {
           background: none;
@@ -175,24 +164,10 @@ const InlineValue = ({
           color: ${theme.foreground};
           margin: 0;
           padding: 0;
+          flex-grow: 1;
         }
         div.has-error :global(textarea) {
           border-bottom: 1px solid red;
-        }
-        div.small :global(textarea) {
-          max-width: 80px;
-          flex-grow: 1;
-        }
-        div.medium :global(textarea) {
-          max-width: 180px;
-          flex-grow: 1;
-        }
-        div.large :global(textarea) {
-          max-width: 250px;
-          flex-grow: 1;
-        }
-        div.full-width :global(textarea) {
-          flex-grow: 1;
         }
         div.number span,
         div.number :global(textarea) {
@@ -201,6 +176,10 @@ const InlineValue = ({
         div.value span,
         div.value :global(textarea) {
           color: ${theme.valueColor};
+        }
+        div.excerpt span,
+        div.exceprt :global(textarea) {
+          color: ${theme.lighterTextColor};
         }
         div.has-error .error {
           color: red;

@@ -23,7 +23,7 @@ export default function BlockContent({
       />
     )
   } else if (view === 'image') {
-    return <ImageView value={value} state={state} theme={theme} />
+    return <ImageView value={value} state={state} context={context} />
   } else if (['text', 'code'].includes(view)) {
     return (
       <CodeView

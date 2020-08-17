@@ -1,13 +1,22 @@
 import ActionButton from '../generic/ActionButton'
 
-function InlineActionView({ actions, context: { onMessage }, context }) {
+function InlineActionView({
+  value,
+  actions,
+  context: { onMessage, onPickId },
+  context,
+}) {
   return (
     <div className="actions-content">
-      {actions.map(({ name, title, primary }) => (
+      {actions.map(({ name, title, primary, action }) => (
         <ActionButton
           key={name}
           primary={primary}
-          onClick={() => onMessage({ action: 'runAction', actionName: name })}
+          onClick={() =>
+            action === 'pasteIntoConsole'
+              ? onPickId(value)
+              : onMessage({ action: 'runAction', actionName: name })
+          }
           context={context}
         >
           {title}
@@ -15,7 +24,7 @@ function InlineActionView({ actions, context: { onMessage }, context }) {
       ))}
       <style jsx>{`
         .actions-content {
-          margin-left: 10px;
+          margin-right: 10px;
         }
         .actions-content :global(button) {
           margin-right: 5px;

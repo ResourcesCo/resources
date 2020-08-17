@@ -4,11 +4,13 @@ import pick from 'lodash/pick'
 import pickBy from 'lodash/pickBy'
 import identity from 'lodash/identity'
 import getNested from 'lodash/get'
-import { parseCommand, updateTree, removeTemporaryState } from 'vtv'
-import runCommand from '../../command-runner'
+import {
+  parseCommand,
+  updateTree,
+  removeTemporaryState,
+} from '../../../vtv-model'
 import Message from '../messages/Message'
 import ChannelInput from './ChannelInput'
-import Nav from '../Nav'
 
 class MessageList extends PureComponent {
   render() {
@@ -84,8 +86,8 @@ export default class ChannelView extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      commandIds: [],
-      commands: {},
+      commandIds: props.channel.messageIds,
+      commands: props.channel.messages,
       text: '',
       lastCommandId: null,
     }
@@ -110,23 +112,6 @@ export default class ChannelView extends PureComponent {
   }
 
   async componentDidMount() {
-    const loadMessages = async () => {
-      const { store } = this.props
-      const commands = { ...store.commands }
-      for (let key of Object.keys(commands)) {
-        commands[key] = this.setCommandLoading(commands[key], false)
-        commands[key] = this.removeTemporaryCommandState(commands[key])
-      }
-      this.setState({
-        commands,
-        commandIds: store.commandIds || this.state.commandIds,
-      })
-      // this.setState({
-      //   commands: {},
-      //   commandIds: [],
-      // })
-    }
-    await loadMessages()
     if (this.scrollRef.current) {
       this.scrollRef.current.scrollIntoView()
     }
@@ -155,10 +140,7 @@ export default class ChannelView extends PureComponent {
       } else if (message.type === 'clear') {
         clear = true
       } else if (message.type === 'set-theme') {
-        this.setState({ theme: message.theme })
-        store.theme = message.theme
         this.props.onThemeChange(message.theme)
-        store.save()
       } else if (['tree-update', 'message-command'].includes(message.type)) {
         scrollToBottom = false
         const treeCommand = commands[message.parentCommandId]
@@ -254,26 +236,30 @@ export default class ChannelView extends PureComponent {
     }
   }
 
+  setMessageState({ messageIds, messages }) {
+    const { channel } = this.props
+    this.setState({ commandIds: messageIds, commands: messages })
+    if (channel) {
+      channel.messageIds = messageIds
+      channel.messages = messages
+      channel.saveMessages()
+    }
+  }
+
   setCommands = (commandIds, commands) => {
-    const { store } = this.props
-    this.setState({ commandIds, commands })
-    store.commandIds = commandIds
-    store.commands = commands
-    store.save()
+    this.setMessageState({ messageIds: commandIds, messages: commands })
   }
 
   send = async () => {
-    const { channel, store } = this.props
-    const { text } = this.state
-    const parsed = parseCommand(text)
+    const { channel } = this.props
+    const { text: message } = this.state
+    const parsed = parseCommand(message)
     if (Array.isArray(parsed) && parsed.length) {
       this.setState({ text: '' })
-      await runCommand({
-        message: text,
+      await channel.runCommand({
+        message,
         parsed,
-        onMessagesCreated: this.addMessages,
-        channel,
-        store,
+        onMessage: this.addMessages,
       })
     }
   }
@@ -297,29 +283,20 @@ export default class ChannelView extends PureComponent {
   }
 
   handleSubmitForm = async ({ commandId, formData, message }) => {
-    const { channel, store } = this.props
+    const { channel } = this.props
     const { commands } = this.state
     const parentMessage = (
       getNested(commands, [commandId, 'messages']) || []
     ).filter(message => message.type === 'tree')[0]
     const parsed = parseCommand(message)
-    await runCommand({
+    await channel.runCommand({
       message,
       parsed,
-      onMessagesCreated: this.addMessages,
-      formData,
-      parentCommandId: commandId,
+      onMessage: this.addMessages,
+      parentMessageId: commandId,
       parentMessage,
-      channel,
-      store,
+      formData,
     })
-  }
-
-  handleSelectExample = example => {
-    this.setState({ text: example })
-    if (this.textareaRef.current) {
-      this.textareaRef.current.focus()
-    }
   }
 
   handleAddMessage = message => {
@@ -333,11 +310,6 @@ export default class ChannelView extends PureComponent {
 
     return (
       <div className="chat">
-        <div className="nav">
-          {Nav && (
-            <Nav onSelectExample={this.handleSelectExample} theme={theme} />
-          )}
-        </div>
         <MessageList
           commands={commands}
           commandIds={commandIds}

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
-import ConsoleWorkspace from '../console/services/workspace/ConsoleWorkspace'
-import { parseCommand } from 'vtv'
+import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
+import { parseCommand } from '../vtv-model'
 
 async function runTests() {
-  const workspace = ConsoleWorkspace.getWorkspace()
-  const channel = await workspace.getChannel('main')
+  const workspace = await ConsoleWorkspace.getWorkspace()
+  const channel = await workspace.getChannel('general')
   const message = 'https://example.com/'
   const receivedMessages = []
   const onMessage = message => {

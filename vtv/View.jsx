@@ -1,49 +1,52 @@
 import React from 'react'
-import { isObject } from './model/analyze'
-import { updateTree } from './model/state'
+import { updateTree } from '../vtv-model/state'
 import { getTheme } from './themes'
 import NodeView from './tree/NodeView'
 import Clipboard from './util/Clipboard'
+import RuleList from '../vtv-model/rules/RuleList'
 
 const defaultClipboard = new Clipboard()
 
 export default function View({
   onChange,
-  onMessage,
   onAction,
   onPickId,
   theme,
   clipboard,
   codeMirrorComponent,
-  receiveAllMessages = false,
   name,
   value,
-  state,
+  state = {},
+  rules = {},
 }) {
-  let onMessageHandler = onMessage
-  if (typeof onMessageProp !== 'function') {
-    onMessageHandler = message => {
-      if (message.action === 'runAction') {
-        if (typeof onAction === 'function') {
-          onAction(message)
-        }
-      } else {
-        const treeData = {
-          name,
-          value,
-          state,
-        }
-        onChange(updateTree(treeData, message))
+  const onMessage = message => {
+    if (message.action === 'runAction') {
+      if (typeof onAction === 'function') {
+        onAction(message)
       }
+    } else {
+      const treeData = {
+        name,
+        value,
+        state,
+      }
+      onChange(updateTree(treeData, message))
     }
   }
   return (
     <NodeView
-      name={name}
+      path={[]}
+      name={'root'}
       value={value}
       state={state}
       context={{
-        onMessage: onMessageHandler,
+        document: {
+          name,
+          value,
+          state,
+        },
+        ruleList: new RuleList(rules),
+        onMessage: onMessage,
         clipboard: clipboard || defaultClipboard,
         theme: getTheme(theme),
         onPickId,

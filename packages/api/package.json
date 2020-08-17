@@ -1,0 +1,13 @@
+{
+  "name": "@resources/api",
+  "version": "1.0.0-pre.0",
+  "description": "Resources.co API (workspaces, channels, apps)",
+  "main": "lib/index.js",
+  "repository": "https://github.com/ResourcesCo/resources.git",
+  "author": "Resources.co <support@resources.co> (https://resources.co)",
+  "license": "Apache-2",
+  "scripts": {
+    "build:copy": "rm -r ./src && cp -r ../../api src",
+    "build": "yarn build:copy && tsc"
+  }
+}
