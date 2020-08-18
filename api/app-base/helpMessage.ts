@@ -17,7 +17,6 @@ function setPathParams(path: string, params: { [key: string]: string }) {
     encode: encodeURIComponent,
   })
   const inputParams = pickBy(params, v => !/^%3A|:/.test(v))
-  console.log({ defaultParams, inputParams })
   return toPath({
     ...defaultParams,
     ...inputParams,
