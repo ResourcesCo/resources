@@ -36,7 +36,7 @@ const Head = ({ theme, ...props }) => (
     {process.env.NEXT_PUBLIC_ELECTRON && (
       <meta
         http-equiv="Content-Security-Policy"
-        content="default-src *.local; connect-src *; object-src *; media-src *; font-src *; style-src *"
+        content="default-src *.local 'unsafe-eval'; connect-src *; object-src *; media-src *; font-src *; style-src *"
       />
     )}
   </NextHead>
