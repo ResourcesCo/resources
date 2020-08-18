@@ -1,7 +1,5 @@
 # resources.co - a web console
 
-TODO: write intro
-
 ![brief screencast](https://gh-media.resources.co/resourcesco-butterfly-demo-2.gif)
 
 ## web app
@@ -9,8 +7,19 @@ TODO: write intro
 It's a Next.js web app. Run `yarn dev` to run the development server or
 `yarn build` to build it.
 
-## building the desktop app
+## desktop app
 
-To build the desktop app, copy `packages/desktop` so it is a **sibling** of the
-directory containing this repo, and run `yarn build` inside of there. Otherwise
-the `node_modules` folders will conflict with each other.
+To build and run the desktop app:
+
+```bash
+cd packages/desktop
+yarn install
+yarn start
+```
+
+To package the desktop app into a `.app` inside a `.zip` for OS X (requires `APPLE_ID`, `APPLE_ID_PASSWORD` `CSC_LINK`, and `CSC_KEY_PASSWORD` to be defined for it to be signed for distribution):
+
+```bash
+cd packages/desktop
+yarn make
+```
