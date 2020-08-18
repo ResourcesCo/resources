@@ -1,0 +1,53 @@
+{
+  "name": "@resources/desktop",
+  "version": "0.1.0",
+  "description": "Resources.co Desktop App",
+  "main": "./main/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "make": "electron-forge make",
+    "package": "electron-forge package",
+    "start": "yarn main:import && yarn main:build && yarn renderer:build && yarn renderer:import && yarn electron:start",
+    "main:import": "rm -rf ./src/api ./src/vtv-model && cp -r ../resources/api ./src/api && cp -r ../resources/vtv-model ./src/vtv-model",
+    "main:build": "tsc",
+    "main:watch": "tsc -w",
+    "renderer:build": "cd ../resources && yarn electron:build && yarn electron:export",
+    "renderer:import": "rm -r ./renderer && cp -r ../resources/renderer ./renderer",
+    "electron:start": "electron-forge start"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Benjamin Atkin",
+    "email": "ben@benatkin.com"
+  },
+  "license": "MIT",
+  "config": {
+    "forge": "./resources.forge.config.js"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0",
+    "immer": "^7.0.7",
+    "isomorphic-unfetch": "^3.0.0",
+    "j2ref": "^1.0.0",
+    "json-ptr": "^1.3.2",
+    "lodash": "^4.17.19",
+    "nanoevents": "^5.1.8",
+    "nanoid": "^3.1.12",
+    "path-to-regexp": "^6.1.0"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.46",
+    "@electron-forge/maker-zip": "^6.0.0-beta.50",
+    "@types/node": "12",
+    "concurrently": "^5.1.0",
+    "electron": "^8.2.4",
+    "electron-reloader": "^1.0.1",
+    "prettier": "^1.19.1",
+    "typescript": "^3.9.5"
+  }
+}
