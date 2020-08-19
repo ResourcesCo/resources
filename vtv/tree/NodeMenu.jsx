@@ -102,7 +102,8 @@ function NodeMenu({
       >
         View
       </MenuItem>
-      {['object', 'array'].includes(parentType) && (
+      {(['object', 'array'].includes(parentType) ||
+        ['object', 'array'].includes(nodeType)) && (
         <MenuItem
           submenu={
             <InsertMenu

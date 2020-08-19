@@ -70,19 +70,20 @@ function NodeView({
   if (hidden) {
     return null
   } else if (showOnly) {
-    const showOnlyParent = showOnly.slice(0, showOnly.length - 1)
-    const showOnlyParentType =
-      showOnlyParent.length > 0
-        ? Array.isArray(getNested(value, showOnlyParent))
-          ? 'array'
-          : 'object'
-        : null
+    const showOnlyParentPath = showOnly.slice(0, showOnly.length - 1)
+    const { nodeType: showOnlyParentType } = getNodeInfo({
+      value: getNested(value, showOnlyParentPath),
+      state: getNestedState(state, showOnlyParentPath),
+    })
+    const showOnlyValue = getNested(value, showOnly)
+    const showOnlyState = getNestedState(state, showOnly)
+
     return (
       <NodeView
-        parentType={showOnlyParentType}
+        parentType={showOnlyParentPath.length > 0 ? showOnlyParentType : null}
         name={showOnly[showOnly.length - 1]}
-        value={getNested(value, showOnly)}
-        state={getNestedState(state, showOnly)}
+        value={showOnlyValue}
+        state={showOnlyState}
         displayName={joinPath([...showOnly])}
         showAll={true}
         showOnlyPath={showOnly}
