@@ -12,14 +12,17 @@ It's a Next.js web app. Run `yarn dev` to run the development server or
 To build and run the desktop app:
 
 ```bash
-cd packages/desktop
-yarn install
-yarn start
+yarn desktop:start
 ```
 
-To package the desktop app into a `.app` inside a `.zip` for OS X (requires `APPLE_ID`, `APPLE_ID_PASSWORD` `CSC_LINK`, and `CSC_KEY_PASSWORD` to be defined for it to be signed for distribution):
+This runs builds in the repository root (`./`) and in `./packages/desktop`.
+To understand how it works, see the scripts in `package.json` of both the
+Next.js app (in `./`) and the desktop app (in `./packages/desktop`).
+
+To package the desktop app into a `.app` inside a `.zip` for OS X
+(requires `APPLE_ID`, `APPLE_ID_PASSWORD` `CSC_LINK`, and `CSC_KEY_PASSWORD`
+to be defined for it to be signed for distribution):
 
 ```bash
-cd packages/desktop
-yarn make
+yarn desktop:make
 ```

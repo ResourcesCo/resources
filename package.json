@@ -12,8 +12,10 @@
     "start": "next start",
     "export": "next export",
     "format": "prettier --write \"**/*.js\"",
-    "electron:build": "NEXT_PUBLIC_ELECTRON=true next build",
-    "electron:export": "NEXT_PUBLIC_ELECTRON=true next export -o renderer"
+    "electron-renderer:build": "NEXT_PUBLIC_ELECTRON=true next build",
+    "electron-renderer:export": "NEXT_PUBLIC_ELECTRON=true next export -o renderer",
+    "desktop:start": "cd packages/desktop && yarn install && yarn start",
+    "desktop:make": "cd packages/desktop && yarn install && yarn make"
   },
   "dependencies": {
     "@braintree/sanitize-url": "^4.1.1",
