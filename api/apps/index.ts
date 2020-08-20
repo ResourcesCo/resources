@@ -20,4 +20,8 @@ const apps = {
   consoleDev,
 }
 
+export const apiOnlyApps = {
+  request,
+}
+
 export default apps

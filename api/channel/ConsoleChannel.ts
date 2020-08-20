@@ -5,7 +5,7 @@ import { FileStore } from '../storage/FileStore'
 import App from '../app-base/App'
 import parseArgs from '../app-base/parseArgs'
 import parseUrl from '../app-base/parseUrl'
-import apps from '../apps'
+import apps, { apiOnlyApps } from '../apps'
 import env from './env'
 import { createNanoEvents, Emitter } from 'nanoevents'
 import produce from 'immer'
@@ -21,6 +21,7 @@ export interface ChannelProps {
 export interface ChannelClientConfig extends ChannelProps {
   client: Client
   fileStore: FileStore
+  apiOnly?: boolean
 }
 
 class ConsoleChannel {
@@ -50,7 +51,9 @@ class ConsoleChannel {
     await this.loadConfig()
     await this.loadEnv()
     await this.loadApps()
-    await this.loadMessages()
+    if (this.clientConfig.apiOnly !== false) {
+      await this.loadMessages()
+    }
   }
 
   get fileStore() {
@@ -151,7 +154,7 @@ class ConsoleChannel {
     }
   }
 
-  async loadApp(appName) {
+  async loadApp(apps, appName) {
     return await App.get({
       app: apps[appName],
       env: this.env[appName],
@@ -160,10 +163,11 @@ class ConsoleChannel {
   }
 
   async loadApps() {
+    const appsToLoad = this.clientConfig.apiOnly === true ? apiOnlyApps : apps
     this.apps = {}
-    const appNames = Object.keys(apps)
+    const appNames = Object.keys(appsToLoad)
     const loadedApps = await Promise.all(
-      appNames.map(appName => this.loadApp(appName))
+      appNames.map(appName => this.loadApp(appsToLoad, appName))
     )
     for (let i = 0; i < loadedApps.length; i++) {
       this.apps[appNames[i]] = loadedApps[i]
@@ -334,6 +338,13 @@ class ConsoleChannel {
         },
       })
     }
+  }
+
+  async runApiCommand({ path, action, params, formData }) {
+    const url = '/' + path.map(s => encodeURIComponent(s)).join('/')
+    const result = await this.route({ url, action, params })
+    console.log(result)
+    return {}
   }
 
   async getClientConfig({ apiBaseUrl }) {
