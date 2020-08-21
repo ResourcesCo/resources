@@ -13,7 +13,7 @@ import {
   editJson,
   insert,
   deleteNode,
-  deleteValue,
+  deleteContents,
   showAll,
   showOnlyThis,
   setHidden,
@@ -22,6 +22,7 @@ import {
   setError,
   clearErrors,
   attach,
+  convert,
 } from './actions'
 
 export {
@@ -100,7 +101,7 @@ const actions = {
   editJson,
   insert,
   deleteNode,
-  deleteValue,
+  deleteContents,
   showAll,
   showOnlyThis,
   setHidden,
@@ -109,6 +110,7 @@ const actions = {
   setError,
   clearErrors,
   attach,
+  convert,
 }
 
 export const updateTree = (treeData, treeUpdate) => {

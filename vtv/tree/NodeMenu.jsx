@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { isBasicType } from '../../vtv-model/analyze'
 import InsertMenu from './InsertMenu'
 import ViewMenu from './ViewMenu'
-import ClipboardMenu from './ClipboardMenu'
+import EditMenu from './EditMenu'
 import Menu, { MenuItem } from '../generic/Menu'
 
 function DeleteMenu({
@@ -29,8 +29,8 @@ function DeleteMenu({
           Node
         </MenuItem>
       )}
-      <MenuItem onClick={() => onMessage({ path, action: 'deleteValue' })}>
-        {['object', 'array'].includes(nodeType) ? 'Children' : 'Value'}
+      <MenuItem onClick={() => onMessage({ path, action: 'deleteContents' })}>
+        Contents
       </MenuItem>
     </Menu>
   )
@@ -65,10 +65,6 @@ function NodeMenu({
     })
   }
 
-  const edit = () => {
-    sendAction('edit', { editing: true })
-  }
-
   const pickId = () => {
     onPickId(path)
   }
@@ -82,7 +78,6 @@ function NodeMenu({
             Rename
           </MenuItem>
         )}
-      {isBasicType(value) && <MenuItem onClick={edit}>Edit</MenuItem>}
       <MenuItem
         submenu={
           <ViewMenu
@@ -119,25 +114,23 @@ function NodeMenu({
           Insert
         </MenuItem>
       )}
-      {!showAll && ['object', 'array'].includes(parentType) && (
-        <MenuItem
-          submenu={
-            <ClipboardMenu
-              name={name}
-              value={value}
-              path={path}
-              state={state}
-              showAll={showAll}
-              nodeType={nodeType}
-              parentType={parentType}
-              onClose={onClose}
-              context={context}
-            />
-          }
-        >
-          Clipboard
-        </MenuItem>
-      )}
+      <MenuItem
+        submenu={
+          <EditMenu
+            name={name}
+            value={value}
+            path={path}
+            state={state}
+            showAll={showAll}
+            nodeType={nodeType}
+            parentType={parentType}
+            onClose={onClose}
+            context={context}
+          />
+        }
+      >
+        Edit
+      </MenuItem>
       {!showAll && ['object', 'array'].includes(parentType) && (
         <MenuItem onClick={() => sendAction('attach')}>Attach file</MenuItem>
       )}

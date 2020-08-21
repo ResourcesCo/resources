@@ -175,6 +175,7 @@ class ConsoleChannel {
   }
 
   async dispatchAction(handler, params) {
+    console.log(params)
     try {
       const result = await handler.run(params)
       return result
@@ -340,11 +341,24 @@ class ConsoleChannel {
     }
   }
 
-  async runApiCommand({ path, action, params, formData }) {
+  async runApiCommand({ path, action, params, parentMessage, formData }) {
     const url = '/' + path.map(s => encodeURIComponent(s)).join('/')
-    const result = await this.route({ url, action, params })
-    console.log(result)
-    return {}
+    const routeMatch = await this.route({ url, action, params })
+    let messages: any[] = []
+    if ('handler' in routeMatch && 'action' in routeMatch) {
+      const message = await this.dispatchAction(routeMatch.handler, {
+        url: routeMatch.url,
+        resourceType: 'resourceType' in routeMatch && routeMatch.resourceType,
+        action: routeMatch.action,
+        params: 'params' in routeMatch ? routeMatch.params : {},
+        parentMessage,
+        formData,
+        onMessage: message => (messages = [...messages, message]),
+      })
+      messages = [...messages, message]
+    }
+
+    return { messages }
   }
 
   async getClientConfig({ apiBaseUrl }) {

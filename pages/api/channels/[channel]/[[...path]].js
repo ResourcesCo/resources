@@ -4,14 +4,24 @@ import LocalFileStore from '../../../../api/storage/LocalFileStore'
 
 export default async function index(req, res) {
   const { channel: channelName, path = [] } = req.query
-  const { action, params, formData } = req.body
+  const { action, params, parentMessage, formData } = req.body
+
+  if (process.env.API_AUTH !== 'any') {
+    res.status(401).send({ error: 'Access denied.' })
+  }
 
   const workspace = await ConsoleWorkspace.getWorkspace({
     fileStoreClass: LocalFileStore,
     apiOnly: true,
   })
   const channel = await workspace.getChannel(channelName)
-  const result = await channel.runApiCommand({ path, action, params, formData })
+  const result = await channel.runApiCommand({
+    path,
+    action,
+    params,
+    parentMessage,
+    formData,
+  })
 
   res.send(result)
 }
