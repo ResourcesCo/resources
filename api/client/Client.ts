@@ -68,6 +68,18 @@ export default class Client {
     }
     if ('body' in request) {
       fetchInfo.body = JSON.stringify(request.body)
+      fetchInfo.headers = fetchInfo.headers || {}
+      if (
+        !(
+          'content-type' in fetchInfo.headers ||
+          'Content-Type' in fetchInfo.headers
+        )
+      ) {
+        fetchInfo.headers = {
+          ...fetchInfo.headers,
+          'Content-Type': 'application/json',
+        }
+      }
     }
     const response = await fetch(request.url, fetchInfo)
     const body = await response.json()

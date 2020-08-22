@@ -10,6 +10,7 @@ import env from './env'
 import { createNanoEvents, Emitter } from 'nanoevents'
 import produce from 'immer'
 import uniq from 'lodash/uniq'
+import toArray from '../app-base/util/message/toArray'
 
 // Properties stored and managed by the workspace (a channel cannot set itself to be admin)
 export interface ChannelProps {
@@ -39,6 +40,7 @@ class ConsoleChannel {
 
   constructor(clientConfig: ChannelClientConfig) {
     this.clientConfig = clientConfig
+    this.client = clientConfig.client
     this.messages = {}
     this.messageIds = []
     this.emitter = createNanoEvents()
@@ -175,7 +177,6 @@ class ConsoleChannel {
   }
 
   async dispatchAction(handler, params) {
-    console.log(params)
     try {
       const result = await handler.run(params)
       return result
@@ -265,6 +266,26 @@ class ConsoleChannel {
             parentCommandId: parentMessageId,
           })
         }
+
+        let runWithApi
+        if (
+          process.env.NEXT_PUBLIC_BROWSER_STORAGE !== 'true' &&
+          'action' in routeMatch
+        ) {
+          runWithApi = async ({ parentMessage, formData }) => {
+            const resp = await this.client.request({
+              url: `.${urlArg}`,
+              method: 'POST',
+              body: {
+                action: actionArg,
+                params: params,
+                parentMessage,
+                formData,
+              },
+            })
+            return resp.body
+          }
+        }
         let result = await this.dispatchAction(routeMatch.handler, {
           url: routeMatch.url,
           resourceType: 'resourceType' in routeMatch && routeMatch.resourceType,
@@ -278,9 +299,10 @@ class ConsoleChannel {
           parentMessage,
           formData,
           onMessage: handleMessage,
+          runWithApi,
         })
-        if (result) {
-          result = produce(result, draft => {
+        let resultMessages = toArray(result).map(resultMessage =>
+          produce(resultMessage, draft => {
             if ('resourceType' in routeMatch) {
               draft.resourceType = routeMatch.resourceType
             }
@@ -290,10 +312,10 @@ class ConsoleChannel {
             }
             draft.message = message
           })
-        }
+        )
         onMessage(
           [
-            result,
+            ...resultMessages,
             {
               type: 'loaded',
               commandId: isBackgroundAction ? parentMessageId : messageId,
@@ -341,8 +363,7 @@ class ConsoleChannel {
     }
   }
 
-  async runApiCommand({ path, action, params, parentMessage, formData }) {
-    const url = '/' + path.map(s => encodeURIComponent(s)).join('/')
+  async runApiCommand({ url, action, params, parentMessage, formData }) {
     const routeMatch = await this.route({ url, action, params })
     let messages: any[] = []
     if ('handler' in routeMatch && 'action' in routeMatch) {

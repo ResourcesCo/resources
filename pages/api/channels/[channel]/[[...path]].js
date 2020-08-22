@@ -6,6 +6,8 @@ export default async function index(req, res) {
   const { channel: channelName, path = [] } = req.query
   const { action, params, parentMessage, formData } = req.body
 
+  const url = '/' + path.map(s => encodeURIComponent(s)).join('/')
+
   if (process.env.API_AUTH !== 'any') {
     res.status(401).send({ error: 'Access denied.' })
   }
@@ -16,7 +18,7 @@ export default async function index(req, res) {
   })
   const channel = await workspace.getChannel(channelName)
   const result = await channel.runApiCommand({
-    path,
+    url,
     action,
     params,
     parentMessage,
