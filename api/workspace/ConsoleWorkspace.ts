@@ -21,6 +21,7 @@ interface WorkspaceClientConfig {
   apiBaseUrl: string
   adapter: 'fetch' | 'ipc'
   fileStoreClass?: FileStoreConstructor
+  apiOnly?: boolean
 }
 
 const defaultChannels = {
@@ -122,6 +123,7 @@ class ConsoleWorkspace {
         admin: this.config.channels[name].admin,
         client: this.client.constrain(`channels/${name}`),
         fileStore: this.fileStore.constrain(`channels/${name}`),
+        apiOnly: this.clientConfig.apiOnly,
       })
       await this.channels[name].init()
     }

@@ -22,6 +22,11 @@ class LocalFileStore implements FileStore {
     if (!absolutePath.startsWith(this.absolutePath)) {
       throw new ConsoleError('Invalid path', { status: 400 })
     }
+    return absolutePath
+  }
+
+  getFilePath(path: string): string {
+    const absolutePath = this.getPath(path)
     if (!absolutePath.endsWith('.json')) {
       throw new ConsoleError('Unsupported file type', { status: 422 })
     }
@@ -29,7 +34,7 @@ class LocalFileStore implements FileStore {
   }
 
   async get({ path }) {
-    const absolutePath = this.getPath(path)
+    const absolutePath = this.getFilePath(path)
     let data
     try {
       data = await fsPromises.readFile(absolutePath)
@@ -60,7 +65,7 @@ class LocalFileStore implements FileStore {
   }
 
   async put({ path, value }) {
-    const absolutePath = this.getPath(path)
+    const absolutePath = this.getFilePath(path)
     try {
       await fsPromises.writeFile(
         absolutePath,
@@ -105,7 +110,7 @@ class LocalFileStore implements FileStore {
   }
 
   async delete({ path }) {
-    const absolutePath = this.getPath(path)
+    const absolutePath = this.getFilePath(path)
     await fsPromises.unlink(absolutePath)
     return { ok: true }
   }

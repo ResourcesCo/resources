@@ -5,11 +5,12 @@ import { FileStore } from '../storage/FileStore'
 import App from '../app-base/App'
 import parseArgs from '../app-base/parseArgs'
 import parseUrl from '../app-base/parseUrl'
-import apps from '../apps'
+import apps, { apiOnlyApps } from '../apps'
 import env from './env'
 import { createNanoEvents, Emitter } from 'nanoevents'
 import produce from 'immer'
 import uniq from 'lodash/uniq'
+import toArray from '../app-base/util/message/toArray'
 
 // Properties stored and managed by the workspace (a channel cannot set itself to be admin)
 export interface ChannelProps {
@@ -21,6 +22,7 @@ export interface ChannelProps {
 export interface ChannelClientConfig extends ChannelProps {
   client: Client
   fileStore: FileStore
+  apiOnly?: boolean
 }
 
 class ConsoleChannel {
@@ -38,6 +40,7 @@ class ConsoleChannel {
 
   constructor(clientConfig: ChannelClientConfig) {
     this.clientConfig = clientConfig
+    this.client = clientConfig.client
     this.messages = {}
     this.messageIds = []
     this.emitter = createNanoEvents()
@@ -50,7 +53,9 @@ class ConsoleChannel {
     await this.loadConfig()
     await this.loadEnv()
     await this.loadApps()
-    await this.loadMessages()
+    if (this.clientConfig.apiOnly !== false) {
+      await this.loadMessages()
+    }
   }
 
   get fileStore() {
@@ -151,7 +156,7 @@ class ConsoleChannel {
     }
   }
 
-  async loadApp(appName) {
+  async loadApp(apps, appName) {
     return await App.get({
       app: apps[appName],
       env: this.env[appName],
@@ -160,10 +165,11 @@ class ConsoleChannel {
   }
 
   async loadApps() {
+    const appsToLoad = this.clientConfig.apiOnly === true ? apiOnlyApps : apps
     this.apps = {}
-    const appNames = Object.keys(apps)
+    const appNames = Object.keys(appsToLoad)
     const loadedApps = await Promise.all(
-      appNames.map(appName => this.loadApp(appName))
+      appNames.map(appName => this.loadApp(appsToLoad, appName))
     )
     for (let i = 0; i < loadedApps.length; i++) {
       this.apps[appNames[i]] = loadedApps[i]
@@ -260,6 +266,26 @@ class ConsoleChannel {
             parentCommandId: parentMessageId,
           })
         }
+
+        let runWithApi
+        if (
+          process.env.NEXT_PUBLIC_BROWSER_STORAGE !== 'true' &&
+          'action' in routeMatch
+        ) {
+          runWithApi = async ({ parentMessage, formData }) => {
+            const resp = await this.client.request({
+              url: `.${urlArg}`,
+              method: 'POST',
+              body: {
+                action: actionArg,
+                params: params,
+                parentMessage,
+                formData,
+              },
+            })
+            return resp.body
+          }
+        }
         let result = await this.dispatchAction(routeMatch.handler, {
           url: routeMatch.url,
           resourceType: 'resourceType' in routeMatch && routeMatch.resourceType,
@@ -273,9 +299,10 @@ class ConsoleChannel {
           parentMessage,
           formData,
           onMessage: handleMessage,
+          runWithApi,
         })
-        if (result) {
-          result = produce(result, draft => {
+        let resultMessages = toArray(result).map(resultMessage =>
+          produce(resultMessage, draft => {
             if ('resourceType' in routeMatch) {
               draft.resourceType = routeMatch.resourceType
             }
@@ -285,10 +312,10 @@ class ConsoleChannel {
             }
             draft.message = message
           })
-        }
+        )
         onMessage(
           [
-            result,
+            ...resultMessages,
             {
               type: 'loaded',
               commandId: isBackgroundAction ? parentMessageId : messageId,
@@ -334,6 +361,25 @@ class ConsoleChannel {
         },
       })
     }
+  }
+
+  async runApiCommand({ url, action, params, parentMessage, formData }) {
+    const routeMatch = await this.route({ url, action, params })
+    let messages: any[] = []
+    if ('handler' in routeMatch && 'action' in routeMatch) {
+      const message = await this.dispatchAction(routeMatch.handler, {
+        url: routeMatch.url,
+        resourceType: 'resourceType' in routeMatch && routeMatch.resourceType,
+        action: routeMatch.action,
+        params: 'params' in routeMatch ? routeMatch.params : {},
+        parentMessage,
+        formData,
+        onMessage: message => (messages = [...messages, message]),
+      })
+      messages = [...messages, message]
+    }
+
+    return { messages }
   }
 
   async getClientConfig({ apiBaseUrl }) {

@@ -69,6 +69,7 @@ export interface RunProps {
   onMessage?: Function
   request?: Function
   channel?: ConsoleChannel
+  runWithApi?: Function
 }
 
 export interface AppSpec {
@@ -231,6 +232,7 @@ export default class App {
     formData,
     parentMessage,
     onMessage,
+    runWithApi,
   }) {
     const handler =
       action === 'help' && !this.resourceTypes[resourceType]?.actions?.help
@@ -239,18 +241,21 @@ export default class App {
     const handleMessage = message => {
       onMessage(this.prepareMessage(message))
     }
-    const message = await handler({
+    const result = await handler({
       resourceType,
       action,
       params,
       formData,
       parentMessage,
       onMessage: handleMessage,
+      runWithApi,
       env: this.env,
       request: this.request,
       channel: this.channel,
     })
-    return this.prepareMessage(message)
+    return Array.isArray(result)
+      ? result.map(message => this.prepareMessage(message))
+      : this.prepareMessage(result)
   }
 
   static async get({

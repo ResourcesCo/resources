@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Menu, { MenuItem } from '../generic/Menu'
+import Menu, { MenuItem, Separator } from '../generic/Menu'
 
 import { getStateKey } from '../../vtv-model/state'
 
-function ClipboardMenu({
+function EditMenu({
   name,
   value,
   path,
@@ -19,24 +19,30 @@ function ClipboardMenu({
   const hasPasteData = true
 
   // needed for copy to clipboard component
-  const valueJson = JSON.stringify(
-    parentType === 'object' ? { [name]: value } : value,
-    null,
-    2
-  )
+  const nodeJson = JSON.stringify({ [name]: value }, null, 2)
+
+  const valueJson = JSON.stringify(value, null, 2)
 
   const doClipboardAction = (
     clipboardAction,
     { name, value, state, position }
   ) => {
-    if (['cut', 'copy'].includes(clipboardAction)) {
+    if (
+      ['cutNode', 'copyNode', 'cutContents', 'copyContents'].includes(
+        clipboardAction
+      )
+    ) {
       const valueJson = JSON.stringify(
-        parentType === 'object' ? { [name]: value } : value,
+        ['cutNode', 'copyNode'].includes(clipboardAction)
+          ? { [name]: value }
+          : value,
         null,
         2
       )
       const stateJson = JSON.stringify(
-        parentType === 'object' ? { [getStateKey(name)]: state } : state,
+        ['cutNode', 'copyNode'].includes(clipboardAction)
+          ? { [getStateKey(name)]: state }
+          : state,
         null,
         2
       )
@@ -44,10 +50,11 @@ function ClipboardMenu({
       // copy to internal clipboard
       clipboard.value = valueJson
       clipboard.state = stateJson
-      if (clipboardAction === 'cut') {
+      if (['cutNode', 'cutContents'].includes(clipboardAction)) {
         onMessage({
           path,
-          action: 'deleteNode',
+          action:
+            clipboardAction === 'cutNode' ? 'deleteNode' : 'deleteContents',
         })
       }
     } else if (clipboardAction === 'paste') {
@@ -88,23 +95,52 @@ function ClipboardMenu({
       context={context}
       {...props}
     >
+      {!showAll && ['object', 'array'].includes(parentType) && (
+        <MenuItem
+          onClick={() => doClipboardAction('cutNode', { name, value, state })}
+          {...(clipboard.copyToSystemClipboard && {
+            copyToClipboard: valueJson,
+          })}
+        >
+          Cut Node
+        </MenuItem>
+      )}
       <MenuItem
-        onClick={() => doClipboardAction('cut', { name, value, state })}
+        onClick={() => doClipboardAction('cutContents', { name, value, state })}
         {...(clipboard.copyToSystemClipboard && { copyToClipboard: valueJson })}
       >
-        Cut
+        Cut Contents
       </MenuItem>
+      {!showAll && ['object', 'array'].includes(parentType) && (
+        <MenuItem
+          onClick={() => doClipboardAction('copyNode', { name, value, state })}
+          {...(clipboard.copyToSystemClipboard && {
+            copyToClipboard: valueJson,
+          })}
+        >
+          Copy Node
+        </MenuItem>
+      )}
       <MenuItem
-        onClick={() => doClipboardAction('copy', { name, value, state })}
+        onClick={() =>
+          doClipboardAction('copyContents', { name, value, state })
+        }
         {...(clipboard.copyToSystemClipboard && { copyToClipboard: valueJson })}
       >
-        Copy
+        Copy Contents
       </MenuItem>
       {!showAll && hasPasteData && ['object', 'array'].includes(nodeType) && (
         <MenuItem
           onClick={() => doClipboardAction('paste', { position: 'append' })}
         >
-          Paste Child
+          Paste at End
+        </MenuItem>
+      )}
+      {!showAll && hasPasteData && ['object', 'array'].includes(nodeType) && (
+        <MenuItem
+          onClick={() => doClipboardAction('paste', { position: 'prepend' })}
+        >
+          Paste at Start
         </MenuItem>
       )}
       {!showAll && hasPasteData && ['object', 'array'].includes(parentType) && (
@@ -121,12 +157,29 @@ function ClipboardMenu({
           Paste After
         </MenuItem>
       )}
+      {(['array', 'object'].includes(nodeType) || value === null) && (
+        <Separator />
+      )}
+      {(nodeType === 'array' || value === null) && (
+        <MenuItem
+          onClick={() => onMessage({ path, action: 'convert', type: 'object' })}
+        >
+          {nodeType === 'array' ? 'Convert to' : 'Create'} Object
+        </MenuItem>
+      )}
+      {(nodeType === 'object' || value === null) && (
+        <MenuItem
+          onClick={() => onMessage({ path, action: 'convert', type: 'array' })}
+        >
+          {nodeType === 'object' ? 'Convert to' : 'Create'} Array
+        </MenuItem>
+      )}
     </Menu>
   )
 }
 
-ClipboardMenu.propTypes = {
+EditMenu.propTypes = {
   context: PropTypes.object.isRequired,
 }
 
-export default ClipboardMenu
+export default EditMenu

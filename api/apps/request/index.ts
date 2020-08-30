@@ -48,32 +48,39 @@ async function send({
   formData,
   parentMessage,
   onMessage,
+  runWithApi,
 }) {
   onMessage({
     type: 'message-command',
     action: 'clearErrors',
   })
   const v = parentMessage.value
-  const req = {
-    url: v.url,
-    method: v.method,
-    headers: v.headers,
-    body: v.body,
-  }
-  if (typeof req.url === 'string' && req.url.length > 0) {
-    const response = await request(req)
-    return {
-      type: 'message-command',
-      action: 'set',
-      path: ['response'],
-      value: response,
-    }
+  const client = v.client || 'default'
+  if (runWithApi && ['default', 'api'].includes(client)) {
+    const { messages } = await runWithApi({ formData, parentMessage })
+    return messages
   } else {
-    return {
-      type: 'message-command',
-      action: 'setError',
-      path: ['url'],
-      error: 'Invalid URL',
+    const req = {
+      url: v.url,
+      method: v.method,
+      headers: v.headers,
+      body: v.body,
+    }
+    if (typeof req.url === 'string' && req.url.length > 0) {
+      const response = await request(req)
+      return {
+        type: 'message-command',
+        action: 'set',
+        path: ['response'],
+        value: response,
+      }
+    } else {
+      return {
+        type: 'message-command',
+        action: 'setError',
+        path: ['url'],
+        error: 'Invalid URL',
+      }
     }
   }
 }
@@ -85,6 +92,7 @@ async function run({
   formData,
   parentMessage,
   onMessage,
+  runWithApi,
 }) {
   if (formData) {
     return await send({
@@ -94,6 +102,7 @@ async function run({
       formData,
       parentMessage,
       onMessage,
+      runWithApi,
     })
   } else if (action === 'get') {
     return await get({ params, request })
