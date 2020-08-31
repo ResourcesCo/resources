@@ -1,6 +1,10 @@
 import React from 'react'
 
-export default ({ type, length, context: { theme } }) => {
+export default function CollectionSummary({
+  type,
+  length,
+  context: { theme },
+}) {
   return (
     <span>
       {type === 'object' ? '{' : '['}

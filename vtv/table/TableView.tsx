@@ -8,7 +8,14 @@ import ValueInlineContent from '../content/ValueInlineContent'
 import RowHeaderView from './RowHeaderView'
 import ColumnHeaderView from './ColumnHeaderView'
 
-export default ({ name, value, path, state, context: { theme }, context }) => {
+export default function TableView({
+  name,
+  value,
+  path,
+  state,
+  context: { theme },
+  context,
+}) {
   const paths = getCollectionPaths(value).slice(0, 15) // TODO: support customizing displayed columns
   return (
     <div className="table">

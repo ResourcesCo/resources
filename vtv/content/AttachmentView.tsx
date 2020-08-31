@@ -10,8 +10,7 @@ import { Manager, Reference } from 'react-popper'
 export default function AttachmentView({
   attachments,
   path,
-  onMessage,
-  context: { theme, clipboard },
+  context: { onMessage, clipboard, theme },
   context,
 }) {
   const [files, setFiles] = useState(null)
@@ -45,8 +44,6 @@ export default function AttachmentView({
               file={file}
               onClose={() => setMenuOpen(false)}
               path={path}
-              onMessage={onMessage}
-              clipboard={clipboard}
               context={context}
             />
           )}

@@ -1,5 +1,6 @@
 import light from './light'
 import dark from './dark'
+import { Theme } from 'vtv'
 
 const themes = {
   light,
@@ -7,7 +8,7 @@ const themes = {
 }
 
 export default themes
-export const getTheme = theme => {
+export function getTheme(theme: string | Theme) {
   if (typeof theme === 'string') {
     return themes[theme]
   } else {

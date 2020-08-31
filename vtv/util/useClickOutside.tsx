@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react'
 
 // from https://stackoverflow.com/a/42234988/3461
 
-export default (ref, callback) => {
+export default function useClickOutside(ref, callback) {
   const handler = event => {
     if (ref.current && !ref.current.contains(event.target)) {
       callback()

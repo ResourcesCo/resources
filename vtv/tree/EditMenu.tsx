@@ -25,7 +25,12 @@ function EditMenu({
 
   const doClipboardAction = (
     clipboardAction,
-    { name, value, state, position }
+    {
+      name = undefined,
+      value = undefined,
+      state = undefined,
+      position = undefined,
+    }
   ) => {
     if (
       ['cutNode', 'copyNode', 'cutContents', 'copyContents'].includes(

@@ -1,13 +1,28 @@
-import React, { useState, useRef } from 'react'
+import React, {
+  useState,
+  useRef,
+  MouseEventHandler,
+  MouseEvent,
+  ReactNode,
+  FunctionComponent,
+  ReactElement,
+} from 'react'
 import clsx from 'clsx'
 import useClickOutside from '../util/useClickOutside'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons'
-import { Popper, Manager, Reference } from 'react-popper'
+import { Popper, Manager, Reference, PopperProps } from 'react-popper'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import chroma from 'chroma-js'
+import { Context } from 'vtv'
 
-export function Separator({ context: { theme } }) {
+export function Separator({ context }: { context?: Context }) {
+  // context will be passed in by Menu
+  if (!context) {
+    return null
+  }
+  const { theme } = context
+
   const color = chroma(theme.foreground)
     .alpha(0.4)
     .hex()
@@ -25,20 +40,34 @@ export function Separator({ context: { theme } }) {
   )
 }
 
+interface MenuItemProps {
+  checked?: boolean
+  onClick?: MouseEventHandler
+  copyToClipboard?: string
+  children: ReactNode
+  submenu?: ReactElement
+  context?: Context
+}
+
 export function MenuItem({
   checked,
   onClick,
   copyToClipboard,
   children,
   submenu,
-  context: { theme },
-}) {
+  context,
+}: MenuItemProps) {
   const [itemHover, setItemHover] = useState(false)
   const [submenuHover, setSubmenuHover] = useState(false)
   const setHoverOff = () => {
     setItemHover(false)
     setSubmenuHover(false)
   }
+
+  // the context is added by <Menu>
+  if (!context) return null
+  const { theme } = context
+
   return submenu ? (
     <Manager>
       <Reference>
@@ -134,7 +163,16 @@ const defaultPopperProps = {
   modifiers: [{ name: 'offset', options: { offset: [8, 3] } }],
 }
 
-export default ({
+interface MenuProps {
+  onClose?: () => void
+  popperProps?: object
+  onMouseEnter?: MouseEventHandler
+  onMouseLeave?: MouseEventHandler
+  children: React.ReactNode
+  context: Context
+}
+
+const Menu: FunctionComponent<MenuProps> = ({
   onClose,
   popperProps = defaultPopperProps,
   context: { theme },
@@ -142,14 +180,14 @@ export default ({
   children,
   onMouseEnter,
   onMouseLeave,
-}) => {
+}: MenuProps) => {
   const ref = useRef(null)
   useClickOutside(ref, onClose)
 
   const menuItems = React.Children.map(children, child => {
     return React.isValidElement(child)
       ? React.cloneElement(child, {
-          onClick: e => {
+          onClick(e: MouseEvent) {
             child.props.onClick(e)
             onClose()
           },
@@ -193,3 +231,5 @@ export default ({
     </Popper>
   )
 }
+
+export default Menu

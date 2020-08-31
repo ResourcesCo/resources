@@ -42,8 +42,6 @@ export default function InlineContent({
             return (
               <ActionButton
                 key={i}
-                value={value}
-                state={state}
                 path={path}
                 actionLink={inlineItem}
                 context={context}

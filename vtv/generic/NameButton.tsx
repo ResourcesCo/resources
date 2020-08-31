@@ -1,6 +1,18 @@
-export default function NameButton({ children, onClick, context: { theme } }) {
+import { FunctionComponent, MouseEventHandler } from 'react'
+import { Context } from 'vtv'
+
+interface NameButtonProps {
+  onClick?: MouseEventHandler
+  context: Context
+}
+
+const NameButton: FunctionComponent<NameButtonProps> = ({
+  children,
+  onClick,
+  context: { theme },
+}) => {
   return (
-    <button className="id" onClick={onClick} tabIndex="-1">
+    <button className="id" onClick={onClick} tabIndex={-1}>
       {children}
       <style jsx>{`
         button {
@@ -18,3 +30,5 @@ export default function NameButton({ children, onClick, context: { theme } }) {
     </button>
   )
 }
+
+export default NameButton

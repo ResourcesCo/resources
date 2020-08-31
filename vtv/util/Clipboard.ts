@@ -4,9 +4,12 @@ const defaultOptions = {
 }
 
 export default class Clipboard {
-  constructor(options) {
-    this.data = undefined
-    this.state = undefined
+  data = undefined
+  state = undefined
+  copyToSystemClipboard: boolean
+  pasteFromSystemClipboard: boolean
+
+  constructor(options = {}) {
     const opts = { ...defaultOptions, ...options }
     this.copyToSystemClipboard = opts.copyToSystemClipboard
     this.pasteFromSystemClipboard = opts.pasteFromSystemClipboard
@@ -20,7 +23,7 @@ export default class Clipboard {
     }
   }
 
-  async write() {
+  async write(data) {
     this.data = data
   }
 }

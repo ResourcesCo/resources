@@ -9,18 +9,13 @@ import StringView from '../generic/StringView'
 
 export default function NodeNameView({
   name,
-  displayName,
+  displayName = undefined,
   editingName,
   context,
   path,
-  onMessage,
   nodeMenuProps,
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
-
-  const rename = () => {
-    onMessage({ path, action: 'rename', editing: true })
-  }
 
   if (editingName) {
     return (
@@ -39,9 +34,7 @@ export default function NodeNameView({
             <div ref={ref}>
               <NameButton onClick={() => setMenuOpen(true)} context={context}>
                 <StringView
-                  value={
-                    typeof displayName !== 'undefined' ? displayName : name
-                  }
+                  value={displayName !== undefined ? displayName : name}
                   maxLength={60}
                 />
               </NameButton>

@@ -20,10 +20,10 @@ function NodeView({
   name,
   value,
   state: _state,
-  displayName,
+  displayName = undefined,
   showOnlyPath = [],
   path,
-  showAll,
+  showAll = true,
   context: { ruleList, onMessage, theme },
   context,
 }) {
@@ -44,6 +44,12 @@ function NodeView({
 
   const scrollRef = useRef(null)
 
+  const { isExpandable, nodeType, stringType, mediaType } = getNodeInfo(
+    value,
+    state
+  )
+  const view = state._view || defaultView({ nodeType, stringType, mediaType })
+
   useEffect(() => {
     if (viewChanged && expanded && scrollRef.current) {
       setTimeout(() => {
@@ -61,20 +67,14 @@ function NodeView({
     path,
   ])
 
-  const { isExpandable, nodeType, stringType, mediaType } = getNodeInfo(
-    value,
-    state
-  )
-  const view = state._view || defaultView({ nodeType, stringType, mediaType })
-
   if (hidden) {
     return null
   } else if (showOnly) {
     const showOnlyParentPath = showOnly.slice(0, showOnly.length - 1)
-    const { nodeType: showOnlyParentType } = getNodeInfo({
-      value: getNested(value, showOnlyParentPath),
-      state: getNestedState(state, showOnlyParentPath),
-    })
+    const { nodeType: showOnlyParentType } = getNodeInfo(
+      getNested(value, showOnlyParentPath),
+      getNestedState(state, showOnlyParentPath)
+    )
     const showOnlyValue = getNested(value, showOnly)
     const showOnlyState = getNestedState(state, showOnly)
 
@@ -85,7 +85,6 @@ function NodeView({
         value={showOnlyValue}
         state={showOnlyState}
         displayName={joinPath([...showOnly])}
-        showAll={true}
         showOnlyPath={showOnly}
         path={showOnly}
         context={context}
@@ -127,8 +126,6 @@ function NodeView({
           name={name}
           displayName={displayName}
           path={path}
-          value={value}
-          parentType={parentType}
           nodeMenuProps={nodeMenuProps}
           context={context}
         />
@@ -204,7 +201,7 @@ function NodeView({
                 {Object.keys(value).map(key => (
                   <NodeView
                     parentType={nodeType}
-                    key={[key, value[key], getChildState(state, key)]}
+                    key={key}
                     name={key}
                     value={value[key]}
                     state={getChildState(state, key)}

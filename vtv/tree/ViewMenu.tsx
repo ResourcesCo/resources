@@ -174,7 +174,11 @@ export default function ViewMenu({
       context={context}
       {...props}
     >
-      <MenuItem onClick={() => setView(null)} checked={view === null}>
+      <MenuItem
+        onClick={() => setView(null)}
+        checked={view === null}
+        context={context}
+      >
         Default ({labels[defaultView]})
       </MenuItem>
       {availableViews.map(key => {
@@ -218,6 +222,7 @@ export default function ViewMenu({
       {!showAll && path.length > 0 && parentType === 'object' && (
         <MenuItem
           onClick={() => onMessage({ action: 'setHidden', path, hidden: true })}
+          context={context}
         >
           Hide
         </MenuItem>
@@ -237,7 +242,10 @@ export default function ViewMenu({
         </MenuItem>
       )}
       {showAll && (
-        <MenuItem onClick={() => onMessage({ action: 'showAll' })}>
+        <MenuItem
+          onClick={() => onMessage({ action: 'showAll' })}
+          context={context}
+        >
           Show all
         </MenuItem>
       )}

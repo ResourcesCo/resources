@@ -33,7 +33,7 @@ const InlineValue = ({
   mediaType,
   context: { onMessage, theme },
 }) => {
-  const inputRef = useRef()
+  const inputRef = useRef<HTMLTextAreaElement>()
   const [focused, setFocused] = useState(false)
   const [newInputValue, setNewInputValue] = useState(inputValue(value))
   useEffect(() => {
@@ -41,7 +41,7 @@ const InlineValue = ({
   }, [editing])
 
   useEffect(() => {
-    if (!editingName && editing && inputRef.current) {
+    if (!editingName && editing && inputRef) {
       inputRef.current.setSelectionRange(
         inputRef.current.value.length,
         inputRef.current.value.length

@@ -58,11 +58,11 @@ function CopyMetadataMenu({
   )
 }
 
-function readFile(file, type) {
+function readFile(file, type): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.addEventListener('load', () => {
-      resolve(reader.result)
+      resolve(typeof reader.result === 'string' ? reader.result : '')
     })
     reader.addEventListener('error', err => {
       reject(err)
@@ -87,13 +87,13 @@ function getMetadata(file) {
   )
 }
 
-export default ({
+export default function AttachmentMenu({
   path,
   file,
   onClose,
   context: { onMessage, clipboard },
   context,
-}) => {
+}) {
   const handleInsert = async (type, object = false) => {
     let data = await readFile(file, type === 'text' ? 'text' : 'data-url')
     if (type === 'base64') {

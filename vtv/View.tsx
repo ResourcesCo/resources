@@ -4,6 +4,7 @@ import { getTheme } from './themes'
 import NodeView from './tree/NodeView'
 import Clipboard from './util/Clipboard'
 import RuleList from '../vtv-model/rules/RuleList'
+import { Context } from 'vtv'
 
 const defaultClipboard = new Clipboard()
 

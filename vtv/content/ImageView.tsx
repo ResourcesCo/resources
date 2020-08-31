@@ -1,7 +1,7 @@
 import React from 'react'
-import sanitizeUrl from '@braintree/sanitize-url'
+import { sanitizeUrl } from '@braintree/sanitize-url'
 
-export default function ImageView({ value, state, theme }) {
+export default function ImageView({ value }) {
   return (
     <div>
       <img

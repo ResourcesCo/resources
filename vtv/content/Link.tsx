@@ -4,7 +4,12 @@ import StringView from '../generic/StringView'
 import { Manager, Reference } from 'react-popper'
 import { sanitizeUrl } from '@braintree/sanitize-url'
 
-export default ({ url, onEdit, context: { onPickId, theme }, context }) => {
+export default function Link({
+  url,
+  onEdit,
+  context: { onPickId, theme },
+  context,
+}) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   const openMenu = e => {
