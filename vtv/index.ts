@@ -1,6 +1,6 @@
 import RuleList from 'vtv-model/rules/RuleList'
 import Clipboard from './util/Clipboard'
-import { ComponentClass } from 'react'
+import { ComponentType } from 'react'
 import View from './View'
 export { default as Textarea } from './generic/Textarea'
 export { getTheme } from './themes'
@@ -48,7 +48,7 @@ export interface Context {
   clipboard: Clipboard
   theme: Theme
   onPickId: Function
-  codeMirrorComponent?: ComponentClass
+  codeMirrorComponent?: ComponentType
 }
 
 export default View

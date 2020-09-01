@@ -25,7 +25,7 @@ export default ({
   }, [textareaRef])
 
   const handleFocusChange = focused => {
-    if (typeof onFocusChange === 'function') {
+    if (onFocusChange) {
       onFocusChange(focused)
     }
   }

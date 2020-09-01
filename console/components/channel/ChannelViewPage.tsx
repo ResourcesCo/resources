@@ -1,27 +1,39 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, ComponentType } from 'react'
 import { getTheme } from '../../themes'
 import { MemoryStore, LocalStorageStore } from '../../store'
 import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
 import Head from '../Head'
 import ChannelView from './ChannelView'
+import ConsoleChannel from 'api/channel/ConsoleChannel'
 
-export default class ChannelViewPage extends PureComponent {
+interface ChannelViewPageProps {
+  storageType?: string
+  codeMirrorComponent?: ComponentType
+}
+
+export default class ChannelViewPage extends PureComponent<
+  ChannelViewPageProps
+> {
   state = {
     loaded: false,
     theme: null,
   }
 
-  constructor(props) {
-    super(props)
+  store: LocalStorageStore | MemoryStore
+  workspace?: ConsoleWorkspace
+  channel?: ConsoleChannel
+
+  constructor({ storageType }) {
+    super({ storageType })
     if (
       typeof window !== 'undefined' &&
       this.props.storageType === 'localStorage'
     ) {
-      this._store = new LocalStorageStore()
+      this.store = new LocalStorageStore()
     } else {
-      this._store = new MemoryStore()
+      this.store = new MemoryStore()
     }
-    this._store.load()
+    this.store.load()
     this.state.theme = this.getCachedTheme()
   }
 
@@ -29,10 +41,6 @@ export default class ChannelViewPage extends PureComponent {
     if (!this.workspace) {
       this.loadChannel()
     }
-  }
-
-  get store() {
-    return this._store
   }
 
   async loadChannel() {
@@ -65,7 +73,7 @@ export default class ChannelViewPage extends PureComponent {
   }
 
   render() {
-    const { store, storageType, ...props } = this.props
+    const { storageType, ...props } = this.props
     const themeName = this.state.theme
     const theme = getTheme(themeName)
     return (
@@ -74,7 +82,7 @@ export default class ChannelViewPage extends PureComponent {
         {this.state.loaded && (
           <ChannelView
             theme={theme}
-            store={store || this.store}
+            store={this.store}
             channel={this.channel}
             onThemeChange={this.handleThemeChange}
             {...props}

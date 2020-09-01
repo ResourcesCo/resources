@@ -1,7 +1,8 @@
-const http = require('http')
-const httpProxy = require('http-proxy')
-const proxyPort = process.env.PROXY_PORT
-const targetPort = process.env.PORT
+import http from 'http'
+import httpProxy from 'http-proxy'
+
+const proxyPort = Number(process.env.PROXY_PORT)
+const targetPort = Number(process.env.PORT)
 
 const proxy = httpProxy.createProxyServer({
   target: `http://localhost:${targetPort}`,
@@ -33,6 +34,6 @@ const server = http.createServer(function(req, res) {
   }
 })
 
-server.listen(proxyPort, () => {
-  console.info(`Proxying port ${proxyPort} to ${targetPort}...`)
+server.listen(proxyPort, '127.0.0.1', () => {
+  console.info(`Proxying http://127.0.0.1:${proxyPort} to ${targetPort}...`)
 })

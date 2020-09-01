@@ -13,8 +13,9 @@ const defaults = {
 const keys = Object.keys(defaults)
 
 class Store {
+  storeLoaded = false
+
   constructor() {
-    this.storeLoaded = false
     for (let key of keys) {
       this[key] = defaults[key]
     }

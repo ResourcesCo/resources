@@ -1,12 +1,18 @@
+import { NextApiRequest, NextApiResponse } from 'next'
 import ConsoleError from '../../../api/ConsoleError'
 import ConsoleWorkspace from '../../../api/workspace/ConsoleWorkspace'
 import LocalFileStore from '../../../api/storage/LocalFileStore'
 import { isObject } from '../../../vtv-model/analyze'
 
-export default async (req, res) => {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
   const {
     query: { name, path: pathArray },
   } = req
+
+  if (!Array.isArray(pathArray)) {
+    throw new Error('Path must be an array')
+  }
+
   const path = pathArray.join('/')
 
   if (req.method === 'OPTIONS') {

@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, FocusEventHandler, ComponentType } from 'react'
 import insertTextAtCursor from 'insert-text-at-cursor'
 import pick from 'lodash/pick'
 import pickBy from 'lodash/pickBy'
@@ -11,8 +11,24 @@ import {
 } from '../../../vtv-model'
 import Message from '../messages/Message'
 import ChannelInput from './ChannelInput'
+import { Theme } from 'vtv'
+import ConsoleCommand from 'api/channel/ConsoleCommand'
+import ConsoleChannel from 'api/channel/ConsoleChannel'
+import { MemoryStore, LocalStorageStore } from 'console/store'
 
-class MessageList extends PureComponent {
+interface MessageListProps {
+  commands: { [key: string]: ConsoleCommand }
+  commandIds: string[]
+  lastCommandId?: string
+  scrollRef: React.Ref<HTMLDivElement>
+  onPickId
+  onSubmitForm
+  onMessage
+  codeMirrorComponent
+  theme
+}
+
+class MessageList extends PureComponent<MessageListProps> {
   render() {
     const {
       commands,
@@ -82,14 +98,36 @@ class MessageList extends PureComponent {
   }
 }
 
-export default class ChannelView extends PureComponent {
+interface ChannelViewProps {
+  onFocusChange?: FocusEventHandler
+  codeMirrorComponent?: ComponentType
+  theme: Theme
+  onThemeChange: Function
+  channel: ConsoleChannel
+  store: MemoryStore | LocalStorageStore
+}
+
+interface ChannelViewState {
+  commandIds: string[]
+  commands: { [key: string]: ConsoleCommand }
+  text: string
+  lastCommandId?: string
+}
+
+export default class ChannelView extends PureComponent<
+  ChannelViewProps,
+  ChannelViewState
+> {
+  scrollRef: React.RefObject<HTMLDivElement>
+  textareaRef: React.RefObject<HTMLTextAreaElement>
+
   constructor(props) {
     super(props)
     this.state = {
       commandIds: props.channel.messageIds,
       commands: props.channel.messages,
       text: '',
-      lastCommandId: null,
+      lastCommandId: undefined,
     }
     this.scrollRef = React.createRef()
     this.textareaRef = React.createRef()
@@ -120,7 +158,6 @@ export default class ChannelView extends PureComponent {
   componentWillUnmount() {}
 
   addMessages = messageOrArray => {
-    const { store } = this.props
     let { commandIds, commands } = this.state
     let clear = false
     let loadedMessage = undefined

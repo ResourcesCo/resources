@@ -215,9 +215,9 @@ class ConsoleChannel {
     message,
     parsed,
     onMessage,
-    parentMessage,
-    parentMessageId,
-    formData,
+    parentMessage = undefined,
+    parentMessageId = undefined,
+    formData = undefined,
   }) {
     const { url: urlArg, action: actionArg, params } = parseArgs(parsed)
 

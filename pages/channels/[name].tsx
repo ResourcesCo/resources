@@ -8,7 +8,6 @@ const CodeMirror = dynamic(() => import('components/CodeMirror'), {
 function Home() {
   return (
     <ChannelViewPage
-      page="channel"
       codeMirrorComponent={CodeMirror}
       storageType="localStorage"
     />

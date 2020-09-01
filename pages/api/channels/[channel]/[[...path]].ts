@@ -1,10 +1,15 @@
+import { NextApiRequest, NextApiResponse } from 'next'
 import ConsoleError from '../../../../api/ConsoleError'
 import ConsoleWorkspace from '../../../../api/workspace/ConsoleWorkspace'
 import LocalFileStore from '../../../../api/storage/LocalFileStore'
 
-export default async function index(req, res) {
+export default async function index(req: NextApiRequest, res: NextApiResponse) {
   const { channel: channelName, path = [] } = req.query
   const { action, params, parentMessage, formData } = req.body
+
+  if (!Array.isArray(path)) {
+    throw new Error('Path must be an array')
+  }
 
   const url = '/' + path.map(s => encodeURIComponent(s)).join('/')
 
