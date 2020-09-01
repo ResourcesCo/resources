@@ -9,9 +9,11 @@ import { State } from 'vtv-model'
 
 interface MessageViewProps {
   loading?: boolean
+  message?: string
   name?: string
   value?: object
   state?: State
+  rules?: any
   type: string
   code?: any
   text?: string
@@ -27,11 +29,13 @@ interface MessageViewProps {
 }
 
 const MessageView: FunctionComponent<MessageViewProps> = ({
-  loading,
+  type,
   name,
   value,
   state,
-  type,
+  message,
+  rules,
+  loading,
   code,
   text,
   url,
@@ -45,7 +49,21 @@ const MessageView: FunctionComponent<MessageViewProps> = ({
   theme,
 }) => {
   if (type === 'tree') {
-    return <Tree name={name} value={value} state={state} theme={theme} />
+    return (
+      <Tree
+        name={name}
+        value={value}
+        state={state}
+        rules={rules}
+        onMessage={onMessage}
+        commandId={commandId}
+        onPickId={onPickId}
+        message={message}
+        onSubmitForm={onSubmitForm}
+        codeMirrorComponent={codeMirrorComponent}
+        theme={theme}
+      />
+    )
   } else if (type === 'embed') {
     return <Embed path={path} commandId={commandId} />
   } else if (type === 'error') {
