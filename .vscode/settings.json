@@ -1,3 +1,4 @@
 {
-  "css.lint.emptyRules": "ignore"
+  "css.lint.emptyRules": "ignore",
+  "npm.exclude": ["**/workspace/**", "**/out/**"]
 }

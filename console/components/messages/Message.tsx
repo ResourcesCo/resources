@@ -1,21 +1,53 @@
-import React, { useState } from 'react'
+import React, { useState, FunctionComponent, ComponentType } from 'react'
 import Tree from './Tree'
 import Embed from './Embed'
-import Help from './Help'
-import Data from './Data'
-import Form from './Form'
 import Loader from 'react-loader-spinner'
 import { faLink } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Theme } from 'vtv'
+import { State } from 'vtv-model'
 
-export default ({ type, code, text, url, content, theme, ...props }) => {
+interface MessageViewProps {
+  loading?: boolean
+  name?: string
+  value?: object
+  state?: State
+  type: string
+  code?: any
+  text?: string
+  url?: string
+  codeMirrorComponent?: ComponentType
+  onPickId: Function
+  onSubmitForm: Function
+  onMessage: Function
+  isNew?: boolean
+  path?: string
+  commandId?: string
+  theme: Theme
+}
+
+const MessageView: FunctionComponent<MessageViewProps> = ({
+  loading,
+  name,
+  value,
+  state,
+  type,
+  code,
+  text,
+  url,
+  codeMirrorComponent,
+  onPickId,
+  onSubmitForm,
+  onMessage,
+  isNew,
+  path,
+  commandId,
+  theme,
+}) => {
   if (type === 'tree') {
-    return <Tree {...props} theme={theme} />
+    return <Tree name={name} value={value} state={state} theme={theme} />
   } else if (type === 'embed') {
-    return <Embed {...props} theme={theme} />
-  } else if (type === 'help') {
-    const { help } = props
-    return <Help theme={theme} help={help} />
+    return <Embed path={path} commandId={commandId} />
   } else if (type === 'error') {
     if (code === 'not_found') {
       return <div style={{ margin: 5 }}>Results not found.</div>
@@ -38,10 +70,7 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
         ))}
       </div>
     )
-  } else if (type === 'code') {
-    return <pre style={{ fontFamily: 'monospace', margin: 5 }}>{text}</pre>
   } else if (type === 'input') {
-    const { onPickId, commandId, loading } = props
     const lines = text.split('\n')
     return (
       <div className="input-message">
@@ -86,32 +115,9 @@ export default ({ type, code, text, url, content, theme, ...props }) => {
   } else if (type === 'image') {
     const imageStyle = { maxHeight: '50vh' }
     return <img src={url} style={{ ...imageStyle, margin: 5 }} />
-  } else if (type === 'data') {
-    const { data, keyField, title, link, pickPrefix, onPickId } = props
-    return (
-      <Data
-        data={data}
-        keyField={keyField}
-        title={title}
-        link={link}
-        theme={theme}
-        onPickId={onPickId}
-        pickPrefix={pickPrefix}
-      />
-    )
-  } else if (type === 'form') {
-    const { fields, isNew, message, commandId, onSubmitForm } = props
-    return (
-      <Form
-        fields={fields}
-        theme={theme}
-        isNew={isNew}
-        message={message}
-        commandId={commandId}
-        onSubmitForm={onSubmitForm}
-      />
-    )
   } else {
     return null
   }
 }
+
+export default MessageView

@@ -29,9 +29,7 @@ function ValueInlineContent({
     nodeType === 'string' && stringType !== 'inline' ? false : autoEditParam
 
   if (attachments) {
-    return (
-      <AttachmentView path={path} attachments={attachments} context={context} />
-    )
+    return <AttachmentView path={path} context={context} />
   } else if (editing) {
     return (
       <InlineValue

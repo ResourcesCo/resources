@@ -1,24 +1,24 @@
 import { useRef, useEffect, useCallback } from 'react'
 import getConfig from 'next/config'
 
-export default function Embed({ path, commandId, theme }) {
+export default function Embed({ path, commandId }) {
   const embedBaseUrl =
     process.env.NEXT_PUBLIC_EMBED_BASE_URL ||
     process.env.NEXT_PUBLIC_EMBED_BASE_URL_DEFAULT
-  const ref = useRef()
-  const handleMessage = useCallback(({ data: { source, payload } }) => {
+  const ref: React.Ref<HTMLIFrameElement> = useRef()
+  const handleMessage = ({ data: { source, payload } }) => {
     if (source === `/messages/${commandId}/reply`) {
       console.info('received response back', payload)
     }
-  })
-  const handleFrameLoaded = useCallback(() => {
+  }
+  const handleFrameLoaded = () => {
     if (ref.current) {
       ref.current.contentWindow.postMessage(
         { source: `/messages/${commandId}`, payload: { path } },
         embedBaseUrl
       )
     }
-  })
+  }
   useEffect(() => {
     if (typeof window !== 'undefined' && ref.current) {
       window.addEventListener('message', handleMessage)

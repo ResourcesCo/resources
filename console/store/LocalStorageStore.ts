@@ -2,24 +2,15 @@ import throttle from 'lodash/throttle'
 
 const storageKey = 'messages'
 
-const defaults = {
-  commandIds: [],
-  commands: {},
-  env: {},
-  theme: 'dark',
-  notes: {},
-}
-
-const keys = Object.keys(defaults)
-
 class Store {
   storeLoaded = false
 
-  constructor() {
-    for (let key of keys) {
-      this[key] = defaults[key]
-    }
-  }
+  commandIds = [] // TODO: remove
+  commands = {} // TODO: remove
+  env = {} // TODO: remove
+  theme: string = 'dark'
+  notes: object = {}
+  storedKeys = ['commandIds', 'commands', 'env', 'theme', 'notes']
 
   async load() {
     if (this.storeLoaded) return true
@@ -28,7 +19,7 @@ class Store {
     if (typeof str === 'string' && str.length > 0) {
       data = JSON.parse(str)
     }
-    for (let key of keys) {
+    for (let key of this.storedKeys) {
       if (data[key]) {
         this[key] = data[key]
       }
@@ -39,7 +30,7 @@ class Store {
 
   save = throttle(async () => {
     const data = {}
-    for (let key of keys) {
+    for (let key of this.storedKeys) {
       data[key] = this[key]
     }
     window.localStorage.setItem(storageKey, JSON.stringify(data))

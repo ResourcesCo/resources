@@ -216,11 +216,6 @@ export default class ChannelView extends PureComponent<
           let commandMessages = formCommand.messages
             .map(m => this.setLoading(m, !!message.loading))
             .filter(({ type }) => type !== 'form-status')
-          if (message.success) {
-            commandMessages = commandMessages.filter(
-              ({ type }) => type !== 'form'
-            )
-          }
           const formStatusMessage = {
             ...message,
             commandId: message.parentCommandId,

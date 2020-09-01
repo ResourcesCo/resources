@@ -7,12 +7,7 @@ import ActionButton from '../generic/ActionButton'
 import AttachmentMenu from './AttachmentMenu'
 import { Manager, Reference } from 'react-popper'
 
-export default function AttachmentView({
-  attachments,
-  path,
-  context: { onMessage, clipboard, theme },
-  context,
-}) {
+export default function AttachmentView({ path, context: { theme }, context }) {
   const [files, setFiles] = useState(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const file = files && files[0]

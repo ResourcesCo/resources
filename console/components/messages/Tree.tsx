@@ -1,11 +1,19 @@
 import View from '../../../vtv'
-import { joinPath } from '../../../vtv-model'
+import { joinPath, State } from '../../../vtv-model'
+import { FunctionComponent } from 'react'
 
-export default function Tree({
-  name,
+interface TreeProps {
+  name?: string
+  value?: any
+  state?: State
+  [key: string]: any
+}
+
+const Tree: FunctionComponent<TreeProps> = ({
+  name = 'root',
   value,
   state = { _expanded: true },
-  rules,
+  rules = undefined,
   onMessage,
   commandId,
   onPickId,
@@ -13,7 +21,7 @@ export default function Tree({
   onSubmitForm,
   codeMirrorComponent,
   theme,
-}) {
+}) => {
   const onChange = ({ name, value, state }) => {
     onMessage({
       type: 'tree-update',
@@ -53,3 +61,5 @@ export default function Tree({
     </div>
   )
 }
+
+export default Tree

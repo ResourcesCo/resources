@@ -5,6 +5,7 @@ import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
 import Head from '../Head'
 
 import asanaTest from 'api/apps/test/tests/asana'
+import ConsoleChannel from 'api/channel/ConsoleChannel'
 
 function Test({}) {
   const [result, setResult] = useState('not completed')
@@ -12,7 +13,7 @@ function Test({}) {
     if (typeof window !== 'undefined') {
       window.addEventListener(
         'message',
-        ({ origin, data: { source, payload } = {} }) => {
+        ({ origin, data: { source, payload } }) => {
           if (source.startsWith('/messages/')) {
             window.parent.postMessage(
               { source: `${source}/reply`, payload: { echo: payload } },
@@ -29,11 +30,19 @@ function Test({}) {
   return <div>{result}</div>
 }
 
-export default class EmbedPage extends PureComponent {
+interface EmbedPageProps {
+  storageType?: 'memory' | 'localStorage'
+  path: string[]
+  workspace: ConsoleWorkspace
+  channel: ConsoleChannel
+}
+
+export default class EmbedPage extends PureComponent<EmbedPageProps> {
   state = {
-    channel: null,
     theme: null,
   }
+
+  store: LocalStorageStore | MemoryStore
 
   constructor(props) {
     super(props)
@@ -41,45 +50,17 @@ export default class EmbedPage extends PureComponent {
       typeof window !== 'undefined' &&
       this.props.storageType === 'localStorage'
     ) {
-      this._store = new LocalStorageStore()
+      this.store = new LocalStorageStore()
     } else {
-      this._store = new MemoryStore()
+      this.store = new MemoryStore()
     }
-    this._store.load()
-    this.state.theme = this._store.theme
-  }
-
-  get store() {
-    return this._store
-  }
-
-  async loadChannel() {
-    const workspace = await ConsoleWorkspace.getWorkspace()
-    const channel = await workspace.getChannel('general')
-    this.setState({ channel })
-  }
-
-  get channel() {
-    if (this.props.channel) {
-      return this.props.channel
-    } else if (this.state.channel) {
-      return this.state.channel
-    } else {
-      this.loadChannel()
-    }
+    this.store.load()
+    this.state.theme = this.store.theme
   }
 
   render() {
-    const {
-      onThemeChange,
-      store,
-      channel,
-      storageType,
-      path,
-      ...props
-    } = this.props
-    const themeName = this.state.theme
-    const theme = getTheme(themeName)
+    const { channel, storageType, path, ...props } = this.props
+    const theme = getTheme(this.store.theme)
     return (
       <>
         <Head title="Resources.co" theme={theme} />
