@@ -11,7 +11,6 @@ function EditMenu({
   state,
   nodeType,
   parentType,
-  showAll,
   context: { onMessage, clipboard },
   context,
   ...props
@@ -100,7 +99,7 @@ function EditMenu({
       context={context}
       {...props}
     >
-      {!showAll && ['object', 'array'].includes(parentType) && (
+      {path.length > 0 && ['object', 'array'].includes(parentType) && (
         <MenuItem
           onClick={() => doClipboardAction('cutNode', { name, value, state })}
           {...(clipboard.copyToSystemClipboard && {
@@ -116,7 +115,7 @@ function EditMenu({
       >
         Cut Contents
       </MenuItem>
-      {!showAll && ['object', 'array'].includes(parentType) && (
+      {path.length > 0 && ['object', 'array'].includes(parentType) && (
         <MenuItem
           onClick={() => doClipboardAction('copyNode', { name, value, state })}
           {...(clipboard.copyToSystemClipboard && {
@@ -134,34 +133,38 @@ function EditMenu({
       >
         Copy Contents
       </MenuItem>
-      {!showAll && hasPasteData && ['object', 'array'].includes(nodeType) && (
+      {hasPasteData && ['object', 'array'].includes(nodeType) && (
         <MenuItem
           onClick={() => doClipboardAction('paste', { position: 'append' })}
         >
           Paste at End
         </MenuItem>
       )}
-      {!showAll && hasPasteData && ['object', 'array'].includes(nodeType) && (
+      {hasPasteData && ['object', 'array'].includes(nodeType) && (
         <MenuItem
           onClick={() => doClipboardAction('paste', { position: 'prepend' })}
         >
           Paste at Start
         </MenuItem>
       )}
-      {!showAll && hasPasteData && ['object', 'array'].includes(parentType) && (
-        <MenuItem
-          onClick={() => doClipboardAction('paste', { position: 'above' })}
-        >
-          Paste Before
-        </MenuItem>
-      )}
-      {!showAll && hasPasteData && ['object', 'array'].includes(parentType) && (
-        <MenuItem
-          onClick={() => doClipboardAction('paste', { position: 'below' })}
-        >
-          Paste After
-        </MenuItem>
-      )}
+      {path.length > 0 &&
+        hasPasteData &&
+        ['object', 'array'].includes(parentType) && (
+          <MenuItem
+            onClick={() => doClipboardAction('paste', { position: 'above' })}
+          >
+            Paste Before
+          </MenuItem>
+        )}
+      {path.length > 0 &&
+        hasPasteData &&
+        ['object', 'array'].includes(parentType) && (
+          <MenuItem
+            onClick={() => doClipboardAction('paste', { position: 'below' })}
+          >
+            Paste After
+          </MenuItem>
+        )}
       {(['array', 'object'].includes(nodeType) || value === null) && (
         <Separator />
       )}

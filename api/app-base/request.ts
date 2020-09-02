@@ -62,7 +62,11 @@ function titleCaseHeaders(headers) {
 
 async function jsonBody(res) {
   if (/\bjson\b/i.test(res.headers.get('Content-Type'))) {
-    return await res.json()
+    try {
+      return await res.json()
+    } catch (err) {
+      return await res.text()
+    }
   } else {
     return await res.text()
   }
@@ -83,12 +87,18 @@ export interface ResponseInfo {
   body: any
 }
 
+export interface ErrorInfo {
+  error: string
+}
+
+export type ResponseOrError = ResponseInfo | ErrorInfo
+
 export default async function request({
   url,
   method,
   headers,
   body,
-}: RequestInfo): Promise<ResponseInfo> {
+}: RequestInfo): Promise<ResponseOrError> {
   const fetchData: any = {}
   if (method) {
     fetchData.method = method
@@ -103,7 +113,14 @@ export default async function request({
   if (body) {
     fetchData.body = typeof body === 'string' ? body : JSON.stringify(body)
   }
-  const res = await fetch(url, fetchData)
+  let res
+  try {
+    res = await fetch(url, fetchData)
+  } catch (err) {
+    return {
+      error: err.toString(),
+    }
+  }
   const responseBody = await jsonBody(res)
   return {
     status: res.status,

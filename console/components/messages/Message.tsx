@@ -89,33 +89,26 @@ const MessageView: FunctionComponent<MessageViewProps> = ({
       </div>
     )
   } else if (type === 'input') {
-    const lines = text.split('\n')
     return (
       <div className="input-message">
-        {lines.map((s, i) => (
-          <div key={i}>
-            {s}
-            {i === lines.length - 1 && (
-              <span
-                onClick={() => onPickId(commandId)}
-                className="input-link"
-                style={{ cursor: 'pointer', paddingLeft: 4 }}
-              >
-                <FontAwesomeIcon size="xs" icon={faLink} />
-              </span>
-            )}
-            {i === lines.length - 1 && loading && (
-              <div style={{ display: 'inline-block', paddingLeft: 5 }}>
-                <Loader
-                  type="ThreeDots"
-                  color={theme.inputColor}
-                  height={12}
-                  width={20}
-                />
-              </div>
-            )}
+        {(text || '').replace('\n', '\\n')}
+        <span
+          onClick={() => onPickId(commandId)}
+          className="input-link"
+          style={{ cursor: 'pointer', paddingLeft: 4 }}
+        >
+          <FontAwesomeIcon size="xs" icon={faLink} />
+        </span>
+        {loading && (
+          <div style={{ display: 'inline-block', paddingLeft: 5 }}>
+            <Loader
+              type="ThreeDots"
+              color={theme.inputColor}
+              height={12}
+              width={20}
+            />
           </div>
-        ))}
+        )}
         <style jsx>{`
           .input-link {
             display: none;

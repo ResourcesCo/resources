@@ -87,7 +87,7 @@ class ConsoleWorkspace {
 
   async loadConfig() {
     const resp = await this.fileStore.get({ path: 'workspace.json' })
-    if (resp.ok) {
+    if (resp.ok && Object.keys(resp.body?.channels || {}).length > 0) {
       this.config = resp.body
       if (!this.config.theme) {
         this.config.theme = 'dark'

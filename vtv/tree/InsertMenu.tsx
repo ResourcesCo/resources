@@ -1,7 +1,6 @@
 import Menu, { MenuItem } from '../generic/Menu'
 
 export default function InsertMenu({
-  showAll,
   nodeType,
   parentType,
   path,
@@ -32,10 +31,10 @@ export default function InsertMenu({
       {['object', 'array'].includes(nodeType) && (
         <MenuItem onClick={() => insert('prepend')}>Prepend</MenuItem>
       )}
-      {!showAll && ['object', 'array'].includes(parentType) && (
+      {path.length > 0 && ['object', 'array'].includes(parentType) && (
         <MenuItem onClick={() => insert('below')}>After</MenuItem>
       )}
-      {!showAll && ['object', 'array'].includes(parentType) && (
+      {path.length > 0 && ['object', 'array'].includes(parentType) && (
         <MenuItem onClick={() => insert('above')}>Before</MenuItem>
       )}
     </Menu>
