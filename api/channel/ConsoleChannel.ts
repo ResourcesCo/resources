@@ -260,6 +260,11 @@ class ConsoleChannel {
       }
       if ('handler' in routeMatch) {
         const handleMessage = message => {
+          console.log({
+            message,
+            messages: this.messages,
+            messageIds: this.messageIds,
+          })
           onMessage({
             ...message,
             commandId: messageId,

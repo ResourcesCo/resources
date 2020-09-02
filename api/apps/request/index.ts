@@ -53,6 +53,7 @@ async function send({
   onMessage({
     type: 'message-command',
     action: 'clearErrors',
+    loading: true, // still loading
   })
   const v = parentMessage.value
   const client = v.client || 'default'

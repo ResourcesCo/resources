@@ -208,7 +208,7 @@ export default class ChannelView extends PureComponent<
         commands[message.parentCommandId] = {
           ...treeCommand,
           messages: treeCommand.messages
-            .map(m => this.setLoading(m, !!message.loading))
+            .map(m => this.setLoading(m, Boolean(message.loading)))
             .map(message =>
               message.type === 'tree' ? updatedTreeMessage : message
             ),
@@ -228,7 +228,7 @@ export default class ChannelView extends PureComponent<
             messages: [...commandMessages, formStatusMessage],
           }
         }
-        scrollToBottom = true
+        scrollToBottom = false
       } else {
         let newMessage = message
         if (message.type === 'message-get') {
