@@ -23,12 +23,10 @@ export default class ChannelViewPage extends PureComponent<
   workspace?: ConsoleWorkspace
   channel?: ConsoleChannel
 
-  constructor({ storageType }) {
-    super({ storageType })
-    if (
-      typeof window !== 'undefined' &&
-      this.props.storageType === 'localStorage'
-    ) {
+  constructor(props) {
+    super(props)
+    const { storageType } = props
+    if (typeof window !== 'undefined' && storageType === 'localStorage') {
       this.store = new LocalStorageStore()
     } else {
       this.store = new MemoryStore()
