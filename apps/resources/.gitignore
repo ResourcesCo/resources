@@ -1,0 +1,40 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+
+# testing
+/coverage
+
+# production
+/build
+/dist
+/.next
+
+# misc
+.DS_Store
+.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/out
+/renderer
+
+# extension
+/firefox
+/chrome
+
+/_notes
+
+# monorepo packages
+/packages/*/node_modules
+/packages/*/build
+/packages/*/dist
+/packages/*/.next
+
+/packages/desktop-app/renderer/packages
+
+# secrets here; defaults in .env.development, .env.production
+/.env.local
+
+/workspace
