@@ -6,8 +6,8 @@
     "dev": "concurrently -k -n app,api,embed yarn:dev:app yarn:dev:api-proxy yarn:dev:embed-proxy",
     "dev:browser": "NEXT_PUBLIC_BROWSER_STORAGE=true concurrently -k -n app,api,embed yarn:dev:app yarn:dev:api-proxy yarn:dev:embed-proxy",
     "dev:app": "NEXT_PUBLIC_API_BASE=http://localhost:3334/api next dev -p 3333",
-    "dev:api-proxy": "PORT=3333 PROXY_PORT=3334 node scripts/proxy.js",
-    "dev:embed-proxy": "PORT=3333 PROXY_PORT=3335 node scripts/proxy.js",
+    "dev:api-proxy": "PORT=3333 PROXY_PORT=3334 ts-node --compiler-options '{\"module\": \"commonjs\"}' scripts/proxy.ts",
+    "dev:embed-proxy": "PORT=3333 PROXY_PORT=3335 ts-node --compiler-options '{\"module\": \"commonjs\"}' scripts/proxy.ts",
     "build": "cross-env \"NEXT_PUBLIC_EMBED_BASE_URL_DEFAULT=https://$VERCEL_URL\" next build",
     "start": "next start",
     "export": "next export",
@@ -68,6 +68,7 @@
     "babel-plugin-module-resolver": "^4.0.0",
     "concurrently": "^5.2.0",
     "http-proxy": "^1.18.1",
+    "ts-node": "^9.0.0",
     "typescript": "^3.9.5"
   }
 }

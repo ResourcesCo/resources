@@ -10,7 +10,7 @@ export default function attach(treeData, treeUpdate) {
       parent[key] = value
       delete state['_attachments']
     } else {
-      state._attachments = state._attachments || {}
+      state._attachments = state._attachments || { open: true }
       state._attachments.open = true
     }
   })
