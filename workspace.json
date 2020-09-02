@@ -2,16 +2,16 @@
   "version": 1,
   "projects": {
     "resources": {
-      "root": "apps/resources",
-      "sourceRoot": "apps/resources",
+      "root": "packages/resources",
+      "sourceRoot": "packages/resources",
       "projectType": "application",
       "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/next:build",
           "options": {
-            "root": "apps/resources",
-            "outputPath": "dist/apps/resources"
+            "root": "packages/resources",
+            "outputPath": "dist/packages/resources"
           },
           "configurations": {
             "production": {}
@@ -41,32 +41,32 @@
           "options": {
             "linter": "eslint",
             "tsConfig": [
-              "apps/resources/tsconfig.json",
-              "apps/resources/tsconfig.spec.json"
+              "packages/resources/tsconfig.json",
+              "packages/resources/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!apps/resources/**/*"]
+            "exclude": ["**/node_modules/**", "!packages/resources/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "apps/resources/jest.config.js",
-            "tsConfig": "apps/resources/tsconfig.spec.json",
+            "jestConfig": "packages/resources/jest.config.js",
+            "tsConfig": "packages/resources/tsconfig.spec.json",
             "passWithNoTests": true
           }
         }
       }
     },
     "resources-e2e": {
-      "root": "apps/resources-e2e",
-      "sourceRoot": "apps/resources-e2e/src",
+      "root": "packages/resources-e2e",
+      "sourceRoot": "packages/resources-e2e/src",
       "projectType": "application",
       "architect": {
         "e2e": {
           "builder": "@nrwl/cypress:cypress",
           "options": {
-            "cypressConfig": "apps/resources-e2e/cypress.json",
-            "tsConfig": "apps/resources-e2e/tsconfig.e2e.json",
+            "cypressConfig": "packages/resources-e2e/cypress.json",
+            "tsConfig": "packages/resources-e2e/tsconfig.e2e.json",
             "devServerTarget": "resources:serve"
           },
           "configurations": {
@@ -79,8 +79,8 @@
           "builder": "@nrwl/linter:lint",
           "options": {
             "linter": "eslint",
-            "tsConfig": ["apps/resources-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/resources-e2e/**/*"]
+            "tsConfig": ["packages/resources-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!packages/resources-e2e/**/*"]
           }
         }
       }
