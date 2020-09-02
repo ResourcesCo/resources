@@ -23,7 +23,6 @@ function NodeView({
   displayName = undefined,
   showOnlyPath = [],
   path,
-  showAll = true,
   context: { ruleList, onMessage, theme },
   context,
 }) {
@@ -103,7 +102,6 @@ function NodeView({
     value,
     state,
     path,
-    showAll,
     onViewChanged: () => setViewChanged(true),
     context,
   }

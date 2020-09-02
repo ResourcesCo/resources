@@ -137,7 +137,6 @@ export default function ViewMenu({
   stringType,
   mediaType,
   parentType,
-  showAll,
   onViewChanged,
   context: { onMessage },
   context,
@@ -214,12 +213,12 @@ export default function ViewMenu({
         }
       })}
       <Separator />
-      {!showAll && path.length > 0 && (
+      {path.length > 0 && (
         <MenuItem onClick={() => onMessage({ action: 'showOnlyThis', path })}>
           Show only this
         </MenuItem>
       )}
-      {!showAll && path.length > 0 && parentType === 'object' && (
+      {path.length > 0 && parentType === 'object' && (
         <MenuItem
           onClick={() => onMessage({ action: 'setHidden', path, hidden: true })}
           context={context}
@@ -241,14 +240,14 @@ export default function ViewMenu({
           Show hidden
         </MenuItem>
       )}
-      {showAll && (
+      {
         <MenuItem
           onClick={() => onMessage({ action: 'showAll' })}
           context={context}
         >
           Show all
         </MenuItem>
-      )}
+      }
     </Menu>
   )
 }

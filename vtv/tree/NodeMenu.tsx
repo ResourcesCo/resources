@@ -7,7 +7,6 @@ import EditMenu from './EditMenu'
 import Menu, { MenuItem } from '../generic/Menu'
 
 function DeleteMenu({
-  showAll,
   nodeType,
   path,
   context: { onMessage },
@@ -24,7 +23,7 @@ function DeleteMenu({
       context={context}
       {...props}
     >
-      {!showAll && (
+      {path.length > 0 && (
         <MenuItem onClick={() => onMessage({ path, action: 'deleteNode' })}>
           Node
         </MenuItem>
@@ -45,7 +44,6 @@ function NodeMenu({
   value,
   path,
   state,
-  showAll,
   onClose,
   onViewChanged,
   nameOptionsFirst = false,
@@ -72,7 +70,7 @@ function NodeMenu({
   return (
     <Menu onClose={onClose} popperProps={popperProps} context={context}>
       {nameOptionsFirst &&
-        !showAll &&
+        path.length > 0 &&
         ['object', null].includes(parentType) && (
           <MenuItem onClick={() => sendAction('rename', { editing: true })}>
             Rename
@@ -88,7 +86,6 @@ function NodeMenu({
             stringType={stringType}
             mediaType={mediaType}
             parentType={parentType}
-            showAll={showAll}
             onViewChanged={onViewChanged}
             onClose={onClose}
             context={context}
@@ -102,7 +99,6 @@ function NodeMenu({
         <MenuItem
           submenu={
             <InsertMenu
-              showAll={showAll}
               nodeType={nodeType}
               parentType={parentType}
               path={path}
@@ -121,7 +117,6 @@ function NodeMenu({
             value={value}
             path={path}
             state={state}
-            showAll={showAll}
             nodeType={nodeType}
             parentType={parentType}
             onClose={onClose}
@@ -131,20 +126,17 @@ function NodeMenu({
       >
         Edit
       </MenuItem>
-      {!showAll && ['object', 'array'].includes(parentType) && (
+      {['object', 'array'].includes(parentType) && (
         <MenuItem onClick={() => sendAction('attach')}>Attach file</MenuItem>
       )}
-      {!nameOptionsFirst &&
-        !showAll &&
-        ['object', null].includes(parentType) && (
-          <MenuItem onClick={() => sendAction('rename', { editing: true })}>
-            Rename
-          </MenuItem>
-        )}
+      {!nameOptionsFirst && ['object', null].includes(parentType) && (
+        <MenuItem onClick={() => sendAction('rename', { editing: true })}>
+          Rename
+        </MenuItem>
+      )}
       <MenuItem
         submenu={
           <DeleteMenu
-            showAll={showAll}
             nodeType={nodeType}
             path={path}
             onClose={onClose}
