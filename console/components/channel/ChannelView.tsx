@@ -391,19 +391,21 @@ export default class ChannelView extends PureComponent<
           <style type="text/css" key="customScrollbars">{`
             div {
               scrollbar-width: thin;
-              scrollbar-color: ${theme.dark ? '#000 #444' : '#fff #bbb'};
+              scrollbar-color: ${theme.dark ? '#333' : '#ccc'} ${
+            theme.background
+          } !important;
             }
             div::-webkit-scrollbar {
               width: 11px;
               height: 11px;
             }
             div::-webkit-scrollbar-track, div::-webkit-scrollbar-corner {
-              background: ${theme.dark ? '#000' : '#fff'};
+              background: ${theme.background};
             }
             div::-webkit-scrollbar-thumb {
-              background-color: ${theme.dark ? '#444' : '#bbb'};
-              border-radius: 7px;
-              border: 2px solid ${theme.dark ? '#000' : '#fff'};
+              background-color: ${theme.dark ? '#333' : '#ccc'};
+              border-radius: 1000px;
+              border: 2px solid ${theme.background};
             }
           `}</style>
         </Head>
