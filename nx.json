@@ -1,0 +1,43 @@
+{
+  "npmScope": "resources",
+  "affected": {
+    "defaultBase": "master"
+  },
+  "implicitDependencies": {
+    "workspace.json": "*",
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    "tsconfig.base.json": "*",
+    "tslint.json": "*",
+    "nx.json": "*"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/nx-cloud",
+      "options": {
+        "accessToken": "NTc0ZDNmMWUtZjJjZC00ZDViLWFlZTUtMzRhOGJjMTE1NWI3fHJlYWQtd3JpdGU=",
+        "cacheableOperations": [
+          "build",
+          "test",
+          "lint",
+          "e2e"
+        ],
+        "canTrackAnalytics": false,
+        "showUsageWarnings": true
+      }
+    }
+  },
+  "projects": {
+    "resources": {
+      "tags": []
+    },
+    "resources-e2e": {
+      "tags": [],
+      "implicitDependencies": [
+        "resources"
+      ]
+    }
+  }
+}
