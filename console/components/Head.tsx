@@ -33,24 +33,6 @@ const Head = ({ theme, ...props }) => (
     <meta property="og:image" content={props.ogImage || defaultOGImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <style type="text/css">{`
-      div::-webkit-scrollbar {
-        width: 11px;
-        height: 11px;
-      }
-      div {
-        scrollbar-width: thin;
-        scrollbar-color: #000 #444;
-      }
-      div::-webkit-scrollbar-track, div::-webkit-scrollbar-corner {
-        background: #000;
-      }
-      div::-webkit-scrollbar-thumb {
-        background-color: #444;
-        border-radius: 6px;
-        border: 3px solid #000;
-      }
-    `}</style>
     {process.env.NEXT_PUBLIC_ELECTRON && (
       <meta
         http-equiv="Content-Security-Policy"

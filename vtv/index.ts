@@ -9,6 +9,7 @@ export type Path = string[]
 
 export interface Theme {
   base: string
+  dark: boolean
   foreground: string
   lightTextColor: string
   lighterTextColor: string

@@ -1,5 +1,6 @@
 export default {
   base: 'light',
+  light: true,
   fontFamily:
     '-apple-system, BlinkMacSystemFont, Avenir Next, Avenir, Helvetica, sans-serif',
   foreground: '#111',

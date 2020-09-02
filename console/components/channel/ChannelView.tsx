@@ -1,4 +1,5 @@
 import React, { PureComponent, FocusEventHandler, ComponentType } from 'react'
+import Head from 'next/head'
 import insertTextAtCursor from 'insert-text-at-cursor'
 import pick from 'lodash/pick'
 import pickBy from 'lodash/pickBy'
@@ -386,6 +387,26 @@ export default class ChannelView extends PureComponent<
             background: ${theme.selectionBackground};
           }
         `}</style>
+        <Head>
+          <style type="text/css" key="customScrollbars">{`
+            div {
+              scrollbar-width: thin;
+              scrollbar-color: ${theme.dark ? '#000 #444' : '#fff #bbb'};
+            }
+            div::-webkit-scrollbar {
+              width: 11px;
+              height: 11px;
+            }
+            div::-webkit-scrollbar-track, div::-webkit-scrollbar-corner {
+              background: ${theme.dark ? '#000' : '#fff'};
+            }
+            div::-webkit-scrollbar-thumb {
+              background-color: ${theme.dark ? '#444' : '#bbb'};
+              border-radius: 7px;
+              border: 2px solid ${theme.dark ? '#000' : '#fff'};
+            }
+          `}</style>
+        </Head>
       </div>
     )
   }
