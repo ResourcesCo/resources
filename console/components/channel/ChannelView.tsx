@@ -76,10 +76,12 @@ class MessageList extends PureComponent<MessageListProps> {
             ))}
           <div className="the-end" ref={scrollRef}></div>
         </div>
+
         <style jsx>{`
           .messages-scroll {
             flex-grow: 1;
-            overflow: scroll;
+            overflow-y: scroll;
+            overflow-x: auto;
           }
 
           .messages {
