@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "nx": "nx",
-    "start": "nx serve resources --port=3333",
+    "start": "nx start",
     "build": "nx build",
     "test": "nx test",
     "lint": "nx workspace-lint && nx lint",
@@ -23,7 +23,12 @@
     "update": "nx migrate latest",
     "workspace-schematic": "nx workspace-schematic",
     "dep-graph": "nx dep-graph",
-    "help": "nx help"
+    "help": "nx help",
+    "dev": "concurrently -k -n app,api,embed yarn:dev:app yarn:dev:api-proxy yarn:dev:embed-proxy",
+    "dev:browser": "NEXT_PUBLIC_BROWSER_STORAGE=true concurrently -k -n app,api,embed yarn:dev:app yarn:dev:api-proxy yarn:dev:embed-proxy",
+    "dev:app": "NEXT_PUBLIC_API_BASE=http://localhost:3334/api nx serve resources --port=3333",
+    "dev:api-proxy": "PORT=3333 PROXY_PORT=3334 ts-node --compiler-options '{\"module\": \"commonjs\"}' packages/resources/scripts/proxy.ts",
+    "dev:embed-proxy": "PORT=3333 PROXY_PORT=3335 ts-node --compiler-options '{\"module\": \"commonjs\"}' packages/resources/scripts/proxy.ts"
   },
   "private": true,
   "dependencies": {

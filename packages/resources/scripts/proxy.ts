@@ -1,10 +1,10 @@
-import http from 'http'
-import httpProxy from 'http-proxy'
+import { createServer } from 'http'
+import { createProxyServer } from 'http-proxy'
 
 const proxyPort = Number(process.env.PROXY_PORT)
 const targetPort = Number(process.env.PORT)
 
-const proxy = httpProxy.createProxyServer({
+const proxy = createProxyServer({
   target: `http://localhost:${targetPort}`,
 })
 
@@ -23,7 +23,7 @@ proxy.on('proxyRes', function(proxyRes, req, res) {
   }
 })
 
-const server = http.createServer(function(req, res) {
+const server = createServer(function(req, res) {
   if (req.method === 'OPTIONS') {
     res.writeHead(204, { ...corsHeaders })
     res.end()
