@@ -1,10 +1,9 @@
-import fs from 'fs'
+import { readFile, writeFile, mkdir, unlink } from 'fs/promises'
 import path from 'path'
 import { FileStore, FileStoreResponse } from './FileStore'
 import ConsoleError from '../ConsoleError'
 import { dirname } from 'path'
 
-const fsPromises = fs.promises
 const pathPosix = path.posix
 
 class LocalFileStore implements FileStore {
@@ -37,7 +36,7 @@ class LocalFileStore implements FileStore {
     const absolutePath = this.getFilePath(path)
     let data
     try {
-      data = await fsPromises.readFile(absolutePath)
+      data = await readFile(absolutePath)
     } catch (err) {
       if (err.code === 'ENOENT') {
         return {
@@ -67,15 +66,12 @@ class LocalFileStore implements FileStore {
   async put({ path, value }) {
     const absolutePath = this.getFilePath(path)
     try {
-      await fsPromises.writeFile(
-        absolutePath,
-        JSON.stringify(value, null, 2) + '\n'
-      )
+      await writeFile(absolutePath, JSON.stringify(value, null, 2) + '\n')
     } catch (err) {
       if (err.code === 'ENOENT') {
         try {
           const dir = dirname(absolutePath)
-          await fsPromises.mkdir(dir, { recursive: true })
+          await mkdir(dir, { recursive: true })
         } catch (err) {
           return {
             ok: false,
@@ -85,10 +81,7 @@ class LocalFileStore implements FileStore {
           }
         }
         try {
-          await fsPromises.writeFile(
-            absolutePath,
-            JSON.stringify(value, null, 2) + '\n'
-          )
+          await writeFile(absolutePath, JSON.stringify(value, null, 2) + '\n')
         } catch (err) {
           return {
             ok: false,
@@ -111,7 +104,7 @@ class LocalFileStore implements FileStore {
 
   async delete({ path }) {
     const absolutePath = this.getFilePath(path)
-    await fsPromises.unlink(absolutePath)
+    await unlink(absolutePath)
     return { ok: true }
   }
 

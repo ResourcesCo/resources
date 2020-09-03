@@ -12,7 +12,7 @@
     "main:build": "tsc",
     "main:watch": "tsc -w",
     "renderer:build": "cd ../.. && yarn electron-renderer:build && yarn electron-renderer:export",
-    "renderer:import": "rm -rf ./renderer && cp -r ../../renderer ./renderer",
+    "renderer:import": "rm -rf ./renderer && cp -r ../../dist/packages/resources/exported ./renderer",
     "electron:start": "electron-forge start"
   },
   "keywords": [],
