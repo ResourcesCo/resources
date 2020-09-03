@@ -84,6 +84,33 @@
           }
         }
       }
+    },
+    "vtv-model": {
+      "root": "packages/vtv-model",
+      "sourceRoot": "packages/vtv-model/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "packages/vtv-model/tsconfig.lib.json",
+              "packages/vtv-model/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!packages/vtv-model/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/vtv-model/jest.config.js",
+            "tsConfig": "packages/vtv-model/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

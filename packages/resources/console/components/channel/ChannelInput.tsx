@@ -1,9 +1,25 @@
-import React, { useEffect } from 'react'
+import React, {
+  useEffect,
+  FunctionComponent,
+  ChangeEventHandler,
+  MouseEventHandler,
+  EventHandler,
+} from 'react'
 import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
 import TextareaAutosize from 'react-autosize-textarea'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Theme } from 'vtv'
 
-export default ({
+interface ChannelInputProps {
+  text: string
+  onFocusChange: Function
+  onTextChange: ChangeEventHandler<HTMLTextAreaElement>
+  onSend: Function
+  textareaRef: React.RefObject<HTMLTextAreaElement>
+  theme: Theme
+}
+
+const ChannelInput: FunctionComponent<ChannelInputProps> = ({
   text,
   onFocusChange,
   onTextChange,
@@ -57,7 +73,7 @@ export default ({
         autoCorrect="off"
         autoCapitalize="none"
       />
-      <button onClick={onSend}>
+      <button onClick={e => onSend()}>
         <span className="rocket">
           <FontAwesomeIcon icon={faSpaceShuttle} />
         </span>
@@ -98,3 +114,5 @@ export default ({
     </div>
   )
 }
+
+export default ChannelInput

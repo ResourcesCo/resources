@@ -31,6 +31,9 @@
     "resources-e2e": {
       "tags": [],
       "implicitDependencies": ["resources"]
+    },
+    "vtv-model": {
+      "tags": []
     }
   },
   "workspaceLayout": {

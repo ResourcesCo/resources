@@ -307,8 +307,8 @@ export default class ChannelView extends PureComponent<
     }, 10)
   }
 
-  handleTextChange = ({ target }) => {
-    this.setState({ text: target.value })
+  handleTextChange = ({ target: { value: text } }) => {
+    this.setState({ text })
   }
 
   handlePickId = id => {
