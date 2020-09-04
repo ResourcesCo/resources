@@ -9,7 +9,7 @@ import apps, { apiOnlyApps } from '../apps'
 import env from './env'
 import { createNanoEvents, Emitter } from 'nanoevents'
 import produce from 'immer'
-import uniq from 'lodash/uniq'
+import { uniq } from 'lodash'
 import toArray from '../app-base/util/message/toArray'
 
 // Properties stored and managed by the workspace (a channel cannot set itself to be admin)
@@ -136,7 +136,7 @@ class ConsoleChannel {
 
   async saveMessagesToStoreAndDelay(duration) {
     const result = await this.saveMessagesToStore()
-    const delay = new Promise(resolve =>
+    const delay = new Promise((resolve) =>
       setTimeout(() => resolve(true), duration)
     )
     await delay
@@ -169,7 +169,7 @@ class ConsoleChannel {
     this.apps = {}
     const appNames = Object.keys(appsToLoad)
     const loadedApps = await Promise.all(
-      appNames.map(appName => this.loadApp(appsToLoad, appName))
+      appNames.map((appName) => this.loadApp(appsToLoad, appName))
     )
     for (let i = 0; i < loadedApps.length; i++) {
       this.apps[appNames[i]] = loadedApps[i]
@@ -259,7 +259,7 @@ class ConsoleChannel {
         })
       }
       if ('handler' in routeMatch) {
-        const handleMessage = message => {
+        const handleMessage = (message) => {
           console.log({
             message,
             messages: this.messages,
@@ -306,8 +306,8 @@ class ConsoleChannel {
           onMessage: handleMessage,
           runWithApi,
         })
-        let resultMessages = toArray(result).map(resultMessage =>
-          produce(resultMessage, draft => {
+        let resultMessages = toArray(result).map((resultMessage) =>
+          produce(resultMessage, (draft) => {
             if ('resourceType' in routeMatch) {
               draft.resourceType = routeMatch.resourceType
             }
@@ -325,10 +325,10 @@ class ConsoleChannel {
               type: 'loaded',
               commandId: isBackgroundAction ? parentMessageId : messageId,
             },
-          ].filter(value => value)
+          ].filter((value) => value)
         )
       }
-    } else if ([urlArg, actionArg].some(v => v !== null && v !== undefined)) {
+    } else if ([urlArg, actionArg].some((v) => v !== null && v !== undefined)) {
       onMessage({
         type: 'input',
         text: message,
@@ -340,7 +340,7 @@ class ConsoleChannel {
         commandId: messageId,
       })
     } else {
-      const input = parsed.map(s => {
+      const input = parsed.map((s) => {
         try {
           return JSON.parse(s)
         } catch (e) {
@@ -379,7 +379,7 @@ class ConsoleChannel {
         params: 'params' in routeMatch ? routeMatch.params : {},
         parentMessage,
         formData,
-        onMessage: message => (messages = [...messages, message]),
+        onMessage: (message) => (messages = [...messages, message]),
       })
       messages = [...messages, message]
     }

@@ -1,5 +1,5 @@
 import { AppSpec } from '../../app-base/App'
-import clone from 'lodash/cloneDeep'
+import { cloneDeep as clone } from 'lodash'
 
 const themes = [{ name: 'dark' }, { name: 'light' }]
 
@@ -38,7 +38,7 @@ const actions = {
   },
   theme: {
     async activate({ params: { theme }, onMessage }) {
-      if (themes.find(t => t.name === theme)) {
+      if (themes.find((t) => t.name === theme)) {
         onMessage({
           type: 'set-theme',
           theme,

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import getNested from 'lodash/get'
+import { get as getNested } from 'lodash'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { getState, getChildState, getNestedState } from '../../vtv-model/state'
 import { joinPath, isObject, getNodeInfo } from '../../vtv-model/analyze'
@@ -196,7 +196,7 @@ function NodeView({
             (isObject(value) || Array.isArray(value)) &&
             view === 'tree' && (
               <div className="children">
-                {Object.keys(value).map(key => (
+                {Object.keys(value).map((key) => (
                   <NodeView
                     parentType={nodeType}
                     key={key}

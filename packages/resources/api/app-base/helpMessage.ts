@@ -1,14 +1,12 @@
 import App, { ResourceType } from './App'
 import produce, { Draft } from 'immer'
 import { parse, compile, Token } from 'path-to-regexp'
-import keyBy from 'lodash/keyBy'
-import mapValues from 'lodash/mapValues'
-import pickBy from 'lodash/pickBy'
+import { keyBy, mapValues, pickBy } from 'lodash'
 
 function setPathParams(path: string, params: { [key: string]: string }) {
   const defaultParams = mapValues(
     keyBy(
-      parse(path).filter(o => typeof o !== 'string'),
+      parse(path).filter((o) => typeof o !== 'string'),
       'name'
     ),
     (_, s) => `___3A${s}`
@@ -16,7 +14,7 @@ function setPathParams(path: string, params: { [key: string]: string }) {
   const toPath = compile(path, {
     encode: encodeURIComponent,
   })
-  const inputParams = pickBy(params, v => !/^%3A|:/.test(v))
+  const inputParams = pickBy(params, (v) => !/^%3A|:/.test(v))
   return toPath({
     ...defaultParams,
     ...inputParams,
@@ -29,8 +27,8 @@ function defineResourceTypeDraftRoutes(
 ) {
   const routes = resourceType.routes
   resourceType.routes = {}
-  const channelRoute = routes.find(route => !('host' in route))
-  const webRoute = routes.find(route => 'host' in route)
+  const channelRoute = routes.find((route) => !('host' in route))
+  const webRoute = routes.find((route) => 'host' in route)
   if (channelRoute) {
     resourceType.routes.channel = channelRoute
   }
@@ -39,7 +37,7 @@ function defineResourceTypeDraftRoutes(
   }
   for (const actionName of Object.keys(resourceType.actions)) {
     const action = resourceType.actions[actionName]
-    action.exampleParams = (action.params || []).map(s => `<${s}>`).join(' ')
+    action.exampleParams = (action.params || []).map((s) => `<${s}>`).join(' ')
   }
   resourceType.url = channelRoute
     ? setPathParams(channelRoute.path, params)
@@ -50,13 +48,13 @@ function defineResourceTypeRoutes(
   resourceType,
   params: { [key: string]: string }
 ) {
-  return produce(resourceType, resourceType => {
+  return produce(resourceType, (resourceType) => {
     defineResourceTypeDraftRoutes(resourceType, params)
   })
 }
 
 function defineAppRoutes(resourceTypes) {
-  return produce(resourceTypes, resourceTypes => {
+  return produce(resourceTypes, (resourceTypes) => {
     for (const resourceType of Object.keys(resourceTypes)) {
       defineResourceTypeDraftRoutes(resourceTypes[resourceType])
     }

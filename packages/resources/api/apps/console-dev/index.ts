@@ -1,5 +1,5 @@
 import { AppSpec } from '../../app-base/App'
-import clone from 'lodash/cloneDeep'
+import { cloneDeep as clone } from 'lodash'
 import { getPaths, splitPath, joinPath, parseCommand } from '../../../vtv-model'
 
 const functions = { getPaths, splitPath, joinPath, parseCommand }
@@ -76,7 +76,7 @@ const actions = {
   },
   function: {
     async run({ params: { function: name, input } }) {
-      const fi = functionInfo.find(fi => fi.name === name)
+      const fi = functionInfo.find((fi) => fi.name === name)
       if (fi) {
         let parsedInput = input
         let output

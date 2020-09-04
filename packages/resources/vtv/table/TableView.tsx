@@ -1,7 +1,7 @@
 import React from 'react'
 import { getCollectionPaths, joinPath } from '../../vtv-model/analyze'
 import { getNestedState } from '../../vtv-model/state'
-import getNested from 'lodash/get'
+import { get as getNested } from 'lodash'
 import { getChildState } from '../../vtv-model'
 import { getNodeInfo } from '../../vtv-model/analyze'
 import ValueInlineContent from '../content/ValueInlineContent'
@@ -37,7 +37,7 @@ export default function TableView({
           </tr>
         </thead>
         <tbody>
-          {Object.keys(value).map(key => (
+          {Object.keys(value).map((key) => (
             <tr key={key}>
               <td>
                 <RowHeaderView context={context}>{key}</RowHeaderView>

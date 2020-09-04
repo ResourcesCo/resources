@@ -1,9 +1,9 @@
 import produce from 'immer'
-import getNested from 'lodash/get'
+import { get as getNested } from 'lodash'
 import { draftState, getStateKey } from '../../../../vtv-model/state'
 
 export default function expandRoot(message) {
-  return produce(message, message => {
+  return produce(message, (message) => {
     if (message.type === 'tree') {
       const showOnly = (message.state || {})._showOnly
       if (Array.isArray(showOnly) && showOnly.length > 0) {

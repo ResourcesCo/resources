@@ -44,7 +44,10 @@
               "packages/resources/tsconfig.json",
               "packages/resources/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!packages/resources/**/*"]
+            "exclude": [
+              "**/node_modules/**",
+              "!packages/resources/**/*"
+            ]
           }
         },
         "test": {
@@ -79,8 +82,13 @@
           "builder": "@nrwl/linter:lint",
           "options": {
             "linter": "eslint",
-            "tsConfig": ["packages/resources-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!packages/resources-e2e/**/*"]
+            "tsConfig": [
+              "packages/resources-e2e/tsconfig.e2e.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!packages/resources-e2e/**/*"
+            ]
           }
         }
       }
@@ -99,7 +107,10 @@
               "packages/vtv-model/tsconfig.lib.json",
               "packages/vtv-model/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!packages/vtv-model/**/*"]
+            "exclude": [
+              "**/node_modules/**",
+              "!packages/vtv-model/**/*"
+            ]
           }
         },
         "test": {
@@ -107,6 +118,67 @@
           "options": {
             "jestConfig": "packages/vtv-model/jest.config.js",
             "tsConfig": "packages/vtv-model/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "desktop": {
+      "root": "packages/desktop",
+      "sourceRoot": "packages/desktop/src",
+      "projectType": "application",
+      "prefix": "desktop",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/packages/desktop",
+            "main": "packages/desktop/src/main.ts",
+            "tsConfig": "packages/desktop/tsconfig.app.json",
+            "assets": [
+              "packages/desktop/src/assets"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "packages/desktop/src/environments/environment.ts",
+                  "with": "packages/desktop/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "desktop:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "packages/desktop/tsconfig.app.json",
+              "packages/desktop/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!packages/desktop/**/*"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/desktop/jest.config.js",
+            "tsConfig": "packages/desktop/tsconfig.spec.json",
             "passWithNoTests": true
           }
         }

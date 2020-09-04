@@ -30,7 +30,11 @@
     "dev:api-proxy": "PORT=3333 PROXY_PORT=3334 ts-node --compiler-options '{\"module\": \"commonjs\"}' packages/resources/scripts/proxy.ts",
     "dev:embed-proxy": "PORT=3333 PROXY_PORT=3335 ts-node --compiler-options '{\"module\": \"commonjs\"}' packages/resources/scripts/proxy.ts",
     "electron-renderer:build": "NEXT_PUBLIC_ELECTRON=true nx build resources",
-    "electron-renderer:export": "NEXT_PUBLIC_ELECTRON=true nx export resources"
+    "electron-renderer:export": "NEXT_PUBLIC_ELECTRON=true nx export resources",
+    "desktop:build": "yarn electron-renderer:build && yarn electron-renderer:export && yarn desktop:renderer:import && yarn desktop:main:import && yarn desktop:main:build",
+    "desktop:renderer:import": "rm -rf ./packages/desktop/renderer && cp -r dist/packages/resources/exported ./packages/desktop/renderer",
+    "desktop:main:import": "rm -rf ./packages/desktop/src/api ./packages/desktop/src/vtv-model && cp -r ./packages/resources/api ./packages/desktop/src/api && cp -r ./packages/resources/vtv-model ./packages/desktop/src/vtv-model",
+    "desktop:main:build": "rm -rf ./packages/desktop/main && nx run desktop:build && cp -r dist/packages/desktop packages/desktop/main && yarn tsc packages/desktop/src/preload.ts --outFile packages/desktop/main/preload.js --target es2020 --moduleResolution node"
   },
   "private": true,
   "dependencies": {
@@ -81,6 +85,7 @@
     "@nrwl/eslint-plugin-nx": "10.1.0",
     "@nrwl/jest": "10.1.0",
     "@nrwl/next": "10.1.0",
+    "@nrwl/node": "10.1.0",
     "@nrwl/nx-cloud": "latest",
     "@nrwl/react": "10.1.0",
     "@nrwl/web": "10.1.0",
@@ -90,7 +95,7 @@
     "@types/jest": "26.0.8",
     "@types/lodash": "^4.14.155",
     "@types/node": "~14.6.3",
-    "@types/react": "16.9.38",
+    "@types/react": "16.9.49",
     "@types/react-dom": "16.9.8",
     "@typescript-eslint/eslint-plugin": "2.19.2",
     "@typescript-eslint/parser": "2.19.2",

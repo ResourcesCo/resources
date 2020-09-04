@@ -1,8 +1,10 @@
-import { readFile, writeFile, mkdir, unlink } from 'fs/promises'
-import path from 'path'
+import { promises as fsPromises } from 'fs'
 import { FileStore, FileStoreResponse } from './FileStore'
 import ConsoleError from '../ConsoleError'
 import { dirname } from 'path'
+import * as path from 'path'
+
+const { readFile, writeFile, mkdir, unlink } = fsPromises
 
 const pathPosix = path.posix
 

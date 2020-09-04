@@ -1,4 +1,4 @@
-import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
+import ConsoleWorkspace from '../../../../api/workspace/ConsoleWorkspace'
 import { parseCommand } from '../../../../vtv-model/parse'
 
 export default async function asana() {
@@ -6,12 +6,12 @@ export default async function asana() {
   const channel = await workspace.getChannel('general')
   let receivedRequest
   // mock the request
-  channel.apps.asana.request = async request => {
+  channel.apps.asana.request = async (request) => {
     receivedRequest = request
     return { ok: true }
   }
   const receivedMessages = []
-  const onMessage = message => {
+  const onMessage = (message) => {
     receivedMessages.push(message)
   }
   const messages = [
@@ -27,7 +27,7 @@ export default async function asana() {
     })
     results.push(result)
   }
-  if (results.every(a => !!a) && receivedRequest.method === 'PUT') {
+  if (results.every((a) => !!a) && receivedRequest.method === 'PUT') {
     return '1 test passed'
   } else {
     return '(error)'

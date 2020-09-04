@@ -23,17 +23,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import fs from 'fs'
+import { createReadStream, promises as fsPromises } from 'fs'
 import { join, extname } from 'path'
-import { promisify } from 'util'
-import electron from 'electron'
+import { app, session, protocol } from 'electron'
 
-const stat = promisify(fs.stat)
+const { stat } = fsPromises
 
 // See https://cs.chromium.org/chromium/src/net/base/net_error_list.h
 const FILE_NOT_FOUND = -6
 
-const getPath = async path => {
+const getPath = async (path) => {
   try {
     const result = await stat(path)
 
@@ -47,7 +46,7 @@ const getPath = async path => {
   } catch (_) {}
 }
 
-export default function({ directory }) {
+export default function ({ directory }) {
   const handler = async (request, callback) => {
     const indexPath = join(directory, 'index.html')
     const filePath = join(
@@ -59,7 +58,7 @@ export default function({ directory }) {
     if (resolvedPath || !extname(filePath) || extname(filePath) === '.html') {
       callback({
         statusCode: 200,
-        data: fs.createReadStream(resolvedPath || indexPath),
+        data: createReadStream(resolvedPath || indexPath),
       })
     } else {
       callback({
@@ -68,7 +67,7 @@ export default function({ directory }) {
     }
   }
 
-  electron.protocol.registerSchemesAsPrivileged([
+  protocol.registerSchemesAsPrivileged([
     {
       scheme: 'resourcesco',
       privileges: {
@@ -81,14 +80,14 @@ export default function({ directory }) {
     },
   ])
 
-  electron.app.on('ready', () => {
-    electron.session.defaultSession.protocol.registerStreamProtocol(
+  app.on('ready', () => {
+    session.defaultSession.protocol.registerStreamProtocol(
       'resourcesco',
       handler
     )
   })
 
-  return async window_ => {
+  return async (window_) => {
     await window_.loadURL(`resourcesco://workspace.local`)
   }
 }

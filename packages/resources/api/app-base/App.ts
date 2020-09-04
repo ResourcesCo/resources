@@ -1,8 +1,8 @@
 import { match } from 'path-to-regexp'
-import mapValues from 'lodash/mapValues'
+import { mapValues } from 'lodash'
 import request from './request'
 import helpMessage from './helpMessage'
-import ConsoleChannel from 'api/channel/ConsoleChannel'
+import ConsoleChannel from '../channel/ConsoleChannel'
 import expandRoot from './util/message/expandRoot'
 
 export interface Message {
@@ -124,7 +124,7 @@ export default class App {
       ({ routes, actions, ...props }, name) => ({
         name,
         ...props,
-        routes: routes.map(route => ({ ...route, match: match(route.path) })),
+        routes: routes.map((route) => ({ ...route, match: match(route.path) })),
         actions: mapValues(actions, (action, name) => ({ name, ...action })),
       })
     )
@@ -195,7 +195,7 @@ export default class App {
 
   matchParams({ match, action, params }) {
     const { any: discard, ...actionParams } = match.params
-    const optionalParams = action.params.filter(param => param.endsWith('?'))
+    const optionalParams = action.params.filter((param) => param.endsWith('?'))
       .length
     const minParams = action.params.length - optionalParams
     const maxParams = action.params.length
@@ -238,7 +238,7 @@ export default class App {
       action === 'help' && !this.resourceTypes[resourceType]?.actions?.help
         ? this.help
         : this.onRun
-    const handleMessage = message => {
+    const handleMessage = (message) => {
       onMessage(this.prepareMessage(message))
     }
     const result = await handler({
@@ -254,7 +254,7 @@ export default class App {
       channel: this.channel,
     })
     return Array.isArray(result)
-      ? result.map(message => this.prepareMessage(message))
+      ? result.map((message) => this.prepareMessage(message))
       : this.prepareMessage(result)
   }
 

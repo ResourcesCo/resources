@@ -1,10 +1,7 @@
 import React, { PureComponent, FocusEventHandler, ComponentType } from 'react'
 import Head from 'next/head'
 import insertTextAtCursor from 'insert-text-at-cursor'
-import pick from 'lodash/pick'
-import pickBy from 'lodash/pickBy'
-import identity from 'lodash/identity'
-import getNested from 'lodash/get'
+import { pick, pickBy, identity, get as getNested } from 'lodash'
 import {
   parseCommand,
   updateTree,
@@ -55,7 +52,7 @@ class MessageList extends PureComponent<MessageListProps> {
       <div className="messages-scroll">
         <div className="messages">
           {messages
-            .filter(m => typeof m === 'object' && !!m)
+            .filter((m) => typeof m === 'object' && !!m)
             .map((message, i) => (
               <div
                 className={`chat-message ${
@@ -137,7 +134,10 @@ export default class ChannelView extends PureComponent<
   }
 
   setCommandLoading(c, loading) {
-    return { ...c, messages: c.messages.map(m => this.setLoading(m, loading)) }
+    return {
+      ...c,
+      messages: c.messages.map((m) => this.setLoading(m, loading)),
+    }
   }
 
   setLoading(m, loading) {
@@ -160,7 +160,7 @@ export default class ChannelView extends PureComponent<
 
   componentWillUnmount() {}
 
-  addMessages = messageOrArray => {
+  addMessages = (messageOrArray) => {
     let { commandIds, commands } = this.state
     let clear = false
     let loadedMessage = undefined
@@ -174,7 +174,7 @@ export default class ChannelView extends PureComponent<
         if (commands[message.commandId]) {
           commands[message.commandId] = {
             ...command,
-            messages: command.messages.map(m => this.setLoading(m, false)),
+            messages: command.messages.map((m) => this.setLoading(m, false)),
           }
         }
       } else if (message.type === 'clear') {
@@ -185,7 +185,7 @@ export default class ChannelView extends PureComponent<
         scrollToBottom = false
         const treeCommand = commands[message.parentCommandId]
         const treeMessage = treeCommand.messages.find(
-          message => message.type === 'tree'
+          (message) => message.type === 'tree'
         )
         let updates
         if (message.type === 'tree-update') {
@@ -208,8 +208,8 @@ export default class ChannelView extends PureComponent<
         commands[message.parentCommandId] = {
           ...treeCommand,
           messages: treeCommand.messages
-            .map(m => this.setLoading(m, Boolean(message.loading)))
-            .map(message =>
+            .map((m) => this.setLoading(m, Boolean(message.loading)))
+            .map((message) =>
               message.type === 'tree' ? updatedTreeMessage : message
             ),
         }
@@ -217,7 +217,7 @@ export default class ChannelView extends PureComponent<
         const formCommand = commands[message.parentCommandId]
         if (formCommand) {
           let commandMessages = formCommand.messages
-            .map(m => this.setLoading(m, !!message.loading))
+            .map((m) => this.setLoading(m, !!message.loading))
             .filter(({ type }) => type !== 'form-status')
           const formStatusMessage = {
             ...message,
@@ -234,7 +234,7 @@ export default class ChannelView extends PureComponent<
         if (message.type === 'message-get') {
           const treeCommand = commands[message.parentCommandId]
           const treeMessage = treeCommand.messages.find(
-            message => message.type === 'tree'
+            (message) => message.type === 'tree'
           )
           newMessage = {
             ...message,
@@ -285,7 +285,7 @@ export default class ChannelView extends PureComponent<
     this.setMessageState({ messageIds: commandIds, messages: commands })
   }
 
-  send = async bigMessage => {
+  send = async (bigMessage) => {
     const { channel } = this.props
     const message = bigMessage ? bigMessage : this.state.text
     const parsed = parseCommand(message)
@@ -311,7 +311,7 @@ export default class ChannelView extends PureComponent<
     this.setState({ text })
   }
 
-  handlePickId = id => {
+  handlePickId = (id) => {
     const el = this.textareaRef.current
     insertTextAtCursor(el, `${id}`)
     el.focus()
@@ -322,7 +322,7 @@ export default class ChannelView extends PureComponent<
     const { commands } = this.state
     const parentMessage = (
       getNested(commands, [commandId, 'messages']) || []
-    ).filter(message => message.type === 'tree')[0]
+    ).filter((message) => message.type === 'tree')[0]
     const parsed = parseCommand(message)
     await channel.runCommand({
       message,
@@ -334,7 +334,7 @@ export default class ChannelView extends PureComponent<
     })
   }
 
-  handleAddMessage = message => {
+  handleAddMessage = (message) => {
     this.addMessages([message])
   }
 

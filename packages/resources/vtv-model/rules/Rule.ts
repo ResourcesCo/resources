@@ -1,8 +1,7 @@
 import { match, MatchFunction } from 'path-to-regexp'
-import mapValues from 'lodash/mapValues'
+import { mapValues, get as getNested } from 'lodash'
 import { JsonPointer } from 'json-ptr'
 import { compile, PathFunction } from 'path-to-regexp'
-import getNested from 'lodash/get'
 
 // example:
 // {
@@ -35,7 +34,7 @@ export class RelativeLink {
     params: { [key: string]: string }
     url: string
   }) {
-    this.params = mapValues(params, value => {
+    this.params = mapValues(params, (value) => {
       const match = /^\d+/.exec(value)
       return {
         up: match && Number(match[0]),
@@ -181,17 +180,17 @@ export default class RuleSet {
     this.name = name
     this.sel = sel
     if (inline) {
-      this.inline = inline.map(item =>
+      this.inline = inline.map((item) =>
         item.type === 'action'
           ? new ActionLink(item)
           : new NodeView({ showLabel: true, ...item })
       )
     }
-    this.matchers = (Array.isArray(sel) ? sel : [sel]).map(sel => match(sel))
+    this.matchers = (Array.isArray(sel) ? sel : [sel]).map((sel) => match(sel))
   }
 
   // test if it matches the path
   match(pointer: string) {
-    return this.matchers.some(matcher => matcher(pointer))
+    return this.matchers.some((matcher) => matcher(pointer))
   }
 }

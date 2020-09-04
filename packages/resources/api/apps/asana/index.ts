@@ -1,4 +1,4 @@
-import clone from 'lodash/cloneDeep'
+import { cloneDeep as clone } from 'lodash'
 import { AppSpec } from '../../app-base/App'
 import { ok, replaceEnv } from '../../app-base/request'
 import camelCase from '../../app-base/util/string/camelCase'
@@ -187,7 +187,7 @@ const actions = {
         headers: { Authorization: `Bearer ${apiToken}` },
       }
       const response = await request(req)
-      const output = response.body.data.filter(task => !task.completed)
+      const output = response.body.data.filter((task) => !task.completed)
       if (ok(response)) {
         return {
           type: 'tree',

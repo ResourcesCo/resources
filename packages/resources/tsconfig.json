@@ -13,8 +13,10 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "inlineSourceMap": true,
+    "inlineSources": true
   },
-  "exclude": ["node_modules", "packages", "scripts"],
+  "exclude": ["node_modules", "scripts"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
 }

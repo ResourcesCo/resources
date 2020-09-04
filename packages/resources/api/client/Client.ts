@@ -84,7 +84,7 @@ export default class Client {
     const response = await fetch(request.url, fetchInfo)
     const body = await response.json()
     const headers = {}
-    for (const [key, value] of response.headers.entries()) {
+    for (const [key, value] of Object.entries(response.headers)) {
       if (!(key in headers)) {
         headers[key] = value
       }

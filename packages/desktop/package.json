@@ -2,18 +2,11 @@
   "name": "@resources/desktop",
   "version": "0.1.0",
   "description": "Resources.co Desktop App",
-  "main": "./main/index.js",
+  "main": "./main/main.js",
   "type": "commonjs",
   "scripts": {
     "make": "electron-forge make",
-    "package": "electron-forge package",
-    "start": "yarn main:import && yarn main:build && yarn renderer:build && yarn renderer:import && yarn electron:start",
-    "main:import": "rm -rf ./src/api ./src/vtv-model && cp -r ../../api ./src/api && cp -r ../../vtv-model ./src/vtv-model",
-    "main:build": "tsc",
-    "main:watch": "tsc -w",
-    "renderer:build": "cd ../.. && yarn electron-renderer:build && yarn electron-renderer:export",
-    "renderer:import": "rm -rf ./renderer && cp -r ../../dist/packages/resources/exported ./renderer",
-    "electron:start": "electron-forge start"
+    "start": "electron-forge start"
   },
   "keywords": [],
   "author": {
@@ -29,8 +22,15 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.53",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.53",
+    "@electron-forge/maker-zip": "^6.0.0-beta.53",
+    "electron": "^10.1.1"
+  },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
+    "tslib": "^2.0.1",
     "immer": "^7.0.8",
     "isomorphic-unfetch": "^3.0.0",
     "j2ref": "^1.0.0",
@@ -39,15 +39,5 @@
     "nanoevents": "^5.1.8",
     "nanoid": "^3.1.12",
     "path-to-regexp": "^6.1.0"
-  },
-  "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.53",
-    "@electron-forge/maker-zip": "^6.0.0-beta.53",
-    "@types/node": "14.6.2",
-    "concurrently": "^5.1.0",
-    "electron": "^10.1.1",
-    "electron-reloader": "^1.0.1",
-    "prettier": "^2.1.1",
-    "typescript": "^4.0.2"
   }
 }

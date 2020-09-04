@@ -1,4 +1,4 @@
-import clone from 'lodash/cloneDeep'
+import { cloneDeep as clone } from 'lodash'
 import { AppSpec } from '../../app-base/App'
 import { ok, replaceEnv } from '../../app-base/request'
 import camelCase from '../../app-base/util/string/camelCase'

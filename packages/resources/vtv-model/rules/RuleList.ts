@@ -14,7 +14,7 @@
 //   },
 // },
 
-import mapValues from 'lodash/mapValues'
+import { mapValues } from 'lodash'
 import { encodePointer } from 'json-ptr'
 import Rule, { RuleSpec } from './Rule'
 
@@ -32,6 +32,6 @@ export default class RuleList {
   // return matching declarations for a path
   match(path: string[]) {
     const pointer = encodePointer(path)
-    return Object.values(this.rules).filter(rule => rule.match(pointer))
+    return Object.values(this.rules).filter((rule) => rule.match(pointer))
   }
 }

@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
-import path from 'path'
+import * as path from 'path'
 import serve from './serve'
 import Ipc from './ipc'
 
@@ -7,10 +7,6 @@ import Ipc from './ipc'
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1'
 
 app.allowRendererProcessReuse = true
-
-if (!app.isPackaged) {
-  require('electron-reloader')(module, { ignore: ['packages'] })
-}
 
 const loadURL = serve({ directory: path.resolve(__dirname, '..', 'renderer') })
 
