@@ -1,6 +1,6 @@
 {
   "name": "@resources/desktop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Resources.co Desktop App",
   "main": "./main/main.js",
   "type": "commonjs",
@@ -29,8 +29,6 @@
     "electron": "^10.1.1"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0",
-    "tslib": "^2.0.1",
     "immer": "^7.0.8",
     "isomorphic-unfetch": "^3.0.0",
     "j2ref": "^1.0.0",
@@ -38,6 +36,7 @@
     "lodash": "^4.17.19",
     "nanoevents": "^5.1.8",
     "nanoid": "^3.1.12",
-    "path-to-regexp": "^6.1.0"
+    "path-to-regexp": "^6.1.0",
+    "tslib": "^2.0.1"
   }
 }

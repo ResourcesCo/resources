@@ -49,7 +49,7 @@ export default class ChannelViewPage extends PureComponent<
     this.setState({ loaded: true })
   }
 
-  handleThemeChange = async theme => {
+  handleThemeChange = async (theme) => {
     this.setState({ theme })
     this.workspace.theme = theme
     this.setCachedTheme(theme)
@@ -72,12 +72,13 @@ export default class ChannelViewPage extends PureComponent<
 
   render() {
     const { storageType, ...props } = this.props
+    const { loaded } = this.state
     const themeName = this.state.theme
     const theme = getTheme(themeName)
     return (
       <>
         <Head title="Resources.co" theme={theme} />
-        {this.state.loaded && (
+        {loaded && (
           <ChannelView
             theme={theme}
             store={this.store}

@@ -1,6 +1,6 @@
 {
-  "name": "resources",
-  "version": "0.0.0",
+  "name": "@resources/resources-workspace",
+  "version": "0.1.1",
   "license": "MIT",
   "scripts": {
     "nx": "nx",
@@ -31,10 +31,16 @@
     "dev:embed-proxy": "PORT=3333 PROXY_PORT=3335 ts-node --compiler-options '{\"module\": \"commonjs\"}' packages/resources/scripts/proxy.ts",
     "electron-renderer:build": "NEXT_PUBLIC_ELECTRON=true nx build resources",
     "electron-renderer:export": "NEXT_PUBLIC_ELECTRON=true nx export resources",
-    "desktop:build": "yarn electron-renderer:build && yarn electron-renderer:export && yarn desktop:renderer:import && yarn desktop:main:import && yarn desktop:main:build",
     "desktop:renderer:import": "rm -rf ./packages/desktop/renderer && cp -r dist/packages/resources/exported ./packages/desktop/renderer",
     "desktop:main:import": "rm -rf ./packages/desktop/src/api ./packages/desktop/src/vtv-model && cp -r ./packages/resources/api ./packages/desktop/src/api && cp -r ./packages/resources/vtv-model ./packages/desktop/src/vtv-model",
-    "desktop:main:build": "rm -rf ./packages/desktop/main && nx run desktop:build && cp -r dist/packages/desktop packages/desktop/main && yarn tsc packages/desktop/src/preload.ts --outFile packages/desktop/main/preload.js --target es2020 --moduleResolution node"
+    "desktop:mainjs:build": "tsc packages/desktop/src/main.ts --outDir packages/desktop/main --target es2020 --moduleResolution node --module commonjs",
+    "desktop:preload:build": "tsc packages/desktop/src/preload.ts --outFile packages/desktop/main/preload.js --target es2020 --moduleResolution node",
+    "desktop:main:build": "rm -rf ./packages/desktop/main && yarn desktop:mainjs:build && yarn desktop:preload:build",
+    "desktop:electron:start": "cd ./packages/desktop && yarn start",
+    "desktop:electron:make": "cd ./packages/desktop && yarn make",
+    "desktop:build-all": "yarn electron-renderer:build && yarn electron-renderer:export && yarn desktop:renderer:import && yarn desktop:main:import && yarn desktop:main:build",
+    "desktop:start": "yarn desktop:build-all && yarn desktop:electron:start",
+    "desktop:make": "yarn desktop:build-all && yarn desktop:electron:make"
   },
   "private": true,
   "dependencies": {
