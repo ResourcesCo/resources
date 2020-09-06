@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-unfetch'
 import headerCase from './util/string/headerCase'
 import { produce } from 'immer'
-import { joinPath } from '../../vtv-model'
+import { joinPath } from 'vtv-model'
 
 export function ok(response) {
   return response.status >= 200 && response.status < 300
@@ -19,7 +19,7 @@ function replaceEnvInString(str, env) {
 }
 
 export function replaceEnv(request, env) {
-  return produce(request, request => {
+  return produce(request, (request) => {
     request.url = replaceEnvInString(request.url, env)
     const headers = request.headers
     if (headers) {

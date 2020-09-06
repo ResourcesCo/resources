@@ -2,17 +2,13 @@ import React, { PureComponent, FocusEventHandler, ComponentType } from 'react'
 import Head from 'next/head'
 import insertTextAtCursor from 'insert-text-at-cursor'
 import { pick, pickBy, identity, get as getNested } from 'lodash'
-import {
-  parseCommand,
-  updateTree,
-  removeTemporaryState,
-} from '../../../vtv-model'
+import { parseCommand, updateTree, removeTemporaryState } from 'vtv-model'
 import Message from '../messages/Message'
 import ChannelInput from './ChannelInput'
 import { Theme } from 'vtv'
 import ConsoleCommand from 'api/channel/ConsoleCommand'
 import ConsoleChannel from 'api/channel/ConsoleChannel'
-import { MemoryStore, LocalStorageStore } from 'console/store'
+import { MemoryStore, LocalStorageStore } from '../../store'
 
 interface MessageListProps {
   commands: { [key: string]: ConsoleCommand }

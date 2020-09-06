@@ -1,5 +1,5 @@
 import ConsoleWorkspace from '../../../../api/workspace/ConsoleWorkspace'
-import { parseCommand } from '../../../../vtv-model/parse'
+import { parseCommand } from 'vtv-model'
 
 export default async function asana() {
   const workspace = await ConsoleWorkspace.getWorkspace()

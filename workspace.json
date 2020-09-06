@@ -44,10 +44,7 @@
               "packages/resources/tsconfig.json",
               "packages/resources/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**",
-              "!packages/resources/**/*"
-            ]
+            "exclude": ["**/node_modules/**", "!packages/resources/**/*"]
           }
         },
         "test": {
@@ -82,13 +79,8 @@
           "builder": "@nrwl/linter:lint",
           "options": {
             "linter": "eslint",
-            "tsConfig": [
-              "packages/resources-e2e/tsconfig.e2e.json"
-            ],
-            "exclude": [
-              "**/node_modules/**",
-              "!packages/resources-e2e/**/*"
-            ]
+            "tsConfig": ["packages/resources-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!packages/resources-e2e/**/*"]
           }
         }
       }
@@ -107,10 +99,7 @@
               "packages/vtv-model/tsconfig.lib.json",
               "packages/vtv-model/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**",
-              "!packages/vtv-model/**/*"
-            ]
+            "exclude": ["**/node_modules/**", "!packages/vtv-model/**/*"]
           }
         },
         "test": {
@@ -119,6 +108,16 @@
             "jestConfig": "packages/vtv-model/jest.config.js",
             "tsConfig": "packages/vtv-model/tsconfig.spec.json",
             "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/vtv-model",
+            "tsConfig": "packages/vtv-model/tsconfig.lib.json",
+            "packageJson": "packages/vtv-model/package.json",
+            "main": "packages/vtv-model/src/index.ts",
+            "assets": ["packages/vtv-model/*.md"]
           }
         }
       }
@@ -136,9 +135,7 @@
             "outputPath": "dist/packages/desktop",
             "main": "packages/desktop/src/main.ts",
             "tsConfig": "packages/desktop/tsconfig.app.json",
-            "assets": [
-              "packages/desktop/src/assets"
-            ]
+            "assets": ["packages/desktop/src/assets"]
           },
           "configurations": {
             "production": {
@@ -168,10 +165,7 @@
               "packages/desktop/tsconfig.app.json",
               "packages/desktop/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**",
-              "!packages/desktop/**/*"
-            ]
+            "exclude": ["**/node_modules/**", "!packages/desktop/**/*"]
           }
         },
         "test": {

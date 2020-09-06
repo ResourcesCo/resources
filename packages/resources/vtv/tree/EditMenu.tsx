@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Menu, { MenuItem, Separator } from '../generic/Menu'
 
-import { getStateKey } from '../../vtv-model/state'
+import { getStateKey } from 'vtv-model'
 
 function EditMenu({
   name,

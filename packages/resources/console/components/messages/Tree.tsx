@@ -1,5 +1,5 @@
 import View from '../../../vtv'
-import { joinPath, State } from '../../../vtv-model'
+import { joinPath, State } from 'vtv-model'
 import { FunctionComponent } from 'react'
 
 interface TreeProps {
@@ -32,7 +32,7 @@ const Tree: FunctionComponent<TreeProps> = ({
     })
   }
 
-  const handlePickId = pathOrString => {
+  const handlePickId = (pathOrString) => {
     if (typeof pathOrString === 'string') {
       onPickId(pathOrString)
     } else {
@@ -49,7 +49,7 @@ const Tree: FunctionComponent<TreeProps> = ({
         rules={rules}
         theme={theme}
         onChange={onChange}
-        onAction={m => onSubmitForm({ commandId, message, formData: m })}
+        onAction={(m) => onSubmitForm({ commandId, message, formData: m })}
         onPickId={handlePickId}
         codeMirrorComponent={codeMirrorComponent}
       />

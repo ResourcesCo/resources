@@ -1,4 +1,4 @@
-import RuleList from 'vtv-model/rules/RuleList'
+import { RuleList } from 'vtv-model'
 import Clipboard from './util/Clipboard'
 import { ComponentType } from 'react'
 import View from './View'

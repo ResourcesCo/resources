@@ -1,6 +1,6 @@
 import { AppSpec } from '../../app-base/App'
 import { cloneDeep as clone } from 'lodash'
-import { getPaths, splitPath, joinPath, parseCommand } from '../../../vtv-model'
+import { getPaths, splitPath, joinPath, parseCommand } from 'vtv-model'
 
 const functions = { getPaths, splitPath, joinPath, parseCommand }
 const functionInfo = [

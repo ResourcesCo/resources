@@ -16,7 +16,11 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "vtv-model": ["packages/vtv-model/src/index.ts"]
+      "vtv-model": ["packages/vtv-model/src/index.ts"],
+      "vtv": ["packages/resources/vtv/index.ts"],
+      "vtv/*": ["packages/resources/vtv/*"],
+      "api": ["packages/resources/api/index.ts"],
+      "api/*": ["packages/resources/api/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

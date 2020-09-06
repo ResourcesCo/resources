@@ -1,11 +1,11 @@
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import EmbedPage from 'console/components/channel/EmbedPage'
+import EmbedPage from '../../console/components/channel/EmbedPage'
 import { useState } from 'react'
 import ConsoleChannel from 'api/channel/ConsoleChannel'
 import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
 
-const CodeMirror = dynamic(() => import('components/CodeMirror'), {
+const CodeMirror = dynamic(() => import('../../components/CodeMirror'), {
   ssr: false,
 })
 

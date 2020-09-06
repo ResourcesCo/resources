@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types'
-import { getState } from '../../vtv-model/state'
 import InlineValue from './InlineValue'
 import Link from './Link'
 import CollectionSummary from './CollectionSummary'
 import AttachmentView from './AttachmentView'
-import { isUrl } from '../../vtv-model/analyze'
+import { isUrl, getState } from 'vtv-model'
 
 function ValueInlineContent({
   name,

@@ -1,9 +1,12 @@
 import React from 'react'
-import { getCollectionPaths, joinPath } from '../../vtv-model/analyze'
-import { getNestedState } from '../../vtv-model/state'
+import {
+  getCollectionPaths,
+  joinPath,
+  getChildState,
+  getNestedState,
+  getNodeInfo,
+} from 'vtv-model'
 import { get as getNested } from 'lodash'
-import { getChildState } from '../../vtv-model'
-import { getNodeInfo } from '../../vtv-model/analyze'
 import ValueInlineContent from '../content/ValueInlineContent'
 import RowHeaderView from './RowHeaderView'
 import ColumnHeaderView from './ColumnHeaderView'

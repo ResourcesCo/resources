@@ -1,7 +1,6 @@
 import Menu, { MenuItem, Separator } from '../generic/Menu'
-import { hasChildren as hasChildrenFn, isUrl } from '../../vtv-model/analyze'
+import { hasChildren as hasChildrenFn, isUrl, codeTypes } from 'vtv-model'
 import defaultViewFn from '../util/defaultView'
-import { codeTypes } from '../../vtv-model/constants'
 
 const labels = {
   tree: 'Tree',
@@ -98,7 +97,7 @@ function ShowHiddenMenu({
       context={context}
       {...props}
     >
-      {hiddenKeys.map(key => (
+      {hiddenKeys.map((key) => (
         <MenuItem
           key={key}
           onClick={() =>
@@ -142,7 +141,7 @@ export default function ViewMenu({
   context,
   ...props
 }) {
-  const setView = view => {
+  const setView = (view) => {
     onMessage({
       path,
       action: 'setView',
@@ -180,7 +179,7 @@ export default function ViewMenu({
       >
         Default ({labels[defaultView]})
       </MenuItem>
-      {availableViews.map(key => {
+      {availableViews.map((key) => {
         if (key === 'table' && !hasChildren) {
           return null
         } else if (key === 'code') {

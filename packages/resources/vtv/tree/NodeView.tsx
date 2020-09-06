@@ -2,8 +2,14 @@ import React, { useState, useRef, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { get as getNested } from 'lodash'
 import scrollIntoView from 'scroll-into-view-if-needed'
-import { getState, getChildState, getNestedState } from '../../vtv-model/state'
-import { joinPath, isObject, getNodeInfo } from '../../vtv-model/analyze'
+import {
+  getState,
+  getChildState,
+  getNestedState,
+  joinPath,
+  isObject,
+  getNodeInfo,
+} from 'vtv-model'
 import ExpandButton from './ExpandButton'
 import NodeNameView from './NodeNameView'
 import InlineContent from '../content/InlineContent'

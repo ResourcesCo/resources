@@ -1,4 +1,4 @@
-import { getNodeType, joinPath } from '../../vtv-model/analyze'
+import { getNodeType, joinPath } from 'vtv-model'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import { sanitizeUrl } from '@braintree/sanitize-url'

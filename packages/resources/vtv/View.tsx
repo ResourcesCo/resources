@@ -1,9 +1,8 @@
 import React from 'react'
-import { updateTree } from '../vtv-model/state'
 import { getTheme } from './themes'
 import NodeView from './tree/NodeView'
 import Clipboard from './util/Clipboard'
-import RuleList from '../vtv-model/rules/RuleList'
+import { RuleList, updateTree } from 'vtv-model'
 import { Context } from 'vtv'
 
 const defaultClipboard = new Clipboard()
@@ -20,7 +19,7 @@ export default function View({
   state = {},
   rules = {},
 }) {
-  const onMessage = message => {
+  const onMessage = (message) => {
     if (message.action === 'runAction') {
       if (typeof onAction === 'function') {
         onAction(message)

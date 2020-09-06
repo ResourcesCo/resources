@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
-import { parseCommand } from '../vtv-model'
+import { parseCommand } from 'vtv-model'
 
 async function runTests() {
   const workspace = await ConsoleWorkspace.getWorkspace()
   const channel = await workspace.getChannel('general')
   const message = 'https://example.com/'
   const receivedMessages = []
-  const onMessage = message => {
+  const onMessage = (message) => {
     receivedMessages.push(message)
   }
   const result = await channel.runCommand({
@@ -25,7 +25,7 @@ async function runTests() {
 export default ({}) => {
   const [result, setResult] = useState('not completed')
   useEffect(() => {
-    runTests().then(result => {
+    runTests().then((result) => {
       setResult(JSON.stringify(result))
     })
   }, [])

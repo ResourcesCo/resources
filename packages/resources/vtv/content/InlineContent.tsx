@@ -2,7 +2,7 @@ import ValueInlineContent from './ValueInlineContent'
 import InlineNodeView from './InlineNodeView'
 import ActionButton from './ActionButton'
 import { get as getNested } from 'lodash'
-import { getNestedState } from '../../vtv-model/state'
+import { getNestedState } from 'vtv-model'
 
 export default function InlineContent({
   name,

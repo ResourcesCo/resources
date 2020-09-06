@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import ActionButton from '../generic/ActionButton'
-import { codeTypes } from '../../vtv-model/constants'
+import { codeTypes } from 'vtv-model'
 
 function getMode({ editMode, mediaType }) {
   if (editMode === 'json') {
@@ -66,7 +66,7 @@ export default function CodeView({
     onMessage({ path, state: { _expanded: false } })
   }
 
-  const validate = value => {
+  const validate = (value) => {
     if (editMode === 'json') {
       let valid = true
       try {
@@ -93,7 +93,7 @@ export default function CodeView({
           <CodeMirror
             value={initialValue}
             onChange={() => setEditing(true)}
-            editorDidMount={editor => setEditor(editor)}
+            editorDidMount={(editor) => setEditor(editor)}
             editorWillUnmount={() => setEditor(null)}
             options={{
               theme: theme.codeTheme,
