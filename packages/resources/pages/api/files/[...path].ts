@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { isObject } from 'lodash'
 import ConsoleError from 'api/ConsoleError'
 import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
 import LocalFileStore from 'api/storage/LocalFileStore'
-import { isObject } from 'vtv-model'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const {

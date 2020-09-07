@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { isBasicType } from 'vtv-model'
 import InsertMenu from './InsertMenu'
 import ViewMenu from './ViewMenu'
 import EditMenu from './EditMenu'

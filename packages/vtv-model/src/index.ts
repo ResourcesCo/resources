@@ -4,11 +4,9 @@ export {
   joinPath,
   getNodeType,
   getNodeInfo,
-  isObject,
   getCollectionPaths,
   hasChildren,
   isUrl,
-  isBasicType,
 } from "./analyze";
 export { parseCommand } from "./parse";
 export {
