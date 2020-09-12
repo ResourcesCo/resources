@@ -1,0 +1,199 @@
+{
+  "version": 1,
+  "projects": {
+    "resources": {
+      "root": "packages/resources",
+      "sourceRoot": "packages/resources",
+      "projectType": "application",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/next:build",
+          "options": {
+            "root": "packages/resources",
+            "outputPath": "dist/packages/resources"
+          },
+          "configurations": {
+            "production": {}
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/next:server",
+          "options": {
+            "buildTarget": "resources:build",
+            "dev": true
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "resources:build:production",
+              "dev": false
+            }
+          }
+        },
+        "export": {
+          "builder": "@nrwl/next:export",
+          "options": {
+            "buildTarget": "resources:build:production"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "packages/resources/tsconfig.json",
+              "packages/resources/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!packages/resources/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/resources/jest.config.js",
+            "tsConfig": "packages/resources/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "resources-e2e": {
+      "root": "packages/resources-e2e",
+      "sourceRoot": "packages/resources-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "packages/resources-e2e/cypress.json",
+            "tsConfig": "packages/resources-e2e/tsconfig.e2e.json",
+            "devServerTarget": "resources:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "resources:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": ["packages/resources-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!packages/resources-e2e/**/*"]
+          }
+        }
+      }
+    },
+    "vtv-model": {
+      "root": "packages/vtv-model",
+      "sourceRoot": "packages/vtv-model/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "packages/vtv-model/tsconfig.lib.json",
+              "packages/vtv-model/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!packages/vtv-model/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/vtv-model/jest.config.js",
+            "tsConfig": "packages/vtv-model/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/vtv-model",
+            "tsConfig": "packages/vtv-model/tsconfig.lib.json",
+            "packageJson": "packages/vtv-model/package.json",
+            "main": "packages/vtv-model/src/index.ts",
+            "assets": ["packages/vtv-model/*.md"]
+          }
+        }
+      }
+    },
+    "desktop": {
+      "root": "packages/desktop",
+      "sourceRoot": "packages/desktop/src",
+      "projectType": "application",
+      "prefix": "desktop",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/packages/desktop",
+            "main": "packages/desktop/src/main.ts",
+            "tsConfig": "packages/desktop/tsconfig.app.json",
+            "assets": ["packages/desktop/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "packages/desktop/src/environments/environment.ts",
+                  "with": "packages/desktop/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "desktop:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "packages/desktop/tsconfig.app.json",
+              "packages/desktop/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!packages/desktop/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/desktop/jest.config.js",
+            "tsConfig": "packages/desktop/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/next"
+  },
+  "schematics": {
+    "@nrwl/react": {
+      "application": {
+        "babel": true
+      }
+    },
+    "@nrwl/next": {
+      "application": {
+        "style": "styled-jsx",
+        "linter": "eslint"
+      }
+    }
+  },
+  "defaultProject": "resources"
+}
