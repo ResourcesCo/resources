@@ -1,5 +1,7 @@
 # resources.co - a web console
 
+[![pipeline status](https://gitlab.com/ResourcesCo/resources/badges/develop/pipeline.svg)](https://gitlab.com/ResourcesCo/resources/-/pipelines)
+
 ![brief screencast](https://gh-media.resources.co/resourcesco-butterfly-demo-2.gif)
 
 ## web app
