@@ -1,3 +1,4 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import InlineValue from './InlineValue'
 import Link from './Link'

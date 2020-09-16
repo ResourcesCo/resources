@@ -1,3 +1,4 @@
+import React from 'react'
 import Menu, { MenuItem, Separator } from '../generic/Menu'
 import { hasChildren as hasChildrenFn, isUrl, codeTypes } from 'vtv-model'
 import defaultViewFn from '../util/defaultView'

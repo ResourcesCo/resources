@@ -1,4 +1,4 @@
-import View from '../../../vtv'
+import View from 'vtv'
 import { joinPath, State } from 'vtv-model'
 import { FunctionComponent } from 'react'
 

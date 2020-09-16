@@ -23,4 +23,9 @@ test_e2e:
 test_vtv_model:
   script:
     - yarn install
-    - yarn nx 
+    - yarn nx test vtv-model
+
+test_vtv:
+  script:
+    - yarn install
+    - yarn nx test vtv

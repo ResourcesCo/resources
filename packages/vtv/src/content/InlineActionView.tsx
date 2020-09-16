@@ -1,3 +1,4 @@
+import React from 'react'
 import ActionButton from '../generic/ActionButton'
 
 function InlineActionView({

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Manager, Reference } from 'react-popper'
 import NodeMenu from '../tree/NodeMenu'
 import NameButton from '../generic/NameButton'
