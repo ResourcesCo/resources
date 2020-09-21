@@ -42,11 +42,11 @@ export function getNodeInfo(value, state) {
     stringType = getStringType(value);
     isExpandable =
       stringType !== "inline" ||
-      ["text", "code", "image"].includes(state._view);
+      ["text", "code", "image"].includes(state.view);
     if (isExpandable) {
       mediaType =
-        typeof state._mediaType === "string"
-          ? state._mediaType
+        typeof state.mediaType === "string"
+          ? state.mediaType
           : getMediaType(value);
     }
   }

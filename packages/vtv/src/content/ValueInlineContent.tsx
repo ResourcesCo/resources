@@ -4,7 +4,7 @@ import InlineValue from './InlineValue'
 import Link from './Link'
 import CollectionSummary from './CollectionSummary'
 import AttachmentView from './AttachmentView'
-import { isUrl, getState } from 'vtv-model'
+import { isUrl, getNodeState } from 'vtv-model'
 
 function ValueInlineContent({
   name,
@@ -19,11 +19,11 @@ function ValueInlineContent({
   context,
 }) {
   const {
-    _editingName: editingName,
-    _editing: editing,
-    _attachments: attachments,
-    _error: error,
-  } = getState(state)
+    editingName,
+    editing,
+    attachments,
+    error,
+  } = getNodeState(state)
 
   const autoEdit =
     nodeType === 'string' && stringType !== 'inline' ? false : autoEditParam
