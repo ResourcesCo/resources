@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { get as getNested, isObject } from 'lodash'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import {
-  getState,
+  getNodeState,
   getChildState,
   getNestedState,
   joinPath,
@@ -33,13 +33,13 @@ function NodeView({
 }) {
   const [viewChanged, setViewChanged] = useState(false)
 
-  const state = getState(_state)
+  const state = getNodeState(_state)
   const {
-    _expanded: expanded,
-    _showOnly: showOnly,
-    _editingName: editingName,
-    _actions: actions,
-    _hidden: hidden,
+    expanded,
+    showOnly,
+    editingName,
+    actions,
+    hidden,
   } = state
   const toggleExpanded = () => {
     setViewChanged(true)
@@ -52,7 +52,7 @@ function NodeView({
     value,
     state
   )
-  const view = state._view || defaultView({ nodeType, stringType, mediaType })
+  const view = state.view || defaultView({ nodeType, stringType, mediaType })
 
   useEffect(() => {
     if (viewChanged && expanded && scrollRef.current) {
@@ -77,10 +77,10 @@ function NodeView({
     const showOnlyParentPath = showOnly.slice(0, showOnly.length - 1)
     const { nodeType: showOnlyParentType } = getNodeInfo(
       getNested(value, showOnlyParentPath),
-      getNestedState(state, showOnlyParentPath)
+      getNestedState(_state, showOnlyParentPath)
     )
     const showOnlyValue = getNested(value, showOnly)
-    const showOnlyState = getNestedState(state, showOnly)
+    const showOnlyState = getNestedState(_state, showOnly)
 
     return (
       <NodeView
@@ -207,7 +207,7 @@ function NodeView({
                     key={key}
                     name={key}
                     value={value[key]}
-                    state={getChildState(state, key)}
+                    state={getChildState(_state, key)}
                     path={[...path, key]}
                     showOnlyPath={showOnlyPath}
                     context={context}

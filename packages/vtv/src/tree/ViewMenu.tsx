@@ -1,5 +1,6 @@
+import React from 'react'
 import Menu, { MenuItem, Separator } from '../generic/Menu'
-import { hasChildren as hasChildrenFn, isUrl, codeTypes } from 'vtv-model'
+import { getNodeState, hasChildren as hasChildrenFn, isUrl, codeTypes } from 'vtv-model'
 import defaultViewFn from '../util/defaultView'
 
 const labels = {
@@ -149,7 +150,7 @@ export default function ViewMenu({
     })
     onViewChanged()
   }
-  const { _view: view } = state
+  const { view } = getNodeState(state)
   const defaultView = defaultViewFn({ nodeType, stringType, mediaType })
   const hasChildren = hasChildrenFn(value)
   const availableViews = getAvailableViews({

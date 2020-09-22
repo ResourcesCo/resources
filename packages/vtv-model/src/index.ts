@@ -16,6 +16,7 @@ export {
   removeTemporaryState,
   getChildState,
   getNestedState,
+  getNodeState,
   draftState,
 } from "./state";
 export { codeTypes } from "./constants";

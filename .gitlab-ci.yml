@@ -1,7 +1,7 @@
 # This file is a template, and might need editing before it works on your project.
 # Official framework image. Look for the different tagged releases at:
 # https://hub.docker.com/r/library/node/tags/
-image: node:latest
+image: cypress/browsers:node14.7.0-chrome84
 
 # Pick zero or more services to be used on all builds.
 # Only needed when using a docker container to run your tests in.
@@ -23,4 +23,9 @@ test_e2e:
 test_vtv_model:
   script:
     - yarn install
-    - yarn nx 
+    - yarn nx test vtv-model
+
+test_vtv:
+  script:
+    - yarn install
+    - yarn nx test vtv

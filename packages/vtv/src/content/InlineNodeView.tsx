@@ -1,3 +1,4 @@
+import React from 'react'
 import { getNodeType, joinPath } from 'vtv-model'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'

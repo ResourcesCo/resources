@@ -1,3 +1,4 @@
+import React from 'react'
 import ValueInlineContent from './ValueInlineContent'
 import InlineNodeView from './InlineNodeView'
 import ActionButton from './ActionButton'
