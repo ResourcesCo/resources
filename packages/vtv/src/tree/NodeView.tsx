@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { get as getNested, isObject } from 'lodash'
+import getNested from 'lodash/get'
+import isObject from 'lodash/isObject'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import {
   getNodeState,

@@ -6,7 +6,7 @@ import {
   getNestedState,
   getNodeInfo,
 } from 'vtv-model'
-import { get as getNested } from 'lodash'
+import getNested from 'lodash/get'
 import ValueInlineContent from '../content/ValueInlineContent'
 import RowHeaderView from './RowHeaderView'
 import ColumnHeaderView from './ColumnHeaderView'

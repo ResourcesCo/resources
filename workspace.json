@@ -119,6 +119,26 @@
             "main": "packages/vtv-model/src/index.ts",
             "assets": ["packages/vtv-model/*.md"]
           }
+        },
+        "build-browser-bundle": {
+          "builder": "@nrwl/web:package",
+          "options": {
+            "outputPath": "dist/packages/vtv-model-bundle",
+            "tsConfig": "packages/vtv-model/tsconfig.lib.json",
+            "project": "packages/vtv-model/package.json",
+            "packageJson": "packages/vtv-model/package.json",
+            "entryFile": "packages/vtv-model/src/index.ts",
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "updateBuildableProjectDepsInPackageJson": false,
+            "assets": [
+              {
+                "glob": "README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
         }
       }
     },
@@ -201,10 +221,12 @@
             "outputPath": "dist/packages/vtv",
             "tsConfig": "packages/vtv/tsconfig.lib.json",
             "project": "packages/vtv/package.json",
+            "packageJson": "packages/vtv/package.json",
             "entryFile": "packages/vtv/src/index.ts",
             "external": ["react", "react-dom", "styled-jsx"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
-            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "rollupConfig": "packages/vtv/bundle-rollup",
+            "updateBuildableProjectDepsInPackageJson": false,
             "assets": [
               {
                 "glob": "README.md",

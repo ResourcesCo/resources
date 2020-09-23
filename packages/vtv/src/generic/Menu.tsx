@@ -12,7 +12,7 @@ import useClickOutside from '../util/useClickOutside'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons'
 import { Popper, Manager, Reference, PopperProps } from 'react-popper'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
+import CopyToClipboard from 'react-copy-to-clipboard'
 import chroma from 'chroma-js'
 import { Context } from 'vtv'
 
@@ -118,9 +118,9 @@ export function MenuItem({
         })}
     </Manager>
   ) : (
-    <div className={clsx('menu-item', { checked })}>
+    <div className={clsx('menu-item', { checked })} onClick={onClick}>
       {copyToClipboard ? (
-        <CopyToClipboard text={copyToClipboard} onCopy={onClick}>
+        <CopyToClipboard text={copyToClipboard}>
           <button>{children}</button>
         </CopyToClipboard>
       ) : (

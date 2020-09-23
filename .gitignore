@@ -38,3 +38,10 @@ yarn-error.log*
 /.env.local
 
 /workspace
+
+.yarn/*
+!.yarn/cache
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
