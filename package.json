@@ -80,7 +80,8 @@
     "react-router": "^5.2.0",
     "remark": "^12.0.1",
     "scroll-into-view-if-needed": "^2.2.24",
-    "styled-jsx": "3.3.0"
+    "styled-jsx": "3.3.0",
+    "vtv-model": "^1.0.0-pre.1"
   },
   "devDependencies": {
     "@babel/core": "7.11.6",

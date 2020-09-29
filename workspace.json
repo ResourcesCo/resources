@@ -129,7 +129,7 @@
             "packageJson": "packages/vtv-model/package.json",
             "entryFile": "packages/vtv-model/src/index.ts",
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
-            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "rollupConfig": "packages/vtv-model/bundle-rollup",
             "updateBuildableProjectDepsInPackageJson": false,
             "assets": [
               {

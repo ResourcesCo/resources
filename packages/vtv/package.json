@@ -1,7 +1,9 @@
 {
   "name": "vtv",
-  "version": "0.0.1",
-  "dependencies": {},
+  "version": "1.0.0-canary.15",
+  "dependencies": {
+    "vtv-model": "1.0.0-pre.1"
+  },
   "peerDependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
