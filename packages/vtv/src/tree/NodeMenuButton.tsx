@@ -21,21 +21,9 @@ export default function NodeMenuButton({ nodeMenuProps: nodeMenuProps_ }) {
       <Reference>
         {({ ref }) => (
           <div>
-            <button ref={ref} onClick={() => setMenuOpen(true)} tabIndex={-1}>
+            <button className="vtv--node-menu-button--button" ref={ref} onClick={() => setMenuOpen(true)} tabIndex={-1}>
               <FontAwesomeIcon icon={faEllipsisH} size="sm" />
             </button>
-            <style jsx>{`
-              button {
-                outline: none;
-                border: none;
-                cursor: pointer;
-                margin: 0;
-                text-align: left;
-                width: 22px;
-                background: none;
-                color: ${theme.foreground};
-              }
-            `}</style>
           </div>
         )}
       </Reference>

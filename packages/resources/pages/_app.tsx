@@ -1,5 +1,7 @@
 import type { AppProps } from 'next/app'
 
+import 'vtv/css/vtv.css'
+
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/material-ocean.css'
 import 'codemirror/theme/eclipse.css'

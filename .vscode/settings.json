@@ -1,4 +1,8 @@
 {
   "css.lint.emptyRules": "ignore",
-  "npm.exclude": ["**/workspace/**", "**/out/**"]
+  "npm.exclude": [
+    "**/workspace/**",
+    "**/out/**"
+  ],
+  "editor.tabSize": 2
 }

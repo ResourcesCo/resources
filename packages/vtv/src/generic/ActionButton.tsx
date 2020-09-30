@@ -15,30 +15,8 @@ export default React.forwardRef<HTMLButtonElement, ActionButtonProps>(
     ref
   ) {
     return (
-      <button ref={ref} className={clsx({ primary })} {...props}>
+      <button ref={ref} className={clsx("vtv--generic-action-button--button", { primary })} {...props}>
         {children}
-        <style jsx>{`
-          button {
-            cursor: pointer;
-            color: ${theme.actionTextColor};
-            background-color: ${theme.actionColor};
-            border-radius: 9999px;
-            outline: none;
-            padding: 3px 7px;
-            font-size: inherit;
-            border: 0;
-          }
-
-          button.primary {
-            background-color: ${theme.primaryActionColor};
-          }
-
-          button:disabled,
-          button.primary:disabled {
-            color: ${theme.disabledActionTextColor};
-            background-color: ${theme.disabledActionColor};
-          }
-        `}</style>
       </button>
     )
   }

@@ -1,0 +1,13 @@
+.vtv--content-action-button--button {
+  background-color: var(--vtv-primary-action-color);
+  display: flex;
+  color: var(--vtv-action-text-color);
+  margin-right: 10px;
+  border-radius: 9999px;
+  padding: 3px 7px;
+  cursor: pointer;
+  font-family: var(--vtv-font-family);
+  outline: none;
+  font-size: inherit;
+  border: 0;
+}

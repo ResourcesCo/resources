@@ -115,7 +115,7 @@ function NodeView({
   return (
     <div className="tree" ref={scrollRef}>
       <div
-        className={`row level-${path.length}`}
+        className={`vtv--node-view--row level-${path.length}`}
         style={{ paddingLeft: indent }}
         tabIndex={0}
       >
@@ -134,7 +134,7 @@ function NodeView({
           context={context}
         />
 
-        <div className="node-content">
+        <div className="vtv--node-view--content">
           {actions && (
             <InlineActionView
               value={value}
@@ -145,7 +145,7 @@ function NodeView({
           <InlineContent
             name={name}
             value={value}
-            state={state}
+            state={_state}
             nodeType={nodeType}
             stringType={stringType}
             mediaType={mediaType}
@@ -154,54 +154,16 @@ function NodeView({
             context={context}
           />
         </div>
-        <div className="actions-right">
+        <div className="vtv-node-view--actions-right">
           <NodeMenuButton nodeMenuProps={nodeMenuProps} />
         </div>
-        <style jsx>{`
-          .node-content {
-            margin-left: 10px;
-            margin-right: 10px;
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-          }
-          .row {
-            display: flex;
-            margin: 0 0;
-            padding-top: 3px;
-            padding-bottom: 3px;
-            align-items: center;
-            outline: none;
-          }
-          .actions-right {
-            visibility: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            margin-right: 5px;
-          }
-          .error {
-            color: red;
-          }
-          .row:hover {
-            background-color: ${theme.backgroundHover};
-          }
-          .row:focus-within {
-            background-color: ${theme.backgroundActive};
-          }
-          .row:hover .actions-right,
-          .row:focus-within .actions-right {
-            visibility: visible;
-          }
-        `}</style>
       </div>
       {view !== 'json' && (
         <>
           {expanded &&
             (isObject(value) || Array.isArray(value)) &&
             view === 'tree' && (
-              <div className="children">
+              <div className="vtv--node-view--children">
                 {Object.keys(value).map((key) => (
                   <NodeView
                     parentType={nodeType}
@@ -217,7 +179,7 @@ function NodeView({
               </div>
             )}
           {expanded && view === 'table' && (
-            <div style={{ paddingLeft: indent }}>
+            <div className="vtv--node-view--children" style={{ paddingLeft: indent }}>
               <TableView
                 name={name}
                 value={value}
@@ -231,11 +193,9 @@ function NodeView({
       )}
       {expanded && ['json', 'text', 'code', 'image'].includes(view) && (
         <div
+          className="vtv--node-view--children vtv--node-view--block-content"
           style={{
             paddingLeft: indent + expandWidth,
-            paddingTop: 5,
-            paddingBottom: 5,
-            marginRight: 15,
           }}
         >
           <BlockContent

@@ -34,24 +34,26 @@ export default function View({
     }
   }
   return (
-    <NodeView
-      path={[]}
-      name={'root'}
-      value={value}
-      state={state}
-      context={{
-        document: {
-          name,
-          value,
-          state,
-        },
-        ruleList: new RuleList(rules),
-        onMessage: onMessage,
-        clipboard: clipboard || defaultClipboard,
-        theme: getTheme(theme),
-        onPickId,
-        codeMirrorComponent,
-      }}
-    />
+    <div className={`vtv-view vtv-theme-${getTheme(theme).dark ? 'dark' : 'light'}`}>
+      <NodeView
+        path={[]}
+        name={'root'}
+        value={value}
+        state={state}
+        context={{
+          document: {
+            name,
+            value,
+            state,
+          },
+          ruleList: new RuleList(rules),
+          onMessage: onMessage,
+          clipboard: clipboard || defaultClipboard,
+          theme: getTheme(theme),
+          onPickId,
+          codeMirrorComponent,
+        }}
+      />
+    </div>
   )
 }

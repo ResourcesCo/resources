@@ -1,0 +1,27 @@
+.vtv-theme-dark {
+    --vtv-font-family: -apple-system, BlinkMacSystemFont, Avenir Next, Avenir, Helvetica, sans-serif;
+    --vtv-background: #14191e;
+    --vtv-background-hover: #33383d;
+    --vtv-background-active: ##3a4248;
+    --vtv-foreground: #eee;
+    --vtv-light-text-color: #ccc;
+    --vtv-lighter-text-color: #888;
+    --vtv-input-border: rgb(140, 140, 140);
+    --vtv-selection-background: #c0c0c0;
+    --vtv-selection-color: #eee;
+    --vtv-summary-color: #aaa;
+    --vtv-link-color: #6fd7d7;
+    --vtv-input-color: #5ac;
+    --vtv-number-color: #9ce;
+    --vtv-value-color: #dd9;
+    --vtv-bubble1: #6f6f6f;
+    --vtv-bubble2: #0d3a4c;
+    --vtv-menu-background: #777;
+    --vtv-menu-highlight: #878787;
+    --vtv-error-color: #c00;
+    --vtv-action-color: #999;
+    --vtv-primary-action-color: #aee;
+    --vtv-action-text-color: #111;
+    --vtv-disabled-action-color: #575757;
+    --vtv-disabled-action-text-color: #999;
+  }
