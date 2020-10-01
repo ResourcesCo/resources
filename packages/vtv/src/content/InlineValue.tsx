@@ -122,10 +122,11 @@ const InlineValue = ({
 
   const useTextArea = !expanded && !showStringExcerpt && (autoEdit || editing)
   return (
-    <div className={`${typeClass} ${error ? 'has-error' : ''}`}>
+    <div className={`vtv--inline-value vtv--inline-value--${typeClass} ${error ? 'vtv--inline-value--has-error' : ''}`}>
       {useTextArea && (
         <Textarea
           ref={inputRef}
+          className="vtv--inline-value--textarea"
           value={
             focused
               ? newInputValue
@@ -147,45 +148,7 @@ const InlineValue = ({
         <span>{`${value.substr(0, 256)}… (${value.length} characters)`}</span>
       )}
       {!useTextArea && !showStringExcerpt && <span>{value}</span>}
-      {error && <span className="error">{error}</span>}
-
-      <style jsx>{`
-        div {
-          display: flex;
-          width: 100%;
-          flex-grow: 1;
-        }
-        div :global(textarea) {
-          background: none;
-          border: none;
-          resize: none;
-          outline: none;
-          font-size: inherit;
-          color: ${theme.foreground};
-          margin: 0;
-          padding: 0;
-          flex-grow: 1;
-        }
-        div.has-error :global(textarea) {
-          border-bottom: 1px solid red;
-        }
-        div.number span,
-        div.number :global(textarea) {
-          color: ${theme.numberColor};
-        }
-        div.value span,
-        div.value :global(textarea) {
-          color: ${theme.valueColor};
-        }
-        div.excerpt span,
-        div.exceprt :global(textarea) {
-          color: ${theme.lighterTextColor};
-        }
-        div.has-error .error {
-          color: red;
-          padding-left: 3px;
-        }
-      `}</style>
+      {error && <span className="vtv--inline-value--error">{error}</span>}
     </div>
   )
 }

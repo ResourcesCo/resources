@@ -21,8 +21,8 @@ export default function TableView({
 }) {
   const paths = getCollectionPaths(value).slice(0, 15) // TODO: support customizing displayed columns
   return (
-    <div className="table">
-      <table>
+    <div className="vtv--table-view">
+      <table className="vtv--table-view--table">
         <thead>
           <tr>
             <th>
@@ -71,20 +71,6 @@ export default function TableView({
           ))}
         </tbody>
       </table>
-      <style jsx>{`
-        .table {
-          padding: 5px;
-          padding-left: 30px;
-        }
-        table {
-          border-collapse: collapse;
-        }
-        table th,
-        table td {
-          padding: 3px 10px;
-          text-align: left;
-        }
-      `}</style>
     </div>
   )
 }

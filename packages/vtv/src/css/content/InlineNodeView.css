@@ -1,0 +1,19 @@
+div.vtv--inline-node-view--node {
+  background-color: var(--vtv-bubble2);
+  display: flex;
+  align-items: center;
+  color: var(--vtv-light-text-color);
+  margin-right: 10px;
+  border-radius: 9999px;
+  padding: 3px 7px;
+}
+div.vtv--inline-node-view--name {
+  margin-right: 6px;
+  color: var(--vtv-lighter-text-color);
+}
+div.vtv--inline-node-view--node svg {
+  margin-left: 5px;
+}
+a.vtv--inline-node-view--link:hover {
+  text-decoration: none;
+}

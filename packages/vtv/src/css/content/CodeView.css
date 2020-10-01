@@ -1,0 +1,39 @@
+div.vtv--code-view .CodeMirror {
+  font-size: 16px;
+  height: auto;
+}
+div.vtv--code-view .CodeMirror-scroll {
+  max-height: 295px;
+}
+div.vtv--code-view textarea {
+  background: none;
+  margin: 0;
+  resize: none;
+  outline: none;
+  border: none;
+  width: 100%;
+  padding: 3px;
+  color: var(--vtv-foreground);
+}
+div.vtv--code-view--textarea-wrapper {
+  border: 1px solid var(--vtv-bubble1);
+}
+div.vtv--code-view--error div.vtv--code-view--textarea-wrapper {
+  border: 1px solid var(--vtv-error-color);
+}
+div.vtv--code-view--error-message {
+  color: var(--vtv-error-color);
+  margin-bottom: 3px;
+  font-size: 0.8em;
+}
+div.vtv--code-view {
+  outline: none;
+  border: 0;
+}
+div.vtv--code-view div.vtv--code-view--actions {
+  padding-top: 3px;
+}
+div.vtv--code-view div.vtv--code-view--action-button {
+  display: inline-block;
+  padding-right: 5px;
+}

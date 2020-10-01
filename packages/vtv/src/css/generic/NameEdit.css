@@ -1,0 +1,13 @@
+div.vtv--name-edit {
+  background-color: var(--vtv-bubble1);
+  border-radius: 12px;
+  outline: none;
+  padding: 3px 7px;
+  border: 0;
+  outline: none;
+  margin: 0 0;
+}
+span.vtv--name-edit--span {
+  outline: none;
+  margin: 0 0;
+}

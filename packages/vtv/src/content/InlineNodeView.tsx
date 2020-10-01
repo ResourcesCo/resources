@@ -21,40 +21,17 @@ export default function InlineNodeView({
     path: path.slice(0, path.length - inlineItem.path.length),
   })
   const bubble = (
-    <div className="node">
+    <div className="vtv--inline-node-view--node">
       {inlineItem.showLabel && (
-        <div className="name">{joinPath(inlineItem.path)}</div>
+        <div className="vtv--inline-node-view--name">{joinPath(inlineItem.path)}</div>
       )}
       {summaryString}
       {url && <FontAwesomeIcon icon={faExternalLinkAlt} size="xs" />}
-      <style jsx>{`
-        div.node {
-          background-color: ${theme.bubble2};
-          display: flex;
-          align-items: center;
-          color: ${theme.lightTextColor};
-          margin-right: 10px;
-          border-radius: 9999px;
-          padding: 3px 7px;
-        }
-        div.name {
-          margin-right: 6px;
-          color: ${theme.lighterTextColor};
-        }
-        div.node :global(svg) {
-          margin-left: 5px;
-        }
-      `}</style>
     </div>
   )
   return url ? (
-    <a href={sanitizeUrl(url) || '#'} target="_blank">
+    <a className="vtv--inline-node-view--link" href={sanitizeUrl(url) || '#'} target="_blank">
       {bubble}
-      <style jsx>{`
-        a:hover {
-          text-decoration: none;
-        }
-      `}</style>
     </a>
   ) : (
     bubble

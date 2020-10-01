@@ -28,14 +28,7 @@ export function Separator({ context }: { context?: Context }) {
     .hex()
   return (
     <>
-      <hr />
-      <style jsx>{`
-        hr {
-          border: none;
-          height: 2px;
-          background-color: ${color};
-        }
-      `}</style>
+      <hr className="vtv--menu--separator" />
     </>
   )
 }
@@ -73,41 +66,13 @@ export function MenuItem({
       <Reference>
         {({ ref }) => (
           <div
-            className={clsx('menu-item', { checked })}
+            className={clsx('vtv--menu--menu-item', { checked })}
             ref={ref}
             onMouseEnter={() => setItemHover(true)}
             onMouseLeave={() => setHoverOff()}
           >
-            <button onClick={onClick}>{children}</button>
+            <button className="vtv--menu--menu-item-button" onClick={onClick}>{children}</button>
             <FontAwesomeIcon icon={faCaretRight} size="sm" />
-            <style jsx>{`
-              div.menu-item {
-                background: none;
-                display: flex;
-                align-items: center;
-              }
-              div.menu-item button {
-                background: none;
-                border: none;
-                cursor: pointer;
-                padding: 4px 8px;
-                margin: 0;
-                outline: none;
-                width: 100%;
-                text-align: left;
-                color: ${theme.foreground};
-                font-family: ${theme.fontFamily};
-              }
-              div.menu-item:hover {
-                background-color: ${theme.menuHighlight};
-              }
-              div.menu-item {
-                padding-right: 3px;
-              }
-              div.menu-item.checked button {
-                font-weight: bold;
-              }
-            `}</style>
           </div>
         )}
       </Reference>
@@ -118,42 +83,14 @@ export function MenuItem({
         })}
     </Manager>
   ) : (
-    <div className={clsx('menu-item', { checked })} onClick={onClick}>
+    <div className={clsx('vtv--menu--menu-item', { checked })} onClick={onClick}>
       {copyToClipboard ? (
         <CopyToClipboard text={copyToClipboard}>
-          <button>{children}</button>
+          <button className="vtv--menu--menu-item-button">{children}</button>
         </CopyToClipboard>
       ) : (
-        <button onClick={onClick}>{children}</button>
+        <button className="vtv--menu--menu-item-button" onClick={onClick}>{children}</button>
       )}
-      <style jsx>{`
-        div.menu-item {
-          background: none;
-          display: flex;
-          align-items: center;
-        }
-        div.menu-item button {
-          background: none;
-          border: none;
-          cursor: pointer;
-          padding: 4px 8px;
-          margin: 0;
-          outline: none;
-          width: 100%;
-          text-align: left;
-          color: ${theme.foreground};
-          font-family: ${theme.fontFamily};
-        }
-        div.menu-item:hover {
-          background-color: ${theme.menuHighlight};
-        }
-        div.menu-item {
-          padding-right: 3px;
-        }
-        div.menu-item.checked button {
-          font-weight: bold;
-        }
-      `}</style>
     </div>
   )
 }
@@ -202,30 +139,16 @@ const Menu: FunctionComponent<MenuProps> = ({
     <Popper {...popperProps}>
       {({ ref: popperRef, style, placement }) => (
         <div
-          className="popper"
+          className="vtv--menu--popper"
           ref={popperRef}
           style={style}
           data-placement={placement}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
         >
-          <div className="menu" ref={ref}>
+          <div className="vtv--menu--menu" ref={ref}>
             {sortedMenuItems(placement)}
           </div>
-          <style jsx>{`
-            .popper {
-              z-index: 10;
-            }
-            .menu {
-              background-color: ${theme.menuBackground};
-              opacity: 0.95;
-              padding: 2px;
-              border-radius: 5px;
-              display: flex;
-              flex-direction: column;
-              align-items: stretch;
-            }
-          `}</style>
         </div>
       )}
     </Popper>

@@ -5,13 +5,9 @@ export default function ImageView({ value }) {
   return (
     <div>
       <img
+        className="vtv--image-view--image"
         src={value.startsWith('data:') ? value : sanitizeUrl(value) || '#'}
       />
-      <style jsx>{`
-        img {
-          max-height: 300px;
-        }
-      `}</style>
     </div>
   )
 }

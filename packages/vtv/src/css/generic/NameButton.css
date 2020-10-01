@@ -1,0 +1,11 @@
+button.vtv--name-button {
+  cursor: pointer;
+  background-color: var(--vtv-bubble1);
+  color: var(--vtv-foreground);
+  font-family: var(--vtv-font-family);
+  border-radius: 9999px;
+  outline: none;
+  padding: 3px 7px;
+  font-size: inherit;
+  border: 0;
+}
