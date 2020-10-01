@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextApiRequest, NextApiResponse, PageConfig } from 'next'
 import { isObject } from 'lodash'
 import ConsoleError from 'api/ConsoleError'
 import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
@@ -45,6 +45,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(err.data.status).send(err.data)
     } else {
       throw err
+    }
+  }
+}
+
+export const config: PageConfig = {
+  api: {
+    bodyParser: {
+      sizeLimit: '100mb'
     }
   }
 }

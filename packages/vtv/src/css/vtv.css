@@ -4,4 +4,5 @@
 @import './tree/NodeView.css';
 @import './tree/ExpandButton.css';
 @import './tree/NodeMenuButton.css';
+@import './content/AttachmentView.css';
 @import './content/ActionButton.css';

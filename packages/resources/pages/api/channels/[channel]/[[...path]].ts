@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextApiRequest, NextApiResponse, PageConfig } from 'next'
 import ConsoleError from '../../../../api/ConsoleError'
 import ConsoleWorkspace from '../../../../api/workspace/ConsoleWorkspace'
 import LocalFileStore from '../../../../api/storage/LocalFileStore'
@@ -31,4 +31,12 @@ export default async function index(req: NextApiRequest, res: NextApiResponse) {
   })
 
   res.send(result)
+}
+
+export const config: PageConfig = {
+  api: {
+    bodyParser: {
+      sizeLimit: '100mb'
+    }
+  }
 }
