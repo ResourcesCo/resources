@@ -47,7 +47,7 @@ const Tree: FunctionComponent<TreeProps> = ({
         value={value}
         state={state}
         rules={rules}
-        theme={theme}
+        theme={theme.base}
         onChange={onChange}
         onAction={(m) => onSubmitForm({ commandId, message, formData: m })}
         onPickId={handlePickId}

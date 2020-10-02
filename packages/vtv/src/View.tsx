@@ -1,5 +1,5 @@
-import React from 'react'
-import { getTheme } from './themes'
+import React, { useRef, useEffect } from 'react'
+import { getTheme, themeProperties } from './themes'
 import NodeView from './tree/NodeView'
 import Clipboard from './util/Clipboard'
 import { RuleList, updateTree } from 'vtv-model'
@@ -19,6 +19,16 @@ export default function View({
   state = {},
   rules = {},
 }) {
+  const ref = useRef<HTMLDivElement>()
+  useEffect(() => {
+    if (ref.current && typeof theme === 'object' && theme !== null) {
+      for (const prop of Object.keys(themeProperties)) {
+        if (theme[prop]) {
+          ref.current.style.setProperty(themeProperties[prop], theme[prop])
+        }
+      }
+    }
+  }, [ref])
   const onMessage = (message) => {
     if (message.action === 'runAction') {
       if (typeof onAction === 'function') {
@@ -33,8 +43,9 @@ export default function View({
       onChange(updateTree(treeData, message))
     }
   }
+  const themeClass = typeof theme === 'string' ? `vtv-theme-${theme}` : ''
   return (
-    <div className={`vtv-view vtv-theme-${getTheme(theme).dark ? 'dark' : 'light'}`}>
+    <div ref={ref} className={`vtv-view ${themeClass}`}>
       <NodeView
         path={[]}
         name={'root'}
