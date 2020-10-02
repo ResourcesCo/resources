@@ -180,8 +180,9 @@ class ConsoleWorkspace {
     }
     const { name } = configValue
     if (!(name in ConsoleWorkspace.workspaces)) {
-      ConsoleWorkspace.workspaces[name] = new ConsoleWorkspace(configValue)
-      await ConsoleWorkspace.workspaces[name].init()
+      const workspace = new ConsoleWorkspace(configValue)
+      await workspace.init()
+      ConsoleWorkspace.workspaces[name] = workspace
     }
     return ConsoleWorkspace.workspaces[name]
   }

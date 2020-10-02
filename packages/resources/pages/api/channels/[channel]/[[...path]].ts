@@ -15,6 +15,7 @@ export default async function index(req: NextApiRequest, res: NextApiResponse) {
 
   if (process.env.API_AUTH !== 'any') {
     res.status(401).send({ error: 'Access denied.' })
+    return
   }
 
   const workspace = await ConsoleWorkspace.getWorkspace({
