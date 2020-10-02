@@ -1,4 +1,4 @@
-.vtv--expand-button > button {
+.vtv--view .vtv--expand-button > button {
   outline: none;
   border: none;
   cursor: pointer;
@@ -11,9 +11,9 @@
   background: none;
   color: var(--vtv-foreground);
 }
-.vtv--expand-button.expanded > button {
+.vtv--view .vtv--expand-button.expanded > button {
   padding: 0 0 0 8px;
 }
-.vtv--expand-button > button.invisible {
+.vtv--view .vtv--expand-button > button.invisible {
   visibility: hidden;
 }

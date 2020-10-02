@@ -20,3 +20,34 @@
 .vtv--view {
   background-color: var(--vtv-background);
 }
+
+.vtv--view,
+.vtv--view *,
+.vtv--view *::before,
+.vtv--view *::after {
+  box-sizing: border-box;
+}
+
+.vtv--view textarea,
+.vtv--view svg,
+.vtv--view button {
+  color: var(--vtv-foreground);
+}
+
+.vtv--view textarea {
+  font-family: inherit;
+}
+
+.vtv--view a {
+  color: var(--vtv-link-color);
+  text-decoration: none;
+}
+
+.vtv--view a:hover {
+  text-decoration: underline;
+}
+
+.vtv--view ::selection {
+  color: var(--selection-color);
+  background: var(--selection-background);
+}

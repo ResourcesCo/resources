@@ -1,4 +1,4 @@
-.vtv--node-view--content {
+.vtv--view .vtv--node-view--content {
   margin-left: 10px;
   margin-right: 10px;
   flex-grow: 1;
@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: flex-start;
 }
-.vtv--node-view--row {
+.vtv--view .vtv--node-view--row {
   display: flex;
   margin: 0 0;
   padding-top: 3px;
@@ -14,24 +14,24 @@
   align-items: center;
   outline: none;
 }
-.vtv--node-view--actions-right {
+.vtv--view .vtv--node-view--actions-right {
   visibility: hidden;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   margin-right: 5px;
 }
-.vtv--node-view--row:hover {
+.vtv--view .vtv--node-view--row:hover {
   background-color: var(--background-hover);
 }
-.vtv--node-view--row:focus-within {
+.vtv--view .vtv--node-view--row:focus-within {
   background-color: var(--background-active);
 }
-.vtv--node-view--row:hover .vtv--node-view--actions-right,
-.vtv--node-view--row:focus-within .vtv--node-view--actions-right {
+.vtv--view .vtv--node-view--row:hover .vtv--node-view--actions-right,
+.vtv--view .vtv--node-view--row:focus-within .vtv--node-view--actions-right {
   visibility: visible;
 }
-.vtv--node-view--block-content {
+.vtv--view .vtv--node-view--block-content {
   padding-top: 5;
   padding-bottom: 5;
   margin-right: 15;

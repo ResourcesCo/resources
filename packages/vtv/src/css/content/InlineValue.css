@@ -1,9 +1,9 @@
-div.vtv--inline-value {
+.vtv--view div.vtv--inline-value {
   display: flex;
   width: 100%;
   flex-grow: 1;
 }
-div.vtv--inline-value textarea.vtv--inline-value--textarea {
+.vtv--view div.vtv--inline-value textarea.vtv--inline-value--textarea {
   background: none;
   border: none;
   resize: none;
@@ -14,22 +14,22 @@ div.vtv--inline-value textarea.vtv--inline-value--textarea {
   padding: 0;
   flex-grow: 1;
 }
-div.vtv--inline-value--has-error textarea.vtv--inline-value--textarea {
+.vtv--view div.vtv--inline-value--has-error textarea.vtv--inline-value--textarea {
   border-bottom: 1px solid red;
 }
-div.vtv--inline-value--number span,
-div.vtv--inline-value--number textarea.vtv--inline-value--textarea {
+.vtv--view div.vtv--inline-value--number span,
+.vtv--view div.vtv--inline-value--number textarea.vtv--inline-value--textarea {
   color: var(--vtv-number-color);
 }
-div.value span,
-div.value textarea.vtv--inline-value--textarea {
+.vtv--view div.value span,
+.vtv--view div.value textarea.vtv--inline-value--textarea {
   color: var(--vtv-value-color);
 }
-div.vtv--inline-value--excerpt span,
-div.vtv--inline-value--excerpt textarea.vtv--inline-value--textarea {
+.vtv--view div.vtv--inline-value--excerpt span,
+.vtv--view div.vtv--inline-value--excerpt textarea.vtv--inline-value--textarea {
   color: var(--vtv-lighter-text-color);
 }
-div.vtv--inline-value--has-error .vtv--inline-value--error {
+.vtv--view div.vtv--inline-value--has-error .vtv--inline-value--error {
   color: red;
   padding-left: 3px;
 }

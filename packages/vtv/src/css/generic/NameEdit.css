@@ -1,4 +1,4 @@
-div.vtv--name-edit {
+.vtv--view div.vtv--name-edit {
   background-color: var(--vtv-bubble1);
   border-radius: 12px;
   outline: none;
@@ -7,7 +7,7 @@ div.vtv--name-edit {
   outline: none;
   margin: 0 0;
 }
-span.vtv--name-edit--span {
+.vtv--view span.vtv--name-edit--span {
   outline: none;
   margin: 0 0;
 }

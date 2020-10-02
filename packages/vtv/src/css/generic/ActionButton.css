@@ -1,4 +1,4 @@
-button.vtv--generic-action-button--button {
+.vtv--view button.vtv--generic-action-button--button {
   cursor: pointer;
   color: var(--vtv-action-text-color);
   background-color: var(--vtv-action-color);
@@ -9,12 +9,12 @@ button.vtv--generic-action-button--button {
   border: 0;
 }
 
-button.vtv--generic-action-button--button.primary {
+.vtv--view button.vtv--generic-action-button--button.primary {
   background-color: var(--vtv-primary-action-color);
 }
 
-button.vtv--generic-action-button--button:disabled,
-button.vtv--generic-action-button--button.primary:disabled {
+.vtv--view button.vtv--generic-action-button--button:disabled,
+.vtv--view button.vtv--generic-action-button--button.primary:disabled {
   color: var(--vtv-disabled-action-text-color);
   background-color: var(--vtv-disabled-action-color);
 }

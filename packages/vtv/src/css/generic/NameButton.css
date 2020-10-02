@@ -1,4 +1,4 @@
-button.vtv--name-button {
+.vtv--view button.vtv--name-button {
   cursor: pointer;
   background-color: var(--vtv-bubble1);
   color: var(--vtv-foreground);

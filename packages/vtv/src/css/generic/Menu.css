@@ -1,15 +1,15 @@
-hr.vtv--menu--separator {
+.vtv--view hr.vtv--menu--separator {
   border: none;
   height: 2px;
   background-color: var(--vtv-menu-separator);
 }
 
-div.vtv--menu--menu-item {
+.vtv--view div.vtv--menu--menu-item {
   background: none;
   display: flex;
   align-items: center;
 }
-div.vtv--menu--menu-item button.vtv--menu--menu-item-button {
+.vtv--view div.vtv--menu--menu-item button.vtv--menu--menu-item-button {
   background: none;
   border: none;
   cursor: pointer;
@@ -21,20 +21,20 @@ div.vtv--menu--menu-item button.vtv--menu--menu-item-button {
   color: var(--vtv-foreground);
   font-family: var(--vtv-font-family);
 }
-div.vtv--menu--menu-item:hover {
+.vtv--view div.vtv--menu--menu-item:hover {
   background-color: var(--vtv-menu-highlight);
 }
-div.vtv--menu--menu-item {
+.vtv--view div.vtv--menu--menu-item {
   padding-right: 3px;
 }
-div.vtv--menu--menu-item.checked button.vtv--menu--menu-item-button {
+.vtv--view div.vtv--menu--menu-item.checked button.vtv--menu--menu-item-button {
   font-weight: bold;
 }
 
-.vtv--menu--popper {
+.vtv--view .vtv--menu--popper {
   z-index: 10;
 }
-.vtv--menu--menu {
+.vtv--view .vtv--menu--menu {
   background-color: var(--vtv-menu-background);
   opacity: 0.95;
   padding: 2px;
