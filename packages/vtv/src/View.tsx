@@ -45,7 +45,7 @@ export default function View({
   }
   const themeClass = typeof theme === 'string' ? `vtv-theme-${theme}` : ''
   return (
-    <div ref={ref} className={`vtv-view ${themeClass}`}>
+    <div ref={ref} className={`vtv--view ${themeClass}`}>
       <NodeView
         path={[]}
         name={'root'}

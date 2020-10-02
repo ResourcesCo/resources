@@ -16,3 +16,7 @@
 @import './content/InlineNodeView.css';
 @import './content/InlineValue.css';
 @import './table/TableView.css';
+
+.vtv--view {
+  background-color: var(--vtv-background);
+}

@@ -40,7 +40,8 @@
     "desktop:electron:make": "cd ./packages/desktop && npm run make",
     "desktop:build-all": "npm run electron-renderer:build && npm run electron-renderer:export && npm run desktop:renderer:import && npm run desktop:main:import && npm run desktop:main:build",
     "desktop:start": "npm run desktop:build-all && npm run desktop:electron:start",
-    "desktop:make": "npm run desktop:build-all && npm run desktop:electron:make"
+    "desktop:make": "npm run desktop:build-all && npm run desktop:electron:make",
+    "vtv:build": "nx build vtv && cp -r packages/vtv/src/css dist/packages/vtv/css"
   },
   "private": true,
   "dependencies": {
