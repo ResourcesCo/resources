@@ -1,0 +1,53 @@
+@import './themes/DarkTheme.css';
+@import './themes/LightTheme.css';
+@import './generic/ActionButton.css';
+@import './generic/Menu.css';
+@import './generic/NameButton.css';
+@import './generic/NameEdit.css';
+@import './tree/NodeView.css';
+@import './tree/ExpandButton.css';
+@import './tree/NodeMenuButton.css';
+@import './content/AttachmentView.css';
+@import './content/ActionButton.css';
+@import './content/CodeView.css';
+@import './content/CollectionSummary.css';
+@import './content/ImageView.css';
+@import './content/InlineActionView.css';
+@import './content/InlineNodeView.css';
+@import './content/InlineValue.css';
+@import './table/TableView.css';
+
+.vtv--view {
+  background-color: var(--vtv-background);
+}
+
+.vtv--view,
+.vtv--view *,
+.vtv--view *::before,
+.vtv--view *::after {
+  box-sizing: border-box;
+}
+
+.vtv--view textarea,
+.vtv--view svg,
+.vtv--view button {
+  color: var(--vtv-foreground);
+}
+
+.vtv--view textarea {
+  font-family: inherit;
+}
+
+.vtv--view a {
+  color: var(--vtv-link-color);
+  text-decoration: none;
+}
+
+.vtv--view a:hover {
+  text-decoration: underline;
+}
+
+.vtv--view ::selection {
+  color: var(--vtv-selection-color);
+  background: var(--vtv-selection-background);
+}

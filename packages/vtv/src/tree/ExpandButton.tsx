@@ -10,7 +10,7 @@ export default function ExpandButton({
   context: { theme },
 }) {
   return (
-    <div className={expanded ? 'expanded' : ''}>
+    <div className={clsx('vtv--expand-button', {expanded})}>
       <button
         onClick={onClick}
         className={clsx({ invisible: disabled })}
@@ -21,27 +21,6 @@ export default function ExpandButton({
           size="xs"
         />
       </button>
-      <style jsx>{`
-        button {
-          outline: none;
-          border: none;
-          cursor: pointer;
-          margin: 0;
-          margin-top: -2px;
-          font-size: 1.5em;
-          text-align: left;
-          padding: 0 0 0 10px;
-          width: 22px;
-          background: none;
-          color: ${theme.foreground};
-        }
-        .expanded button {
-          padding: 0 0 0 8px;
-        }
-        .invisible {
-          visibility: hidden;
-        }
-      `}</style>
     </div>
   )
 }

@@ -1,0 +1,13 @@
+.vtv--view div.vtv--attachment-view {
+  width: 100%;
+  display: flex;
+}
+.vtv--view div.vtv--attachment-view input[type='file'] {
+  flex-grow: 1;
+}
+.vtv--view div.vtv--attachment-view.has-files input[type='file'] {
+  display: none;
+}
+.vtv--view div.vtv--attachment-view .vtv--attachment-view--button svg {
+  color: var(--vtv-action-text-color);
+}

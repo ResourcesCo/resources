@@ -1,0 +1,45 @@
+.vtv--view hr.vtv--menu--separator {
+  border: none;
+  height: 2px;
+  background-color: var(--vtv-menu-separator);
+}
+
+.vtv--view div.vtv--menu--menu-item {
+  background: none;
+  display: flex;
+  align-items: center;
+}
+.vtv--view div.vtv--menu--menu-item button.vtv--menu--menu-item-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  margin: 0;
+  outline: none;
+  width: 100%;
+  text-align: left;
+  color: var(--vtv-foreground);
+  font-family: var(--vtv-font-family);
+}
+.vtv--view div.vtv--menu--menu-item:hover {
+  background-color: var(--vtv-menu-highlight);
+}
+.vtv--view div.vtv--menu--menu-item {
+  padding-right: 3px;
+}
+.vtv--view div.vtv--menu--menu-item.checked button.vtv--menu--menu-item-button {
+  font-weight: bold;
+}
+
+.vtv--view .vtv--menu--popper {
+  z-index: 10;
+}
+.vtv--view .vtv--menu--menu {
+  background-color: var(--vtv-menu-background);
+  opacity: 0.95;
+  padding: 2px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}

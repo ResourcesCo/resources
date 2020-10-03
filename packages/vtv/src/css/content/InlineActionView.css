@@ -1,0 +1,9 @@
+.vtv--view .vtv--inline-action-view {
+  margin-right: 10px;
+}
+.vtv--view .vtv--inline-action-view button {
+  margin-right: 5px;
+}
+.vtv--view .vtv--inline-action-view button:last-child {
+  margin-right: 0px;
+}

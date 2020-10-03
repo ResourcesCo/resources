@@ -1,4 +1,4 @@
-import produce from 'immer'
+import produce, {current} from 'immer'
 import { draftState, getDraftUpdate } from '../util'
 
 export default function attach(treeData, treeUpdate) {

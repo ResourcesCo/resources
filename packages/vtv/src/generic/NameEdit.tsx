@@ -65,9 +65,10 @@ export default React.forwardRef<HTMLBaseElement, NameEditProps>(
     }
 
     return (
-      <div>
+      <div className="vtv--name-edit">
         &#x200b;
         <span
+          className="vtv--name-edit--span"
           contentEditable
           ref={editableRef}
           onKeyDown={handleKeyPress}
@@ -76,21 +77,6 @@ export default React.forwardRef<HTMLBaseElement, NameEditProps>(
             __html: escapeHtml(editingName === 'new' ? '' : name),
           }}
         ></span>
-        <style jsx>{`
-          div {
-            background-color: ${theme.bubble1};
-            border-radius: 12px;
-            outline: none;
-            padding: 3px 7px;
-            border: 0;
-            outline: none;
-            margin: 0 0;
-          }
-          span {
-            outline: none;
-            margin: 0 0;
-          }
-        `}</style>
       </div>
     )
   }

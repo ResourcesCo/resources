@@ -17,6 +17,7 @@
     "baseUrl": ".",
     "paths": {
       "vtv-model": ["packages/vtv-model/src/index.ts"],
+      "vtv-model/*": ["packages/vtv-model/src/*"],
       "vtv": ["packages/vtv/src/index.ts"],
       "vtv/*": ["packages/vtv/src/*"],
       "api": ["packages/resources/api/index.ts"],

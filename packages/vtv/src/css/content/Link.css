@@ -1,0 +1,8 @@
+.vtv--view a.vtv--content-link {
+  color: var(--vtv-link-color);
+  text-decoration: none;
+}
+
+.vtv--view a.vtv--content-link:hover {
+  text-decoration: underline;
+}

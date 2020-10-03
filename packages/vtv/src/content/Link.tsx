@@ -22,18 +22,8 @@ export default function Link({
       <Manager>
         <Reference>
           {({ ref }) => (
-            <a ref={ref} href={sanitizeUrl(url) || '#'} onClick={openMenu}>
+            <a className="vtv--content-link" ref={ref} href={sanitizeUrl(url) || '#'} onClick={openMenu}>
               <StringView value={url} maxLength={120} />
-              <style jsx>{`
-                a {
-                  color: ${theme.linkColor};
-                  text-decoration: none;
-                }
-
-                a:hover {
-                  text-decoration: underline;
-                }
-              `}</style>
             </a>
           )}
         </Reference>

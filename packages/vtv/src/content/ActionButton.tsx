@@ -17,23 +17,8 @@ export default function ActionButton({
     onPickId(`${actionUrl} :${action} ${args || ''}`.trim())
   }
   return (
-    <button className="action" onClick={runAction}>
+    <button className="vtv--content-action-button--button action" onClick={runAction}>
       {actionLink.name}
-      <style jsx>{`
-        button {
-          background-color: ${theme.primaryActionColor};
-          display: flex;
-          color: ${theme.actionTextColor};
-          margin-right: 10px;
-          border-radius: 9999px;
-          padding: 3px 7px;
-          cursor: pointer;
-          font-family: ${theme.fontFamily};
-          outline: none;
-          font-size: inherit;
-          border: 0;
-        }
-      `}</style>
     </button>
   )
 }

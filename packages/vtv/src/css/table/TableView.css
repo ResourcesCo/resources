@@ -1,0 +1,14 @@
+.vtv--view .vtv--table-view {
+  padding: 5px;
+  padding-left: 30px;
+}
+.vtv--view .vtv--table-view--table {
+  border-collapse: collapse;
+}
+.vtv--view .vtv--table-view--table > thead > tr > th,
+.vtv--view .vtv--table-view--table > tbody > tr > th,
+.vtv--view .vtv--table-view--table > thead > tr > td,
+.vtv--view .vtv--table-view--table > tbody > tr > td {
+  padding: 3px 10px;
+  text-align: left;
+}

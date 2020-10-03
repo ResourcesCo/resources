@@ -87,9 +87,9 @@ export default function CodeView({
   const mode = getMode({ editMode, mediaType })
 
   return (
-    <div className="outer">
-      <div className={error ? 'error' : ''}>
-        <div className="textareaWrapper">
+    <div className="vtv--code-view">
+      <div className={error ? 'vtv--code-view--error' : ''}>
+        <div className="vtv--code-view--textarea-wrapper">
           <CodeMirror
             value={initialValue}
             onChange={() => setEditing(true)}
@@ -103,17 +103,17 @@ export default function CodeView({
             }}
           />
         </div>
-        {error && <div className="error-message">Invalid JSON</div>}
+        {error && <div className="vtv--code-view--error-message">Invalid JSON</div>}
       </div>
-      <div className="actions">
+      <div className="vtv--code-view--actions">
         {editing && (
           <>
-            <div className="actionButton">
+            <div className="vtv--code-view--action-button">
               <ActionButton onClick={save} primary context={context}>
                 Save
               </ActionButton>
             </div>
-            <div className="actionButton">
+            <div className="vtv--code-view--action-button">
               <ActionButton onClick={cancel} context={context}>
                 Cancel
               </ActionButton>
@@ -121,47 +121,6 @@ export default function CodeView({
           </>
         )}
       </div>
-      <style jsx>{`
-        div :global(.CodeMirror) {
-          font-size: 16px;
-          height: auto;
-        }
-        div :global(.CodeMirror-scroll) {
-          max-height: 295px;
-        }
-        div :global(textarea) {
-          background: none;
-          margin: 0;
-          resize: none;
-          outline: none;
-          border: none;
-          width: 100%;
-          padding: 3px;
-          color: ${theme.foreground};
-        }
-        div.textareaWrapper {
-          border: 1px solid ${theme.bubble1};
-        }
-        div.error div.textareaWrapper {
-          border: 1px solid ${theme.errorColor};
-        }
-        div.error-message {
-          color: ${theme.errorColor};
-          margin-bottom: 3px;
-          font-size: 0.8em;
-        }
-        div.outer {
-          outline: none;
-          border: 0;
-        }
-        div.actions {
-          padding-top: 3px;
-        }
-        div.actionButton {
-          display: inline-block;
-          padding-right: 5px;
-        }
-      `}</style>
     </div>
   )
 }

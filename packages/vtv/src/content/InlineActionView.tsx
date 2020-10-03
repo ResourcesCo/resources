@@ -8,7 +8,7 @@ function InlineActionView({
   context,
 }) {
   return (
-    <div className="actions-content">
+    <div className="vtv--inline-action-view">
       {actions.map(({ name, title, primary, action }) => (
         <ActionButton
           key={name}
@@ -23,18 +23,6 @@ function InlineActionView({
           {title}
         </ActionButton>
       ))}
-      <style jsx>{`
-        .actions-content {
-          margin-right: 10px;
-        }
-        .actions-content :global(button) {
-          margin-right: 5px;
-        }
-
-        .actions-content :global(button):last-child {
-          margin-right: 0px;
-        }
-      `}</style>
     </div>
   )
 }
