@@ -154,7 +154,7 @@ function NodeView({
             context={context}
           />
         </div>
-        <div className="vtv-node-view--actions-right">
+        <div className="vtv--node-view--actions-right">
           <NodeMenuButton nodeMenuProps={nodeMenuProps} />
         </div>
       </div>

@@ -48,6 +48,6 @@
 }
 
 .vtv--view ::selection {
-  color: var(--selection-color);
-  background: var(--selection-background);
+  color: var(--vtv-selection-color);
+  background: var(--vtv-selection-background);
 }

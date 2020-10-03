@@ -14,7 +14,7 @@
   align-items: center;
   outline: none;
 }
-.vtv--view .vtv--node-view--actions-right {
+.vtv--view .vtv--node-view--row .vtv--node-view--actions-right {
   visibility: hidden;
   display: flex;
   align-items: center;
@@ -22,10 +22,10 @@
   margin-right: 5px;
 }
 .vtv--view .vtv--node-view--row:hover {
-  background-color: var(--background-hover);
+  background-color: var(--vtv-background-hover);
 }
 .vtv--view .vtv--node-view--row:focus-within {
-  background-color: var(--background-active);
+  background-color: var(--vtv-background-active);
 }
 .vtv--view .vtv--node-view--row:hover .vtv--node-view--actions-right,
 .vtv--view .vtv--node-view--row:focus-within .vtv--node-view--actions-right {

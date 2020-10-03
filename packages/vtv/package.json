@@ -1,6 +1,6 @@
 {
   "name": "vtv",
-  "version": "1.0.0-canary.18",
+  "version": "1.0.0-canary.19",
   "dependencies": {
     "vtv-model": "1.0.0-pre.2"
   },
