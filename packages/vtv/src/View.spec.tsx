@@ -5,7 +5,7 @@ import View from "./View";
 
 describe("View", () => {
   it("should render successfully", () => {
-    const { baseElement } = render(
+    const { container } = render(
       <View
         name="root"
         onChange={() => {}}
@@ -16,6 +16,7 @@ describe("View", () => {
         theme="dark"
       />
     );
-    expect(baseElement).toBeTruthy();
+    expect(container.querySelector('.vtv-theme-dark')).toBeTruthy();
+    expect(container.querySelector('.vtv-theme-light')).toBeFalsy();
   });
 });
