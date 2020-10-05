@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { render, screen } from "@testing-library/react";
+import userEvent from '@testing-library/user-event';
 
 import View from "./View";
 
@@ -49,6 +50,33 @@ describe("View", () => {
       />
     );
     const el = screen.getByText('hello');
+    expect(el).toBeTruthy();
+  });
+
+  function ExampleView(initialState) {
+    const [viewData, setViewData] = useState(initialState)
+    const {name, value, state} = viewData
+    return (
+      <View
+        onChange={viewData => setViewData(viewData)}
+        onAction={() => {}}
+        onPickId={() => {}}
+        name={name}
+        value={value}
+        state={state}
+        theme="dark"
+      />
+    )
+  }
+
+  it("should expand a node", async () => {
+    const { baseElement } = render(
+      <ExampleView name="root" value={{hello: 'world'}} state={{}} />
+    );
+    expect(screen.queryByText('world')).toBeFalsy();
+    const expandButton = screen.queryByRole('button', {name: 'expand'});
+    userEvent.click(expandButton);
+    const el = screen.queryByText('world');
     expect(el).toBeTruthy();
   });
 });

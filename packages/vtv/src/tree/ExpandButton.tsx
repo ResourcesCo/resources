@@ -10,11 +10,12 @@ export default function ExpandButton({
   context: { theme },
 }) {
   return (
-    <div className={clsx('vtv--expand-button', {expanded})}>
+    <div className={clsx('vtv--expand-button', {expanded})} >
       <button
         onClick={onClick}
         className={clsx({ invisible: disabled })}
         tabIndex={-1}
+        aria-label={expanded ? 'collapse' : 'expand'}
       >
         <FontAwesomeIcon
           icon={expanded ? faCaretDown : faCaretRight}
