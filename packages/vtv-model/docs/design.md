@@ -1,5 +1,6 @@
 # Things to support
 
+- Properties
 - Undo/Redo
 - Collaborative editing
 - Pagination
@@ -12,6 +13,7 @@
 - List available commands
 - Sorting
 - Show node temporarily while undo/redo?
+- Schema
 
 ## Undo/Redo
 
