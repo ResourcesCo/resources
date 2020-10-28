@@ -49,4 +49,11 @@ describe('NodeModel', () => {
     expect(model.children.length).toEqual(1);
     expect(model.children[0].path).toEqual(['hello']);
   });
+
+  it('should load the list of children when expanded', () => {
+    const model = new NodeModel({value: {hello: 'world'}});
+    expect(model.children).toEqual(undefined);
+    model.expand()
+    expect(model.children[0].path).toEqual(['hello']);
+  });
 });
