@@ -9,11 +9,18 @@ image: cypress/browsers:node14.7.0-chrome84
 services:
   - postgres:latest
 
+variables:
+  npm_config_cache: "$CI_PROJECT_DIR/.npm"
+  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
+
 # This folder is cached between builds
 # http://docs.gitlab.com/ce/ci/yaml/README.html#cache
 cache:
+  key: ${CI_COMMIT_REF_SLUG}
   paths:
-    - node_modules/
+    - .npm
+    - cache/Cypress
+    - node_modules
 
 test_e2e:
   script:
