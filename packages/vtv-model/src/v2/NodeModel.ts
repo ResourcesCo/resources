@@ -37,8 +37,8 @@ export default class NodeModel {
       this.isEmpty = isEmpty(this.value);
       this.isExpandable = !this.isEmpty;
       this.isExpanded = expanded === undefined ? false : expanded
-      this.updateChildren();
     }
+    this.updateChildren();
     makeAutoObservable(this);
   }
 
@@ -52,7 +52,7 @@ export default class NodeModel {
   collapse() {
     if (this.isExpandable) {
       this.isExpanded = false;
-      this.children = null;
+      this.updateChildren();
     }
   }
 
@@ -61,6 +61,8 @@ export default class NodeModel {
       this.children = Object.keys(this.value).map(key => (
         new NodeModel({key, value: this.value[key], path: [...this.path, key]})
       ));
+    } else {
+      this.children = undefined;
     }
   }
 }
