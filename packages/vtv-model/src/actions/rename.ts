@@ -33,6 +33,11 @@ export default function rename(treeData, treeUpdate) {
         draftParentState[getStateKey(newKey)] =
           draftParentState[getStateKey(key)]
         delete draftParentState[getStateKey(key)]
+
+        if (treeData.state._showOnly && treeData.state._showOnly.length === treeUpdate.path.length) {
+          const treeDataState = draftState(draft, [])
+          treeDataState._showOnly[treeDataState._showOnly.length - 1] = newKey
+        }
       }
 
       if (!state._editingName) {
