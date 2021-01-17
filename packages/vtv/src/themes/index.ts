@@ -1,10 +1,12 @@
 import light from './light'
 import dark from './dark'
+import blue from './blue'
 import { Theme } from 'vtv'
 
 const themes = {
   light,
   dark,
+  blue,
 }
 
 export default themes

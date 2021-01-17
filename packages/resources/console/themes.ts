@@ -1,5 +1,6 @@
 import vtvDark from 'vtv/themes/dark'
 import vtvLight from 'vtv/themes/light'
+import vtvBlue from 'vtv/themes/blue'
 
 export const shared = {
   fontFamily:
@@ -34,6 +35,33 @@ export const dark = {
   ...vtvDark,
 }
 
+export const blue = {
+  ...shared,
+  base: 'blue',
+  foreground: '#eee',
+  lightTextColor: '#ccc',
+  lighterTextColor: '#aaa',
+  background: '#00008B',
+  backgroundHover: '#0000E7',
+  inputBorder: 'rgb(140, 140, 140)',
+  selectionBackground: 'rgb(68, 68, 153, 0.99)',
+  selectionColor: '#eee',
+  summaryColor: '#aaa',
+  linkColor: '#6fd7d7',
+  inputColor: '#5ac',
+  numberColor: '#9ce',
+  valueColor: '#dd9',
+  menuBackground: '#777',
+  menuHighlight: '#878787',
+  errorColor: '#c00',
+  actionColor: '#999',
+  primaryActionColor: '#aee',
+  actionTextColor: '#111',
+  disabledActionColor: '#575757',
+  disabledActionTextColor: '#999',
+  ...vtvBlue,
+}
+
 export const light = {
   ...shared,
   base: 'light',
@@ -62,7 +90,7 @@ export const light = {
   ...vtvLight,
 }
 
-export const themes = { dark, light }
+export const themes = { dark, light, blue }
 
 export function getTheme(value) {
   if (typeof value === 'string') {
