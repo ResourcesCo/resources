@@ -138,6 +138,44 @@ const actions = {
       }
     },
   },
+  me: {
+    async get({
+      env: { GITHUB_TOKEN: apiToken },
+      env,
+      params: { owner, repo },
+      params,
+      request,
+    }) {
+      const req = {
+        url: `https://api.github.com/user`,
+        method: 'GET',
+        headers: { Authorization: `token ${apiToken}` },
+      }
+      const response = await request(req)
+      if (ok(response)) {
+        return {
+          type: 'tree',
+          value: {
+            input: { params },
+            output: clone(response.body),
+            request: replaceEnv(req, env),
+            response,
+          },
+          state: { _showOnly: ['output'] },
+        }
+      } else {
+        return {
+          type: 'tree',
+          value: {
+            request: replaceEnv(req, env),
+            response,
+            error: 'Error getting current user',
+          },
+          state: { _showOnly: ['error'] },
+        }
+      }
+    },
+  },
 }
 
 async function run({ resourceType, action, env, params, request }) {
@@ -222,6 +260,14 @@ export default async function app(): Promise<AppSpec> {
             params: ['comment'],
           },
           close: {
+            params: [],
+          },
+        },
+      },
+      me: {
+        routes: [{ path: '/github/me' }],
+        actions: {
+          get: {
             params: [],
           },
         },

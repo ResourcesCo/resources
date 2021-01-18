@@ -1,7 +1,7 @@
 import { AppSpec } from '../../app-base/App'
 import { cloneDeep as clone } from 'lodash'
 
-const themes = [{ name: 'dark' }, { name: 'light' }]
+const themes = ['dark', 'light', 'blue'].map((name) => ({ name }))
 
 const actions = {
   themes: {
