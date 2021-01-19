@@ -1,6 +1,7 @@
 import channel from './channel'
 import asana from './asana'
 import github from './github'
+import gitlab from './gitlab'
 import test from './test'
 import random from './random'
 import request from './request'
@@ -12,6 +13,7 @@ const apps = {
   channel,
   asana,
   github,
+  gitlab,
   test,
   random,
   request,

@@ -71,7 +71,7 @@ class ConsoleChannel {
     if (resp.ok) {
       this.config = resp.body
     } else {
-      this.config.apps = { asana: {}, github: {} }
+      this.config.apps = { asana: {}, github: {}, gitlab: {} }
       await this.fileStore.put({ path: 'channel.json', value: this.config })
     }
   }
