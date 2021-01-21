@@ -64,8 +64,6 @@
     "j2ref": "^1.0.0",
     "json-ptr": "^2.0.0",
     "lodash": "^4.17.20",
-    "mobx": "^6.0.4",
-    "mobx-react-lite": "^3.1.6",
     "nanoevents": "^5.1.10",
     "nanoid": "^3.1.20",
     "next": "10.0.5",
