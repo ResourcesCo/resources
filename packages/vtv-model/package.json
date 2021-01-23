@@ -1,6 +1,6 @@
 {
   "name": "vtv-model",
-  "version": "1.0.0-pre.2",
+  "version": "1.0.0-pre.4",
   "dependencies": {
     "immer": "^8.0.1",
     "j2ref": "^1.0.0",

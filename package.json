@@ -41,6 +41,7 @@
     "desktop:build-all": "npm run electron-renderer:build && npm run electron-renderer:export && npm run desktop:renderer:import && npm run desktop:main:import && npm run desktop:main:build",
     "desktop:start": "npm run desktop:build-all && npm run desktop:electron:start",
     "desktop:make": "npm run desktop:build-all && npm run desktop:electron:make",
+    "vtv-model:build": "nx build vtv-model",
     "vtv:build": "nx build vtv && cp -r packages/vtv/src/css dist/packages/vtv/css",
     "resources:build": "nx build resources"
   },
