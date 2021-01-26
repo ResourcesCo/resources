@@ -1,8 +1,10 @@
 {
   "name": "vtv",
-  "version": "1.0.0-canary.19",
+  "version": "1.0.0-canary.23",
   "dependencies": {
-    "vtv-model": "1.0.0-pre.2"
+    "vtv-model": "1.0.0-pre.4",
+    "@braintree/sanitize-url": "^5.0.0",
+    "chroma-js": "^2.1.0"
   },
   "peerDependencies": {
     "react": "^16.13.1",
