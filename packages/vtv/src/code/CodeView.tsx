@@ -17,7 +17,9 @@ import {lintKeymap} from "@codemirror/lint"
 import {jsxLanguage} from "@codemirror/lang-javascript"
 import {oneDarkHighlightStyle} from "@codemirror/theme-one-dark"
 import ActionButton from '../generic/ActionButton'
-import {oneDarkTheme} from './themes/dark'
+import darkTheme from './themes/ui/dark'
+import lightTheme from './themes/ui/light'
+import {defaultHighlightStyle} from "@codemirror/highlight"
 import { codeTypes } from 'vtv-model'
 
 function getMode({ editMode, mediaType }) {
@@ -64,8 +66,11 @@ export default function CodeView({
   useEffect(() => {
     if (container.current) {
       if (!editor) {
+        const themeExtensions = theme.dark ? [darkTheme,
+          oneDarkHighlightStyle] : [lightTheme, defaultHighlightStyle]
         const newEditor = new EditorView({
           state: EditorState.create({
+            doc: initialValue,
             extensions: [
               lineNumbers(),
               highlightSpecialChars(),
@@ -91,8 +96,12 @@ export default function CodeView({
                 ...lintKeymap
               ]),
               new LanguageSupport(jsxLanguage),
-              oneDarkTheme,
-              oneDarkHighlightStyle
+              EditorView.updateListener.of(_update => {
+                if (_update.docChanged) {
+                  setEditing(true)
+                }
+              }),
+              themeExtensions,
             ]
           }),
           parent: container.current
@@ -100,26 +109,24 @@ export default function CodeView({
         setEditor(newEditor)
       }
     }
-  }, [container])
+  }, [container, editor, theme.dark, initialValue])
 
   const save = () => {
-    if (editor !== null) {
-      const newValue = editor.getValue()
-      if (validate(newValue)) {
-        setEditing(false)
-        if (editMode === 'json') {
-          onMessage({
-            path,
-            action: 'editJson',
-            value: JSON.parse(newValue),
-          })
-        } else {
-          onMessage({
-            path,
-            action: 'edit',
-            value: newValue,
-          })
-        }
+    const newValue = editor.state.doc.toString()
+    if (validate(newValue)) {
+      setEditing(false)
+      if (editMode === 'json') {
+        onMessage({
+          path,
+          action: 'editJson',
+          value: JSON.parse(newValue),
+        })
+      } else {
+        onMessage({
+          path,
+          action: 'edit',
+          value: newValue,
+        })
       }
     }
   }

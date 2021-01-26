@@ -1,19 +1,22 @@
 import {EditorView} from "@codemirror/view"
-import {Extension} from "@codemirror/state"
+
+// Based on https://github.com/codemirror/theme-one-dark
+// Copyright (C) 2018-2021 by Marijn Haverbeke <marijnh@gmail.com> and others
+// MIT License: https://github.com/codemirror/theme-one-dark/blob/main/LICENSE
 
 // Using https://github.com/one-dark/vscode-one-dark-theme/ as reference for the colors
 
-const ivory = "#abb2bf",
-  darkBackground = "#21252b",
+const foreground = "#403f53",
+  lightBackground = "#FBFBFB",
   highlightBackground = "#2c313a",
-  background = "#282c34",
-  selection = "#3E4451",
+  background = "#FBFBFB",
+  selection = "#339cec33",
   cursor = "#528bff"
 
 /// The editor theme styles for One Dark.
-export const oneDarkTheme = EditorView.theme({
+export default EditorView.theme({
   $: {
-    color: ivory,
+    color: foreground,
     backgroundColor: background,
     caretColor: cursor,
     "&$focused": {
@@ -24,19 +27,19 @@ export const oneDarkTheme = EditorView.theme({
   "$$focused $cursor": {borderLeftColor: cursor},
   "$$focused $selectionBackground": {backgroundColor: selection},
 
-  $panels: {backgroundColor: darkBackground, color: ivory},
-  "$panels.top": {borderBottom: "2px solid black"},
-  "$panels.bottom": {borderTop: "2px solid black"},
+  $panels: {backgroundColor: lightBackground, color: foreground},
+  "$panels.top": {borderBottom: "2px solid #d9d9d9"},
+  "$panels.bottom": {borderTop: "2px solid #d9d9d9"},
 
   $searchMatch: {
-    backgroundColor: "#72a1ff59",
-    outline: "1px solid #457dff"
+    backgroundColor: "#339cec33",
+    outline: "1px solid #d9d9d9"
   },
   "$searchMatch.selected": {
-    backgroundColor: "#6199ff2f"
+    backgroundColor: "#339cec33"
   },
 
-  $activeLine: {backgroundColor: highlightBackground},
+  $activeLine: {backgroundColor: "#F0F0F0"},
   $selectionMatch: {backgroundColor: "#aafe661a"},
 
   "$matchingBracket, $nonmatchingBracket": {
@@ -59,12 +62,12 @@ export const oneDarkTheme = EditorView.theme({
 
   $tooltip: {
     border: "1px solid #181a1f",
-    backgroundColor: darkBackground
+    backgroundColor: lightBackground
   },
   "$tooltip.autocomplete": {
     "& > ul > li[aria-selected]": {
       backgroundColor: highlightBackground,
-      color: ivory
+      color: foreground
     }
   }
-}, {dark: true})
+}, {dark: false})
