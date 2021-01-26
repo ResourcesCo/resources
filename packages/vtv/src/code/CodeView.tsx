@@ -1,6 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import {EditorView, keymap, highlightSpecialChars, drawSelection, highlightActiveLine} from "@codemirror/view"
+import {EditorState, Prec} from "@codemirror/state"
+import {history, historyKeymap} from "@codemirror/history"
+import {foldGutter, foldKeymap} from "@codemirror/fold"
+import {indentOnInput, LanguageSupport} from "@codemirror/language"
+import {lineNumbers} from "@codemirror/gutter"
+import {defaultKeymap} from "@codemirror/commands"
+import {bracketMatching} from "@codemirror/matchbrackets"
+import {closeBrackets, closeBracketsKeymap} from "@codemirror/closebrackets"
+import {searchKeymap, highlightSelectionMatches} from "@codemirror/search"
+import {autocompletion, completionKeymap} from "@codemirror/autocomplete"
+import {commentKeymap} from "@codemirror/comment"
+import {rectangularSelection} from "@codemirror/rectangular-selection"
+import {lintKeymap} from "@codemirror/lint"
+import {jsxLanguage} from "@codemirror/lang-javascript"
+import {oneDarkHighlightStyle} from "@codemirror/theme-one-dark"
 import ActionButton from '../generic/ActionButton'
+import {oneDarkTheme} from './themes/dark'
 import { codeTypes } from 'vtv-model'
 
 function getMode({ editMode, mediaType }) {
@@ -31,14 +48,59 @@ export default function CodeView({
   value,
   path,
   mediaType,
-  context: { onMessage, codeMirrorComponent, theme },
+  context: { onMessage, theme },
   context,
 }) {
   const [editor, setEditor] = useState(null)
   const [editing, setEditing] = useState(false)
   const [error, setError] = useState(false)
+  const container = useRef(null)
 
-  const CodeMirror = codeMirrorComponent
+  const initialValue =
+    editMode === 'json' ? JSON.stringify(value, null, 2) : value
+
+  const mode = getMode({ editMode, mediaType })
+
+  useEffect(() => {
+    if (container.current) {
+      if (!editor) {
+        const newEditor = new EditorView({
+          state: EditorState.create({
+            extensions: [
+              lineNumbers(),
+              highlightSpecialChars(),
+              history(),
+              foldGutter(),
+              drawSelection(),
+              EditorState.allowMultipleSelections.of(true),
+              indentOnInput(),
+              bracketMatching(),
+              closeBrackets(),
+              autocompletion(),
+              rectangularSelection(),
+              highlightActiveLine(),
+              highlightSelectionMatches(),
+              keymap.of([
+                ...closeBracketsKeymap,
+                ...defaultKeymap,
+                ...searchKeymap,
+                ...historyKeymap,
+                ...foldKeymap,
+                ...commentKeymap,
+                ...completionKeymap,
+                ...lintKeymap
+              ]),
+              new LanguageSupport(jsxLanguage),
+              oneDarkTheme,
+              oneDarkHighlightStyle
+            ]
+          }),
+          parent: container.current
+        })
+        setEditor(newEditor)
+      }
+    }
+  }, [container])
 
   const save = () => {
     if (editor !== null) {
@@ -81,27 +143,11 @@ export default function CodeView({
     }
   }
 
-  const initialValue =
-    editMode === 'json' ? JSON.stringify(value, null, 2) : value
-
-  const mode = getMode({ editMode, mediaType })
-
   return (
     <div className="vtv--code-view">
       <div className={error ? 'vtv--code-view--error' : ''}>
-        <div className="vtv--code-view--textarea-wrapper">
-          <CodeMirror
-            value={initialValue}
-            onChange={() => setEditing(true)}
-            editorDidMount={(editor) => setEditor(editor)}
-            editorWillUnmount={() => setEditor(null)}
-            options={{
-              theme: theme.codeTheme,
-              lineWrapping: true,
-              lineNumbers: true,
-              ...mode,
-            }}
-          />
+        <div className="vtv--code-view--textarea-wrapper" ref={container}>
+          
         </div>
         {error && <div className="vtv--code-view--error-message">Invalid JSON</div>}
       </div>

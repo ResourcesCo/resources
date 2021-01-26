@@ -61,6 +61,7 @@ const ChannelInput: FunctionComponent<ChannelInputProps> = ({
   return (
     <div className="chat-input">
       <TextareaAutosize
+        className="chat-input-text"
         placeholder=">"
         value={text}
         onChange={onTextChange}
@@ -85,7 +86,7 @@ const ChannelInput: FunctionComponent<ChannelInputProps> = ({
           align-items: center;
         }
 
-        div :global(textarea) {
+        .chat-input :global(.chat-input-text) {
           flex-grow: 1;
           background: none;
           width: 100%;

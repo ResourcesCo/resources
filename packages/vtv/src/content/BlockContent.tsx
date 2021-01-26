@@ -1,5 +1,5 @@
 import React from 'react'
-import CodeView from './CodeView'
+import CodeView from '../code/CodeView'
 import ImageView from './ImageView'
 
 export default function BlockContent({

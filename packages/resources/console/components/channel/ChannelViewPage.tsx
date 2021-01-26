@@ -8,7 +8,6 @@ import ConsoleChannel from 'api/channel/ConsoleChannel'
 
 interface ChannelViewPageProps {
   storageType?: string
-  codeMirrorComponent?: ComponentType
 }
 
 export default class ChannelViewPage extends PureComponent<

@@ -18,7 +18,6 @@ interface MessageViewProps {
   code?: any
   text?: string
   url?: string
-  codeMirrorComponent?: ComponentType
   onPickId: Function
   onSubmitForm: Function
   onMessage: Function
@@ -39,7 +38,6 @@ const MessageView: FunctionComponent<MessageViewProps> = ({
   code,
   text,
   url,
-  codeMirrorComponent,
   onPickId,
   onSubmitForm,
   onMessage,
@@ -60,7 +58,6 @@ const MessageView: FunctionComponent<MessageViewProps> = ({
         onPickId={onPickId}
         message={message}
         onSubmitForm={onSubmitForm}
-        codeMirrorComponent={codeMirrorComponent}
         theme={theme}
       />
     )

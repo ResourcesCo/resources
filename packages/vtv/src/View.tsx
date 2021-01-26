@@ -13,7 +13,6 @@ export default function View({
   onPickId,
   theme,
   clipboard = undefined,
-  codeMirrorComponent = undefined,
   name,
   value,
   state = {},
@@ -62,7 +61,6 @@ export default function View({
           clipboard: clipboard || defaultClipboard,
           theme: getTheme(theme),
           onPickId,
-          codeMirrorComponent,
         }}
       />
     </div>
