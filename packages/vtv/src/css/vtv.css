@@ -47,8 +47,3 @@
 .vtv--view a:hover {
   text-decoration: underline;
 }
-
-.vtv--view ::selection {
-  color: var(--vtv-selection-color);
-  background: var(--vtv-selection-background);
-}

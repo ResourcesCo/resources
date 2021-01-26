@@ -15,8 +15,10 @@ export const oneDarkTheme = EditorView.theme({
   $: {
     color: ivory,
     backgroundColor: background,
-    "& ::selection": {backgroundColor: selection},
-    caretColor: cursor
+    caretColor: cursor,
+    "&$focused": {
+      outline: "none"
+    }
   },
 
   "$$focused $cursor": {borderLeftColor: cursor},

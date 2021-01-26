@@ -110,11 +110,6 @@ export default class EmbedPage extends PureComponent<EmbedPageProps> {
             text-decoration: underline;
           }
 
-          ::selection {
-            color: ${theme.selectionColor};
-            background: ${theme.selectionBackground};
-          }
-
           #__next-prerender-indicator {
             display: none;
           }

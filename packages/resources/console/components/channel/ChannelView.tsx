@@ -373,10 +373,6 @@ export default class ChannelView extends PureComponent<
             padding: 3px;
           }
 
-          .chat :global(::selection) {
-            color: ${theme.selectionColor};
-            background: ${theme.selectionBackground};
-          }
         `}</style>
         <Head>
           <style type="text/css" key="customScrollbars">{`

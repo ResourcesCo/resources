@@ -131,11 +131,6 @@ export default class ChannelViewPage extends PureComponent<
             text-decoration: underline;
           }
 
-          ::selection {
-            color: ${theme.selectionColor};
-            background: ${theme.selectionBackground};
-          }
-
           #__next-prerender-indicator {
             display: none;
           }
