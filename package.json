@@ -57,6 +57,7 @@
     "@codemirror/gutter": "^0.17.1",
     "@codemirror/highlight": "^0.17.1",
     "@codemirror/history": "^0.17.2",
+    "@codemirror/lang-html": "^0.17.1",
     "@codemirror/lang-javascript": "^0.17.1",
     "@codemirror/language": "^0.17.4",
     "@codemirror/lint": "^0.17.1",
