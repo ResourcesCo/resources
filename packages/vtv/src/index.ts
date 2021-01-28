@@ -49,7 +49,6 @@ export interface Context {
   clipboard: Clipboard
   theme: Theme
   onPickId: Function
-  codeMirrorComponent?: ComponentType
 }
 
 export default View

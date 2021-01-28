@@ -19,7 +19,6 @@ const Tree: FunctionComponent<TreeProps> = ({
   onPickId,
   message,
   onSubmitForm,
-  codeMirrorComponent,
   theme,
 }) => {
   const onChange = ({ name, value, state }) => {
@@ -51,7 +50,6 @@ const Tree: FunctionComponent<TreeProps> = ({
         onChange={onChange}
         onAction={(m) => onSubmitForm({ commandId, message, formData: m })}
         onPickId={handlePickId}
-        codeMirrorComponent={codeMirrorComponent}
       />
       <style jsx>{`
         div {

@@ -18,7 +18,6 @@ interface MessageListProps {
   onPickId
   onSubmitForm
   onMessage
-  codeMirrorComponent
   theme
 }
 
@@ -32,7 +31,6 @@ class MessageList extends PureComponent<MessageListProps> {
       onPickId,
       onSubmitForm,
       onMessage,
-      codeMirrorComponent,
       theme,
     } = this.props
 
@@ -59,7 +57,6 @@ class MessageList extends PureComponent<MessageListProps> {
                 <Message
                   key={i}
                   theme={theme}
-                  codeMirrorComponent={codeMirrorComponent}
                   onPickId={onPickId}
                   onSubmitForm={onSubmitForm}
                   onMessage={onMessage}
@@ -96,7 +93,6 @@ class MessageList extends PureComponent<MessageListProps> {
 
 interface ChannelViewProps {
   onFocusChange?: FocusEventHandler
-  codeMirrorComponent?: ComponentType
   theme: Theme
   onThemeChange: Function
   channel: ConsoleChannel
@@ -335,7 +331,7 @@ export default class ChannelView extends PureComponent<
   }
 
   render() {
-    const { onFocusChange, codeMirrorComponent, theme } = this.props
+    const { onFocusChange, theme } = this.props
     const { text, commandIds, commands, lastCommandId } = this.state
     const scrollRef = this.scrollRef
 
@@ -349,7 +345,6 @@ export default class ChannelView extends PureComponent<
           onPickId={this.handlePickId}
           onSubmitForm={this.handleSubmitForm}
           onMessage={this.handleAddMessage}
-          codeMirrorComponent={codeMirrorComponent}
           theme={theme}
         />
         <div className="channel-input-wrapper">
@@ -378,10 +373,6 @@ export default class ChannelView extends PureComponent<
             padding: 3px;
           }
 
-          .chat :global(::selection) {
-            color: ${theme.selectionColor};
-            background: ${theme.selectionBackground};
-          }
         `}</style>
         <Head>
           <style type="text/css" key="customScrollbars">{`

@@ -8,7 +8,6 @@ import ConsoleChannel from 'api/channel/ConsoleChannel'
 
 interface ChannelViewPageProps {
   storageType?: string
-  codeMirrorComponent?: ComponentType
 }
 
 export default class ChannelViewPage extends PureComponent<
@@ -130,11 +129,6 @@ export default class ChannelViewPage extends PureComponent<
 
           a:hover {
             text-decoration: underline;
-          }
-
-          ::selection {
-            color: ${theme.selectionColor};
-            background: ${theme.selectionBackground};
           }
 
           #__next-prerender-indicator {

@@ -4,5 +4,6 @@
     "**/workspace/**",
     "**/out/**"
   ],
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "github.remoteName": "github"
 }

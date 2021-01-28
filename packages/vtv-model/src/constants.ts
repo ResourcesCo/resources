@@ -6,40 +6,22 @@ export const codeTypes = [
     editorMode: 'javascript',
     mediaType: 'application/javascript',
   },
-  { name: 'CSS', editorMode: 'css', mediaType: 'text/css' },
-  { name: 'HTML', editorMode: 'htmlmixed', mediaType: 'text/html' },
-  {
-    name: 'Markdown',
-    editorMode: {
-      name: 'gfm',
-      tokenTypeOverrides: {
-        emoji: 'emoji',
-      },
-    },
-    mediaType: 'text/markdown',
-  },
   {
     name: 'JSON',
-    editorMode: { mode: 'javascript', json: true },
+    editorMode: 'json',
     mediaType: 'application/json',
   },
   {
-    name: 'YAML',
-    editorMode: { mode: 'yaml', json: true },
-    mediaType: 'text/x-yaml',
+    name: 'Markdown',
+    editorMode: 'markdown',
+    mediaType: 'text/markdown',
   },
-  {
-    name: 'CSV',
-    editorMode: null,
-    mediaType: 'text/csv',
-  },
+  { name: 'HTML', editorMode: 'html', mediaType: 'text/html' },
+  { name: 'CSS', editorMode: 'css', mediaType: 'text/css' },
   {
     name: 'Python',
     editorMode: 'python',
     indentUnit: 4,
     mediaType: 'text/x-python',
   },
-  { name: 'Java', editorMode: 'text/x-java', mediaType: 'text/x-java' },
-  { name: 'Kotlin', editorMode: 'text/x-kotlin', mediaType: 'text/x-kotlin' },
-  { name: 'Swift', editorMode: 'text/x-swift', mediaType: 'text/x-swift' },
 ]
