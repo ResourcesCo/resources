@@ -2,6 +2,7 @@
   display: flex;
   width: 100%;
   flex-grow: 1;
+  color: var(--vtv-foreground);
 }
 .vtv--view div.vtv--inline-value textarea.vtv--inline-value--textarea {
   background: none;

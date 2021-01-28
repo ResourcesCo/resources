@@ -1,9 +1,9 @@
 import { RuleList } from 'vtv-model'
 import Clipboard from './util/Clipboard'
-import { ComponentType } from 'react'
 import View from './View'
 export { default as Textarea } from './generic/Textarea'
 export { getTheme } from './themes'
+export { default as CodeView } from './code/CodeView'
 
 export type Path = string[]
 
@@ -41,14 +41,14 @@ export interface Theme {
 export interface Context {
   document: {
     name?: string
-    value: any
-    state: any
+    value: Record<string, unknown>
+    state: Record<string, unknown>
   }
   ruleList: RuleList
-  onMessage: Function
+  onMessage(message: Record<string, unknown>): void
   clipboard: Clipboard
   theme: Theme
-  onPickId: Function
+  onPickId(string): void
 }
 
 export default View
