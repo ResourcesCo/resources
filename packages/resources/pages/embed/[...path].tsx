@@ -5,10 +5,6 @@ import { useState } from 'react'
 import ConsoleChannel from 'api/channel/ConsoleChannel'
 import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
 
-const CodeMirror = dynamic(() => import('../../components/CodeMirror'), {
-  ssr: false,
-})
-
 function Embed({}) {
   const router = useRouter()
   const [workspace, setWorkspace] = useState<ConsoleWorkspace>(undefined)
