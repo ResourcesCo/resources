@@ -7,7 +7,7 @@ import {
   drawSelection,
   highlightActiveLine,
 } from '@codemirror/view'
-import { EditorState, tagExtension, Prec } from '@codemirror/state'
+import { EditorState, tagExtension } from '@codemirror/state'
 import { history, historyKeymap } from '@codemirror/history'
 import { foldGutter, foldKeymap } from '@codemirror/fold'
 import { indentOnInput, LanguageSupport } from '@codemirror/language'
@@ -23,8 +23,6 @@ import { lintKeymap } from '@codemirror/lint'
 import { jsxLanguage } from '@codemirror/lang-javascript'
 import { htmlLanguage } from '@codemirror/lang-html'
 import ActionButton from '../generic/ActionButton'
-import { defaultHighlightStyle } from '@codemirror/highlight'
-import pickBy from 'lodash/pickBy'
 import darkTheme from './themes/ui/dark'
 import darkHighlightStyle from './themes/highlight/dark'
 import lightTheme from './themes/ui/light'
@@ -34,23 +32,13 @@ import { codeTypes } from 'vtv-model'
 const editorThemeTag = Symbol('editorTheme')
 const highlightThemeTag = Symbol('highlightTheme')
 const languageTag = Symbol('languageTag')
-const themeReconfigure = {
-  dark: {
-    [editorThemeTag]: darkTheme,
-    [highlightThemeTag]: darkHighlightStyle,
-  },
-  light: {
-    [editorThemeTag]: lightTheme,
-    [highlightThemeTag]: lightHighlightStyle,
-  },
+const themeExtensions = {
+  dark: [darkTheme, darkHighlightStyle],
+  light: [lightTheme, lightHighlightStyle],
 }
-const languageReconfigure = {
-  javascript: {
-    [languageTag]: new LanguageSupport(jsxLanguage)
-  },
-  html: {
-    [languageTag]: new LanguageSupport(htmlLanguage)
-  },
+const languageExtensions = {
+  javascript: [new LanguageSupport(jsxLanguage)],
+  html: [new LanguageSupport(htmlLanguage)]
 }
 
 function getMode({ editMode, mediaType }) {
@@ -123,15 +111,13 @@ export default function CodeView({
           ...completionKeymap,
           ...lintKeymap,
         ]),
-        Prec.fallback(defaultHighlightStyle),
-        tagExtension(languageTag, languageReconfigure[languageName][languageTag]),
+        ...languageExtensions[languageName],
+        ...themeExtensions[codeThemeName],
         EditorView.updateListener.of((update) => {
           if (update.docChanged && !((update.transactions || [])[0] || {}).reconfigure) {
             setEditing(true)
           }
         }),
-        tagExtension(editorThemeTag, themeReconfigure[codeThemeName][editorThemeTag]),
-        tagExtension(highlightThemeTag, themeReconfigure[codeThemeName][highlightThemeTag]),
       ]
       if (!editor.current) {
         editor.current = new EditorView({
@@ -152,19 +138,6 @@ export default function CodeView({
           }),
           parent: container.current,
         })
-        // TODO: figure out how to use reconfigure
-        // const reconfigure = pickBy({
-        //   ...(languageReconfigure[languageName]),
-        //   ...(themeReconfigure[codeThemeName]),
-        // })
-        // editor.current.dispatch({
-        //   reconfigure,
-        // });
-        // editor.current.dispatch({
-        //   reconfigure: {
-        //     full: extensions,
-        //   }
-        // })
       }
     }
   }, [container, editor, codeThemeName, languageName, initialValue])
