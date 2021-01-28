@@ -10,7 +10,7 @@ import {
 import { EditorState, tagExtension } from '@codemirror/state'
 import { history, historyKeymap } from '@codemirror/history'
 import { foldGutter, foldKeymap } from '@codemirror/fold'
-import { indentOnInput, LanguageSupport } from '@codemirror/language'
+import { indentOnInput, LanguageSupport, LanguageDescription } from '@codemirror/language'
 import { lineNumbers } from '@codemirror/gutter'
 import { defaultKeymap } from '@codemirror/commands'
 import { bracketMatching } from '@codemirror/matchbrackets'
@@ -22,6 +22,10 @@ import { rectangularSelection } from '@codemirror/rectangular-selection'
 import { lintKeymap } from '@codemirror/lint'
 import { jsxLanguage } from '@codemirror/lang-javascript'
 import { htmlLanguage } from '@codemirror/lang-html'
+import { cssLanguage } from '@codemirror/lang-css'
+import { pythonLanguage } from '@codemirror/lang-python'
+import { markdown } from '@codemirror/lang-markdown'
+import { jsonLanguage } from '@codemirror/lang-json'
 import ActionButton from '../generic/ActionButton'
 import darkTheme from './themes/ui/dark'
 import darkHighlightStyle from './themes/highlight/dark'
@@ -29,25 +33,38 @@ import lightTheme from './themes/ui/light'
 import lightHighlightStyle from './themes/highlight/light'
 import { codeTypes } from 'vtv-model'
 
-const editorThemeTag = Symbol('editorTheme')
-const highlightThemeTag = Symbol('highlightTheme')
-const languageTag = Symbol('languageTag')
 const themeExtensions = {
   dark: [darkTheme, darkHighlightStyle],
   light: [lightTheme, lightHighlightStyle],
 }
+const langs = {
+  javascript: new LanguageSupport(jsxLanguage),
+  css: new LanguageSupport(cssLanguage),
+  python: new LanguageSupport(pythonLanguage),
+  json: new LanguageSupport(jsonLanguage),
+  html: undefined,
+}
+langs.html = new LanguageSupport(htmlLanguage, [langs.css, langs.javascript])
 const languageExtensions = {
-  javascript: [new LanguageSupport(jsxLanguage)],
-  html: [new LanguageSupport(htmlLanguage)]
+  javascript: [langs.javascript],
+  json: [langs.json],
+  html: [langs.html],
+  css: [langs.css],
+  python: [langs.python],
+  markdown: [markdown({codeLanguages: [
+    LanguageDescription.of({name: 'javascript', alias: ['js', 'jsx'], async load() { return langs.javascript}}),
+    LanguageDescription.of({name: 'json', async load() { return langs.json}}),
+    LanguageDescription.of({name: 'html', alias: ['htm'], async load() { return langs.html}}),
+    LanguageDescription.of({name: 'css', async load() { return langs.css}}),
+    LanguageDescription.of({name: 'python', alias: ['py'], async load() { return langs.python}}),
+  ]})],
+  plainText: [],
 }
 
 function getMode({ editMode, mediaType }) {
   if (editMode === 'json') {
     return {
-      mode: {
-        editorMode: 'javascript',
-        json: true,
-      },
+      editorMode: 'json',
     }
   } else if (mediaType) {
     const codeType = codeTypes.find(
@@ -82,7 +99,7 @@ export default function CodeView({
 
   const mode = getMode({ editMode, mediaType })
 
-  const languageName = mode.editorMode === 'html' ? 'html' : 'javascript'
+  const languageName = (mode.editorMode || '').toString() in languageExtensions ? mode.editorMode : 'plainText'
   const codeThemeName = theme.dark ? 'dark' : 'light'
 
   useEffect(() => {
