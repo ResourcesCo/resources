@@ -4,11 +4,12 @@ import insertTextAtCursor from 'insert-text-at-cursor'
 import { pick, pickBy, identity, get as getNested } from 'lodash'
 import { parseCommand, updateTree, removeTemporaryState } from 'vtv-model'
 import Message from '../messages/Message'
-import ChannelInput from './ChannelInput'
+import ChannelInput, { ChannelInputMethods } from './ChannelInput'
 import { Theme } from 'vtv'
 import ConsoleCommand from 'api/channel/ConsoleCommand'
 import ConsoleChannel from 'api/channel/ConsoleChannel'
 import { MemoryStore, LocalStorageStore } from '../../store'
+import { EditorView } from '@codemirror/view'
 
 interface MessageListProps {
   commands: { [key: string]: ConsoleCommand }
@@ -102,7 +103,6 @@ interface ChannelViewProps {
 interface ChannelViewState {
   commandIds: string[]
   commands: { [key: string]: ConsoleCommand }
-  text: string
   lastCommandId?: string
 }
 
@@ -111,18 +111,17 @@ export default class ChannelView extends PureComponent<
   ChannelViewState
 > {
   scrollRef: React.RefObject<HTMLDivElement>
-  textareaRef: React.RefObject<HTMLTextAreaElement>
+  channelInputRef: React.RefObject<ChannelInputMethods>
 
   constructor(props) {
     super(props)
     this.state = {
       commandIds: props.channel.messageIds,
       commands: props.channel.messages,
-      text: '',
       lastCommandId: undefined,
     }
     this.scrollRef = React.createRef()
-    this.textareaRef = React.createRef()
+    this.channelInputRef = React.createRef()
   }
 
   setCommandLoading(c, loading) {
@@ -277,18 +276,18 @@ export default class ChannelView extends PureComponent<
     this.setMessageState({ messageIds: commandIds, messages: commands })
   }
 
-  send = async (bigMessage) => {
+  send = (message) => {
     const { channel } = this.props
-    const message = bigMessage ? bigMessage : this.state.text
     const parsed = parseCommand(message)
     if (Array.isArray(parsed) && parsed.length) {
-      this.setState({ text: '' })
-      await channel.runCommand({
+      channel.runCommand({
         message,
         parsed,
         onMessage: this.addMessages,
       })
+      return true
     }
+    return false
   }
 
   scrollToBottom = () => {
@@ -299,14 +298,12 @@ export default class ChannelView extends PureComponent<
     }, 10)
   }
 
-  handleTextChange = ({ target: { value: text } }) => {
-    this.setState({ text })
-  }
-
-  handlePickId = (id) => {
-    const el = this.textareaRef.current
-    insertTextAtCursor(el, `${id}`)
-    el.focus()
+  handlePickId = (text) => {
+    // TODO: insert text
+    // const el = this.textareaRef.current
+    // insertTextAtCursor(el, `${id}`)
+    // el.focus()
+    this.channelInputRef.current.insertAction(text)
   }
 
   handleSubmitForm = async ({ commandId, formData, message }) => {
@@ -332,7 +329,7 @@ export default class ChannelView extends PureComponent<
 
   render() {
     const { onFocusChange, theme } = this.props
-    const { text, commandIds, commands, lastCommandId } = this.state
+    const { commandIds, commands, lastCommandId } = this.state
     const scrollRef = this.scrollRef
 
     return (
@@ -349,9 +346,7 @@ export default class ChannelView extends PureComponent<
         />
         <div className="channel-input-wrapper">
           <ChannelInput
-            textareaRef={this.textareaRef}
-            text={text}
-            onTextChange={this.handleTextChange}
+            ref={this.channelInputRef}
             onFocusChange={onFocusChange}
             onSend={this.send}
             theme={theme}

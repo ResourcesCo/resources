@@ -6,15 +6,15 @@
 
 ## web app
 
-It's a Next.js web app. Run `yarn dev` to run the development server or
-`yarn build` to build it.
+It's a Next.js web app. Run `npm run dev` to run the development server or
+`npm run build` to build it.
 
 ## desktop app
 
 To build and run the desktop app:
 
 ```bash
-yarn desktop:start
+npm run desktop:start
 ```
 
 This runs builds in the repository root (`./`) and in `./packages/desktop`.
@@ -26,5 +26,38 @@ To package the desktop app into a `.app` inside a `.zip` for OS X
 to be defined for it to be signed for distribution):
 
 ```bash
-yarn desktop:make
+npm run desktop:make
 ```
+
+## building and publishing libraries
+
+Install [npm-check-updates][ncu]:
+
+```bash
+npm i -g npm-check-updates
+```
+
+### vtv-model
+
+First, update the version number in `packages/vtv-model/package.json`
+
+```bash
+nx build vtv-model
+cd dist/packages/vtv-model
+npm publish
+```
+
+### vtv
+
+First, update the version number in `packages/vtv/package.json`
+
+```bash
+cd packages/vtv
+ncu -u vtv-model
+cd ../..
+npm run vtv:build
+cd dist/packages/vtv
+npm publish
+```
+
+[ncu]: https://www.npmjs.com/package/npm-check-updates

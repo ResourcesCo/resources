@@ -6,18 +6,19 @@ interface ActionButtonProps {
   primary: boolean
   children: ReactNode
   context: Context
-  [key: string]: any
+  [key: string]: unknown
 }
 
-export default React.forwardRef<HTMLButtonElement, ActionButtonProps>(
-  function ActionButton(
-    { primary = false, children, context: { theme }, ...props },
-    ref
-  ) {
+const ActionButton = React.forwardRef<HTMLButtonElement, ActionButtonProps>(
+  ({ primary = false, ...props }, ref) => {
     return (
-      <button ref={ref} className={clsx("vtv--generic-action-button--button", { primary })} {...props}>
-        {children}
-      </button>
+      <button
+        ref={ref}
+        className={clsx('vtv--generic-action-button--button', { primary })}
+        {...props}
+      />
     )
   }
 )
+
+export default ActionButton
