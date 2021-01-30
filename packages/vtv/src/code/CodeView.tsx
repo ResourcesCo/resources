@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, FunctionComponent } from 'react'
+import React, { useState, useRef, FunctionComponent } from 'react'
 import { EditorView } from '@codemirror/view'
 import CodeEditor from './CodeEditor'
 import ActionButton from '../generic/ActionButton'
@@ -44,7 +44,7 @@ const CodeView: FunctionComponent<CodeViewProps> = ({
 }) => {
   const [editing, setEditing] = useState(false)
   const [error, setError] = useState(false)
-  const editor = useRef(null)
+  const editorViewRef = useRef<EditorView>()
 
   const updateListener = EditorView.updateListener.of((update) => {
     if (update.docChanged && !((update.transactions || [])[0] || {}).reconfigure) {
@@ -60,7 +60,9 @@ const CodeView: FunctionComponent<CodeViewProps> = ({
   const codeThemeName = theme.dark ? 'dark' : 'light'
 
   const save = () => {
-    const newValue = editor.current.state.doc.toString()
+    if (!editorViewRef.current) return;
+    
+    const newValue = editorViewRef.current.state.doc.toString()
     if (validate(newValue)) {
       setEditing(false)
       if (editMode === 'json') {
@@ -103,7 +105,7 @@ const CodeView: FunctionComponent<CodeViewProps> = ({
       <div className={error ? 'vtv--code-view--error' : ''}>
         <CodeEditor
           initialValue={initialValue}
-          editorViewRef={editor}
+          editorViewRef={editorViewRef}
           language={languageName}
           theme={codeThemeName}
           className="vtv--code-view--textarea-wrapper"

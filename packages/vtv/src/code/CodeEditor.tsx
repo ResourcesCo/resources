@@ -6,10 +6,11 @@ import React, {
 } from 'react'
 import {
   EditorView,
-  keymap,
   highlightSpecialChars,
   drawSelection,
   highlightActiveLine,
+  KeyBinding,
+  keymap,
 } from '@codemirror/view'
 import { EditorState, Extension, tagExtension } from '@codemirror/state'
 import { history, historyKeymap } from '@codemirror/history'
@@ -108,30 +109,33 @@ const languageExtensions = {
 interface CodeEditorProps {
   initialValue?: string
   editorViewRef: MutableRefObject<EditorView>
-  language: string
-  theme: string
+  language?: string
+  theme?: string
   additionalExtensions?: Extension[]
+  customKeymap?: readonly KeyBinding[]
+  showLineNumbers?: boolean
   className?: string
 }
 
 const CodeEditor: FunctionComponent<CodeEditorProps> = ({
   initialValue = '',
   editorViewRef,
-  language,
-  theme,
+  language = undefined,
+  theme = 'dark',
   additionalExtensions = [],
+  customKeymap = [],
+  showLineNumbers = true,
   className = '',
 }) => {
-  const containerRef = useRef(null)
+  const containerRef = useRef()
   const prevConfigRef = useRef({ language: undefined, theme: undefined })
 
   useEffect(() => {
     const currentConfig = { language, theme }
     if (containerRef.current) {
       if (!editorViewRef.current) {
-        console.log('building')
         const extensions = [
-          lineNumbers(),
+          ...(showLineNumbers ? [lineNumbers()] : []),
           highlightSpecialChars(),
           history(),
           foldGutter(),
@@ -145,6 +149,7 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = ({
           highlightActiveLine(),
           highlightSelectionMatches(),
           keymap.of([
+            ...customKeymap,
             ...closeBracketsKeymap,
             ...defaultKeymap,
             ...searchKeymap,
