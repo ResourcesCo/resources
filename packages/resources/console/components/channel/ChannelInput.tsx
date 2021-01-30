@@ -11,8 +11,8 @@ import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
 //import TextareaAutosize from 'react-autosize-textarea'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Theme, CodeEditor } from 'vtv'
-import { EditorView } from '@codemirror/view'
-import { EditorSelection, StateCommand } from '@codemirror/state'
+import { EditorView, Command } from '@codemirror/view'
+import { EditorSelection } from '@codemirror/state'
 import { insertNewlineAndIndent } from '@codemirror/commands'
 
 export interface ChannelInputMethods {
@@ -51,13 +51,11 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
       }
     }, [editorViewRef])
 
-    const catchEnter: StateCommand = ({state, dispatch}) => {
-      if (onSend(state.doc.toString())) {
-        editorViewRef.current.dispatch({
-          changes: [{from: 0, to: state.doc.length, insert: ''}],
-          selection: EditorSelection.create([
-            EditorSelection.range(0, 0),
-          ])
+    const sendMessage: Command = (view) => {
+      if (onSend(view.state.doc.toString())) {
+        view.dispatch({
+          changes: [{ from: 0, to: view.state.doc.length, insert: '' }],
+          selection: EditorSelection.create([EditorSelection.range(0, 0)]),
         })
         return true
       }
@@ -66,7 +64,7 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
     const customKeymap = [
       {
         key: 'Enter',
-        run: catchEnter,
+        run: sendMessage,
       },
       {
         key: 'Shift-Enter',
@@ -74,8 +72,7 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
       },
     ]
 
-    const eventHandlers = EditorView.domEventHandlers({
-    })
+    const eventHandlers = EditorView.domEventHandlers({})
 
     const handleFocusChange = (focused) => {
       if (onFocusChange) {
@@ -118,7 +115,7 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
           showLineNumbers={false}
           className="chat-input-text"
         />
-        <button onClick={(e) => onSend()}>
+        <button onClick={() => sendMessage(editorViewRef.current)} className="send">
           <span className="rocket">
             <FontAwesomeIcon icon={faSpaceShuttle} />
           </span>
@@ -143,7 +140,7 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
             font-family: ${theme.fontFamily};
           }
 
-          button {
+          .chat-input .send {
             background: none;
             outline: none;
             border: none;
