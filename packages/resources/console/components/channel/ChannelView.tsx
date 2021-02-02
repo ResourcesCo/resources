@@ -327,6 +327,22 @@ export default class ChannelView extends PureComponent<
     this.addMessages([message])
   }
 
+  getHistory = (position: number): string | undefined => {
+    let n = position
+    for (let i=this.state.commandIds.length - 1; i >= 0; i--) {
+      const messages = (this.state.commands[this.state.commandIds[i]] || {}).messages || []
+      for (let j=messages.length - 1; j >= 0; j--) {
+        if (messages[j].type === 'input') {
+          if (n === 0) {
+            return messages[j].text
+          } else {
+            n -= 1
+          }
+        }
+      }
+    }
+  }
+
   render() {
     const { onFocusChange, theme } = this.props
     const { commandIds, commands, lastCommandId } = this.state
@@ -349,6 +365,7 @@ export default class ChannelView extends PureComponent<
             ref={this.channelInputRef}
             onFocusChange={onFocusChange}
             onSend={this.send}
+            getHistory={this.getHistory}
             theme={theme}
           />
         </div>
