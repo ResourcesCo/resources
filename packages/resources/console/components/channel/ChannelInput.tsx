@@ -6,6 +6,7 @@ import React, {
   MouseEventHandler,
   EventHandler,
   useImperativeHandle,
+  useState,
 } from 'react'
 import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
 //import TextareaAutosize from 'react-autosize-textarea'
@@ -22,12 +23,19 @@ export interface ChannelInputMethods {
 interface ChannelInputProps {
   onFocusChange: Function
   onSend: Function
+  getHistory(position: number): string | undefined
   theme: Theme
 }
 
+interface History {
+  position?: number
+  text?: string
+}
+
 const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
-  ({ onFocusChange, onSend, theme }, ref) => {
+  ({ onFocusChange, onSend, getHistory, theme }, ref) => {
     const editorViewRef = useRef<EditorView>()
+    const historyRef = useRef<History>({position: undefined, text: undefined})
 
     useImperativeHandle(ref, () => ({
       insertAction(text) {
@@ -61,6 +69,64 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
       }
     }
 
+    const previousCommand: Command = (view) => {
+      const sel = view.state.selection
+      let text
+      if (view.state.doc.length === 0) {
+        historyRef.current.position = 0
+        text = getHistory(historyRef.current.position)
+      } else if (historyRef.current.position !== undefined && view.state.doc.toString() == historyRef.current.text) {
+        historyRef.current.position += 1
+        text = getHistory(historyRef.current.position)
+      }
+
+      if (text) {
+        view.dispatch({
+          changes: [{ from: 0, to: view.state.doc.length, insert: text }]
+        })
+        historyRef.current.text = text
+        return true
+      }
+      
+      if (historyRef.current.position !== undefined) {
+        historyRef.current.position = undefined
+        historyRef.current.text = undefined
+      }
+      return false
+    }
+
+    const nextCommand: Command = (view) => {
+      const sel = view.state.selection
+      let text
+      if (historyRef.current.position !== undefined && view.state.doc.toString() == historyRef.current.text) {
+        if (historyRef.current.position <= 0) {
+          text = ''
+        } else {
+          historyRef.current.position -= 1
+          text = getHistory(historyRef.current.position)
+          historyRef.current.text = text
+        }
+        view.dispatch({
+          changes: [{ from: 0, to: view.state.doc.length, insert: text }]
+        })
+        return true
+      }
+
+      if (historyRef.current.position !== undefined) {
+        historyRef.current.position = undefined
+        historyRef.current.text = undefined
+      }
+      return false
+    }
+
+    const dismissHistory: Command = (view) => {
+      if (historyRef.current.position !== undefined) {
+        historyRef.current.position = undefined
+        historyRef.current.text = undefined
+      }
+      return false
+    }
+
     const customKeymap = [
       {
         key: 'Enter',
@@ -70,6 +136,11 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
         key: 'Shift-Enter',
         run: insertNewlineAndIndent,
       },
+      {key: "ArrowUp", run: previousCommand},
+      {key: "ArrowDown", run: nextCommand},
+      {key: "Escape", run: dismissHistory},
+      {key: "ArrowLeft", run: dismissHistory},
+      {key: "ArrowRight", run: dismissHistory},
     ]
 
     const eventHandlers = EditorView.domEventHandlers({})
