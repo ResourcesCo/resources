@@ -95,6 +95,38 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
       return false
     }
 
+    const nextCommand: Command = (view) => {
+      const sel = view.state.selection
+      let text
+      if (historyRef.current.position !== undefined && view.state.doc.toString() == historyRef.current.text) {
+        if (historyRef.current.position <= 0) {
+          text = ''
+        } else {
+          historyRef.current.position -= 1
+          text = getHistory(historyRef.current.position)
+          historyRef.current.text = text
+        }
+        view.dispatch({
+          changes: [{ from: 0, to: view.state.doc.length, insert: text }]
+        })
+        return true
+      }
+
+      if (historyRef.current.position !== undefined) {
+        historyRef.current.position = undefined
+        historyRef.current.text = undefined
+      }
+      return false
+    }
+
+    const dismissHistory: Command = (view) => {
+      if (historyRef.current.position !== undefined) {
+        historyRef.current.position = undefined
+        historyRef.current.text = undefined
+      }
+      return false
+    }
+
     const customKeymap = [
       {
         key: 'Enter',
@@ -105,7 +137,10 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
         run: insertNewlineAndIndent,
       },
       {key: "ArrowUp", run: previousCommand},
-      // TODO: ArrowDown to go to next if previous isn't selected, and with Left, Right, Esc clear out historyRef state
+      {key: "ArrowDown", run: nextCommand},
+      {key: "Escape", run: dismissHistory},
+      {key: "ArrowLeft", run: dismissHistory},
+      {key: "ArrowRight", run: dismissHistory},
     ]
 
     const eventHandlers = EditorView.domEventHandlers({})
