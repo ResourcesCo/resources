@@ -82,7 +82,8 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
 
       if (text) {
         view.dispatch({
-          changes: [{ from: 0, to: view.state.doc.length, insert: text }]
+          changes: [{ from: 0, to: view.state.doc.length, insert: text }],
+          selection: EditorSelection.create([EditorSelection.range(text.length, text.length)]),
         })
         historyRef.current.text = text
         return true
@@ -107,7 +108,8 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
           historyRef.current.text = text
         }
         view.dispatch({
-          changes: [{ from: 0, to: view.state.doc.length, insert: text }]
+          changes: [{ from: 0, to: view.state.doc.length, insert: text }],
+          selection: EditorSelection.create([EditorSelection.range(text.length, text.length)]),
         })
         return true
       }
