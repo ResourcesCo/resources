@@ -9,12 +9,12 @@ import React, {
   useState,
 } from 'react'
 import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
-//import TextareaAutosize from 'react-autosize-textarea'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Theme, CodeEditor } from 'vtv'
 import { EditorView, Command } from '@codemirror/view'
 import { EditorSelection } from '@codemirror/state'
 import { insertNewlineAndIndent } from '@codemirror/commands'
+import { autocompletion, completeFromList } from '@codemirror/autocomplete'
 
 export interface ChannelInputMethods {
   insertAction(text: string): void
@@ -147,6 +147,10 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
 
     const eventHandlers = EditorView.domEventHandlers({})
 
+    const completionExtension = autocompletion({
+      override: [completeFromList(['help', ':help', ':clear', '/asana', '/github', '/gitlab'])]
+    })
+
     const handleFocusChange = (focused) => {
       if (onFocusChange) {
         onFocusChange(focused)
@@ -183,6 +187,7 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
       />*/}
         <CodeEditor
           editorViewRef={editorViewRef}
+          completionExtension={completionExtension}
           additionalExtensions={[eventHandlers]}
           customKeymap={customKeymap}
           showLineNumbers={false}

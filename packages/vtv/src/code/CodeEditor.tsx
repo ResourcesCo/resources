@@ -111,6 +111,7 @@ interface CodeEditorProps {
   editorViewRef: MutableRefObject<EditorView>
   language?: string
   theme?: string
+  completionExtension?: Extension
   additionalExtensions?: Extension[]
   customKeymap?: readonly KeyBinding[]
   showLineNumbers?: boolean
@@ -122,6 +123,7 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = ({
   editorViewRef,
   language = undefined,
   theme = 'dark',
+  completionExtension,
   additionalExtensions = [],
   customKeymap = [],
   showLineNumbers = true,
@@ -144,7 +146,7 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = ({
           indentOnInput(),
           bracketMatching(),
           closeBrackets(),
-          autocompletion(),
+          completionExtension || autocompletion(),
           rectangularSelection(),
           highlightActiveLine(),
           highlightSelectionMatches(),
