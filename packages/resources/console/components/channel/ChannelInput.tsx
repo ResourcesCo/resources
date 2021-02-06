@@ -11,10 +11,13 @@ import React, {
 import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Theme, CodeEditor } from 'vtv'
+import { uniq, flattenDeep } from 'lodash'
 import { EditorView, Command } from '@codemirror/view'
 import { EditorSelection } from '@codemirror/state'
 import { insertNewlineAndIndent } from '@codemirror/commands'
 import { autocompletion, completeFromList } from '@codemirror/autocomplete'
+
+import ConsoleChannel from 'api/channel/ConsoleChannel'
 
 export interface ChannelInputMethods {
   insertAction(text: string): void
@@ -24,6 +27,7 @@ interface ChannelInputProps {
   onFocusChange: Function
   onSend: Function
   getHistory(position: number): string | undefined
+  channel: ConsoleChannel
   theme: Theme
 }
 
@@ -33,7 +37,7 @@ interface History {
 }
 
 const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
-  ({ onFocusChange, onSend, getHistory, theme }, ref) => {
+  ({ onFocusChange, onSend, getHistory, channel, theme }, ref) => {
     const editorViewRef = useRef<EditorView>()
     const historyRef = useRef<History>({position: undefined, text: undefined})
 
@@ -147,8 +151,14 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
 
     const eventHandlers = EditorView.domEventHandlers({})
 
+    const completionList = uniq(['help', ':help', ':clear', ...(channel ? flattenDeep(Object.values(channel.apps).map(
+      app => Object.values(app.resourceTypes).map(
+        resourceType => resourceType.routes.filter(route => !route.host).map(route => route.path)
+      )
+    )) : [])])
+
     const completionExtension = autocompletion({
-      override: [completeFromList(['help', ':help', ':clear', '/asana', '/github', '/gitlab'])]
+      override: [completeFromList(completionList)]
     })
 
     const handleFocusChange = (focused) => {

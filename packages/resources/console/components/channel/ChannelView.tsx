@@ -344,7 +344,7 @@ export default class ChannelView extends PureComponent<
   }
 
   render() {
-    const { onFocusChange, theme } = this.props
+    const { onFocusChange, channel, theme } = this.props
     const { commandIds, commands, lastCommandId } = this.state
     const scrollRef = this.scrollRef
 
@@ -366,6 +366,7 @@ export default class ChannelView extends PureComponent<
             onFocusChange={onFocusChange}
             onSend={this.send}
             getHistory={this.getHistory}
+            channel={channel}
             theme={theme}
           />
         </div>
