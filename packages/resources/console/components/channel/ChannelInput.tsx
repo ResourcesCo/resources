@@ -15,7 +15,7 @@ import { uniq, flattenDeep } from 'lodash'
 import { EditorView, Command } from '@codemirror/view'
 import { EditorSelection } from '@codemirror/state'
 import { insertNewlineAndIndent } from '@codemirror/commands'
-import { autocompletion, completeFromList } from '@codemirror/autocomplete'
+import { autocompletion, completeFromList, acceptCompletion } from '@codemirror/autocomplete'
 
 import ConsoleChannel from 'api/channel/ConsoleChannel'
 
@@ -147,6 +147,7 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
       {key: "Escape", run: dismissHistory},
       {key: "ArrowLeft", run: dismissHistory},
       {key: "ArrowRight", run: dismissHistory},
+      {key: "Tab", run: acceptCompletion},
     ]
 
     const eventHandlers = EditorView.domEventHandlers({})
@@ -154,6 +155,10 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
     const completionList = uniq(['help', ':help', ':clear', ...(channel ? flattenDeep(Object.values(channel.apps).map(
       app => Object.values(app.resourceTypes).map(
         resourceType => resourceType.routes.filter(route => !route.host).map(route => route.path)
+      )
+    )) : []), ...(channel ? flattenDeep(Object.values(channel.apps).map(
+      app => Object.values(app.resourceTypes).map(
+        resourceType => Object.keys(resourceType.actions).map(action => `:${action}`)
       )
     )) : [])])
 
