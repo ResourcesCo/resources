@@ -11,7 +11,6 @@ import React, {
 import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Theme, CodeEditor } from 'vtv'
-import { uniq, flattenDeep } from 'lodash'
 import { EditorView, Command } from '@codemirror/view'
 import { EditorSelection } from '@codemirror/state'
 import { insertNewlineAndIndent } from '@codemirror/commands'
@@ -152,15 +151,7 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
 
     const eventHandlers = EditorView.domEventHandlers({})
 
-    const completionList = uniq(['help', ':help', ':clear', ...(channel ? flattenDeep(Object.values(channel.apps).map(
-      app => Object.values(app.resourceTypes).map(
-        resourceType => resourceType.routes.filter(route => !route.host).map(route => route.path)
-      )
-    )) : []), ...(channel ? flattenDeep(Object.values(channel.apps).map(
-      app => Object.values(app.resourceTypes).map(
-        resourceType => Object.keys(resourceType.actions).map(action => `:${action}`)
-      )
-    )) : [])])
+    const completionList = channel.completionList
 
     const completionExtension = autocompletion({
       override: [completeFromList(completionList)]
