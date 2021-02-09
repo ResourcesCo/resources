@@ -9,12 +9,14 @@ import React, {
   useState,
 } from 'react'
 import { faSpaceShuttle } from '@fortawesome/free-solid-svg-icons'
-//import TextareaAutosize from 'react-autosize-textarea'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Theme, CodeEditor } from 'vtv'
 import { EditorView, Command } from '@codemirror/view'
 import { EditorSelection } from '@codemirror/state'
 import { insertNewlineAndIndent } from '@codemirror/commands'
+import { autocompletion, completeFromList, acceptCompletion } from '@codemirror/autocomplete'
+
+import ConsoleChannel from 'api/channel/ConsoleChannel'
 
 export interface ChannelInputMethods {
   insertAction(text: string): void
@@ -24,6 +26,7 @@ interface ChannelInputProps {
   onFocusChange: Function
   onSend: Function
   getHistory(position: number): string | undefined
+  channel: ConsoleChannel
   theme: Theme
 }
 
@@ -33,7 +36,7 @@ interface History {
 }
 
 const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
-  ({ onFocusChange, onSend, getHistory, theme }, ref) => {
+  ({ onFocusChange, onSend, getHistory, channel, theme }, ref) => {
     const editorViewRef = useRef<EditorView>()
     const historyRef = useRef<History>({position: undefined, text: undefined})
 
@@ -143,9 +146,16 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
       {key: "Escape", run: dismissHistory},
       {key: "ArrowLeft", run: dismissHistory},
       {key: "ArrowRight", run: dismissHistory},
+      {key: "Tab", run: acceptCompletion},
     ]
 
     const eventHandlers = EditorView.domEventHandlers({})
+
+    const completionList = channel.completionList
+
+    const completionExtension = autocompletion({
+      override: [completeFromList(completionList)]
+    })
 
     const handleFocusChange = (focused) => {
       if (onFocusChange) {
@@ -183,6 +193,7 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
       />*/}
         <CodeEditor
           editorViewRef={editorViewRef}
+          completionExtension={completionExtension}
           additionalExtensions={[eventHandlers]}
           customKeymap={customKeymap}
           showLineNumbers={false}

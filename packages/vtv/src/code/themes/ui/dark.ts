@@ -66,8 +66,11 @@ export default EditorView.theme({
   },
   "$tooltip.autocomplete": {
     "& > ul > li[aria-selected]": {
-      backgroundColor: highlightBackground,
+      backgroundColor: selection,
       color: ivory
-    }
-  }
+    },
+    "& > ul": {
+      maxHeight: '10.15em',
+    },
+  },
 }, {dark: true})

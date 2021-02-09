@@ -9,7 +9,7 @@ import apps, { apiOnlyApps } from '../apps'
 import env from './env'
 import { createNanoEvents, Emitter } from 'nanoevents'
 import produce from 'immer'
-import { uniq } from 'lodash'
+import { uniq, flattenDeep } from 'lodash'
 import toArray from '../app-base/util/message/toArray'
 
 // Properties stored and managed by the workspace (a channel cannot set itself to be admin)
@@ -37,6 +37,7 @@ class ConsoleChannel {
   client: Client
   emitter: Emitter
   messageSavePromise?: Promise<boolean>
+  completionList: string[] = ['help']
 
   constructor(clientConfig: ChannelClientConfig) {
     this.clientConfig = clientConfig
@@ -53,6 +54,8 @@ class ConsoleChannel {
     await this.loadConfig()
     await this.loadEnv()
     await this.loadApps()
+    this.initCompletionList()
+    
     if (this.clientConfig.apiOnly !== false) {
       await this.loadMessages()
     }
@@ -174,6 +177,18 @@ class ConsoleChannel {
     for (let i = 0; i < loadedApps.length; i++) {
       this.apps[appNames[i]] = loadedApps[i]
     }
+  }
+
+  initCompletionList() {
+    this.completionList = uniq(['help', ':help', ':clear', ...(this ? flattenDeep(Object.values(this.apps).map(
+      app => Object.values(app.resourceTypes).map(
+        resourceType => resourceType.routes.filter(route => !route.host).map(route => route.path)
+      )
+    )) : []), ...(this ? flattenDeep(Object.values(this.apps).map(
+      app => Object.values(app.resourceTypes).map(
+        resourceType => Object.keys(resourceType.actions).map(action => `:${action}`)
+      )
+    )) : [])])
   }
 
   async dispatchAction(handler, params) {
