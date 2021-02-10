@@ -9,7 +9,7 @@
 # LocalStorage into other Redwood apps in development mode
 [web]
   port = 8910
-  apiProxyPath = "/.redwood/functions"
+  apiProxyPath = "/.netlify/functions"
 [api]
   port = 8911
   schemaPath = "./api/db/schema.prisma"
