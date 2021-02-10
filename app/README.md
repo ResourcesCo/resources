@@ -32,7 +32,9 @@ Each project will have some permissions associated with it, that can also be tie
 
 ### Creating a new project
 
-A type of project, or template, can be selected, and before creating it, it can ask for options.
+A type of page can be selected, and before creating it, it can ask for options. Pages can have subpages.
+Parent pages have some control over subpages.
+
 An early one would be a file editor. It would have access to storage. The storage can be on
 the filesystem, in the case of a serverful environment. Or, on a serverless environment, it can
 be in the database or on a cloud storage provider. It would be given a root. It could be a local

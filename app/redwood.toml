@@ -5,6 +5,8 @@
 # For the full list of options, see the "App Configuration: redwood.toml" doc:
 # https://redwoodjs.com/docs/app-configuration-redwood-toml
 
+# When using locally with real data, use 8942/8943, so as not to leak
+# LocalStorage into other Redwood apps in development mode
 [web]
   port = 8910
   apiProxyPath = "/.redwood/functions"
