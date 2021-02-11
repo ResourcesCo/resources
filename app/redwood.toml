@@ -8,10 +8,10 @@
 # When using locally with real data, use 8942/8943, so as not to leak
 # LocalStorage into other Redwood apps in development mode
 [web]
-  port = 8910
+  port = 8942
   apiProxyPath = "/.netlify/functions"
 [api]
-  port = 8911
+  port = 8943
   schemaPath = "./api/db/schema.prisma"
 [browser]
   open = true
