@@ -1,5 +1,4 @@
 import { render } from '@redwoodjs/testing'
-
 import SearchBar from './SearchBar'
 
 describe('SearchBar', () => {

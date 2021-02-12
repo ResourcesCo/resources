@@ -1,11 +1,11 @@
 import { render } from '@redwoodjs/testing'
 
-import DocumentView from './DocumentView'
+import PageEdit from './PageEdit'
 
-describe('DocumentView', () => {
+describe('PageEdit', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<DocumentView />)
+      render(<PageEdit />)
     }).not.toThrow()
   })
 })

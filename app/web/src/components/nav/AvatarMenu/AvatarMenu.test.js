@@ -1,5 +1,4 @@
 import { render } from '@redwoodjs/testing'
-
 import AvatarMenu from './AvatarMenu'
 
 describe('AvatarMenu', () => {

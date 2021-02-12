@@ -1,5 +1,4 @@
 import { render } from '@redwoodjs/testing'
-
 import HomePage from './HomePage'
 
 describe('HomePage', () => {

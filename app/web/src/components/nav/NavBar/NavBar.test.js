@@ -1,5 +1,4 @@
 import { render } from '@redwoodjs/testing'
-
 import NavBar from './NavBar'
 
 describe('NavBar', () => {

@@ -1,11 +1,11 @@
 import { render } from '@redwoodjs/testing'
 
-import Document from './Document'
+import PageMenu from './PageMenu'
 
-describe('Document', () => {
+describe('PageMenu', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<Document />)
+      render(<PageMenu />)
     }).not.toThrow()
   })
 })

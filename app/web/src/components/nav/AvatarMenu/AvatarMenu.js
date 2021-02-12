@@ -14,7 +14,7 @@ const AvatarMenu = () => {
     <Menu>
       <MenuButton
         as={IconButton}
-        icon={<Avatar size="sm" name={currentUser.email} />}
+        icon={<Avatar size="sm" name={currentUser?.email} />}
         variant="ghost"
       />
       <MenuList>
