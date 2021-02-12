@@ -3,7 +3,7 @@ import { SearchIcon } from '@chakra-ui/icons'
 
 const SearchBar = () => {
   return (
-    <InputGroup maxWidth={150} mx={4}>
+    <InputGroup maxWidth={150} mx={2}>
       <Input variant="filled" placeholder="Search" />
       <InputRightElement><SearchIcon /></InputRightElement>
     </InputGroup>

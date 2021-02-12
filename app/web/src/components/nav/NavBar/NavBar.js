@@ -1,15 +1,14 @@
-import { navigate, routes } from '@redwoodjs/router'
 import { useAuth } from '@redwoodjs/auth'
 import {
   Flex,
   Box,
   Button,
   IconButton,
-  Avatar,
   Icon,
 } from '@chakra-ui/react'
 import { HamburgerIcon, BellIcon, InfoOutlineIcon } from '@chakra-ui/icons'
 import SearchBar from '../SearchBar'
+import AvatarMenu from '../AvatarMenu'
 
 const ThreeDotIcon = (props) => (
   <Icon viewBox="0 0 16 16" {...props}>
@@ -35,28 +34,16 @@ const NavBar = () => {
       </Box>
       <SearchBar />
       {isAuthenticated ? (
-        <Button
-          colorScheme="blue"
-          onClick={async () => {
-            await logOut()
-            navigate(routes.home())
-          }}
-          hidden
-        >
-          Sign Out
-        </Button>
+        <AvatarMenu />
       ) : (
         <Button
+          mx={2}
           colorScheme="blue"
-          onClick={async () => {
-            await logIn()
-            navigate(routes.home())
-          }}
+          onClick={logIn}
         >
           Sign In
         </Button>
       )}
-      <IconButton variant="ghost" icon={<Avatar size="sm" name="Web Guru" />} />
       <IconButton
         variant="ghost"
         icon={<BellIcon w="6" h="6" color="gray.600" />}
