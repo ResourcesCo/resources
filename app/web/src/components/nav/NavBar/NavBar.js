@@ -5,8 +5,10 @@ import {
   Button,
   IconButton,
   Icon,
+  Avatar,
+  useBreakpointValue
 } from '@chakra-ui/react'
-import { HamburgerIcon, BellIcon, InfoOutlineIcon } from '@chakra-ui/icons'
+import { HamburgerIcon, BellIcon, AddIcon } from '@chakra-ui/icons'
 import SearchBar from '../SearchBar'
 import AvatarMenu from '../AvatarMenu'
 
@@ -21,6 +23,7 @@ const ThreeDotIcon = (props) => (
 
 const NavBar = () => {
   const { logIn, logOut, isAuthenticated, currentUser } = useAuth()
+  const showSignInButton = useBreakpointValue({ base: false, md: true })
   return (
     <Flex align="center" p={1}>
       <IconButton
@@ -33,21 +36,31 @@ const NavBar = () => {
         </Button>
       </Box>
       <SearchBar />
-      {isAuthenticated ? (
-        <AvatarMenu />
-      ) : (
-        <Button
-          mx={2}
-          colorScheme="blue"
-          onClick={logIn}
-        >
-          Sign In
-        </Button>
-      )}
+      <IconButton
+        variant="ghost"
+        icon={<AddIcon w="4" h="4" color="gray.600" />}
+      />
       <IconButton
         variant="ghost"
         icon={<BellIcon w="6" h="6" color="gray.600" />}
       />
+      {isAuthenticated ? (
+        <AvatarMenu />
+      ) : (
+        showSignInButton ?
+          <Button
+            mx={2}
+            colorScheme="blue"
+            onClick={logIn}
+          >
+            Sign In
+          </Button> :
+          <IconButton
+            variant="ghost"
+            icon={<Avatar size="xs" />}
+            onClick={logIn}
+          />
+      )}
       <IconButton
         variant="ghost"
         icon={<ThreeDotIcon w="6" h="6" color="gray.600" />}
