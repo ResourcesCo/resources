@@ -1,20 +1,44 @@
-datasource DS {
-  // optionally set multiple providers
-  // example: provider = ["sqlite", "postgresql"]
-  provider = "sqlite"
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = "native"
+  provider = "prisma-client-js"
 }
 
-// Define your own datamodels here and run `yarn redwood db save` to create
-// migrations for them.
-// TODO: Please remove the following example:
-model UserExample {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+model Profile {
+  id        String     @id @default(cuid())
+  name      String
+  email     String     @unique
+  bot       Boolean
+  actions Action[]
+}
+
+model Page {
+  id        String     @id @default(cuid())
+  name      String
+  path      String     @unique
+  body      String
+  metadata  Json
+  createdAt DateTime   @default(now())
+  actions Action[]
+  @@index([name])
+}
+
+model Action {
+  id        String   @id @default(cuid())
+  author    Profile  @relation(fields: [authorId], references: [id])
+  authorId  String
+  name      String
+  path      String
+  type      String
+  body      String
+  metadata  Json
+  createdAt DateTime @default(now())
+  page      Page     @relation(fields: [pageId], references: [id])
+  pageId    String
 }
