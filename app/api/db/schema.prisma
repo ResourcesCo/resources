@@ -24,6 +24,7 @@ model Page {
   path      String     @unique
   body      String
   metadata  Json
+  computed  Json
   createdAt DateTime   @default(now())
   actions Action[]
   @@index([name])
@@ -31,13 +32,14 @@ model Page {
 
 model Action {
   id        String   @id @default(cuid())
-  author    Profile  @relation(fields: [authorId], references: [id])
-  authorId  String
+  profile   Profile  @relation(fields: [profileId], references: [id])
+  profileId String
   name      String
   path      String
   type      String
   body      String
   metadata  Json
+  computed  Json
   createdAt DateTime @default(now())
   page      Page     @relation(fields: [pageId], references: [id])
   pageId    String
