@@ -1,3 +1,5 @@
+/** @jsx jsx */
+import { jsx, ThemeProvider, Themed } from 'theme-ui'
 import { AuthProvider } from '@redwoodjs/auth'
 import netlifyIdentity from 'netlify-identity-widget'
 import ReactDOM from 'react-dom'
@@ -5,11 +7,10 @@ import ReactDOM from 'react-dom'
 import { FatalErrorBoundary } from '@redwoodjs/web'
 import { RedwoodApolloProvider } from '@redwoodjs/web/apollo'
 
-import { ChakraProvider } from "@chakra-ui/react"
-
 import FatalErrorPage from 'src/pages/FatalErrorPage'
 import Routes from 'src/Routes'
 
+import '@szhsin/react-menu/dist/index.css';
 import './index.css'
 
 netlifyIdentity.init()
@@ -18,9 +19,7 @@ ReactDOM.render(
   <FatalErrorBoundary page={FatalErrorPage}>
     <AuthProvider client={netlifyIdentity} type="netlify">
       <RedwoodApolloProvider>
-        <ChakraProvider>
-          <Routes />
-        </ChakraProvider>
+        <Routes />
       </RedwoodApolloProvider>
     </AuthProvider>
   </FatalErrorBoundary>,

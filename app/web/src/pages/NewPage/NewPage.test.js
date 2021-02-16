@@ -1,11 +1,11 @@
 import { render } from '@redwoodjs/testing'
 
-import PageView from './PageView'
+import NewPage from './NewPage'
 
-describe('PageView', () => {
+describe('NewPage', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<PageView />)
+      render(<NewPage />)
     }).not.toThrow()
   })
 })

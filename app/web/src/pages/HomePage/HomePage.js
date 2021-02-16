@@ -1,10 +1,9 @@
-import NavBar from '../../components/nav/NavBar'
+import AppLayout from '../../layouts/AppLayout'
 
 const HomePage = () => {
   return (
-    <>
-      <NavBar />
-    </>
+    <AppLayout>
+    </AppLayout>
   )
 }
 
