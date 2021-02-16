@@ -15,7 +15,7 @@
   "dependencies": {
     "@codemirror/autocomplete": "^0.17.4",
     "@codemirror/closebrackets": "^0.17.2",
-    "@codemirror/commands": "^0.17.2",
+    "@codemirror/commands": "^0.17.3",
     "@codemirror/comment": "^0.17.1",
     "@codemirror/fold": "^0.17.1",
     "@codemirror/gutter": "^0.17.2",
@@ -33,15 +33,13 @@
     "@codemirror/search": "^0.17.1",
     "@codemirror/state": "^0.17.1",
     "@codemirror/view": "^0.17.7",
-    "@redwoodjs/auth": "^0.25.0",
-    "@redwoodjs/forms": "^0.25.0",
-    "@redwoodjs/router": "^0.25.0",
-    "@redwoodjs/web": "^0.25.0",
+    "@redwoodjs/auth": "^0.25.1",
+    "@redwoodjs/forms": "^0.25.1",
+    "@redwoodjs/router": "^0.25.1",
+    "@redwoodjs/web": "^0.25.1",
     "@szhsin/react-menu": "^1.6.1",
     "netlify-identity-widget": "^1.9.1",
     "prop-types": "^15.7.2",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
     "react-icons": "^4.2.0",
     "theme-ui": "^0.6.0-alpha.7"
   }

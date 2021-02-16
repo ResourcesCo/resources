@@ -7,5 +7,6 @@
   "editor.tabSize": 2,
   "github.remoteName": "github",
   "javascript.updateImportsOnFileMove.enabled": "never",
-  "typescript.updateImportsOnFileMove.enabled": "never"
+  "typescript.updateImportsOnFileMove.enabled": "never",
+  "git.ignoreLimitWarning": true
 }

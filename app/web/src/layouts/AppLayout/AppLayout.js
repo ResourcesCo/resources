@@ -1,16 +1,13 @@
 /** @jsx jsx */
-import { jsx, ThemeProvider, Themed } from 'theme-ui'
-import theme from './theme'
+import { jsx, Themed } from 'theme-ui'
 import NavBar from '../../components/nav/NavBar'
 
 const AppLayout = ({ title = 'README', children }) => {
   return (
-    <ThemeProvider theme={theme}>
-      <Themed.root>
-        <NavBar />
-        {children}
-      </Themed.root>
-    </ThemeProvider>
+    <Themed.root>
+      <NavBar />
+      {children}
+    </Themed.root>
   )
 }
 

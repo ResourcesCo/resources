@@ -41,7 +41,7 @@ be in the database or on a cloud storage provider. It would be given a root. It 
 working copy of a repository, and it could be given only access to files that haven't been
 .gitignore'd. These could be in a separate app.
 
-- a modal with the Chakra UI forms
+- a modal with forms
 - use dark/light mode of the system by default, but customizable
 - by default don't override the system's accent colors
 - use CodeMirror 6 for good mobile support, but make it configurable to use others like Monaco Editor

@@ -8,6 +8,8 @@
 // 'src/pages/Admin/BooksPage/BooksPage.js' -> AdminBooksPage
 
 import { Router, Route } from '@redwoodjs/router'
+import HomePage from 'src/pages/HomePage'
+import NewPage from 'src/pages/NewPage'
 
 const Routes = () => {
   return (

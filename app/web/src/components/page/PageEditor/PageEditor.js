@@ -2,7 +2,6 @@
 import {
   jsx,
   Container,
-  Textarea,
   Button,
   Flex,
   Spinner,
@@ -10,13 +9,14 @@ import {
   Label,
   Checkbox,
 } from 'theme-ui'
+import CodeEditor from '../CodeEditor'
 
 const PageEditor = () => {
   const loading = false
   const save = () => undefined
   return (
     <Container sx={{ maxWidth: 768, p: 2, pt: 4, mx: 'auto' }}>
-      <Textarea sx={{ height: '80vh' }} />
+      <CodeEditor language="markdown" showLineNumbers={false} />
       <Flex sx={{ my: 3 }}>
         <div sx={{ flexGrow: 1 }}>
           <Button mr={2} onClick={save}>

@@ -1,6 +1,7 @@
+/** @jsx jsx */
+import { jsx, Flex, Box, IconButton, Button, Heading } from 'theme-ui'
 import { useAuth } from '@redwoodjs/auth'
 import { Link, routes } from '@redwoodjs/router'
-import { Flex, Box, IconButton, Button, Heading } from 'theme-ui'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { BsBell, BsFilePlus, BsPerson, BsThreeDots } from 'react-icons/bs'
 import AvatarMenu from '../AvatarMenu'
