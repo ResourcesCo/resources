@@ -5,5 +5,7 @@
     "**/out/**"
   ],
   "editor.tabSize": 2,
-  "github.remoteName": "github"
+  "github.remoteName": "github",
+  "javascript.updateImportsOnFileMove.enabled": "never",
+  "typescript.updateImportsOnFileMove.enabled": "never"
 }

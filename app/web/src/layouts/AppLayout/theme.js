@@ -40,7 +40,7 @@ export default {
   },
   forms: {
     label: {
-      fontSize: 1,
+      fontSize: 2,
       fontWeight: 'bold',
     },
     input: {

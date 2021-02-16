@@ -1,9 +1,39 @@
+/** @jsx jsx */
+import {
+  jsx,
+  Container,
+  Textarea,
+  Button,
+  Flex,
+  Spinner,
+  Box,
+  Label,
+  Checkbox,
+} from 'theme-ui'
+
 const PageEditor = () => {
+  const loading = false
+  const save = () => undefined
   return (
-    <div>
-      <h2>{'PageEditor'}</h2>
-      <p>{'Find me in ./web/src/components/PageEditor/PageEditor.js'}</p>
-    </div>
+    <Container sx={{ maxWidth: 768, p: 2, pt: 4, mx: 'auto' }}>
+      <Textarea sx={{ height: '80vh' }} />
+      <Flex sx={{ my: 3 }}>
+        <div sx={{ flexGrow: 1 }}>
+          <Button mr={2} onClick={save}>
+            Save
+            {loading && (
+              <Spinner sx={{ color: 'white', size: 18, ml: 2, mb: '-3px' }} />
+            )}
+          </Button>
+        </div>
+        <Box>
+          <Label mb={3} sx={{ userSelect: 'none' }}>
+            <Checkbox />
+            Preview
+          </Label>
+        </Box>
+      </Flex>
+    </Container>
   )
 }
 
