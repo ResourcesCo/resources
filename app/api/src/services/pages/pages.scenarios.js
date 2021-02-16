@@ -2,16 +2,18 @@ export const standard = defineScenario({
   page: {
     one: {
       name: 'String',
-      path: 'String1263206',
+      path: 'String4658296',
       body: 'String',
       metadata: { foo: 'bar' },
+      computed: { foo: 'bar' },
     },
 
     two: {
       name: 'String',
-      path: 'String9895293',
+      path: 'String5825802',
       body: 'String',
       metadata: { foo: 'bar' },
+      computed: { foo: 'bar' },
     },
   },
 })

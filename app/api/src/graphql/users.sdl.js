@@ -1,5 +1,5 @@
 export const schema = gql`
-  type Profile {
+  type User {
     id: String!
     name: String!
     email: String!
@@ -8,16 +8,16 @@ export const schema = gql`
   }
 
   type Query {
-    profiles: [Profile!]!
+    users: [User!]!
   }
 
-  input CreateProfileInput {
+  input CreateUserInput {
     name: String!
     email: String!
     bot: Boolean!
   }
 
-  input UpdateProfileInput {
+  input UpdateUserInput {
     name: String
     email: String
     bot: Boolean

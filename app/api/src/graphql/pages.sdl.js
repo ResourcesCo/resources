@@ -5,6 +5,7 @@ export const schema = gql`
     path: String!
     body: String!
     metadata: JSON!
+    computed: JSON!
     createdAt: DateTime!
     actions: [Action]!
   }
@@ -18,6 +19,7 @@ export const schema = gql`
     path: String!
     body: String!
     metadata: JSON!
+    computed: JSON!
   }
 
   input UpdatePageInput {
@@ -25,5 +27,6 @@ export const schema = gql`
     path: String
     body: String
     metadata: JSON
+    computed: JSON
   }
 `

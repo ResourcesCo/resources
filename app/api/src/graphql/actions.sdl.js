@@ -1,14 +1,15 @@
 export const schema = gql`
   type Action {
     id: String!
-    profile: Profile!
-    profileId: String!
     name: String!
     path: String!
     type: String!
     body: String!
     metadata: JSON!
+    computed: JSON!
     createdAt: DateTime!
+    user: User!
+    userId: String!
     page: Page!
     pageId: String!
   }
@@ -18,22 +19,24 @@ export const schema = gql`
   }
 
   input CreateActionInput {
-    profileId: String!
     name: String!
     path: String!
     type: String!
     body: String!
     metadata: JSON!
+    computed: JSON!
+    userId: String!
     pageId: String!
   }
 
   input UpdateActionInput {
-    profileId: String
     name: String
     path: String
     type: String
     body: String
     metadata: JSON
+    computed: JSON
+    userId: String
     pageId: String
   }
 `

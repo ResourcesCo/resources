@@ -5,8 +5,8 @@ export const actions = () => {
 }
 
 export const Action = {
-  profile: (_obj, { root }) =>
-    db.action.findUnique({ where: { id: root.id } }).profile(),
+  user: (_obj, { root }) =>
+    db.action.findUnique({ where: { id: root.id } }).user(),
   page: (_obj, { root }) =>
     db.action.findUnique({ where: { id: root.id } }).page(),
 }
