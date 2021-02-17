@@ -7,8 +7,15 @@ export const schema = gql`
     actions: [Action]!
   }
 
+  type CurrentUser {
+    id: String
+    name: String
+    email: String
+  }
+
   type Query {
     users: [User!]!
+    currentUser: CurrentUser
   }
 
   input CreateUserInput {
@@ -21,5 +28,13 @@ export const schema = gql`
     name: String
     email: String
     bot: Boolean
+  }
+
+  input CreateCurrentUserInput {
+    name: String
+  }
+
+  type Mutation {
+    createCurrentUser(input: CreateCurrentUserInput!): CurrentUser
   }
 `

@@ -18,15 +18,15 @@ export const schema = gql`
     name: String!
     path: String!
     body: String!
-    metadata: JSON!
-    computed: JSON!
   }
 
   input UpdatePageInput {
     name: String
     path: String
     body: String
-    metadata: JSON
-    computed: JSON
+  }
+
+  type Mutation {
+    createPage(input: CreatePageInput!): Page
   }
 `
