@@ -1,17 +1,28 @@
 {
   "name": "vtv-model",
-  "version": "1.0.0-pre.5",
+  "type": "module",
+  "version": "1.0.0-pre.6",
   "dependencies": {
+    "esbuild": "^0.14.49",
     "immer": "^9.0.15",
     "j2ref": "^1.0.0",
     "json-ptr": "^3.1.1",
     "lodash": "^4.17.20",
     "path-to-regexp": "^6.2.0",
+    "rollup-plugin-dts": "^4.2.2",
+    "rollup-plugin-esbuild": "^4.9.1",
     "tslib": "^2.1.0"
+  },
+  "devDependencies": {
+    "rollup": "^2.77.0",
+    "typescript": "^4.7.4"
   },
   "prettier": {
     "semi": false,
     "singleQuote": true,
     "trailingComma": "es5"
+  },
+  "scripts": {
+    "build": "rollup -c"
   }
 }
