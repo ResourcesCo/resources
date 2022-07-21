@@ -1,32 +1,14 @@
 import { AppSpec } from '../../app-base/App'
 import { cloneDeep as clone } from 'lodash'
-import { getPaths, splitPath, joinPath, parseCommand } from 'vtv-model'
+import { parseCommand } from 'vtv-model'
 
-const functions = { getPaths, splitPath, joinPath, parseCommand }
+const functions = { parseCommand }
 const functionInfo = [
-  {
-    name: 'getPaths',
-    description: 'get the paths with data in a collection',
-    category: 'analyze',
-    inputType: 'json',
-  },
-  {
-    name: 'splitPath',
-    description: 'split a string like a.b.c into an array',
-    category: 'paths',
-    inputType: 'str',
-  },
-  {
-    name: 'joinPath',
-    description: 'join a path array into a string like a.b.c',
-    category: 'paths',
-    inputType: 'json',
-  },
   {
     name: 'parseCommand',
     description: 'parse a command (message)',
     category: 'messages',
-    inputType: 'str',
+   inputType: 'str',
   },
 ]
 

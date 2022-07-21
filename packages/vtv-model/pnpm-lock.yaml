@@ -3,7 +3,6 @@ lockfileVersion: 5.4
 specifiers:
   esbuild: ^0.14.49
   immer: ^9.0.15
-  j2ref: ^1.0.0
   json-ptr: ^3.1.1
   lodash: ^4.17.20
   path-to-regexp: ^6.2.0
@@ -16,7 +15,6 @@ specifiers:
 dependencies:
   esbuild: 0.14.49
   immer: 9.0.15
-  j2ref: 1.0.0
   json-ptr: 3.1.1
   lodash: 4.17.21
   path-to-regexp: 6.2.1
@@ -342,10 +340,6 @@ packages:
 
   /immer/9.0.15:
     resolution: {integrity: sha512-2eB/sswms9AEUSkOm4SbV5Y7Vmt/bKRwByd52jfLkW4OLYeaTP3EEiJ9agqU0O/tq6Dk62Zfj+TJSqfm1rLVGQ==}
-    dev: false
-
-  /j2ref/1.0.0:
-    resolution: {integrity: sha512-jKklC825jgiFm+z6PaPeDmSoBYhXezmT4IUpQkVW3IcYiQjSAqNzrB3snqRvaNE5GLYcMMA3OOzpHIzJnaeUmQ==}
     dev: false
 
   /joycon/3.1.1:

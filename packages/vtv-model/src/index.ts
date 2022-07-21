@@ -1,7 +1,4 @@
 export {
-  getPaths,
-  splitPath,
-  joinPath,
   getNodeType,
   getNodeInfo,
   getCollectionPaths,

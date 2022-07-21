@@ -1,5 +1,3 @@
-import j2ref from 'j2ref'
-
 const getNextToken = input => {
   let remainingInput = input.trim()
 
@@ -64,21 +62,6 @@ const getNextToken = input => {
     }
     return [false, '']
   } else {
-    let token = null
-    if (remainingInput[0] === '[') {
-      const result = j2ref(`$${remainingInput}`)
-      if (result && result.keys) {
-        token = result.matched.token.substr(1)
-      }
-    } else {
-      const result = j2ref(remainingInput)
-      if (result) {
-        token = result.matched.token
-      }
-    }
-    if (token && remainingInput.substr(token.length, 1) === ' ') {
-      return [token.trim(), remainingInput.substr(token.trim().length)]
-    }
     const splitText = remainingInput.split(/\s+/)
     return [splitText[0], remainingInput.substr(splitText[0].length + 1)]
   }
