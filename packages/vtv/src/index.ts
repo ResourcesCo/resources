@@ -2,7 +2,7 @@ import { RuleList } from 'vtv-model'
 import Clipboard from './util/Clipboard'
 import View from './View'
 export { default as Textarea } from './generic/Textarea'
-export { getTheme } from './themes'
+export { getTheme } from './themes/index'
 export { default as CodeEditor } from './code/CodeEditor'
 
 export type Path = string[]
