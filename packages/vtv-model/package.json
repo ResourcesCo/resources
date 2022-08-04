@@ -1,8 +1,9 @@
 {
   "name": "vtv-model",
   "type": "module",
-  "version": "1.0.0-pre.6",
+  "version": "1.0.0-pre.8",
   "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
     "esbuild": "^0.14.49",
