@@ -18,9 +18,7 @@ export default [
     ],
   }),
   bundle({
-    plugins: [dts({compilerOptions: {
-      jsx: true, preserveSymlinks: false
-    }})],
+    plugins: [dts()],
     output: {
       file: 'dist/index.d.ts',
       format: 'es',

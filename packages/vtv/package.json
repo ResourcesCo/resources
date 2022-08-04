@@ -27,12 +27,14 @@
     "@codemirror/theme-one-dark": "^0.17.4",
     "@codemirror/view": "^0.17.7",
     "chroma-js": "^2.1.0",
-    "react-textarea-autosize": "^8.3.4",
-    "vtv-model": "link:../vtv-model"
+    "react-autosize-textarea": "^7.1.0",
+    "vtv-model": "1.0.0-pre.8"
   },
   "devDependencies": {
     "@vitest/ui": "^0.20.3",
     "esbuild": "^0.14.53",
+    "react": "17",
+    "react-dom": "17",
     "rollup": "^2.77.0",
     "rollup-plugin-dts": "^4.2.2",
     "rollup-plugin-esbuild": "^4.9.1",

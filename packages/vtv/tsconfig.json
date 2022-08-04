@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "Node",
+    "target": "es2016",
+    "module": "ES2022",
+    "esModuleInterop": true,
+    "jsx": "react",
+    "baseUrl": "src",
+    "paths": {
+      "vtv": ["./"]
+    }
+  }
+}
