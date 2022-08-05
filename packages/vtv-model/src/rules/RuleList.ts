@@ -14,7 +14,7 @@
 //   },
 // },
 
-import { mapValues } from 'lodash'
+import mapValues from 'lodash/mapValues'
 import { encodePointer } from 'json-ptr'
 import Rule, { RuleSpec } from './Rule'
 

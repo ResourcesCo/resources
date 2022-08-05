@@ -7,7 +7,6 @@ import {
   getNodeState,
   getChildState,
   getNestedState,
-  joinPath,
   getNodeInfo,
 } from 'vtv-model'
 import ExpandButton from './ExpandButton'
@@ -89,7 +88,7 @@ function NodeView({
         name={showOnly[showOnly.length - 1]}
         value={showOnlyValue}
         state={showOnlyState}
-        displayName={joinPath([...showOnly])}
+        displayName={[...showOnly].join('/')}
         showOnlyPath={showOnly}
         path={showOnly}
         context={context}

@@ -1,10 +1,15 @@
+import { describe, expect, it, beforeEach } from 'vitest';
 import React, { useState } from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, cleanup, prettyDOM } from "@testing-library/react";
 import userEvent from '@testing-library/user-event';
 
 import View from "./View";
 
 describe("View", () => {
+  beforeEach(() => {
+    cleanup();
+  });
+
   it("should render with dark theme", () => {
     const { container } = render(
       <View
@@ -75,7 +80,7 @@ describe("View", () => {
     );
     expect(screen.queryByText('world')).toBeFalsy();
     const expandButton = screen.queryByRole('button', {name: 'expand'});
-    userEvent.click(expandButton);
+    await userEvent.click(expandButton);
     const el = screen.queryByText('world');
     expect(el).toBeTruthy();
   });

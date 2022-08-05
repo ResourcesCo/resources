@@ -5,7 +5,7 @@ specifiers:
   esbuild: ^0.14.49
   immer: ^9.0.15
   json-ptr: ^3.1.1
-  lodash: ^4.17.20
+  lodash: ^4.17.21
   path-to-regexp: ^6.2.0
   rollup: ^2.77.0
   rollup-plugin-dts: ^4.2.2
@@ -14,7 +14,6 @@ specifiers:
   typescript: ^4.7.4
   vite: ^3.0.4
   vitest: ^0.20.3
-  vtv-model: 'link:'
 
 dependencies:
   esbuild: 0.14.49
@@ -23,7 +22,6 @@ dependencies:
   lodash: 4.17.21
   path-to-regexp: 6.2.1
   tslib: 2.4.0
-  vtv-model: 'link:'
 
 devDependencies:
   '@vitest/ui': 0.20.3
