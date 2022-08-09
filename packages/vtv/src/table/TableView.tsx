@@ -1,7 +1,6 @@
 import React from 'react'
 import {
   getCollectionPaths,
-  joinPath,
   getChildState,
   getNestedState,
   getNodeInfo,
@@ -33,7 +32,7 @@ export default function TableView({
             {paths.map((path, i) => (
               <th key={i}>
                 <ColumnHeaderView context={context}>
-                  {path.length === 0 ? <em>value</em> : joinPath(path)}
+                  {path.length === 0 ? <em>value</em> : path.join('/')}
                 </ColumnHeaderView>
               </th>
             ))}

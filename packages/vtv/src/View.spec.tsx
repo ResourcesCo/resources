@@ -74,7 +74,7 @@ describe("View", () => {
     )
   }
 
-  it("should expand a node", async () => {
+  it("should expand and collapse a node", async () => {
     const { baseElement } = render(
       <ExampleView name="root" value={{hello: 'world'}} state={{}} />
     );
@@ -83,5 +83,8 @@ describe("View", () => {
     await userEvent.click(expandButton);
     const el = screen.queryByText('world');
     expect(el).toBeTruthy();
+    await userEvent.click(expandButton);
+    const el2 = screen.queryByText('world');
+    expect(el2).toBeNull();
   });
 });
