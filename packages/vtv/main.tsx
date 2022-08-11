@@ -6,27 +6,14 @@ import View from './src/View'
 const App = () => {
   const [treeData1, setTreeData1] = useState({
     name: "root",
-    value: 'example',
-  })
-  const [treeData2, setTreeData2] = useState({
-    name: "root",
     value: {
-      strings: [
-        "1",
-        "true",
-        "null",
-      ],
-      "non-strings": [
-        1,
-        true,
-        null,
-      ],
+      name: 'Test',
+      location: {
+        city: 'San Francisco',
+        state: 'CA',
+        country: 'USA',
+      },
     },
-    state: {
-      _expanded: true,
-      strings: {_expanded: true},
-      'non-strings': {_expanded: true},
-    }
   })
 
   return (

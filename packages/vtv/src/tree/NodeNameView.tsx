@@ -32,7 +32,14 @@ export default function NodeNameView({
         <Reference>
           {({ ref }) => (
             <div ref={ref}>
-              <NameButton onClick={() => setMenuOpen(true)} context={context}>
+              <NameButton
+                context={context}
+                onClick={() => false}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(true);
+                }}
+              >
                 <StringView
                   value={displayName !== undefined ? displayName : name}
                   maxLength={60}
