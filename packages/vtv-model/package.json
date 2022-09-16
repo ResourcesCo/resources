@@ -1,7 +1,7 @@
 {
   "name": "vtv-model",
   "type": "module",
-  "version": "1.0.0-pre.11",
+  "version": "1.0.0-pre.12",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -35,6 +35,6 @@
   },
   "files": [
     "dist/index.d.ts",
-    "index.js.map"
+    "dist/index.js.map"
   ]
 }

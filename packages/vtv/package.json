@@ -1,6 +1,8 @@
 {
   "name": "vtv",
-  "version": "1.0.0-canary.24",
+  "type": "module",
+  "version": "1.0.0-canary.30",
+  "main": "dist/index.js",
   "dependencies": {
     "@braintree/sanitize-url": "^5.0.0",
     "@codemirror/autocomplete": "^0.17.4",
@@ -34,9 +36,9 @@
     "clsx": "^1.2.1",
     "lodash": "^4.17.21",
     "prop-types": "^15.8.1",
-    "react-autosize-textarea": "^7.1.0",
     "react-copy-to-clipboard": "^5.1.0",
     "react-popper": "^2.3.0",
+    "react-textarea-autosize": "^8.3.4",
     "scroll-into-view-if-needed": "^2.2.29",
     "vtv-model": "1.0.0-pre.11"
   },
@@ -46,8 +48,8 @@
     "@vitest/ui": "^0.20.3",
     "esbuild": "^0.14.53",
     "happy-dom": "^6.0.4",
-    "react": "17",
-    "react-dom": "17",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "rollup": "^2.77.0",
     "rollup-plugin-dts": "^4.2.2",
     "rollup-plugin-esbuild": "^4.9.1",
@@ -60,10 +62,35 @@
     "react-dom": "^17.0.1"
   },
   "scripts": {
-    "build": "rollup -c",
+    "dev": "vite",
+    "build": "rollup -c && cp -r ./src/css/ ./css/",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:run": "vitest run",
-    "dev": "vite"
-  }
+    "test:run": "vitest run"
+  },
+  "files": [
+    "dist/index.d.ts",
+    "dist/index.js.map",
+    "css/vtv.css",
+    "css/content/ActionButton.css",
+    "css/content/AttachmentView.css",
+    "css/content/CodeView.css",
+    "css/content/CollectionSummary.css",
+    "css/content/ImageView.css",
+    "css/content/InlineActionView.css",
+    "css/content/InlineNodeView.css",
+    "css/content/InlineValue.css",
+    "css/content/Link.css",
+    "css/generic/ActionButton.css",
+    "css/generic/Menu.css",
+    "css/generic/NameButton.css",
+    "css/generic/NameEdit.css",
+    "css/table/TableView.css",
+    "css/themes/BlueTheme.css",
+    "css/themes/DarkTheme.css",
+    "css/themes/LightTheme.css",
+    "css/tree/ExpandButton.css",
+    "css/tree/NodeMenuButton.css",
+    "css/tree/NodeView.css"
+  ]
 }

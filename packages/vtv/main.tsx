@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import ReactDOM from 'react-dom'
-import './src/css/vtv.css'
-import View from './src/View'
+import React, { useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import './src/css/vtv.css';
+import View from './src/';
 
 const App = () => {
-  const [treeData1, setTreeData1] = useState({
+  const [treeData1, setTreeData1] = useState<any>({
     name: "root",
     value: {
       name: 'Test',
@@ -29,8 +29,7 @@ const App = () => {
   )
 }
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-, document.getElementById('root') as HTMLElement)
+const root = createRoot(document.getElementById('root') as Element);
+root.render(<React.StrictMode>
+  <App />
+</React.StrictMode>);
