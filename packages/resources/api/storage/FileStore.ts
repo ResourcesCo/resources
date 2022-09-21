@@ -8,12 +8,12 @@ export interface FileStoreResponse {
 }
 
 export interface FileStore {
-  get({ path: string }): Promise<FileStoreResponse>
-  put({ path: string, value: any }): Promise<FileStoreResponse>
-  delete({ path: string }): Promise<FileStoreResponse>
+  get(params: { path: string }): Promise<FileStoreResponse>
+  put(params: { path: string, value: any }): Promise<FileStoreResponse>
+  delete(params: { path: string }): Promise<FileStoreResponse>
   constrain(subpath: string): FileStore
 }
 
 export interface FileStoreConstructor {
-  new ({ path: string }): FileStore
+  new (params: { path: string }): FileStore
 }

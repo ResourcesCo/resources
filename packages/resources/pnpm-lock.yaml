@@ -7,6 +7,10 @@ specifiers:
   '@babel/preset-react': 7.18.6
   '@babel/preset-typescript': 7.18.6
   '@braintree/sanitize-url': ^6.0.0
+  '@codemirror/autocomplete': 0.17.4
+  '@codemirror/commands': 0.17.5
+  '@codemirror/state': 0.17.2
+  '@codemirror/view': 0.17.13
   '@fortawesome/fontawesome-svg-core': ^6.2.0
   '@fortawesome/free-solid-svg-icons': ^6.2.0
   '@fortawesome/react-fontawesome': ^0.2.0
@@ -61,6 +65,10 @@ specifiers:
 
 dependencies:
   '@braintree/sanitize-url': 6.0.0
+  '@codemirror/autocomplete': 0.17.4
+  '@codemirror/commands': 0.17.5
+  '@codemirror/state': 0.17.2
+  '@codemirror/view': 0.17.13
   '@fortawesome/fontawesome-svg-core': 6.2.0
   '@fortawesome/free-solid-svg-icons': 6.2.0
   '@fortawesome/react-fontawesome': 0.2.0_6j2wdqxompc6mcokhxkpep2gqu

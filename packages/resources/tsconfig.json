@@ -2,7 +2,7 @@
   "compilerOptions": {
     "paths": {
       "api/*": [
-        "api/*"
+        "./api/*"
       ]
     },
     "target": "es5",
