@@ -1,5 +1,5 @@
 import { AppSpec } from '../../app-base/App'
-import { cloneDeep as clone } from 'lodash'
+import { cloneDeep as clone } from 'lodash-es'
 import { parseCommand } from 'vtv-model'
 
 const functions = { parseCommand }

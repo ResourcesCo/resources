@@ -29,14 +29,17 @@ specifiers:
   '@fortawesome/free-solid-svg-icons': ^6.1.2
   '@fortawesome/react-fontawesome': ^0.2.0
   '@popperjs/core': ^2.11.5
-  '@testing-library/react': '12'
-  '@testing-library/user-event': ^14.4.2
+  '@testing-library/dom': ^8.18.1
+  '@testing-library/react': ^13.4.0
+  '@testing-library/user-event': ^14.4.3
+  '@types/lodash-es': ^4.17.6
   '@vitest/ui': ^0.20.3
   chroma-js: ^2.1.0
   clsx: ^1.2.1
   esbuild: ^0.14.53
   happy-dom: ^6.0.4
   lodash: ^4.17.21
+  lodash-es: ^4.17.21
   prop-types: ^15.8.1
   react: ^18.2.0
   react-copy-to-clipboard: ^5.1.0
@@ -50,7 +53,7 @@ specifiers:
   typescript: ^4.7.4
   vite: ^3.0.4
   vitest: ^0.20.3
-  vtv-model: 1.0.0-pre.11
+  vtv-model: 1.0.0-pre.13
 
 dependencies:
   '@braintree/sanitize-url': 5.0.2
@@ -84,16 +87,19 @@ dependencies:
   chroma-js: 2.4.2
   clsx: 1.2.1
   lodash: 4.17.21
+  lodash-es: 4.17.21
   prop-types: 15.8.1
   react-copy-to-clipboard: 5.1.0_react@18.2.0
   react-popper: 2.3.0_ili5ylfne7i3hkfpsanzgkfu6m
   react-textarea-autosize: 8.3.4_react@18.2.0
   scroll-into-view-if-needed: 2.2.29
-  vtv-model: 1.0.0-pre.11
+  vtv-model: 1.0.0-pre.13
 
 devDependencies:
-  '@testing-library/react': 12.1.5_biqbaboplfbrettd7655fr4n2y
-  '@testing-library/user-event': 14.4.2
+  '@testing-library/dom': 8.18.1
+  '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
+  '@testing-library/user-event': 14.4.3_znccgeejomvff3jrsk3ljovfpu
+  '@types/lodash-es': 4.17.6
   '@vitest/ui': 0.20.3
   esbuild: 0.14.53
   happy-dom: 6.0.4
@@ -468,8 +474,8 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /@testing-library/dom/8.16.1:
-    resolution: {integrity: sha512-XEV2mBxgv6DKjL3+U3WEUzBgT2CjYksoXGlLrrJXYP8OvRfGkBonvelkorazpFlp8tkEecO06r43vN4DIEyegQ==}
+  /@testing-library/dom/8.18.1:
+    resolution: {integrity: sha512-oEvsm2B/WtcHKE+IcEeeCqNU/ltFGaVyGbpcm4g/2ytuT49jrlH9x5qRKL/H3A6yfM4YAbSbC0ceT5+9CEXnLg==}
     engines: {node: '>=12'}
     dependencies:
       '@babel/code-frame': 7.18.6
@@ -482,25 +488,27 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /@testing-library/react/12.1.5_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-OfTXCJUFgjd/digLUuPxa0+/3ZxsQmE7ub9kcbW/wi96Bh3o/p5vrETcBGfP17NWPGqeYYl5LTRpwyGoMC4ysg==}
+  /@testing-library/react/13.4.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-sXOGON+WNTh3MLE9rve97ftaZukN3oNf2KjDy7YTx6hcTO2uuLHuCGynMDhFwGw/jYf4OJ2Qk0i4i79qMNNkyw==}
     engines: {node: '>=12'}
     peerDependencies:
-      react: <18.0.0
-      react-dom: <18.0.0
+      react: ^18.0.0
+      react-dom: ^18.0.0
     dependencies:
       '@babel/runtime': 7.18.9
-      '@testing-library/dom': 8.16.1
-      '@types/react-dom': 17.0.17
+      '@testing-library/dom': 8.18.1
+      '@types/react-dom': 18.0.6
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: true
 
-  /@testing-library/user-event/14.4.2:
-    resolution: {integrity: sha512-1gVTWtueNimveOjcm2ApFCnCTeky7WqY3EX31/GRKLWyCd+HfH+Gd2l1J8go9FpDNe+0Mx8X4zbQHTg0WWNJwg==}
+  /@testing-library/user-event/14.4.3_znccgeejomvff3jrsk3ljovfpu:
+    resolution: {integrity: sha512-kCUc5MEwaEMakkO5x7aoD+DLi02ehmEM2QCGWvNqAS1dV/fAvORWEjnjsEIvml59M7Y5kCkWN6fCCyPOe8OL6Q==}
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
+    dependencies:
+      '@testing-library/dom': 8.18.1
     dev: true
 
   /@types/aria-query/4.2.2:
@@ -529,6 +537,16 @@ packages:
       '@types/node': 18.6.3
     dev: true
 
+  /@types/lodash-es/4.17.6:
+    resolution: {integrity: sha512-R+zTeVUKDdfoRxpAryaQNRKk3105Rrgx2CFRClIgRGaqDTdjsm8h6IYA8ir584W3ePzkZfst5xIgDwYrlh9HLg==}
+    dependencies:
+      '@types/lodash': 4.14.185
+    dev: true
+
+  /@types/lodash/4.14.185:
+    resolution: {integrity: sha512-evMDG1bC4rgQg4ku9tKpuMh5iBNEwNa3tf9zRHdP1qlv+1WUg44xat4IxCE14gIpZRGUUWAx2VhItCZc25NfMA==}
+    dev: true
+
   /@types/node/10.17.60:
     resolution: {integrity: sha512-F0KIgDJfy2nA3zMLmWGKxcH2ZVEtCZXHHdOQs2gSaQ27+lNeEfGxzkIw90aXswATX7AZ33tahPbzy6KAfUreVw==}
     dev: true
@@ -549,8 +567,8 @@ packages:
     resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
     dev: true
 
-  /@types/react-dom/17.0.17:
-    resolution: {integrity: sha512-VjnqEmqGnasQKV0CWLevqMTXBYG9GbwuE6x3VetERLh0cq2LTptFE73MrQi2S7GkKXCf2GgwItB/melLnxfnsg==}
+  /@types/react-dom/18.0.6:
+    resolution: {integrity: sha512-/5OFZgfIPSwy+YuIBP/FgJnQnsxhZhjjrnxudMddeblOouIodEQ75X14Rr4wGSG/bknL+Omy9iWlLo1u/9GzAA==}
     dependencies:
       '@types/react': 17.0.48
     dev: true
@@ -1161,6 +1179,10 @@ packages:
     engines: {node: '>=14'}
     dev: true
 
+  /lodash-es/4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    dev: false
+
   /lodash/4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
     dev: false
@@ -1690,13 +1712,13 @@ packages:
       - terser
     dev: true
 
-  /vtv-model/1.0.0-pre.11:
-    resolution: {integrity: sha512-LM/2Pmqzy9o+U/pr1p6J94MfjUPfB+bE6xjACR6HkQUEE+W5eoG9K+YS2UosD7Z4/47ABeBDQYZZz0hBH9QDNQ==}
+  /vtv-model/1.0.0-pre.13:
+    resolution: {integrity: sha512-X5qa4nviBC1azK8x5CekTXiFjA+Y3A3X4eq8fywO8tdTTYsdy5VoAjSqTu1mClbYJtl596irsEHa0sCZCjTJWw==}
     dependencies:
       esbuild: 0.14.53
       immer: 9.0.15
       json-ptr: 3.1.1
-      lodash: 4.17.21
+      lodash-es: 4.17.21
       path-to-regexp: 6.2.1
       tslib: 2.4.0
     dev: false

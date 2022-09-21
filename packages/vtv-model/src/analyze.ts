@@ -1,4 +1,4 @@
-import isObject from "lodash/isObject";
+import { isObject } from "lodash-es";
 
 export function getNodeType(value) {
   if (isObject(value)) {

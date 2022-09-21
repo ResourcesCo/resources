@@ -1,7 +1,7 @@
 {
   "name": "vtv",
   "type": "module",
-  "version": "1.0.0-canary.30",
+  "version": "1.0.0-canary.31",
   "main": "dist/index.js",
   "dependencies": {
     "@braintree/sanitize-url": "^5.0.0",
@@ -35,16 +35,19 @@
     "chroma-js": "^2.1.0",
     "clsx": "^1.2.1",
     "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "prop-types": "^15.8.1",
     "react-copy-to-clipboard": "^5.1.0",
     "react-popper": "^2.3.0",
     "react-textarea-autosize": "^8.3.4",
     "scroll-into-view-if-needed": "^2.2.29",
-    "vtv-model": "1.0.0-pre.11"
+    "vtv-model": "1.0.0-pre.13"
   },
   "devDependencies": {
-    "@testing-library/react": "12",
-    "@testing-library/user-event": "^14.4.2",
+    "@testing-library/dom": "^8.18.1",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/lodash-es": "^4.17.6",
     "@vitest/ui": "^0.20.3",
     "esbuild": "^0.14.53",
     "happy-dom": "^6.0.4",

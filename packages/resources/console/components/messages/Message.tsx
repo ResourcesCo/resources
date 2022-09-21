@@ -1,7 +1,7 @@
 import React, { useState, FunctionComponent, ComponentType } from 'react'
 import Tree from './Tree'
 import Embed from './Embed'
-import Loader from 'react-loader-spinner'
+import { ThreeDots } from 'react-loader-spinner'
 import { faLink } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Theme } from 'vtv'
@@ -98,8 +98,7 @@ const MessageView: FunctionComponent<MessageViewProps> = ({
         </span>
         {loading && (
           <div style={{ display: 'inline-block', paddingLeft: 5 }}>
-            <Loader
-              type="ThreeDots"
+            <ThreeDots
               color={theme.inputColor}
               height={12}
               width={20}

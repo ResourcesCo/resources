@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-unfetch'
 import headerCase from './util/string/headerCase'
 import { produce } from 'immer'
-import { joinPath } from 'vtv-model'
+import { encodePointer } from 'json-ptr'
 
 export function ok(response) {
   return response.status >= 200 && response.status < 300
@@ -12,7 +12,7 @@ function replaceEnvInString(str, env) {
   for (const [envKey, value] of Object.entries(env)) {
     result = result.replace(
       value,
-      () => '${ ' + joinPath(['env', envKey]) + ' }'
+      () => '${ ' + encodePointer(['env', envKey]) + ' }'
     )
   }
   return result

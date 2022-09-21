@@ -1,8 +1,10 @@
-import dark from 'vtv/themes/dark'
-import light from 'vtv/themes/light'
-import blue from 'vtv/themes/blue'
+import { getTheme as _getTheme } from 'vtv'
 
-export const themes = { dark, light, blue }
+export const themes = {
+  dark: _getTheme('dark'),
+  light: _getTheme('light'),
+  blue: _getTheme('blue')
+}
 
 export function getTheme(value) {
   if (typeof value === 'string') {

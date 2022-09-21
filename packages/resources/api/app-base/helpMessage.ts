@@ -1,7 +1,7 @@
 import App, { ResourceType } from './App'
 import produce, { Draft } from 'immer'
 import { parse, compile, Token } from 'path-to-regexp'
-import { keyBy, mapValues, pickBy } from 'lodash'
+import { keyBy, mapValues, pickBy } from 'lodash-es'
 
 function setPathParams(path: string, params: { [key: string]: string }) {
   const defaultParams = mapValues(

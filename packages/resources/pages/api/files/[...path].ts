@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse, PageConfig } from 'next'
-import { isObject } from 'lodash'
+import { isObject } from 'lodash-es'
 import ConsoleError from 'api/ConsoleError'
 import ConsoleWorkspace from 'api/workspace/ConsoleWorkspace'
 import LocalFileStore from 'api/storage/LocalFileStore'

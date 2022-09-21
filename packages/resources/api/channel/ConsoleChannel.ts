@@ -9,7 +9,7 @@ import apps, { apiOnlyApps } from '../apps'
 import env from './env'
 import { createNanoEvents, Emitter } from 'nanoevents'
 import produce from 'immer'
-import { uniq, flattenDeep } from 'lodash'
+import { flattenDeep, uniq } from 'lodash-es'
 import toArray from '../app-base/util/message/toArray'
 
 // Properties stored and managed by the workspace (a channel cannot set itself to be admin)
