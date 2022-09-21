@@ -1,13 +1,11 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import getNested from 'lodash/get'
-import isObject from 'lodash/isObject'
+import { get as getNested, isObject } from 'lodash-es'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import {
   getNodeState,
   getChildState,
   getNestedState,
-  joinPath,
   getNodeInfo,
 } from 'vtv-model'
 import ExpandButton from './ExpandButton'
@@ -89,7 +87,7 @@ function NodeView({
         name={showOnly[showOnly.length - 1]}
         value={showOnlyValue}
         state={showOnlyState}
-        displayName={joinPath([...showOnly])}
+        displayName={[...showOnly].join('/')}
         showOnlyPath={showOnly}
         path={showOnly}
         context={context}

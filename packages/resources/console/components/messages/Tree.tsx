@@ -1,6 +1,7 @@
 import View from 'vtv'
-import { joinPath, State } from 'vtv-model'
+import { State } from 'vtv-model'
 import { FunctionComponent } from 'react'
+import { encodePointer } from 'json-ptr'
 
 interface TreeProps {
   name?: string
@@ -35,7 +36,7 @@ const Tree: FunctionComponent<TreeProps> = ({
     if (typeof pathOrString === 'string') {
       onPickId(pathOrString)
     } else {
-      onPickId(joinPath(['messages', commandId, ...pathOrString]))
+      onPickId(encodePointer(['messages', commandId, ...pathOrString]))
     }
   }
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { getNodeType, joinPath } from 'vtv-model'
+import { getNodeType } from 'vtv-model'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import { sanitizeUrl } from '@braintree/sanitize-url'
@@ -23,7 +23,7 @@ export default function InlineNodeView({
   const bubble = (
     <div className="vtv--inline-node-view--node">
       {inlineItem.showLabel && (
-        <div className="vtv--inline-node-view--name">{joinPath(inlineItem.path)}</div>
+        <div className="vtv--inline-node-view--name">{inlineItem.path.join('/')}</div>
       )}
       {summaryString}
       {url && <FontAwesomeIcon icon={faExternalLinkAlt} size="xs" />}

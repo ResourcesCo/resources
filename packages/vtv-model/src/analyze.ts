@@ -1,5 +1,4 @@
-import j2ref from "j2ref";
-import { isObject } from "lodash";
+import { isObject } from "lodash-es";
 
 export function getNodeType(value) {
   if (isObject(value)) {
@@ -58,7 +57,7 @@ export function getNodeInfo(value, state) {
   };
 }
 
-export const getPaths = (item, depth = 2) => {
+const getPaths = (item, depth = 2) => {
   let result = [];
   if (isObject(item)) {
     for (let key of Object.keys(item)) {
@@ -122,31 +121,3 @@ export const isIdentifier = (s) => {
   return /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(s);
 };
 
-export const joinPath = (path) => {
-  let result = "";
-  for (let i = 0; i < path.length; i++) {
-    if (isIdentifier(path[i])) {
-      result += (i === 0 ? "" : ".") + path[i];
-    } else {
-      result += `[${JSON.stringify(path[i])}]`;
-    }
-  }
-  return result;
-};
-
-export function splitPath(str) {
-  if (str.indexOf("://") !== -1) {
-    return;
-  }
-  if (str[0] === "[") {
-    const result = j2ref(`$${str}`);
-    if (result && result.keys) {
-      return result.keys.slice(1);
-    }
-  } else {
-    const result = j2ref(str);
-    if (result) {
-      return result.keys;
-    }
-  }
-}

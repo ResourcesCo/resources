@@ -1,7 +1,7 @@
 import light from './light'
 import dark from './dark'
 import blue from './blue'
-import { Theme } from 'vtv'
+import { Theme } from '../'
 
 const themes = {
   light,

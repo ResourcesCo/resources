@@ -2,7 +2,7 @@ import React from 'react'
 import ValueInlineContent from './ValueInlineContent'
 import InlineNodeView from './InlineNodeView'
 import ActionButton from './ActionButton'
-import getNested from 'lodash/get'
+import { get as getNested } from 'lodash-es'
 import { getNestedState } from 'vtv-model'
 
 export default function InlineContent({

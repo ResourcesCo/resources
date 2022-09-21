@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import TextareaAutosize from 'react-autosize-textarea'
+import TextareaAutosize from 'react-textarea-autosize'
 
 interface TextareaProps {
   value: string

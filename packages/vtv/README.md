@@ -1,7 +1,9 @@
 # vtv
 
-This library was generated with [Nx](https://nx.dev).
+## Development
+
+Run `pnpm start` to start the development server.
 
 ## Running unit tests
 
-Run `nx test vtv` to execute the unit tests via [Jest](https://jestjs.io).
+Run `pnpm test` to run the unit tests with [vitest](https://vitest.dev/).

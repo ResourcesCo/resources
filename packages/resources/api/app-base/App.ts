@@ -1,5 +1,5 @@
 import { match } from 'path-to-regexp'
-import { mapValues } from 'lodash'
+import { mapValues } from 'lodash-es'
 import request from './request'
 import helpMessage from './helpMessage'
 import ConsoleChannel from '../channel/ConsoleChannel'

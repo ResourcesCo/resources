@@ -1,7 +1,7 @@
 import { AppSpec } from '../../app-base/App'
 import { ok, replaceEnv } from '../../app-base/request'
 import camelCase from '../../app-base/util/string/camelCase'
-import { get as getNested } from 'lodash'
+import { get as getNested } from 'lodash-es'
 
 const actions = {
   root: {

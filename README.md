@@ -60,4 +60,11 @@ cd dist/packages/vtv
 npm publish
 ```
 
+## TODO
+
+- New build
+  - Build/publish vtv-model (w/ esbuild?)
+  - Build/publish vtv
+  - Build standalone
+
 [ncu]: https://www.npmjs.com/package/npm-check-updates

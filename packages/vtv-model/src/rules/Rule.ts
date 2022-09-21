@@ -1,5 +1,5 @@
 import { match, MatchFunction } from 'path-to-regexp'
-import { mapValues, get as getNested } from 'lodash'
+import { mapValues, get as getNested } from 'lodash-es'
 import { JsonPointer } from 'json-ptr'
 import { compile, PathFunction } from 'path-to-regexp'
 
