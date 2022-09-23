@@ -2,7 +2,8 @@
 // Copyright (C) 2018-2021 by Marijn Haverbeke <marijnh@gmail.com> and others
 // MIT License: https://github.com/codemirror/theme-one-dark/blob/main/LICENSE
 
-import {HighlightStyle, tags as t} from "@codemirror/highlight"
+import {HighlightStyle} from "@codemirror/language"
+import {tags as t} from "@lezer/highlight"
 
 const chalky = "#e5c07b",
   coral = "#e06c75",
@@ -16,7 +17,7 @@ const chalky = "#e5c07b",
   violet = "#c678dd"
 
 /// The highlighting style for code in the One Dark theme.
-export default HighlightStyle.define(
+export default HighlightStyle.define([
   {tag: t.keyword,
    color: violet},
   {tag: [t.name, t.deleted, t.character, t.propertyName, t.macroName],
@@ -49,4 +50,4 @@ export default HighlightStyle.define(
    color: whiskey },
   {tag: t.invalid,
    color: invalid},
-)
+])
