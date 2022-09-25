@@ -177,20 +177,6 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
 
     return (
       <div className="chat-input">
-        {/*<TextareaAutosize
-        className="chat-input-text"
-        placeholder=">"
-        value={text}
-        onChange={onTextChange}
-        onKeyDown={handleKeyPress}
-        onFocus={() => handleFocusChange(true)}
-        onBlur={() => handleFocusChange(false)}
-        onPaste={handlePaste}
-        ref={textareaRef}
-        maxRows={8}
-        autoCorrect="off"
-        autoCapitalize="none"
-      />*/}
         <CodeEditor
           editorViewRef={editorViewRef}
           completionExtension={completionExtension}
