@@ -171,7 +171,6 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = ({
           highlightThemeExtension,
           ...additionalExtensions,
         ]
-        console.log({extensions});
         editorViewRef.current = new EditorView({
           state: EditorState.create({
             doc: initialValue,

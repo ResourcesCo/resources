@@ -13,61 +13,74 @@ const foreground = "#403f53",
   selection = "#339cec33",
   cursor = "#528bff"
 
-/// The editor theme styles for One Dark.
-export default EditorView.theme({
-  $: {
+export const lightTheme = EditorView.theme({
+  "&": {
     color: foreground,
-    backgroundColor: background,
-    caretColor: cursor,
-    "&$focused": {
-      outline: "none"
-    }
+    backgroundColor: background
   },
 
-  "$$focused $cursor": {borderLeftColor: cursor},
-  "$$focused $selectionBackground": {backgroundColor: selection},
+  ".cm-content": {
+    caretColor: cursor
+  },
 
-  $panels: {backgroundColor: lightBackground, color: foreground},
-  "$panels.top": {borderBottom: "2px solid #d9d9d9"},
-  "$panels.bottom": {borderTop: "2px solid #d9d9d9"},
+  ".cm-cursor, .cm-dropCursor": {borderLeftColor: cursor},
+  "&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": {backgroundColor: selection},
 
-  $searchMatch: {
+  ".cm-panels": {backgroundColor: background, color: foreground},
+  ".cm-panels.cm-panels-top": {borderBottom: "2px solid black"},
+  ".cm-panels.cm-panels-bottom": {borderTop: "2px solid black"},
+
+  ".cm-searchMatch": {
     backgroundColor: "#339cec33",
     outline: "1px solid #d9d9d9"
   },
-  "$searchMatch.selected": {
+  ".cm-searchMatch.cm-searchMatch-selected": {
     backgroundColor: "#339cec33"
   },
 
-  $activeLine: {backgroundColor: "#F0F0F0"},
-  $selectionMatch: {backgroundColor: "#aafe661a"},
+  ".cm-activeLine": {backgroundColor: "#F0F0F0"},
+  ".cm-selectionMatch": {backgroundColor: "#aafe661a"},
 
-  "$matchingBracket, $nonmatchingBracket": {
+  "&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket": {
     backgroundColor: "#bad0f847",
     outline: "1px solid #515a6b"
   },
 
-  $gutters: {
+  ".cm-gutters": {
     backgroundColor: background,
     color: "#545868",
     border: "none"
   },
   "$gutterElement.lineNumber": {color: "inherit"},
 
-  $foldPlaceholder: {
+  ".cm-activeLineGutter": {
+    backgroundColor: highlightBackground
+  },
+
+  ".cm-foldPlaceholder": {
     backgroundColor: "transparent",
     border: "none",
     color: "#ddd"
   },
 
-  $tooltip: {
+  ".cm-tooltip": {
     border: "1px solid #181a1f",
     backgroundColor: lightBackground
   },
-  "$tooltip.autocomplete": {
+  ".cm-tooltip .cm-tooltip-arrow:before": {
+    borderTopColor: "transparent",
+    borderBottomColor: "transparent"
+  },
+  ".cm-tooltip .cm-tooltip-arrow:after": {
+    borderTopColor: lightBackground,
+    borderBottomColor: lightBackground
+  },
+  ".cm-tooltip-autocomplete": {
     "& > ul > li[aria-selected]": {
       backgroundColor: highlightBackground,
       color: foreground
     }
   }
 }, {dark: false})
+
+export default lightTheme
