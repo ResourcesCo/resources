@@ -60,7 +60,7 @@ specifiers:
   scroll-into-view-if-needed: ^2.2.29
   styled-jsx: 5.0.7
   typescript: 4.8.3
-  vtv: 1.0.0-canary.33
+  vtv: 1.0.0-canary.34
   vtv-model: 1.0.0-pre.13
 
 dependencies:
@@ -102,7 +102,7 @@ dependencies:
   remark: 14.0.2
   scroll-into-view-if-needed: 2.2.29
   styled-jsx: 5.0.7_3toe27fv7etiytxb5kxc7fxaw4
-  vtv: 1.0.0-canary.33_rj7ozvcq3uehdlnj3cbwzbi5ce
+  vtv: 1.0.0-canary.34_rj7ozvcq3uehdlnj3cbwzbi5ce
   vtv-model: 1.0.0-pre.13
 
 devDependencies:
@@ -3817,8 +3817,8 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /vtv/1.0.0-canary.33_rj7ozvcq3uehdlnj3cbwzbi5ce:
-    resolution: {integrity: sha512-o2o/ZSQqJz5kvqtTSK4505g3TIqb5JaJWcMI02hHpczmLP3ZJQKFg4VVo/av0jTMRDPxKCfjhzhPy5TGpB8oOQ==}
+  /vtv/1.0.0-canary.34_rj7ozvcq3uehdlnj3cbwzbi5ce:
+    resolution: {integrity: sha512-REIs5yvGJDdqb06LWMd3n9pF84slJOe7gYazOOx2lCG0mCdB1K+pIoR3JhnQhpQGm2M4Yk1r6Jtp2YcWi+ZCIA==}
     peerDependencies:
       react: ^17.0.1
       react-dom: ^17.0.1

@@ -8,7 +8,7 @@ import {EditorView} from "@codemirror/view"
 
 const foreground = "#403f53",
   lightBackground = "#FBFBFB",
-  highlightBackground = "#2c313a",
+  highlightBackground = "#339cec44",
   background = "#FBFBFB",
   selection = "#339cec33",
   cursor = "#528bff"

@@ -183,22 +183,18 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = ({
         const langUpdated = language !== prevConfigRef.current.language
         const themeUpdated = theme !== prevConfigRef.current.theme
         if (langUpdated || themeUpdated) {
-          editorView.state.update({effects: [
-            ...(langUpdated ? [languageCompartment.reconfigure(
-              languageExtensions[language]
-              ? [languageExtensions[language]]
-              : []
-            )] : []),
-            ...(themeUpdated ? [languageCompartment.reconfigure(
-              viewThemeExtensions[theme]
-            )] : []),
-            ...(themeUpdated ? [languageCompartment.reconfigure(
-              highlightThemeExtensions[theme]
-            )] : []),
-          ]})
+          if (langUpdated && languageExtensions[language]) {
+            editorView.state.update({effects:
+              languageCompartment.reconfigure(languageExtensions[language])
+            })
+          }
+          if (themeUpdated) {
+            editorView.state.update({effects: viewThemeCompartment.reconfigure(viewThemeExtensions[theme])})
+            editorView.state.update({effects: highlightThemeCompartment.reconfigure(highlightThemeExtensions[theme])})
+          }
         }
       }
-      prevConfigRef.current = currentConfig
+      prevConfigRef.current = { ...currentConfig }
     }
   }, [
     containerRef,
