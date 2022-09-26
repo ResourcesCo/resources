@@ -184,6 +184,7 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
           customKeymap={customKeymap}
           showLineNumbers={false}
           className="chat-input-text"
+          theme={theme.dark ? 'dark' : 'light'}
         />
         <button onClick={() => sendMessage(editorViewRef.current)} className="send">
           <span className="rocket">
