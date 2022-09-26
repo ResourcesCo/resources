@@ -7,9 +7,9 @@ import {EditorView} from "@codemirror/view"
 // Using https://github.com/one-dark/vscode-one-dark-theme/ as reference for the colors
 
 const foreground = "#403f53",
-  lightBackground = "#FBFBFB",
+  background = "#e0e0e0",
+  darkBackground = "#bbb",
   highlightBackground = "#339cec44",
-  background = "#FBFBFB",
   selection = "#339cec33",
   cursor = "#528bff"
 
@@ -18,6 +18,8 @@ export const lightTheme = EditorView.theme({
     color: foreground,
     backgroundColor: background
   },
+
+  "&.cm-editor.cm-focused": {outline: 'none'},
 
   ".cm-content": {
     caretColor: cursor
@@ -38,7 +40,7 @@ export const lightTheme = EditorView.theme({
     backgroundColor: "#339cec33"
   },
 
-  ".cm-activeLine": {backgroundColor: "#F0F0F0"},
+  ".cm-activeLine": {backgroundColor: "#ddd"},
   ".cm-selectionMatch": {backgroundColor: "#aafe661a"},
 
   "&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket": {
@@ -65,15 +67,15 @@ export const lightTheme = EditorView.theme({
 
   ".cm-tooltip": {
     border: "1px solid #181a1f",
-    backgroundColor: lightBackground
+    backgroundColor: darkBackground
   },
   ".cm-tooltip .cm-tooltip-arrow:before": {
     borderTopColor: "transparent",
     borderBottomColor: "transparent"
   },
   ".cm-tooltip .cm-tooltip-arrow:after": {
-    borderTopColor: lightBackground,
-    borderBottomColor: lightBackground
+    borderTopColor: darkBackground,
+    borderBottomColor: darkBackground
   },
   ".cm-tooltip-autocomplete": {
     "& > ul > li[aria-selected]": {

@@ -183,6 +183,7 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
           additionalExtensions={[eventHandlers]}
           customKeymap={customKeymap}
           showLineNumbers={false}
+          highlightActiveLine={false}
           className="chat-input-text"
           theme={theme.dark ? 'dark' : 'light'}
         />

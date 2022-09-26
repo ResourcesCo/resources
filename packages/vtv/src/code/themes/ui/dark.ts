@@ -50,6 +50,8 @@ export const oneDarkTheme = EditorView.theme({
     backgroundColor: background
   },
 
+  "&.cm-editor.cm-focused": {outline: 'none'},
+
   ".cm-content": {
     caretColor: cursor
   },

@@ -8,7 +8,7 @@ import {
   EditorView,
   highlightSpecialChars,
   drawSelection,
-  highlightActiveLine,
+  highlightActiveLine as highlightActiveLineExt,
   KeyBinding,
   keymap,
   lineNumbers,
@@ -114,6 +114,7 @@ interface CodeEditorProps {
   additionalExtensions?: Extension[]
   customKeymap?: readonly KeyBinding[]
   showLineNumbers?: boolean
+  highlightActiveLine?: boolean
   className?: string
 }
 
@@ -126,6 +127,7 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = ({
   additionalExtensions = [],
   customKeymap = [],
   showLineNumbers = true,
+  highlightActiveLine = true,
   className = '',
 }) => {
   const containerRef = useRef()
@@ -154,7 +156,7 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = ({
           closeBrackets(),
           completionExtension || autocompletion(),
           rectangularSelection(),
-          highlightActiveLine(),
+          ...(highlightActiveLine ? [highlightActiveLineExt()] : []),
           highlightSelectionMatches(),
           keymap.of([
             ...customKeymap,

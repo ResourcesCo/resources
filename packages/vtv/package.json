@@ -1,7 +1,7 @@
 {
   "name": "vtv",
   "type": "module",
-  "version": "1.0.0-canary.35",
+  "version": "1.0.0-canary.36",
   "main": "dist/index.js",
   "dependencies": {
     "@braintree/sanitize-url": "^6.0.0",
@@ -53,8 +53,8 @@
     "vitest": "^0.23.4"
   },
   "peerDependencies": {
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react": "^18.0.1",
+    "react-dom": "^18.0.1"
   },
   "scripts": {
     "dev": "vite",

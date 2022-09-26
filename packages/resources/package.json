@@ -45,7 +45,7 @@
     "remark": "^14.0.2",
     "scroll-into-view-if-needed": "^2.2.29",
     "styled-jsx": "5.0.7",
-    "vtv": "1.0.0-canary.35",
+    "vtv": "1.0.0-canary.36",
     "vtv-model": "1.0.0-pre.13"
   },
   "devDependencies": {

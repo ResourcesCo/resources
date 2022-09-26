@@ -60,7 +60,7 @@ specifiers:
   scroll-into-view-if-needed: ^2.2.29
   styled-jsx: 5.0.7
   typescript: 4.8.3
-  vtv: 1.0.0-canary.35
+  vtv: 1.0.0-canary.36
   vtv-model: 1.0.0-pre.13
 
 dependencies:
@@ -102,7 +102,7 @@ dependencies:
   remark: 14.0.2
   scroll-into-view-if-needed: 2.2.29
   styled-jsx: 5.0.7_3toe27fv7etiytxb5kxc7fxaw4
-  vtv: 1.0.0-canary.35_rj7ozvcq3uehdlnj3cbwzbi5ce
+  vtv: 1.0.0-canary.36_rj7ozvcq3uehdlnj3cbwzbi5ce
   vtv-model: 1.0.0-pre.13
 
 devDependencies:
@@ -3817,11 +3817,11 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /vtv/1.0.0-canary.35_rj7ozvcq3uehdlnj3cbwzbi5ce:
-    resolution: {integrity: sha512-CeuZJFPTmuZW2B8nbLwX9s749ULR+cLaxZboDEYgE+SlcfrYBZCFaQaUmYdN1F+3+YVlksB5qNeb1w6k5R4Qqw==}
+  /vtv/1.0.0-canary.36_rj7ozvcq3uehdlnj3cbwzbi5ce:
+    resolution: {integrity: sha512-yIbxCD6xQpJywpQ9oVArITTTaj+T+g4GRrRNkHqQ5QA1S/HS4WTcgA/3gNDbUNPIcFRa7QX+qQYzuMewNtimvw==}
     peerDependencies:
-      react: ^17.0.1
-      react-dom: ^17.0.1
+      react: ^18.0.1
+      react-dom: ^18.0.1
     dependencies:
       '@braintree/sanitize-url': 6.0.0
       '@codemirror/autocomplete': 6.3.0_5jr3yzwcenq7b4jfaxezt45ide
