@@ -184,13 +184,13 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = ({
         const themeUpdated = theme !== prevConfigRef.current.theme
         if (langUpdated || themeUpdated) {
           if (langUpdated && languageExtensions[language]) {
-            editorView.state.update({effects:
+            editorView.dispatch({effects:
               languageCompartment.reconfigure(languageExtensions[language])
             })
           }
           if (themeUpdated) {
-            editorView.state.update({effects: viewThemeCompartment.reconfigure(viewThemeExtensions[theme])})
-            editorView.state.update({effects: highlightThemeCompartment.reconfigure(highlightThemeExtensions[theme])})
+            editorView.dispatch({effects: viewThemeCompartment.reconfigure(viewThemeExtensions[theme])})
+            editorView.dispatch({effects: highlightThemeCompartment.reconfigure(highlightThemeExtensions[theme])})
           }
         }
       }
