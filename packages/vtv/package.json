@@ -1,7 +1,7 @@
 {
   "name": "vtv",
   "type": "module",
-  "version": "1.0.0-canary.36",
+  "version": "1.0.0-canary.38",
   "main": "dist/index.js",
   "dependencies": {
     "@braintree/sanitize-url": "^6.0.0",

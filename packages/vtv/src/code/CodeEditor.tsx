@@ -12,7 +12,8 @@ import {
   KeyBinding,
   keymap,
   lineNumbers,
-  rectangularSelection
+  rectangularSelection,
+  highlightActiveLineGutter
 } from '@codemirror/view'
 import { EditorState, Extension, Compartment } from '@codemirror/state'
 import {
@@ -156,7 +157,7 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = ({
           closeBrackets(),
           completionExtension || autocompletion(),
           rectangularSelection(),
-          ...(highlightActiveLine ? [highlightActiveLineExt()] : []),
+          ...(highlightActiveLine ? [highlightActiveLineExt(), highlightActiveLineGutter()] : []),
           highlightSelectionMatches(),
           keymap.of([
             ...customKeymap,

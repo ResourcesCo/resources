@@ -17,15 +17,26 @@ const App = () => {
   })
 
   return (
-    <View
-      name={treeData1.name}
-      value={treeData1.value}
-      state={treeData1.state}
-      onChange={setTreeData1}
-      onPickId={() => undefined}
-      onAction={() => undefined}
-      theme="dark"
-    />
+    <div>
+      <View
+        name={treeData1.name}
+        value={treeData1.value}
+        state={treeData1.state}
+        onChange={setTreeData1}
+        onPickId={() => undefined}
+        onAction={() => undefined}
+        theme="dark"
+      />
+      <View
+        name={treeData1.name}
+        value={treeData1.value}
+        state={treeData1.state}
+        onChange={setTreeData1}
+        onPickId={() => undefined}
+        onAction={() => undefined}
+        theme="light"
+      />
+    </div>
   )
 }
 

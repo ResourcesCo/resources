@@ -18,6 +18,7 @@ const chalky = "#e5c07b",
   violet = "#c678dd",
   darkBackground = "#21252b",
   highlightBackground = "#2c313a",
+  activeLineBackground = "#7c818a22",
   background = "#282c34",
   tooltipBackground = "#353a42",
   selection = "#3E4451",
@@ -37,6 +38,7 @@ export const color = {
   violet,
   darkBackground,
   highlightBackground,
+  activeLineBackground,
   background,
   tooltipBackground,
   selection,
@@ -71,7 +73,7 @@ export const oneDarkTheme = EditorView.theme({
     backgroundColor: "#6199ff2f"
   },
 
-  ".cm-activeLine": {backgroundColor: highlightBackground},
+  ".cm-activeLine": {backgroundColor: activeLineBackground},
   ".cm-selectionMatch": {backgroundColor: "#aafe661a"},
 
   "&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket": {
@@ -87,7 +89,7 @@ export const oneDarkTheme = EditorView.theme({
   "$gutterElement.lineNumber": {color: "inherit"},
 
   ".cm-activeLineGutter": {
-    backgroundColor: highlightBackground
+    backgroundColor: activeLineBackground
   },
 
   ".cm-foldPlaceholder": {

@@ -9,7 +9,8 @@ import {EditorView} from "@codemirror/view"
 const foreground = "#403f53",
   background = "#e0e0e0",
   darkBackground = "#bbb",
-  highlightBackground = "#339cec44",
+  highlightBackground = "#339cec77",
+  activeLineBackground = "237cac22",
   selection = "#339cec33",
   cursor = "#528bff"
 
@@ -40,7 +41,7 @@ export const lightTheme = EditorView.theme({
     backgroundColor: "#339cec33"
   },
 
-  ".cm-activeLine": {backgroundColor: "#ddd"},
+  ".cm-activeLine": {backgroundColor: activeLineBackground},
   ".cm-selectionMatch": {backgroundColor: "#aafe661a"},
 
   "&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket": {
@@ -56,7 +57,7 @@ export const lightTheme = EditorView.theme({
   "$gutterElement.lineNumber": {color: "inherit"},
 
   ".cm-activeLineGutter": {
-    backgroundColor: highlightBackground
+    backgroundColor: activeLineBackground
   },
 
   ".cm-foldPlaceholder": {
