@@ -8,26 +8,26 @@ import {
   EditorView,
   highlightSpecialChars,
   drawSelection,
-  highlightActiveLine,
+  highlightActiveLine as highlightActiveLineExt,
   KeyBinding,
   keymap,
+  lineNumbers,
+  rectangularSelection,
+  highlightActiveLineGutter
 } from '@codemirror/view'
-import { EditorState, Extension, tagExtension } from '@codemirror/state'
-import { history, historyKeymap } from '@codemirror/history'
-import { foldGutter, foldKeymap } from '@codemirror/fold'
+import { EditorState, Extension, Compartment } from '@codemirror/state'
 import {
   indentOnInput,
   LanguageSupport,
   LanguageDescription,
+  foldGutter,
+  foldKeymap,
+  bracketMatching,
+  syntaxHighlighting
 } from '@codemirror/language'
-import { lineNumbers } from '@codemirror/gutter'
-import { defaultKeymap } from '@codemirror/commands'
-import { bracketMatching } from '@codemirror/matchbrackets'
-import { closeBrackets, closeBracketsKeymap } from '@codemirror/closebrackets'
+import { defaultKeymap, history, historyKeymap } from '@codemirror/commands'
 import { searchKeymap, highlightSelectionMatches } from '@codemirror/search'
-import { autocompletion, completionKeymap } from '@codemirror/autocomplete'
-import { commentKeymap } from '@codemirror/comment'
-import { rectangularSelection } from '@codemirror/rectangular-selection'
+import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete'
 import { lintKeymap } from '@codemirror/lint'
 import { jsxLanguage } from '@codemirror/lang-javascript'
 import { htmlLanguage } from '@codemirror/lang-html'
@@ -40,17 +40,17 @@ import darkHighlightStyle from './themes/highlight/dark'
 import lightTheme from './themes/ui/light'
 import lightHighlightStyle from './themes/highlight/light'
 
-const languageTag = Symbol('lang')
-const viewThemeTag = Symbol('viewTheme')
-const highlightThemeTag = Symbol('highlightTheme')
+const languageCompartment = new Compartment()
+const viewThemeCompartment = new Compartment()
+const highlightThemeCompartment = new Compartment()
 
 const viewThemeExtensions = {
   dark: darkTheme,
   light: lightTheme,
 }
 const highlightThemeExtensions = {
-  dark: darkHighlightStyle,
-  light: lightHighlightStyle,
+  dark: syntaxHighlighting(darkHighlightStyle),
+  light: syntaxHighlighting(lightHighlightStyle),
 }
 const langs = {
   javascript: new LanguageSupport(jsxLanguage),
@@ -115,6 +115,7 @@ interface CodeEditorProps {
   additionalExtensions?: Extension[]
   customKeymap?: readonly KeyBinding[]
   showLineNumbers?: boolean
+  highlightActiveLine?: boolean
   className?: string
 }
 
@@ -127,6 +128,7 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = ({
   additionalExtensions = [],
   customKeymap = [],
   showLineNumbers = true,
+  highlightActiveLine = true,
   className = '',
 }) => {
   const containerRef = useRef()
@@ -136,6 +138,13 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = ({
     const currentConfig = { language, theme }
     if (containerRef.current) {
       if (!editorViewRef.current) {
+        const languageExtension = languageCompartment.of(
+          languageExtensions[language]
+          ? [languageExtensions[language]]
+          : []
+        );
+        const viewThemeExtension = viewThemeCompartment.of(viewThemeExtensions[theme])
+        const highlightThemeExtension = highlightThemeCompartment.of(highlightThemeExtensions[theme])
         const extensions = [
           ...(showLineNumbers ? [lineNumbers()] : []),
           highlightSpecialChars(),
@@ -148,7 +157,7 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = ({
           closeBrackets(),
           completionExtension || autocompletion(),
           rectangularSelection(),
-          highlightActiveLine(),
+          ...(highlightActiveLine ? [highlightActiveLineExt(), highlightActiveLineGutter()] : []),
           highlightSelectionMatches(),
           keymap.of([
             ...customKeymap,
@@ -157,15 +166,12 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = ({
             ...searchKeymap,
             ...historyKeymap,
             ...foldKeymap,
-            ...commentKeymap,
             ...completionKeymap,
             ...lintKeymap,
           ]),
-          ...(languageExtensions[language]
-            ? [tagExtension(languageTag, languageExtensions[language])]
-            : []),
-          tagExtension(viewThemeTag, viewThemeExtensions[theme]),
-          tagExtension(highlightThemeTag, highlightThemeExtensions[theme]),
+          languageExtension,
+          viewThemeExtension,
+          highlightThemeExtension,
           ...additionalExtensions,
         ]
         editorViewRef.current = new EditorView({
@@ -176,27 +182,22 @@ const CodeEditor: FunctionComponent<CodeEditorProps> = ({
           parent: containerRef.current,
         })
       } else {
+        const editorView = editorViewRef.current as EditorView
         const langUpdated = language !== prevConfigRef.current.language
         const themeUpdated = theme !== prevConfigRef.current.theme
         if (langUpdated || themeUpdated) {
-          editorViewRef.current.dispatch({
-            reconfigure: {
-              ...(langUpdated && {
-                [languageTag]: languageExtensions[language]
-                  ? [languageExtensions[language]]
-                  : [],
-              }),
-              ...(themeUpdated && {
-                [viewThemeTag]: viewThemeExtensions[theme],
-              }),
-              ...(themeUpdated && {
-                [highlightThemeTag]: highlightThemeExtensions[theme],
-              }),
-            },
-          })
+          if (langUpdated && languageExtensions[language]) {
+            editorView.dispatch({effects:
+              languageCompartment.reconfigure(languageExtensions[language])
+            })
+          }
+          if (themeUpdated) {
+            editorView.dispatch({effects: viewThemeCompartment.reconfigure(viewThemeExtensions[theme])})
+            editorView.dispatch({effects: highlightThemeCompartment.reconfigure(highlightThemeExtensions[theme])})
+          }
         }
       }
-      prevConfigRef.current = currentConfig
+      prevConfigRef.current = { ...currentConfig }
     }
   }, [
     containerRef,

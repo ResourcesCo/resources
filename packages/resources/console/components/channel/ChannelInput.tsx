@@ -177,27 +177,15 @@ const ChannelInput = React.forwardRef<ChannelInputMethods, ChannelInputProps>(
 
     return (
       <div className="chat-input">
-        {/*<TextareaAutosize
-        className="chat-input-text"
-        placeholder=">"
-        value={text}
-        onChange={onTextChange}
-        onKeyDown={handleKeyPress}
-        onFocus={() => handleFocusChange(true)}
-        onBlur={() => handleFocusChange(false)}
-        onPaste={handlePaste}
-        ref={textareaRef}
-        maxRows={8}
-        autoCorrect="off"
-        autoCapitalize="none"
-      />*/}
         <CodeEditor
           editorViewRef={editorViewRef}
           completionExtension={completionExtension}
           additionalExtensions={[eventHandlers]}
           customKeymap={customKeymap}
           showLineNumbers={false}
+          highlightActiveLine={false}
           className="chat-input-text"
+          theme={theme.dark ? 'dark' : 'light'}
         />
         <button onClick={() => sendMessage(editorViewRef.current)} className="send">
           <span className="rocket">

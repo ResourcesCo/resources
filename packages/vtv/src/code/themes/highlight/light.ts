@@ -2,44 +2,45 @@
 // Copyright (C) 2018-2021 by Marijn Haverbeke <marijnh@gmail.com> and others
 // MIT License: https://github.com/codemirror/highlight/blob/main/LICENSE
 
-import { HighlightStyle, tags } from '@codemirror/highlight'
+import {HighlightStyle} from "@codemirror/language"
+import {tags as t} from "@lezer/highlight"
 
-export default HighlightStyle.define(
-  {tag: tags.link,
+export default HighlightStyle.define([
+  {tag: t.link,
    textDecoration: "underline"},
-  {tag: tags.heading,
+  {tag: t.heading,
    textDecoration: "underline",
    fontWeight: "bold"},
-  {tag: tags.emphasis,
+  {tag: t.emphasis,
    fontStyle: "italic"},
-  {tag: tags.strong,
+  {tag: t.strong,
    fontWeight: "bold"},
-  {tag: tags.keyword,
+  {tag: t.keyword,
    color: "#708"},
-  {tag: [tags.atom, tags.bool, tags.url, tags.contentSeparator, tags.labelName],
+  {tag: [t.atom, t.bool, t.url, t.contentSeparator, t.labelName],
    color: "#219"},
-  {tag: [tags.literal, tags.inserted],
+  {tag: [t.literal, t.inserted],
    color: "#164"},
-  {tag: [tags.string, tags.deleted],
+  {tag: [t.string, t.deleted],
    color: "#a11"},
-  {tag: [tags.regexp, tags.escape, tags.special(tags.string)],
+  {tag: [t.regexp, t.escape, t.special(t.string)],
    color: "#e40"},
-  {tag: tags.definition(tags.variableName),
+  {tag: t.definition(t.variableName),
    color: "#00f"},
-  {tag: tags.local(tags.variableName),
+  {tag: t.local(t.variableName),
    color: "#30a"},
-  {tag: [tags.typeName, tags.namespace],
+  {tag: [t.typeName, t.namespace],
    color: "#085"},
-  {tag: tags.className,
+  {tag: t.className,
    color: "#167"},
-  {tag: [tags.special(tags.variableName), tags.macroName, tags.local(tags.variableName)],
+  {tag: [t.special(t.variableName), t.macroName, t.local(t.variableName)],
    color: "#256"},
-  {tag: tags.definition(tags.propertyName),
+  {tag: t.definition(t.propertyName),
    color: "#00c"},
-  {tag: tags.comment,
+  {tag: t.comment,
    color: "#940"},
-  {tag: tags.meta,
+  {tag: t.meta,
    color: "#7a757a"},
-  {tag: tags.invalid,
+  {tag: t.invalid,
    color: "#f00"}
-)
+])
