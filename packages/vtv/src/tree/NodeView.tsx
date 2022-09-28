@@ -115,7 +115,7 @@ function NodeView({
       <div
         className={`vtv--node-view--row level-${path.length}`}
         style={{ paddingLeft: indent }}
-        tabIndex={0}
+        tabIndex={-1}
       >
         <ExpandButton
           disabled={!isExpandable}

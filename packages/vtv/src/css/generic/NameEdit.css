@@ -6,6 +6,8 @@
   border: 0;
   outline: none;
   margin: 0 0;
+  font-family: var(--vtv-font-family);
+  font-size: inherit;
 }
 .vtv--view span.vtv--name-edit--span {
   outline: none;

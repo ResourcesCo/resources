@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react'
 import { getTheme, themeProperties } from './themes'
 import NodeView from './tree/NodeView'
 import Clipboard from './util/Clipboard'
+import KeyboardNavigation from './util/KeyboardNavigation'
 import { RuleList, updateTree } from 'vtv-model'
 import { Context } from 'vtv'
 
@@ -44,7 +45,7 @@ export default function View({
   }
   const themeClass = typeof theme === 'string' ? `vtv-theme-${theme}` : ''
   return (
-    <div ref={ref} className={`vtv--view ${themeClass}`}>
+    <KeyboardNavigation ref={ref} themeClass={themeClass}>
       <NodeView
         path={[]}
         name={'root'}
@@ -57,12 +58,12 @@ export default function View({
             state,
           },
           ruleList: new RuleList(rules),
-          onMessage: onMessage,
+          onMessage,
           clipboard: clipboard || defaultClipboard,
           theme: getTheme(theme),
           onPickId,
         }}
       />
-    </div>
+    </KeyboardNavigation>
   )
 }

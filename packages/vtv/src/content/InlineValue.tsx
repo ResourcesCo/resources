@@ -145,7 +145,7 @@ const InlineValue = ({
         />
       )}
       {showStringExcerpt && (
-        <span>{`${value.substr(0, 256)}… (${value.length} characters)`}</span>
+        <span>{`${value.substring(0, 256)}… (${value.length} characters)`}</span>
       )}
       {!useTextArea && !showStringExcerpt && <span>{value}</span>}
       {error && <span className="vtv--inline-value--error">{error}</span>}
