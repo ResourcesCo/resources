@@ -1,55 +1,19 @@
 import React from 'react'
 
-const ROOT_CLASS = 'vtv--view'
-const NODE_CLASS = 'vtv--node-view--row'
-const NODE_CHILDREN_CLASS = 'vtv--node-view--children'
-const NODE_NAME_CLASS = 'vtv--name-button'
-const NODE_EXPAND_CLASS = 'vtv--expand-button'
-const CODE_VIEW_CLASS = 'vtv--code-view--textarea-wrapper'
-const MAX_DEPTH = 20
-
-function isVisible(el: Element) {
-  if (el instanceof HTMLElement) {
-    return el.offsetParent !== null
-  } else {
-    return false
-  }
-}
-
-function findNode(root: HTMLElement, node: Element, direction: string): HTMLElement | undefined {
-  let parent = node
-  for (let parentDepth = 0; parentDepth < MAX_DEPTH; parentDepth++) {
-    const nodes = [...parent.querySelectorAll(`.${NODE_CLASS}`)]
-    if (direction === 'ArrowUp') {
-      nodes.reverse()
-    }
-    let returnNext = false
-    for (let i = 0; i < nodes.length; i++) {
-      const currentNode = nodes[i]
-      if (returnNext) {
-        if (isVisible(currentNode) && currentNode instanceof HTMLElement) {
-          return currentNode
-        }
-      }
-      if (currentNode === node) {
-        returnNext = true
-      }
-    }
-    if (parent === root) {
-      break;
-    }
-    parent = parent.parentElement
-    if (!(parent instanceof HTMLElement)) {
-      break;
-    }
-  }
-  return undefined
-}
+import {
+  MAX_DEPTH,
+  ROOT_CLASS,
+  NODE_CLASS,
+  NODE_CHILDREN_CLASS,
+  NODE_NAME_CLASS,
+  NODE_EXPAND_CLASS,
+  CODE_VIEW_CLASS
+} from './constants'
+import findNode from './findNode'
 
 function navigate(root: HTMLElement, node: HTMLElement, direction: string): HTMLElement | undefined {
   if (direction === 'ArrowUp' || direction === 'ArrowDown') {
-    const nodeContainer = node.closest(`.${NODE_CLASS}`)
-    const navNode = findNode(root, nodeContainer, direction)
+    const navNode = findNode(root, node, direction)
     if (navNode) {
       const nodeNameEl = navNode.querySelector(`.${NODE_NAME_CLASS}`)
       if (nodeNameEl instanceof HTMLElement) {
@@ -101,7 +65,6 @@ const KeyboardNavigation = React.forwardRef(({themeClass, children}, ref) => {
             if (nodeContainer instanceof HTMLElement) {
               const expandButton = nodeContainer.querySelector(`.${NODE_EXPAND_CLASS} button`)
               if (expandButton instanceof HTMLElement) {
-                console.log({nodeContainer, expandButton})
                 const event = new Event('click')
                 expandButton.dispatchEvent(event)
                 expandButton.click()

@@ -13,7 +13,21 @@ const App = () => {
         state: 'CA',
         country: 'USA',
       },
+      interests: [
+        "coding",
+        "food",
+        "hiking"
+      ]
     },
+    state: {
+      _expanded: true,
+      location: {
+        _expanded: true,
+      },
+      interests: {
+        _expanded: true
+      }
+    }
   })
 
   return (
