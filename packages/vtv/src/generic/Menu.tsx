@@ -66,6 +66,7 @@ export function MenuItem({
       <Reference>
         {({ ref }) => (
           <div
+            tabIndex={-1}
             className={clsx('vtv--menu--menu-item', { checked })}
             ref={ref}
             onMouseEnter={() => setItemHover(true)}
@@ -83,7 +84,7 @@ export function MenuItem({
         })}
     </Manager>
   ) : (
-    <div className={clsx('vtv--menu--menu-item', { checked })} onClick={onClick}>
+    <div tabIndex={-1} className={clsx('vtv--menu--menu-item', { checked })} onClick={onClick}>
       {copyToClipboard ? (
         <CopyToClipboard text={copyToClipboard}>
           <button className="vtv--menu--menu-item-button">{children}</button>

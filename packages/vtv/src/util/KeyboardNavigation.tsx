@@ -29,8 +29,8 @@ const KeyboardNavigation = React.forwardRef(({themeClass, children}, ref) => {
     const target = e.target as HTMLElement
     let node = target
     let arrowNavigation = true
-    let treeNavigation = false
-    let root = target.closest(ROOT_CLASS) as HTMLElement
+    let treeNavigation = true
+    const root = target.closest(`.${ROOT_CLASS}`) as HTMLElement
     for (let i=0; i < MAX_DEPTH; i++) {
       if (
         node &&
@@ -42,8 +42,9 @@ const KeyboardNavigation = React.forwardRef(({themeClass, children}, ref) => {
         break
       } else if (node && node.classList && node.classList.contains(CODE_VIEW_CLASS)) {
         arrowNavigation = false
-      } else if (node && node.classList && node.classList.contains(NODE_NAME_CLASS)) {
-        treeNavigation = true
+        treeNavigation = false
+      } else if (node && (node.tagName === 'input' || node.tagName === 'textarea' || node.contentEditable)) {
+        treeNavigation = false
       }
       node = node ? node.parentElement : node
     }
@@ -60,18 +61,25 @@ const KeyboardNavigation = React.forwardRef(({themeClass, children}, ref) => {
           e.preventDefault()
           navigate(root, node, e.code)
         } else if (treeNavigation) {
-          if (e.code === 'Space') {
-            const nodeContainer = node.closest(`.${NODE_CLASS}`)
-            if (nodeContainer instanceof HTMLElement) {
+          const nodeContainer = node.closest(`.${NODE_CLASS}`)
+          if (nodeContainer instanceof HTMLElement) {
+            if (e.code === 'Space') {
               const expandButton = nodeContainer.querySelector(`.${NODE_EXPAND_CLASS} button`)
               if (expandButton instanceof HTMLElement) {
-                const event = new Event('click')
+                const event = new MouseEvent('click', {bubbles: true})
                 expandButton.dispatchEvent(event)
                 expandButton.click()
               }
+            } else if (e.code === 'Enter') {
+              const button = nodeContainer.querySelector(`.${NODE_NAME_CLASS}`)
+              if (button instanceof HTMLElement) {
+                console.log(button)
+                const event = new MouseEvent('contextmenu', {bubbles: true})
+                button.dispatchEvent(event)
+                button.click()
+              }
             }
           }
-          // TODO: open menu on enter - menu needs keyboard too
         }
       } else {
         if (e.code === 'Escape') {
