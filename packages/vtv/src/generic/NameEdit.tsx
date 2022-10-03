@@ -11,25 +11,10 @@ interface NameEditProps {
   context: Context
 }
 
-function focusNewNode(target) {
+function focusNode(target) {
   const node = target.closest(`.${NODE_CLASS}`)
   if (node instanceof HTMLElement) {
-    const root = node.parentElement.closest(`.${ROOT_CLASS}`)
-    if (root instanceof HTMLElement) {
-      const nodeIndex = [...root.querySelectorAll(`.${NODE_CLASS}`)].findIndex(n => n === node)
-      let i = 0;
-      const interval = setInterval(() => {
-        const newNode = [...root.querySelectorAll(`.${NODE_CLASS}`)][nodeIndex]
-        if (newNode instanceof HTMLElement) {
-          newNode.focus()
-          clearInterval(interval)
-        }
-        i++
-        if (i > 20) {
-          clearInterval(interval)
-        }
-      }, 5)
-    }
+    node.focus()
   }
 }
 
@@ -80,11 +65,11 @@ export default React.forwardRef<HTMLBaseElement, NameEditProps>(
       if ((e.key === 'Enter' && e.shiftKey === false) || e.key === 'Tab') {
         e.preventDefault()
         save({ tab: e.key === 'Tab', enter: e.key === 'Enter' })
-        focusNewNode(e.target)
+        focusNode(e.target)
       } else if (e.key === 'Esc' || e.key === 'Escape') {
         e.preventDefault()
         cancel()
-        focusNewNode(e.target)
+        focusNode(e.target)
       }
       setNewName(editableRef.current.innerText)
     }

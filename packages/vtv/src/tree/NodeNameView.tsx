@@ -16,6 +16,7 @@ export default function NodeNameView({
   nodeMenuProps,
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [autoFocus, setAutoFocus] = useState(false)
 
   if (editingName) {
     return (
@@ -37,7 +38,17 @@ export default function NodeNameView({
                 onClick={() => false}
                 onContextMenu={(e) => {
                   e.preventDefault();
+                  e.stopPropagation();
+                  setAutoFocus(false);
                   setMenuOpen(true);
+                }}
+                onKeyDown={(e: KeyboardEvent) => {
+                  if (e.code === 'Enter') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setAutoFocus(true);
+                    setMenuOpen(true);  
+                  }
                 }}
               >
                 <StringView
@@ -53,6 +64,7 @@ export default function NodeNameView({
             {...nodeMenuProps}
             nameOptionsFirst={true}
             onClose={() => setMenuOpen(false)}
+            autoFocus={autoFocus}
           />
         )}
       </Manager>

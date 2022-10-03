@@ -21,7 +21,7 @@
   color: var(--vtv-foreground);
   font-family: var(--vtv-font-family);
 }
-.vtv--view div.vtv--menu--menu-item:hover {
+.vtv--view div.vtv--menu--menu-item:hover, .vtv--view div.vtv--menu--menu-item:focus {
   background-color: var(--vtv-menu-highlight);
 }
 .vtv--view div.vtv--menu--menu-item {

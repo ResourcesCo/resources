@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import InsertMenu from './InsertMenu'
 import ViewMenu from './ViewMenu'
@@ -47,10 +47,18 @@ function NodeMenu({
   onViewChanged,
   nameOptionsFirst = false,
   popperProps,
+  autoFocus = false,
   context: { onMessage, onPickId },
   context,
 }) {
   const [action, setAction] = useState(null)
+  const ref = useRef()
+
+  useEffect(() => {
+    if (autoFocus && ref.current) {
+      ref.current.focus()
+    }
+  }, [autoFocus, ref])
 
   const isArray = Array.isArray(value)
 
@@ -71,7 +79,7 @@ function NodeMenu({
       {nameOptionsFirst &&
         path.length > 0 &&
         ['object', null].includes(parentType) && (
-          <MenuItem onClick={() => sendAction('rename', { editing: true })}>
+          <MenuItem ref={ref} onClick={() => sendAction('rename', { editing: true })}>
             Rename
           </MenuItem>
         )}

@@ -42,14 +42,14 @@ interface MenuItemProps {
   context?: Context
 }
 
-export function MenuItem({
+export const MenuItem = React.forwardRef(({
   checked,
   onClick,
   copyToClipboard,
   children,
   submenu,
   context,
-}: MenuItemProps) {
+}: MenuItemProps, ref) => {
   const [itemHover, setItemHover] = useState(false)
   const [submenuHover, setSubmenuHover] = useState(false)
   const setHoverOff = () => {
@@ -84,7 +84,7 @@ export function MenuItem({
         })}
     </Manager>
   ) : (
-    <div tabIndex={-1} className={clsx('vtv--menu--menu-item', { checked })} onClick={onClick}>
+    <div ref={ref} tabIndex={-1} className={clsx('vtv--menu--menu-item', { checked })} onClick={onClick}>
       {copyToClipboard ? (
         <CopyToClipboard text={copyToClipboard}>
           <button className="vtv--menu--menu-item-button">{children}</button>
@@ -94,7 +94,7 @@ export function MenuItem({
       )}
     </div>
   )
-}
+})
 
 const defaultPopperProps = {
   placement: 'bottom-start',

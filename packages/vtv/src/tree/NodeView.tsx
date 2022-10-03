@@ -162,10 +162,10 @@ function NodeView({
             (isObject(value) || Array.isArray(value)) &&
             view === 'tree' && (
               <div className="vtv--node-view--children">
-                {Object.keys(value).map((key) => (
+                {Object.keys(value).map((key, i) => (
                   <NodeView
                     parentType={nodeType}
-                    key={key}
+                    key={i}
                     name={key}
                     value={value[key]}
                     state={getChildState(_state, key)}

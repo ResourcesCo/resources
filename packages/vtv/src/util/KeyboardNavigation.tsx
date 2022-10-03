@@ -7,7 +7,8 @@ import {
   NODE_CHILDREN_CLASS,
   NODE_NAME_CLASS,
   NODE_EXPAND_CLASS,
-  CODE_VIEW_CLASS
+  CODE_VIEW_CLASS,
+  MENU_CLASS
 } from './constants'
 import findNode from './findNode'
 
@@ -40,10 +41,22 @@ const KeyboardNavigation = React.forwardRef(({themeClass, children}, ref) => {
         )
       ) {
         break
-      } else if (node && node.classList && node.classList.contains(CODE_VIEW_CLASS)) {
+      } else if (
+        node instanceof HTMLElement && (
+          node.classList.contains(CODE_VIEW_CLASS) ||
+          node.classList.contains(MENU_CLASS)
+        )
+      ) {
         arrowNavigation = false
         treeNavigation = false
-      } else if (node && (node.tagName === 'input' || node.tagName === 'textarea' || node.contentEditable)) {
+      } else if (
+        node instanceof HTMLElement &&
+        (
+          node.tagName === 'INPUT' ||
+          node.tagName === 'TEXTAREA' ||
+          node.contentEditable === 'true'
+        )
+      ) {
         treeNavigation = false
       }
       node = node ? node.parentElement : node
@@ -73,8 +86,7 @@ const KeyboardNavigation = React.forwardRef(({themeClass, children}, ref) => {
             } else if (e.code === 'Enter') {
               const button = nodeContainer.querySelector(`.${NODE_NAME_CLASS}`)
               if (button instanceof HTMLElement) {
-                console.log(button)
-                const event = new MouseEvent('contextmenu', {bubbles: true})
+                const event = new KeyboardEvent('keydown', {code: 'Enter'})
                 button.dispatchEvent(event)
                 button.click()
               }
