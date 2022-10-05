@@ -5,22 +5,23 @@ import { Context } from 'vtv'
 interface NameButtonProps {
   onClick?: MouseEventHandler
   onContextMenu?: MouseEventHandler
-  onKeyUp?: KeyboardEventHandler
+  onKeyDown?: KeyboardEventHandler
   context: Context
+  children: React.ReactNode
 }
 
-const NameButton: FunctionComponent<NameButtonProps> = ({
+const NameButton = React.forwardRef(({
   children,
   onClick,
   onContextMenu,
   onKeyDown,
   context: { theme },
-}) => {
+}: NameButtonProps, ref) => {
   return (
-    <button className="vtv--name-button id" onClick={onClick} onContextMenu={onContextMenu} onKeyDown={onKeyDown} tabIndex={-1}>
+    <button ref={ref} className="vtv--name-button id" onClick={onClick} onContextMenu={onContextMenu} onKeyDown={onKeyDown} tabIndex={-1}>
       {children}
     </button>
   )
-}
+})
 
 export default NameButton

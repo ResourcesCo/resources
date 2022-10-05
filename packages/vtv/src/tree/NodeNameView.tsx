@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Manager, Reference } from 'react-popper'
 import NodeMenu from '../tree/NodeMenu'
 import NameButton from '../generic/NameButton'
@@ -17,6 +17,7 @@ export default function NodeNameView({
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [autoFocus, setAutoFocus] = useState(false)
+  const buttonRef = useRef()
 
   if (editingName) {
     return (
@@ -34,20 +35,21 @@ export default function NodeNameView({
           {({ ref }) => (
             <div ref={ref}>
               <NameButton
+                ref={buttonRef}
                 context={context}
                 onClick={() => false}
                 onContextMenu={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setAutoFocus(false);
-                  setMenuOpen(true);
+                  e.preventDefault()
+                  e.stopPropagation()
+                  setAutoFocus(false)
+                  setMenuOpen(true)
                 }}
                 onKeyDown={(e: KeyboardEvent) => {
                   if (e.code === 'Enter') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setAutoFocus(true);
-                    setMenuOpen(true);  
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setAutoFocus(true)
+                    setMenuOpen(true)
                   }
                 }}
               >
@@ -63,7 +65,10 @@ export default function NodeNameView({
           <NodeMenu
             {...nodeMenuProps}
             nameOptionsFirst={true}
-            onClose={() => setMenuOpen(false)}
+            onClose={() => {
+              setMenuOpen(false)
+              buttonRef.current.focus()
+            }}
             autoFocus={autoFocus}
           />
         )}

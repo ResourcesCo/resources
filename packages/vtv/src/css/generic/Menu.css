@@ -21,8 +21,9 @@
   color: var(--vtv-foreground);
   font-family: var(--vtv-font-family);
 }
-.vtv--view div.vtv--menu--menu-item:hover, .vtv--view div.vtv--menu--menu-item:focus {
+.vtv--view .vtv--menu--menu:not(:focus-within) div.vtv--menu--menu-item:hover, .vtv--view div.vtv--menu--menu-item:focus {
   background-color: var(--vtv-menu-highlight);
+  outline: none;
 }
 .vtv--view div.vtv--menu--menu-item {
   padding-right: 3px;

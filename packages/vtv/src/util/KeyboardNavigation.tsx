@@ -86,9 +86,8 @@ const KeyboardNavigation = React.forwardRef(({themeClass, children}, ref) => {
             } else if (e.code === 'Enter') {
               const button = nodeContainer.querySelector(`.${NODE_NAME_CLASS}`)
               if (button instanceof HTMLElement) {
-                const event = new KeyboardEvent('keydown', {code: 'Enter'})
+                const event = new KeyboardEvent('keydown', {code: 'Enter', bubbles: true})
                 button.dispatchEvent(event)
-                button.click()
               }
             }
           }
