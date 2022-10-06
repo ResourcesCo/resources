@@ -15,6 +15,8 @@ import { Popper, Manager, Reference } from 'react-popper'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import chroma from 'chroma-js'
 import { Context } from 'vtv'
+import findNode from '../util/findNode'
+import { MENU_ITEM_CLASS } from '../util/constants'
 
 export function Separator({ context }: { context?: Context }) {
   // context will be passed in by Menu
@@ -40,16 +42,17 @@ interface MenuItemProps {
   submenu?: ReactElement
   children: ReactNode
   context?: Context
+  onClose: () => void
 }
 
-export const MenuItem = React.forwardRef(({
+export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
   checked,
   onClick,
   copyToClipboard,
   submenu,
   children,
   context,
-}: MenuItemProps, ref) => {
+}, ref) => {
   const [itemHover, setItemHover] = useState(false)
   const [submenuHover, setSubmenuHover] = useState(false)
   const setHoverOff = () => {
@@ -61,6 +64,10 @@ export const MenuItem = React.forwardRef(({
   if (!context) return null
   const { theme } = context
 
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    
+  }
+
   return submenu ? (
     <Manager>
       <Reference>
@@ -71,6 +78,7 @@ export const MenuItem = React.forwardRef(({
             ref={ref}
             onMouseEnter={() => setItemHover(true)}
             onMouseLeave={() => setHoverOff()}
+            onKeyDown={onKeyDown}
           >
             <button className="vtv--menu--menu-item-button" onClick={onClick}>{children}</button>
             <FontAwesomeIcon icon={faCaretRight} size="sm" />
@@ -127,12 +135,12 @@ const Menu: FunctionComponent<MenuProps> = ({
   context: { theme },
   context,
 }: MenuProps) => {
-  const ref = useRef(null)
+  const ref = useRef<HTMLDivElement>(null)
   useClickOutside(ref, onClose)
 
   const menuItems = React.Children.map(children, child => {
     return React.isValidElement(child)
-      ? React.cloneElement(child, {
+      ? React.cloneElement(child as React.ReactElement<any>, {
           onClick(e: MouseEvent) {
             child.props.onClick(e)
             onClose()
@@ -142,10 +150,18 @@ const Menu: FunctionComponent<MenuProps> = ({
       : child
   })
 
-  const onKeyDown = (e) => {
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     const code = e.code
-    if (code === 'Escape') {
-      onClose()
+    const target = e.target
+    if (target instanceof HTMLElement) {
+      if (code === 'Escape') {
+        onClose()
+      } else if (code === 'ArrowUp' || code === 'ArrowDown') {
+        const nextNode = findNode(ref.current, target, code, `.${MENU_ITEM_CLASS}`)
+        if (nextNode instanceof HTMLElement) {
+          nextNode.focus()
+        }
+      }
     }
   }
 

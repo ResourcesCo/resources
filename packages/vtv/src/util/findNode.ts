@@ -1,10 +1,15 @@
 import { MAX_DEPTH, NODE_CLASS } from './constants'
 
-export default function findNode(root: HTMLElement, node: Element, direction: string): HTMLElement | undefined {
-  let nodeContainer = node.closest(`.${NODE_CLASS}`)
+export default function findNode(
+  root: HTMLElement,
+  node: Element,
+  direction: string,
+  selector: string = `.${NODE_CLASS}`
+): HTMLElement | undefined {
+  let nodeContainer = node.closest(selector)
   let parent = nodeContainer
   for (let parentDepth = 0; parentDepth < MAX_DEPTH; parentDepth++) {
-    const nodes = [...parent.querySelectorAll(`.${NODE_CLASS}`)]
+    const nodes = [...parent.querySelectorAll(selector)]
     if (direction === 'ArrowUp') {
       nodes.reverse()
     }
