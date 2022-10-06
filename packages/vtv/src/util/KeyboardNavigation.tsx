@@ -25,7 +25,10 @@ function navigate(root: HTMLElement, node: HTMLElement, direction: string): HTML
   return undefined
 }
 
-const KeyboardNavigation = React.forwardRef(({themeClass, children}, ref) => {
+const KeyboardNavigation = React.forwardRef<
+  HTMLDivElement,
+  {themeClass: string, children: React.ReactNode}
+>(({themeClass, children}, ref) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
     const target = e.target as HTMLElement
     let node = target

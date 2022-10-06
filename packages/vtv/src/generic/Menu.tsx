@@ -55,6 +55,7 @@ export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
 }, ref) => {
   const [itemHover, setItemHover] = useState(false)
   const [submenuHover, setSubmenuHover] = useState(false)
+  const [mouseMoved, setMouseMoved] = useState(false)
   const setHoverOff = () => {
     setItemHover(false)
     setSubmenuHover(false)
@@ -77,6 +78,7 @@ export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
             className={clsx('vtv--menu--menu-item', { checked })}
             ref={ref}
             onMouseEnter={() => setItemHover(true)}
+            onMouseMove={() => setMouseMoved(true)}
             onMouseLeave={() => setHoverOff()}
             onKeyDown={onKeyDown}
           >
@@ -85,7 +87,7 @@ export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
           </div>
         )}
       </Reference>
-      {(itemHover || submenuHover) &&
+      {(mouseMoved && (itemHover || submenuHover)) &&
         React.cloneElement(submenu, {
           onMouseEnter: () => setSubmenuHover(true),
           onMouseLeave: () => setSubmenuHover(false),

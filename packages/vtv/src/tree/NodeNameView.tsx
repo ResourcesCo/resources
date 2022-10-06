@@ -17,7 +17,7 @@ export default function NodeNameView({
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [autoFocus, setAutoFocus] = useState(false)
-  const buttonRef = useRef()
+  const buttonRef = useRef<HTMLElement>()
 
   if (editingName) {
     return (
@@ -44,7 +44,7 @@ export default function NodeNameView({
                   setAutoFocus(false)
                   setMenuOpen(true)
                 }}
-                onKeyDown={(e: KeyboardEvent) => {
+                onKeyDown={(e: React.KeyboardEvent<HTMLElement>) => {
                   if (e.code === 'Enter') {
                     e.preventDefault()
                     e.stopPropagation()
@@ -67,7 +67,9 @@ export default function NodeNameView({
             nameOptionsFirst={true}
             onClose={() => {
               setMenuOpen(false)
-              buttonRef.current.focus()
+              if (buttonRef.current) {
+                buttonRef.current.focus()
+              }
             }}
             autoFocus={autoFocus}
           />
