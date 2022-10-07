@@ -16,7 +16,7 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import chroma from 'chroma-js'
 import { Context } from 'vtv'
 import findNode from '../util/findNode'
-import { MENU_ITEM_CLASS } from '../util/constants'
+import { MENU_CLASS, MENU_ITEM_CLASS } from '../util/constants'
 
 export function Separator({ context }: { context?: Context }) {
   // context will be passed in by Menu
@@ -42,7 +42,7 @@ interface MenuItemProps {
   submenu?: ReactElement
   children: ReactNode
   context?: Context
-  onClose: () => void
+  onClose?: () => void
 }
 
 export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
@@ -65,6 +65,26 @@ export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
   if (!context) return null
   const { theme } = context
 
+  const onMouseEnter = ({target}: React.MouseEvent<HTMLDivElement>) => {
+    if (target instanceof HTMLElement) {
+      const menuItem = target.closest('.vtv--menu--menu-item')
+      if (mouseMoved && menuItem instanceof HTMLDivElement) {
+        menuItem.focus()
+      }
+      setItemHover(true)
+    }
+  }
+
+  const onMouseMove = ({target}: React.MouseEvent<HTMLDivElement>) => {
+    if (target instanceof HTMLElement) {
+      const menuItem = target.closest('.vtv--menu--menu-item')
+      if (itemHover && menuItem instanceof HTMLDivElement) {
+        menuItem.focus()
+      }
+      setMouseMoved(true)
+    }
+  }
+
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     
   }
@@ -72,30 +92,41 @@ export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
   return submenu ? (
     <Manager>
       <Reference>
-        {({ ref }) => (
-          <div
+        {({ ref }) => {
+          return <div
             tabIndex={-1}
             className={clsx('vtv--menu--menu-item', { checked })}
             ref={ref}
-            onMouseEnter={() => setItemHover(true)}
-            onMouseMove={() => setMouseMoved(true)}
+            onMouseEnter={onMouseEnter}
+            onMouseMove={onMouseMove}
             onMouseLeave={() => setHoverOff()}
             onKeyDown={onKeyDown}
           >
             <button className="vtv--menu--menu-item-button" onClick={onClick}>{children}</button>
             <FontAwesomeIcon icon={faCaretRight} size="sm" />
           </div>
-        )}
+        }}
       </Reference>
       {(mouseMoved && (itemHover || submenuHover)) &&
         React.cloneElement(submenu, {
-          onMouseEnter: () => setSubmenuHover(true),
-          onMouseLeave: () => setSubmenuHover(false),
+          onMouseEnter: () => { setSubmenuHover(true); setItemHover(false); },
+          onMouseLeave: () => {
+            setSubmenuHover(false),
+            // TODO: only set itemHover to true if it didn't leave for a different menu
+            setItemHover(true);
+          },
           isSubmenu: true,
         })}
     </Manager>
   ) : (
-    <div ref={ref} tabIndex={-1} className={clsx('vtv--menu--menu-item', { checked })} onClick={onClick}>
+    <div
+      ref={ref}
+      tabIndex={-1}
+      className={clsx('vtv--menu--menu-item', { checked })}
+      onMouseEnter={onMouseEnter}
+      onMouseMove={onMouseMove}
+      onClick={onClick}
+    >
       {copyToClipboard ? (
         <CopyToClipboard text={copyToClipboard}>
           <button className="vtv--menu--menu-item-button">{children}</button>
@@ -159,7 +190,7 @@ const Menu: FunctionComponent<MenuProps> = ({
       if (code === 'Escape') {
         onClose()
       } else if (code === 'ArrowUp' || code === 'ArrowDown') {
-        const nextNode = findNode(ref.current, target, code, `.${MENU_ITEM_CLASS}`)
+        const nextNode = findNode(ref.current, target, code, `.${MENU_ITEM_CLASS}`, `.${MENU_CLASS}`)
         if (nextNode instanceof HTMLElement) {
           nextNode.focus()
         }
