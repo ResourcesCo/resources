@@ -76,11 +76,12 @@ export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
   }
 
   const onMouseMove = ({target}: React.MouseEvent<HTMLDivElement>) => {
-    if (target instanceof HTMLElement) {
+    if (target instanceof Element) {
       const menuItem = target.closest('.vtv--menu--menu-item')
-      if (itemHover && menuItem instanceof HTMLDivElement) {
+      if (menuItem instanceof HTMLDivElement) {
         menuItem.focus()
       }
+      setItemHover(true)
       setMouseMoved(true)
     }
   }
@@ -99,24 +100,26 @@ export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
             ref={ref}
             onMouseEnter={onMouseEnter}
             onMouseMove={onMouseMove}
-            onMouseLeave={() => setHoverOff()}
+            onMouseLeave={() => { setHoverOff() }}
             onKeyDown={onKeyDown}
           >
             <button className="vtv--menu--menu-item-button" onClick={onClick}>{children}</button>
             <FontAwesomeIcon icon={faCaretRight} size="sm" />
+            {
+              ((mouseMoved && (itemHover || submenuHover)) &&
+                React.cloneElement(submenu, {
+                  onMouseEnter: () => { setSubmenuHover(true); setItemHover(false); },
+                  onMouseLeave: ({target, relatedTarget}) => {
+                    setSubmenuHover(false)
+                    setItemHover(true)
+                  },
+                  isSubmenu: true,
+                })
+              )
+            }
           </div>
         }}
       </Reference>
-      {(mouseMoved && (itemHover || submenuHover)) &&
-        React.cloneElement(submenu, {
-          onMouseEnter: () => { setSubmenuHover(true); setItemHover(false); },
-          onMouseLeave: () => {
-            setSubmenuHover(false),
-            // TODO: only set itemHover to true if it didn't leave for a different menu
-            setItemHover(true);
-          },
-          isSubmenu: true,
-        })}
     </Manager>
   ) : (
     <div
