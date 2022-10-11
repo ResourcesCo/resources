@@ -19,20 +19,19 @@ import findNode from '../util/findNode'
 import { MENU_CLASS, MENU_ITEM_CLASS } from '../util/constants'
 
 export function Separator({ context }: { context?: Context }) {
-  // context will be passed in by Menu
-  if (!context) {
-    return null
-  }
-  const { theme } = context
-
-  const color = chroma(theme.foreground)
-    .alpha(0.4)
-    .hex()
   return (
     <>
-      <hr className="vtv--menu--separator" />
+      <div className="vtv--menu--separator" />
     </>
   )
+}
+
+function findMenuItem(target: Element): Element | undefined {
+  const menuItem = target.closest(`.${MENU_ITEM_CLASS}`)
+  const menu = target.closest(`.${MENU_CLASS}`)
+  if (menuItem instanceof Element && !(menu instanceof Element && !menu.contains(menuItem))) {
+    return menuItem
+  }
 }
 
 interface MenuItemProps {
@@ -67,7 +66,7 @@ export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
 
   const onMouseEnter = ({target}: React.MouseEvent<HTMLDivElement>) => {
     if (target instanceof HTMLElement) {
-      const menuItem = target.closest('.vtv--menu--menu-item')
+      const menuItem = findMenuItem(target)
       if (mouseMoved && menuItem instanceof HTMLDivElement) {
         menuItem.focus()
       }
@@ -77,7 +76,7 @@ export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
 
   const onMouseMove = ({target}: React.MouseEvent<HTMLDivElement>) => {
     if (target instanceof Element) {
-      const menuItem = target.closest('.vtv--menu--menu-item')
+      const menuItem = findMenuItem(target)
       if (menuItem instanceof HTMLDivElement) {
         menuItem.focus()
       }

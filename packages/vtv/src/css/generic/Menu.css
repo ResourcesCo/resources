@@ -1,7 +1,9 @@
-.vtv--view hr.vtv--menu--separator {
+.vtv--view div.vtv--menu--separator {
   border: none;
-  height: 2px;
+  height: 1px;
   background-color: var(--vtv-menu-separator);
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 .vtv--view div.vtv--menu--menu-item {
