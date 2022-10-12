@@ -3,6 +3,10 @@ import React, {
   useRef,
   MouseEventHandler,
   MouseEvent,
+  KeyboardEvent,
+  KeyboardEventHandler,
+  FocusEvent,
+  FocusEventHandler,
   ReactNode,
   FunctionComponent,
   ReactElement,
@@ -52,6 +56,7 @@ export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
   children,
   context,
 }, ref) => {
+  const buttonRef = useRef<HTMLButtonElement>()
   const [itemHover, setItemHover] = useState(false)
   const [submenuHover, setSubmenuHover] = useState(false)
   const [mouseMoved, setMouseMoved] = useState(false)
@@ -99,18 +104,62 @@ export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
             ref={ref}
             onMouseEnter={onMouseEnter}
             onMouseMove={onMouseMove}
-            onMouseLeave={() => { setHoverOff() }}
+            onMouseLeave={({target}) => {
+              const button = buttonRef.current
+              if (target instanceof Element && button instanceof Element) {
+                const buttonMenuItem = button.closest(`.${MENU_ITEM_CLASS}`)
+                const targetMenu = target.closest(`.${MENU_CLASS}`)
+                if (
+                  buttonMenuItem instanceof Element &&
+                  targetMenu instanceof Element &&
+                  buttonMenuItem.contains(targetMenu)
+                ) {
+                  return
+                }
+              }
+              setHoverOff()
+            }}
             onKeyDown={onKeyDown}
           >
-            <button className="vtv--menu--menu-item-button" onClick={onClick}>{children}</button>
+            <button ref={buttonRef} className="vtv--menu--menu-item-button" onClick={onClick}>{children}</button>
             <FontAwesomeIcon icon={faCaretRight} size="sm" />
             {
               ((mouseMoved && (itemHover || submenuHover)) &&
                 React.cloneElement(submenu, {
                   onMouseEnter: () => { setSubmenuHover(true); setItemHover(false); },
                   onMouseLeave: ({target, relatedTarget}) => {
+                    if (
+                      target instanceof Element &&
+                      relatedTarget instanceof Element
+                    ) {
+                      const relatedTargetMenu = relatedTarget.closest(`.${MENU_CLASS}`)
+                      const relatedTargetMenuItem = relatedTarget.closest(`.${MENU_ITEM_CLASS}`)
+                      if (relatedTargetMenu instanceof Element) {
+                        setSubmenuHover(false)
+                        setItemHover(relatedTargetMenuItem instanceof Element ? relatedTargetMenuItem.contains(target) : false)
+                      }
+                    }
+                  },
+                  onBlur: ({target, relatedTarget}) => {
+                    if (
+                      target instanceof Element &&
+                      relatedTarget instanceof Element
+                    ) {
+                      const targetMenu = target.closest(`.${MENU_CLASS}`)
+                      if (targetMenu instanceof Element) {
+                        const targetMenuItem = targetMenu.closest(`.${MENU_ITEM_CLASS}`)
+                        const relatedTargetMenuItem = relatedTarget.closest(`.${MENU_ITEM_CLASS}`)
+                        if (
+                          targetMenuItem instanceof Element &&
+                          relatedTargetMenuItem instanceof Element &&
+                          targetMenuItem.contains(relatedTargetMenuItem)
+                        ) {
+                          return
+                        }
+                      }
+                    }
                     setSubmenuHover(false)
-                    setItemHover(true)
+                    setItemHover(false)
                   },
                   isSubmenu: true,
                 })
@@ -155,6 +204,7 @@ interface MenuProps {
   popperProps?: object
   onMouseEnter?: MouseEventHandler
   onMouseLeave?: MouseEventHandler
+  onBlur?: FocusEventHandler
   isSubmenu?: boolean
   children: React.ReactNode
   context: Context
@@ -165,6 +215,7 @@ const Menu: FunctionComponent<MenuProps> = ({
   popperProps,
   onMouseEnter,
   onMouseLeave,
+  onBlur,
   isSubmenu = false,
   children,
   context: { theme },
@@ -213,6 +264,7 @@ const Menu: FunctionComponent<MenuProps> = ({
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           onKeyDown={onKeyDown}
+          onBlur={onBlur}
         >
           <div className="vtv--menu--menu" ref={ref}>
             {sortedMenuItems(placement)}
