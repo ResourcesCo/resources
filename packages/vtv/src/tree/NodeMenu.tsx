@@ -48,13 +48,6 @@ function NodeMenu({
   context,
 }) {
   const [action, setAction] = useState(null)
-  const ref = useRef()
-
-  useEffect(() => {
-    if (autoFocus && ref.current) {
-      ref.current.focus()
-    }
-  }, [autoFocus, ref])
 
   const isArray = Array.isArray(value)
 
@@ -71,11 +64,11 @@ function NodeMenu({
   }
 
   return (
-    <Menu onClose={onClose} popperProps={popperProps} context={context}>
+    <Menu onClose={onClose} popperProps={popperProps} autoFocus={autoFocus} context={context}>
       {nameOptionsFirst &&
         path.length > 0 &&
         ['object', null].includes(parentType) && (
-          <MenuItem ref={ref} onClick={() => sendAction('rename', { editing: true })}>
+          <MenuItem onClick={() => sendAction('rename', { editing: true })}>
             Rename
           </MenuItem>
         )}

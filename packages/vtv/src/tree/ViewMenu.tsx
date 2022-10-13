@@ -53,7 +53,6 @@ function CodeMenu({
 }) {
   return (
     <Menu
-      onClose={() => null}
       context={context}
       {...props}
     >
@@ -86,7 +85,6 @@ function ShowHiddenMenu({
 }) {
   return (
     <Menu
-      onClose={() => null}
       context={context}
       {...props}
     >
@@ -157,7 +155,6 @@ export default function ViewMenu({
     nodeType === 'object' ? getHiddenKeys(value, state) : undefined
   return (
     <Menu
-      onClose={() => null}
       context={context}
       {...props}
     >
