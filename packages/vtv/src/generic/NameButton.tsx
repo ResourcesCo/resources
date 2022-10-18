@@ -10,13 +10,13 @@ interface NameButtonProps {
   children: React.ReactNode
 }
 
-const NameButton = React.forwardRef(({
+const NameButton = React.forwardRef<HTMLButtonElement, NameButtonProps>(({
   children,
   onClick,
   onContextMenu,
   onKeyDown,
   context: { theme },
-}: NameButtonProps, ref) => {
+}, ref) => {
   return (
     <button ref={ref} className="vtv--name-button id" onClick={onClick} onContextMenu={onContextMenu} onKeyDown={onKeyDown} tabIndex={-1}>
       {children}

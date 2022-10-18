@@ -17,7 +17,7 @@ export default function NodeNameView({
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [autoFocus, setAutoFocus] = useState(false)
-  const buttonRef = useRef<HTMLElement>()
+  const buttonRef = useRef<HTMLButtonElement>()
 
   if (editingName) {
     return (
@@ -51,6 +51,7 @@ export default function NodeNameView({
                     setAutoFocus(true)
                     setMenuOpen(true)
                   }
+                  return false
                 }}
               >
                 <StringView

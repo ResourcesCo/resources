@@ -38,7 +38,7 @@ function findMenuItem(target: Element): Element | undefined {
 
 interface MenuItemProps {
   checked?: boolean
-  onClick?: MouseEventHandler
+  onClick?: (event: MouseEvent | undefined) => void
   copyToClipboard?: string
   submenu?: ReactElement
   autoFocus?: boolean
@@ -105,6 +105,10 @@ export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
     if (submenu && (e.code === 'ArrowRight' || e.code === 'Enter')) {
       setItemHover(true)
       setKeyOpen(true)
+    } else if (!submenu && e.code === 'Enter') {
+      onClick(undefined)
+      e.preventDefault()
+      e.stopPropagation()
     }
   }
 
@@ -208,6 +212,7 @@ export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
       className={clsx('vtv--menu--menu-item', { checked })}
       onMouseEnter={onMouseEnter}
       onMouseMove={onMouseMove}
+      onKeyDown={onKeyDown}
       onClick={onClick}
     >
       {copyToClipboard ? (
