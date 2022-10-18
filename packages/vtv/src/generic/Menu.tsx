@@ -109,7 +109,51 @@ export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
       onClick(undefined)
       e.preventDefault()
       e.stopPropagation()
+    } else if (e.code === 'ArrowUp' || e.code === 'ArrowDown') {
+      const {target} = e
+      if (target instanceof Element) {
+        const targetMenuItem = target.closest(`.${MENU_ITEM_CLASS}`)
+        if (targetMenuItem instanceof HTMLElement) {
+          const targetMenu = target.closest(`.${MENU_CLASS}`)
+          if (targetMenu instanceof HTMLElement) {
+            const nextNode = findNode(targetMenu, targetMenuItem, e.code, `.${MENU_ITEM_CLASS}`, `.${MENU_CLASS}`)
+            if (nextNode instanceof HTMLElement) {
+              setSubmenuHover(false)
+              setItemHover(false)
+              setKeyOpen(false)
+              setMouseMoved(false)
+              nextNode.focus()
+            }
+          }
+        }
+      }
+      e.stopPropagation()
     }
+  }
+
+  const onBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+    const {target, relatedTarget} = e
+    if (
+      target instanceof Element &&
+      relatedTarget instanceof Element
+    ) {
+      const targetMenu = target.closest(`.${MENU_CLASS}`)
+      if (targetMenu instanceof Element) {
+        const targetMenuItem = targetMenu.closest(`.${MENU_ITEM_CLASS}`)
+        const relatedTargetMenuItem = relatedTarget.closest(`.${MENU_ITEM_CLASS}`)
+        if (
+          targetMenuItem instanceof Element &&
+          relatedTargetMenuItem instanceof Element &&
+          targetMenuItem.contains(relatedTargetMenuItem)
+        ) {
+          return
+        }
+      }
+    }
+    setSubmenuHover(false)
+    setItemHover(false)
+    setKeyOpen(false)
+    setMouseMoved(false)
   }
 
   return submenu ? (
@@ -174,29 +218,7 @@ export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
                       }
                     }
                   },
-                  onBlur: ({target, relatedTarget}) => {
-                    if (
-                      target instanceof Element &&
-                      relatedTarget instanceof Element
-                    ) {
-                      const targetMenu = target.closest(`.${MENU_CLASS}`)
-                      if (targetMenu instanceof Element) {
-                        const targetMenuItem = targetMenu.closest(`.${MENU_ITEM_CLASS}`)
-                        const relatedTargetMenuItem = relatedTarget.closest(`.${MENU_ITEM_CLASS}`)
-                        if (
-                          targetMenuItem instanceof Element &&
-                          relatedTargetMenuItem instanceof Element &&
-                          targetMenuItem.contains(relatedTargetMenuItem)
-                        ) {
-                          return
-                        }
-                      }
-                    }
-                    setSubmenuHover(false)
-                    setItemHover(false)
-                    setKeyOpen(false)
-                    setMouseMoved(false)
-                  },
+                  onBlur,
                   isSubmenu: true,
                 })
               )
@@ -286,11 +308,6 @@ const Menu: FunctionComponent<MenuProps> = ({
     if (target instanceof HTMLElement) {
       if (code === 'Escape') {
         onClose()
-      } else if (code === 'ArrowUp' || code === 'ArrowDown') {
-        const nextNode = findNode(ref.current, target, code, `.${MENU_ITEM_CLASS}`, `.${MENU_CLASS}`)
-        if (nextNode instanceof HTMLElement) {
-          nextNode.focus()
-        }
       }
     }
     if (extraOnKeyDown) {

@@ -18,7 +18,14 @@ const NameButton = React.forwardRef<HTMLButtonElement, NameButtonProps>(({
   context: { theme },
 }, ref) => {
   return (
-    <button ref={ref} className="vtv--name-button id" onClick={onClick} onContextMenu={onContextMenu} onKeyDown={onKeyDown} tabIndex={-1}>
+    <button
+      ref={ref}
+      className="vtv--name-button id"
+      onClick={onClick}
+      onContextMenu={onContextMenu}
+      onKeyDown={onKeyDown}
+      tabIndex={-1}
+    >
       {children}
     </button>
   )
