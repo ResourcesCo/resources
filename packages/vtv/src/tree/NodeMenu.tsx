@@ -65,13 +65,20 @@ function NodeMenu({
 
   return (
     <Menu onClose={onClose} popperProps={popperProps} autoFocus={autoFocus} context={context}>
-      {nameOptionsFirst &&
-        path.length > 0 &&
-        ['object', null].includes(parentType) && (
+      {
+        (autoFocus && !['object', 'array'].includes(nodeType) && !['code', 'text'].includes(state.view)) ? (
+          <MenuItem onClick={() => sendAction('edit', { editing: true })}>
+            Edit
+          </MenuItem>
+        ) : null
+      }
+      {
+        (nameOptionsFirst && path.length > 0 && ['object', null].includes(parentType)) ? (
           <MenuItem onClick={() => sendAction('rename', { editing: true })}>
             Rename
           </MenuItem>
-        )}
+        ) : null
+      }
       <MenuItem
         submenu={
           <ViewMenu

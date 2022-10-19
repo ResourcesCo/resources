@@ -102,10 +102,10 @@ export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (submenu && (e.code === 'ArrowRight' || e.code === 'Enter')) {
+    if (submenu && (e.code === 'ArrowRight' || e.code === 'Enter' || e.code === 'Space')) {
       setItemHover(true)
       setKeyOpen(true)
-    } else if (!submenu && e.code === 'Enter') {
+    } else if (!submenu && (e.code === 'Enter' || e.code === 'Space')) {
       onClick(undefined)
       e.preventDefault()
       e.stopPropagation()
@@ -287,19 +287,29 @@ const Menu: FunctionComponent<MenuProps> = ({
   const ref = useRef<HTMLDivElement>(null)
   useClickOutside(ref, onClose)
 
-  const menuItems = React.Children.map(children, (child, childIndex) => {
-    return React.isValidElement(child)
-      ? React.cloneElement(child as React.ReactElement<any>, {
-          onClick(e: MouseEvent) {
-            child.props.onClick(e)
-            if (onClose) {
-              onClose()
-            }
-          },
-          autoFocus: autoFocus ? childIndex === 0 : false,
-          context,
-        })
-      : child
+  useEffect(() => {
+    if (!autoFocus && ref.current) {
+      ref.current.focus()
+    }
+  }, [autoFocus, ref.current])
+
+  let autoFocusIsSet = false
+  const menuItems = React.Children.map(children, (child) => {
+    let result = child
+    if (React.isValidElement(child)) {
+      result = React.cloneElement(child as React.ReactElement<any>, {
+        onClick(e: MouseEvent) {
+          child.props.onClick(e)
+          if (onClose) {
+            onClose()
+          }
+        },
+        autoFocus: autoFocus ? !autoFocusIsSet : false,
+        context,
+      })
+      autoFocusIsSet = true
+    }
+    return result
   })
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -308,6 +318,12 @@ const Menu: FunctionComponent<MenuProps> = ({
     if (target instanceof HTMLElement) {
       if (code === 'Escape') {
         onClose()
+      }
+      if (code === 'ArrowDown' && target.classList.contains(MENU_CLASS)) {
+        const menuItem = target.querySelector(`.${MENU_ITEM_CLASS}`)
+        if (menuItem instanceof HTMLElement) {
+          menuItem.focus()
+        }
       }
     }
     if (extraOnKeyDown) {
@@ -330,7 +346,7 @@ const Menu: FunctionComponent<MenuProps> = ({
           onKeyDown={onKeyDown}
           onBlur={onBlur}
         >
-          <div className="vtv--menu--menu" ref={ref}>
+          <div className="vtv--menu--menu" ref={ref} tabIndex={-1}>
             {sortedMenuItems(placement)}
           </div>
         </div>
