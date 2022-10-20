@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import InsertMenu from './InsertMenu'
 import ViewMenu from './ViewMenu'
@@ -47,10 +47,6 @@ function NodeMenu({
   context: { onMessage, onPickId },
   context,
 }) {
-  const [action, setAction] = useState(null)
-
-  const isArray = Array.isArray(value)
-
   const sendAction = (action, data = {}) => {
     onMessage({
       path,

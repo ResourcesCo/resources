@@ -11,16 +11,9 @@ interface NameEditProps {
   context: Context
 }
 
-function focusNode(target) {
-  const node = target.closest(`.${NODE_CLASS}`)
-  if (node instanceof HTMLElement) {
-    node.focus()
-  }
-}
-
 export default React.forwardRef<HTMLBaseElement, NameEditProps>(
   function NameEdit(
-    { name, editingName, path, context: { onMessage, theme } },
+    { name, editingName, path, context: { onMessage } },
     ref
   ) {
     const editableRef = useRef(null)
@@ -65,11 +58,9 @@ export default React.forwardRef<HTMLBaseElement, NameEditProps>(
       if ((e.key === 'Enter' && e.shiftKey === false) || e.key === 'Tab') {
         e.preventDefault()
         save({ tab: e.key === 'Tab', enter: e.key === 'Enter' })
-        focusNode(e.target)
       } else if (e.key === 'Esc' || e.key === 'Escape') {
         e.preventDefault()
         cancel()
-        focusNode(e.target)
       }
       setNewName(editableRef.current.innerText)
     }

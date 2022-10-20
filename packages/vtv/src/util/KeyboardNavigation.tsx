@@ -79,17 +79,10 @@ const KeyboardNavigation = React.forwardRef<
         } else if (treeNavigation) {
           const nodeContainer = node.closest(`.${NODE_CLASS}`)
           if (nodeContainer instanceof HTMLElement) {
-            if (e.code === 'Space') {
-              const expandButton = nodeContainer.querySelector(`.${NODE_EXPAND_CLASS} button`)
-              if (expandButton instanceof HTMLElement) {
-                const event = new MouseEvent('click', {bubbles: true})
-                expandButton.dispatchEvent(event)
-                expandButton.click()
-              }
-            } else if (e.code === 'Enter') {
+            if (e.code === 'Space' || e.code === 'Enter' || e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
               const button = nodeContainer.querySelector(`.${NODE_NAME_CLASS}`)
               if (button instanceof HTMLElement) {
-                const event = new KeyboardEvent('keydown', {code: 'Enter', bubbles: true})
+                const event = new KeyboardEvent('keydown', {code: e.code, bubbles: true})
                 button.dispatchEvent(event)
               }
             }

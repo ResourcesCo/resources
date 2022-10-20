@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Manager, Reference } from 'react-popper'
 import NodeMenu from '../tree/NodeMenu'
 import NameButton from '../generic/NameButton'
@@ -13,11 +13,23 @@ export default function NodeNameView({
   editingName,
   context,
   path,
+  state,
   nodeMenuProps,
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [autoFocus, setAutoFocus] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>()
+  const { onMessage } = context
+  const prevEditingName = useRef()
+  const prevEditing = useRef()
+  const { editing } = state
+  useEffect(() => {
+    if (prevEditingName.current === true && !editingName && buttonRef.current instanceof HTMLElement) {
+      buttonRef.current.focus()
+    }
+    prevEditingName.current = editingName
+    prevEditing.current = editing
+  }, [editingName, prevEditingName])
 
   if (editingName) {
     return (
@@ -45,13 +57,24 @@ export default function NodeNameView({
                   setMenuOpen(true)
                 }}
                 onKeyDown={(e: React.KeyboardEvent<HTMLElement>) => {
-                  if (e.code === 'Enter') {
+                  if (e.code === 'Enter' || e.code === 'Space' || e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
                     e.preventDefault()
                     e.stopPropagation()
-                    setAutoFocus(true)
-                    setMenuOpen(true)
+                    if (e.code === 'Enter') {
+                      setAutoFocus(true)
+                      setMenuOpen(true)
+                    } else if (e.code === 'Space') {
+                      onMessage({ path, state: { _expanded: !state.expanded } })
+                    } else if (e.code === 'ArrowLeft') {
+                      if (state.expanded) {
+                        onMessage({ path, state: { _expanded: false } })
+                      }
+                    } else if (e.code === 'ArrowRight') {
+                      if (!state.expanded) {
+                        onMessage({ path, state: { _expanded: true } })
+                      }
+                    }
                   }
-                  return false
                 }}
               >
                 <StringView

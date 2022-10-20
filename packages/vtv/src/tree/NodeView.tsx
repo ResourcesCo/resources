@@ -125,6 +125,7 @@ function NodeView({
         <NodeNameView
           editingName={editingName}
           name={name}
+          state={state}
           displayName={displayName}
           path={path}
           nodeMenuProps={nodeMenuProps}

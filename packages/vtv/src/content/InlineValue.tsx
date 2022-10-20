@@ -49,7 +49,7 @@ const InlineValue = ({
       )
       inputRef.current.focus()
     }
-  }, [editing, inputRef])
+  }, [editing, editingName, inputRef])
 
   const { _expanded: expanded } = state
   const sendAction = (data = {}) => {}
