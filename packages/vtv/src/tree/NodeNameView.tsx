@@ -24,12 +24,18 @@ export default function NodeNameView({
   const prevEditing = useRef()
   const { editing } = state
   useEffect(() => {
-    if (prevEditingName.current === true && !editingName && buttonRef.current instanceof HTMLElement) {
-      buttonRef.current.focus()
+    if (buttonRef.current instanceof HTMLElement) {
+      if (prevEditingName.current === true && !editingName) {
+        buttonRef.current.focus()
+      }
+      if (state.focus) {
+        buttonRef.current.focus()
+        onMessage({ path, state: { _focus: false } })
+      }
     }
     prevEditingName.current = editingName
     prevEditing.current = editing
-  }, [editingName, prevEditingName])
+  }, [editingName, prevEditingName, state.focus])
 
   if (editingName) {
     return (
