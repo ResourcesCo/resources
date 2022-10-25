@@ -1,7 +1,7 @@
-import { isObject } from "lodash-es";
+import { isObject, isPlainObject } from "lodash-es";
 
 export function getNodeType(value) {
-  if (isObject(value)) {
+  if (isPlainObject(value)) {
     return "object";
   } else if (Array.isArray(value)) {
     return "array";
