@@ -60,8 +60,8 @@ specifiers:
   scroll-into-view-if-needed: ^2.2.29
   styled-jsx: 5.0.7
   typescript: 4.8.3
-  vtv: 1.0.0-canary.39
-  vtv-model: 1.0.0-pre.14
+  vtv: 1.0.0-canary.40
+  vtv-model: 1.0.0-pre.15
 
 dependencies:
   '@braintree/sanitize-url': 6.0.0
@@ -102,8 +102,8 @@ dependencies:
   remark: 14.0.2
   scroll-into-view-if-needed: 2.2.29
   styled-jsx: 5.0.7_3toe27fv7etiytxb5kxc7fxaw4
-  vtv: 1.0.0-canary.39_rj7ozvcq3uehdlnj3cbwzbi5ce
-  vtv-model: 1.0.0-pre.14
+  vtv: 1.0.0-canary.40_rj7ozvcq3uehdlnj3cbwzbi5ce
+  vtv-model: 1.0.0-pre.15
 
 devDependencies:
   '@babel/core': 7.19.1
@@ -3806,8 +3806,8 @@ packages:
       vfile-message: 3.1.2
     dev: false
 
-  /vtv-model/1.0.0-pre.14:
-    resolution: {integrity: sha512-7d3nYJ2HpIl74LtZhlLcRL4DZfMjhgbmf+T2b8WJ0e18A/csORd4JveJJfoo6WR10SZOfT+RVDWszB+Q879Vhw==}
+  /vtv-model/1.0.0-pre.15:
+    resolution: {integrity: sha512-uoq2baXqA4EG8XzaF3eyx7046Zkt1LGsm1XWo42mBxXnt0GLFQ1119ldIKQf+XunYrtg8qDmdbDmL2jdHgxAgw==}
     dependencies:
       esbuild: 0.14.54
       immer: 9.0.15
@@ -3817,8 +3817,8 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /vtv/1.0.0-canary.39_rj7ozvcq3uehdlnj3cbwzbi5ce:
-    resolution: {integrity: sha512-uWyTg+V8Kk+7foQM8Upgg6zzJdfhE0O8yEg+FTuX6eF7tMf8XEesShsGKT3Zg+JUL0Y1JhSB0tO9nbGntPUbZA==}
+  /vtv/1.0.0-canary.40_rj7ozvcq3uehdlnj3cbwzbi5ce:
+    resolution: {integrity: sha512-4O9xg33gM9NflHITnrNbeK0+Hg4B723HvD7NM+PHlcmG5v4LqGMuaUcuj8eZHQ1DHkbWagPlT7nxlII6NrQypg==}
     peerDependencies:
       react: ^18.0.1
       react-dom: ^18.0.1
@@ -3854,7 +3854,7 @@ packages:
       react-popper: 2.3.0_r6q5zrenym2zg7je7hgi674bti
       react-textarea-autosize: 8.3.4_iapumuv4e6jcjznwuxpf4tt22e
       scroll-into-view-if-needed: 2.2.29
-      vtv-model: 1.0.0-pre.14
+      vtv-model: 1.0.0-pre.15
     transitivePeerDependencies:
       - '@types/react'
     dev: false
