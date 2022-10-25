@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import setCaretAtEnd from '../util/setCaretAtEnd'
 import escapeHtml from '../util/escapeHtml'
 import { Path, Context } from 'vtv'
+import { NODE_CLASS, ROOT_CLASS } from '../util/constants'
 
 interface NameEditProps {
   name: string
@@ -12,7 +13,7 @@ interface NameEditProps {
 
 export default React.forwardRef<HTMLBaseElement, NameEditProps>(
   function NameEdit(
-    { name, editingName, path, context: { onMessage, theme } },
+    { name, editingName, path, context: { onMessage } },
     ref
   ) {
     const editableRef = useRef(null)

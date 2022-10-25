@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 import Textarea from '../generic/Textarea'
+import { NODE_CLASS, NODE_NAME_CLASS } from '../util/constants'
 
 const inputValue = value => {
   if (value === null) {
@@ -48,7 +49,7 @@ const InlineValue = ({
       )
       inputRef.current.focus()
     }
-  }, [editing, inputRef])
+  }, [editing, editingName, inputRef])
 
   const { _expanded: expanded } = state
   const sendAction = (data = {}) => {}
@@ -85,11 +86,15 @@ const InlineValue = ({
 
   const handleKeyPress = e => {
     if (e.key === 'Enter' && e.shiftKey === false) {
-      e.target.blur()
+      const node = e.target.closest(`.${NODE_CLASS}`) as HTMLElement
+      const nodeName = node.querySelector(`.${NODE_NAME_CLASS}`) as HTMLElement
+      nodeName.focus()
       e.preventDefault()
       save({ editing: false })
     } else if (e.key === 'Esc' || e.key === 'Escape') {
-      e.target.blur()
+      const node = e.target.closest(`.${NODE_CLASS}`) as HTMLElement
+      const nodeName = node.querySelector(`.${NODE_NAME_CLASS}`) as HTMLElement
+      nodeName.focus()
       e.preventDefault()
       cancel()
     }
@@ -145,7 +150,7 @@ const InlineValue = ({
         />
       )}
       {showStringExcerpt && (
-        <span>{`${value.substr(0, 256)}… (${value.length} characters)`}</span>
+        <span>{`${value.substring(0, 256)}… (${value.length} characters)`}</span>
       )}
       {!useTextArea && !showStringExcerpt && <span>{value}</span>}
       {error && <span className="vtv--inline-value--error">{error}</span>}

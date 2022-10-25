@@ -1,7 +1,9 @@
-.vtv--view hr.vtv--menu--separator {
+.vtv--view div.vtv--menu--separator {
   border: none;
-  height: 2px;
+  height: 1px;
   background-color: var(--vtv-menu-separator);
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 .vtv--view div.vtv--menu--menu-item {
@@ -21,8 +23,9 @@
   color: var(--vtv-foreground);
   font-family: var(--vtv-font-family);
 }
-.vtv--view div.vtv--menu--menu-item:hover {
+.vtv--view div.vtv--menu--menu-item:focus {
   background-color: var(--vtv-menu-highlight);
+  outline: none;
 }
 .vtv--view div.vtv--menu--menu-item {
   padding-right: 3px;
@@ -43,4 +46,5 @@
   flex-direction: column;
   align-items: stretch;
   box-shadow: 1px 2px 3px 2px rgb(63, 63, 63, 0.6);
+  outline: none;
 }

@@ -19,10 +19,6 @@ export default function InsertMenu({
   return (
     <Menu
       onClose={() => null}
-      popperProps={{
-        placement: 'left-start',
-        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
-      }}
       context={context}
       {...props}
     >

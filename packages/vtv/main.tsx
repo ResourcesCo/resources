@@ -13,7 +13,21 @@ const App = () => {
         state: 'CA',
         country: 'USA',
       },
+      interests: [
+        "coding",
+        "food",
+        "hiking"
+      ]
     },
+    state: {
+      _expanded: true,
+      location: {
+        _expanded: true,
+      },
+      interests: {
+        _expanded: true
+      }
+    }
   })
 
   return (
@@ -26,15 +40,6 @@ const App = () => {
         onPickId={() => undefined}
         onAction={() => undefined}
         theme="dark"
-      />
-      <View
-        name={treeData1.name}
-        value={treeData1.value}
-        state={treeData1.state}
-        onChange={setTreeData1}
-        onPickId={() => undefined}
-        onAction={() => undefined}
-        theme="light"
       />
     </div>
   )

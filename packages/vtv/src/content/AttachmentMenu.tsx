@@ -5,10 +5,6 @@ function InsertObjectMenu({ onInsert, context, ...props }) {
   return (
     <Menu
       onClose={() => null}
-      popperProps={{
-        placement: 'left-start',
-        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
-      }}
       context={context}
       {...props}
     >
@@ -29,10 +25,6 @@ function CopyMetadataMenu({
   return (
     <Menu
       onClose={() => null}
-      popperProps={{
-        placement: 'left-start',
-        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
-      }}
       context={context}
       {...props}
     >
@@ -114,10 +106,6 @@ export default function AttachmentMenu({
 
   return (
     <Menu
-      popperProps={{
-        placement: 'bottom-start',
-        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
-      }}
       context={context}
       onClose={onClose}
     >

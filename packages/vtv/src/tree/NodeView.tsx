@@ -115,7 +115,6 @@ function NodeView({
       <div
         className={`vtv--node-view--row level-${path.length}`}
         style={{ paddingLeft: indent }}
-        tabIndex={0}
       >
         <ExpandButton
           disabled={!isExpandable}
@@ -126,6 +125,7 @@ function NodeView({
         <NodeNameView
           editingName={editingName}
           name={name}
+          state={state}
           displayName={displayName}
           path={path}
           nodeMenuProps={nodeMenuProps}
@@ -162,10 +162,10 @@ function NodeView({
             (isObject(value) || Array.isArray(value)) &&
             view === 'tree' && (
               <div className="vtv--node-view--children">
-                {Object.keys(value).map((key) => (
+                {Object.keys(value).map((key, i) => (
                   <NodeView
                     parentType={nodeType}
-                    key={key}
+                    key={i}
                     name={key}
                     value={value[key]}
                     state={getChildState(_state, key)}

@@ -1,103 +1,275 @@
 import React, {
   useState,
   useRef,
+  useEffect,
   MouseEventHandler,
   MouseEvent,
+  FocusEventHandler,
   ReactNode,
   FunctionComponent,
   ReactElement,
+  KeyboardEventHandler,
 } from 'react'
 import clsx from 'clsx'
 import useClickOutside from '../util/useClickOutside'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons'
-import { Popper, Manager, Reference, PopperProps } from 'react-popper'
+import { Popper, Manager, Reference } from 'react-popper'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import chroma from 'chroma-js'
 import { Context } from 'vtv'
+import findNode from '../util/findNode'
+import { MENU_CLASS, MENU_ITEM_CLASS } from '../util/constants'
 
 export function Separator({ context }: { context?: Context }) {
-  // context will be passed in by Menu
-  if (!context) {
-    return null
-  }
-  const { theme } = context
-
-  const color = chroma(theme.foreground)
-    .alpha(0.4)
-    .hex()
   return (
     <>
-      <hr className="vtv--menu--separator" />
+      <div className="vtv--menu--separator" />
     </>
   )
 }
 
-interface MenuItemProps {
-  checked?: boolean
-  onClick?: MouseEventHandler
-  copyToClipboard?: string
-  children: ReactNode
-  submenu?: ReactElement
-  context?: Context
+function findMenuItem(target: Element): Element | undefined {
+  const menuItem = target.closest(`.${MENU_ITEM_CLASS}`)
+  const menu = target.closest(`.${MENU_CLASS}`)
+  if (menuItem instanceof Element && !(menu instanceof Element && !menu.contains(menuItem))) {
+    return menuItem
+  }
 }
 
-export function MenuItem({
+interface MenuItemProps {
+  checked?: boolean
+  onClick?: (event: MouseEvent | undefined) => void
+  copyToClipboard?: string
+  submenu?: ReactElement
+  autoFocus?: boolean
+  children: ReactNode
+  context?: Context
+  onClose?: () => void
+}
+
+export const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(({
   checked,
   onClick,
   copyToClipboard,
-  children,
   submenu,
+  autoFocus = false,
+  children,
   context,
-}: MenuItemProps) {
+}, ref) => {
+  const buttonRef = useRef<HTMLButtonElement>()
   const [itemHover, setItemHover] = useState(false)
   const [submenuHover, setSubmenuHover] = useState(false)
+  const [mouseMoved, setMouseMoved] = useState(false)
+  const [keyOpen, setKeyOpen] = useState(false)
   const setHoverOff = () => {
     setItemHover(false)
     setSubmenuHover(false)
   }
+  useEffect(() => {
+    if (autoFocus && buttonRef.current) {
+      const menuItem = buttonRef.current.closest(`.${MENU_ITEM_CLASS}`)
+      if (menuItem instanceof HTMLElement) {
+        menuItem.focus()
+      }
+    }
+  }, [autoFocus, buttonRef.current])
 
   // the context is added by <Menu>
   if (!context) return null
   const { theme } = context
 
+  const onMouseEnter = ({target}: React.MouseEvent<HTMLDivElement>) => {
+    if (target instanceof HTMLElement) {
+      const menuItem = findMenuItem(target)
+      if (mouseMoved && menuItem instanceof HTMLDivElement) {
+        menuItem.focus()
+      }
+      setItemHover(true)
+      setKeyOpen(false)
+    }
+  }
+
+  const onMouseMove = ({target}: React.MouseEvent<HTMLDivElement>) => {
+    if (target instanceof Element) {
+      const menuItem = findMenuItem(target)
+      if (menuItem instanceof HTMLDivElement) {
+        menuItem.focus()
+      }
+      setItemHover(true)
+      setMouseMoved(true)
+      setKeyOpen(false)
+    }
+  }
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (submenu && (e.code === 'ArrowRight' || e.code === 'Enter' || e.code === 'Space')) {
+      setItemHover(true)
+      setKeyOpen(true)
+    } else if (!submenu && (e.code === 'Enter' || e.code === 'Space')) {
+      if (onClick) {
+        onClick(undefined)
+      }
+      e.preventDefault()
+      e.stopPropagation()
+    } else if (e.code === 'ArrowUp' || e.code === 'ArrowDown') {
+      const {target} = e
+      if (target instanceof Element) {
+        const targetMenuItem = target.closest(`.${MENU_ITEM_CLASS}`)
+        if (targetMenuItem instanceof HTMLElement) {
+          const targetMenu = target.closest(`.${MENU_CLASS}`)
+          if (targetMenu instanceof HTMLElement) {
+            const nextNode = findNode(targetMenu, targetMenuItem, e.code, `.${MENU_ITEM_CLASS}`, `.${MENU_CLASS}`)
+            if (nextNode instanceof HTMLElement) {
+              setSubmenuHover(false)
+              setItemHover(false)
+              setKeyOpen(false)
+              setMouseMoved(false)
+              nextNode.focus()
+            }
+          }
+        }
+      }
+      e.stopPropagation()
+    }
+  }
+
+  const onBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+    const {target, relatedTarget} = e
+    if (
+      target instanceof Element &&
+      relatedTarget instanceof Element
+    ) {
+      const targetMenu = target.closest(`.${MENU_CLASS}`)
+      if (targetMenu instanceof Element) {
+        const targetMenuItem = targetMenu.closest(`.${MENU_ITEM_CLASS}`)
+        const relatedTargetMenuItem = relatedTarget.closest(`.${MENU_ITEM_CLASS}`)
+        if (
+          targetMenuItem instanceof Element &&
+          relatedTargetMenuItem instanceof Element &&
+          targetMenuItem.contains(relatedTargetMenuItem)
+        ) {
+          return
+        }
+      }
+    }
+    setSubmenuHover(false)
+    setItemHover(false)
+    setKeyOpen(false)
+    setMouseMoved(false)
+  }
+
+  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    if (onClick) {
+      onClick(e)
+    }
+  }
+
   return submenu ? (
     <Manager>
       <Reference>
-        {({ ref }) => (
-          <div
+        {({ ref }) => {
+          return <div
+            tabIndex={-1}
             className={clsx('vtv--menu--menu-item', { checked })}
             ref={ref}
-            onMouseEnter={() => setItemHover(true)}
-            onMouseLeave={() => setHoverOff()}
+            onMouseEnter={onMouseEnter}
+            onMouseMove={onMouseMove}
+            onMouseLeave={({target}) => {
+              const button = buttonRef.current
+              if (target instanceof Element && button instanceof Element) {
+                const buttonMenuItem = button.closest(`.${MENU_ITEM_CLASS}`)
+                const targetMenu = target.closest(`.${MENU_CLASS}`)
+                if (
+                  buttonMenuItem instanceof Element &&
+                  targetMenu instanceof Element &&
+                  buttonMenuItem.contains(targetMenu)
+                ) {
+                  return
+                }
+              }
+              setHoverOff()
+            }}
+            onKeyDown={onKeyDown}
           >
-            <button className="vtv--menu--menu-item-button" onClick={onClick}>{children}</button>
+            <button
+              ref={buttonRef}
+              className="vtv--menu--menu-item-button"
+              onClick={handleClick}
+            >
+              {children}
+            </button>
             <FontAwesomeIcon icon={faCaretRight} size="sm" />
+            {
+              (((mouseMoved || keyOpen) && (itemHover || submenuHover)) &&
+                React.cloneElement(submenu, {
+                  autoFocus: keyOpen,
+                  onMouseEnter: () => { setSubmenuHover(true); setItemHover(false); },
+                  onMouseLeave: ({target, relatedTarget}) => {
+                    if (
+                      target instanceof Element &&
+                      relatedTarget instanceof Element
+                    ) {
+                      const relatedTargetMenu = relatedTarget.closest(`.${MENU_CLASS}`)
+                      const relatedTargetMenuItem = relatedTarget.closest(`.${MENU_ITEM_CLASS}`)
+                      if (relatedTargetMenu instanceof Element) {
+                        setSubmenuHover(false)
+                        setItemHover(relatedTargetMenuItem instanceof Element ? relatedTargetMenuItem.contains(target) : false)
+                      }
+                    }
+                  },
+                  onKeyDown: (e: KeyboardEvent) => {
+                    if (e.code === 'ArrowLeft') {
+                      e.stopPropagation()
+                      setKeyOpen(false)
+                      setMouseMoved(false)
+                      setSubmenuHover(false)
+                      setItemHover(false)
+                      if (buttonRef.current) {
+                        const menuItem = buttonRef.current.closest(`.${MENU_ITEM_CLASS}`)
+                        if (menuItem instanceof HTMLElement) {
+                          menuItem.focus()
+                        }
+                      }
+                    }
+                  },
+                  onBlur,
+                  isSubmenu: true,
+                })
+              )
+            }
           </div>
-        )}
+        }}
       </Reference>
-      {(itemHover || submenuHover) &&
-        React.cloneElement(submenu, {
-          onMouseEnter: () => setSubmenuHover(true),
-          onMouseLeave: () => setSubmenuHover(false),
-        })}
     </Manager>
   ) : (
-    <div className={clsx('vtv--menu--menu-item', { checked })} onClick={onClick}>
+    <div
+      ref={ref}
+      tabIndex={-1}
+      className={clsx('vtv--menu--menu-item', { checked })}
+      onMouseEnter={onMouseEnter}
+      onMouseMove={onMouseMove}
+      onKeyDown={onKeyDown}
+      onClick={handleClick}
+    >
       {copyToClipboard ? (
         <CopyToClipboard text={copyToClipboard}>
-          <button className="vtv--menu--menu-item-button">{children}</button>
+          <button ref={buttonRef} className="vtv--menu--menu-item-button">{children}</button>
         </CopyToClipboard>
       ) : (
-        <button className="vtv--menu--menu-item-button" onClick={onClick}>{children}</button>
+        <button ref={buttonRef} className="vtv--menu--menu-item-button" onClick={handleClick}>{children}</button>
       )}
     </div>
   )
-}
+})
 
 const defaultPopperProps = {
   placement: 'bottom-start',
   modifiers: [{ name: 'offset', options: { offset: [8, 3] } }],
+}
+
+const submenuPopperProps = {
+  placement: 'right-start',
+  modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
 }
 
 interface MenuProps {
@@ -105,38 +277,80 @@ interface MenuProps {
   popperProps?: object
   onMouseEnter?: MouseEventHandler
   onMouseLeave?: MouseEventHandler
+  onBlur?: FocusEventHandler
+  onKeyDown?: KeyboardEventHandler
+  isSubmenu?: boolean
+  autoFocus?: boolean
   children: React.ReactNode
   context: Context
 }
 
 const Menu: FunctionComponent<MenuProps> = ({
   onClose,
-  popperProps = defaultPopperProps,
-  context: { theme },
-  context,
-  children,
+  popperProps,
   onMouseEnter,
   onMouseLeave,
+  onBlur,
+  onKeyDown: extraOnKeyDown,
+  isSubmenu = false,
+  autoFocus = false,
+  children,
+  context: { theme },
+  context,
 }: MenuProps) => {
-  const ref = useRef(null)
+  const ref = useRef<HTMLDivElement>(null)
   useClickOutside(ref, onClose)
 
-  const menuItems = React.Children.map(children, child => {
-    return React.isValidElement(child)
-      ? React.cloneElement(child, {
-          onClick(e: MouseEvent) {
+  useEffect(() => {
+    if (!autoFocus && ref.current) {
+      ref.current.focus()
+    }
+  }, [autoFocus, ref.current])
+
+  let autoFocusIsSet = false
+  const menuItems = React.Children.map(children, (child) => {
+    let result = child
+    if (React.isValidElement(child)) {
+      result = React.cloneElement(child as React.ReactElement<any>, {
+        onClick(e: MouseEvent) {
+          if (child.props.onClick) {
             child.props.onClick(e)
-            onClose()
-          },
-          context,
-        })
-      : child
+            if (onClose) {
+              onClose()
+            }
+          }
+        },
+        autoFocus: autoFocus ? !autoFocusIsSet : false,
+        context,
+      })
+      autoFocusIsSet = true
+    }
+    return result
   })
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const code = e.code
+    const target = e.target
+    if (target instanceof HTMLElement) {
+      if (code === 'Escape') {
+        onClose()
+      }
+      if (code === 'ArrowDown' && target.classList.contains(MENU_CLASS)) {
+        const menuItem = target.querySelector(`.${MENU_ITEM_CLASS}`)
+        if (menuItem instanceof HTMLElement) {
+          menuItem.focus()
+        }
+      }
+    }
+    if (extraOnKeyDown) {
+      extraOnKeyDown(e)
+    }
+  }
 
   const sortedMenuItems = placement =>
     (placement || '').startsWith('top-') ? [...menuItems].reverse() : menuItems
   return (
-    <Popper {...popperProps}>
+    <Popper {...(popperProps ? popperProps : (isSubmenu ? submenuPopperProps : defaultPopperProps))}>
       {({ ref: popperRef, style, placement }) => (
         <div
           className="vtv--menu--popper"
@@ -145,8 +359,10 @@ const Menu: FunctionComponent<MenuProps> = ({
           data-placement={placement}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
+          onKeyDown={onKeyDown}
+          onBlur={onBlur}
         >
-          <div className="vtv--menu--menu" ref={ref}>
+          <div className="vtv--menu--menu" ref={ref} tabIndex={-1}>
             {sortedMenuItems(placement)}
           </div>
         </div>

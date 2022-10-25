@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import InsertMenu from './InsertMenu'
 import ViewMenu from './ViewMenu'
@@ -15,10 +15,6 @@ function DeleteMenu({
   return (
     <Menu
       onClose={() => null}
-      popperProps={{
-        placement: 'left-start',
-        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
-      }}
       context={context}
       {...props}
     >
@@ -47,13 +43,10 @@ function NodeMenu({
   onViewChanged,
   nameOptionsFirst = false,
   popperProps,
+  autoFocus = false,
   context: { onMessage, onPickId },
   context,
 }) {
-  const [action, setAction] = useState(null)
-
-  const isArray = Array.isArray(value)
-
   const sendAction = (action, data = {}) => {
     onMessage({
       path,
@@ -67,14 +60,21 @@ function NodeMenu({
   }
 
   return (
-    <Menu onClose={onClose} popperProps={popperProps} context={context}>
-      {nameOptionsFirst &&
-        path.length > 0 &&
-        ['object', null].includes(parentType) && (
+    <Menu onClose={onClose} popperProps={popperProps} autoFocus={autoFocus} context={context}>
+      {
+        (autoFocus && !['object', 'array'].includes(nodeType) && !['code', 'text'].includes(state.view)) ? (
+          <MenuItem onClick={() => sendAction('edit', { editing: true })}>
+            Edit
+          </MenuItem>
+        ) : null
+      }
+      {
+        (nameOptionsFirst && path.length > 0 && ['object', null].includes(parentType)) ? (
           <MenuItem onClick={() => sendAction('rename', { editing: true })}>
             Rename
           </MenuItem>
-        )}
+        ) : null
+      }
       <MenuItem
         submenu={
           <ViewMenu

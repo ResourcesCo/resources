@@ -53,11 +53,6 @@ function CodeMenu({
 }) {
   return (
     <Menu
-      onClose={() => null}
-      popperProps={{
-        placement: 'left-end',
-        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
-      }}
       context={context}
       {...props}
     >
@@ -90,11 +85,6 @@ function ShowHiddenMenu({
 }) {
   return (
     <Menu
-      onClose={() => null}
-      popperProps={{
-        placement: 'left-end',
-        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
-      }}
       context={context}
       {...props}
     >
@@ -165,11 +155,6 @@ export default function ViewMenu({
     nodeType === 'object' ? getHiddenKeys(value, state) : undefined
   return (
     <Menu
-      onClose={() => null}
-      popperProps={{
-        placement: 'left-start',
-        modifiers: [{ name: 'offset', options: { offset: [0, -3] } }],
-      }}
       context={context}
       {...props}
     >
