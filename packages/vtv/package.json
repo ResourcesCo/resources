@@ -1,7 +1,7 @@
 {
   "name": "vtv",
   "type": "module",
-  "version": "1.0.0-canary.38",
+  "version": "1.0.0-canary.39",
   "main": "dist/index.js",
   "dependencies": {
     "@braintree/sanitize-url": "^6.0.0",
@@ -33,7 +33,7 @@
     "react-popper": "^2.3.0",
     "react-textarea-autosize": "^8.3.4",
     "scroll-into-view-if-needed": "^2.2.29",
-    "vtv-model": "1.0.0-pre.13"
+    "vtv-model": "1.0.0-pre.14"
   },
   "devDependencies": {
     "@testing-library/dom": "^8.18.1",
